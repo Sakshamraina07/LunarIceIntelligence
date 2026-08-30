@@ -54,7 +54,7 @@ export interface LunarBasemapProvider {
   notes: string;
 }
 
-const BACKEND_BASE = 'http://127.0.0.1:8000';
+const BACKEND_BASE = (import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
 
 /**
  * NASA Moon Trek — LRO WAC global mosaic. Verified live + `Access-Control-

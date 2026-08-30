@@ -1,6 +1,9 @@
 import type { MissionState, CraterInfo, SensitivityAnalysisResult } from '../types/mission';
 
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+// Backend origin. In production set VITE_API_BASE (e.g. https://lunariceintelligence.onrender.com)
+// on Vercel; falls back to the local FastAPI dev server otherwise.
+export const API_ORIGIN = (import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
+const API_BASE_URL = `${API_ORIGIN}/api`;
 
 export async function fetchHealthCheck() {
   const res = await fetch(`${API_BASE_URL}/health`);

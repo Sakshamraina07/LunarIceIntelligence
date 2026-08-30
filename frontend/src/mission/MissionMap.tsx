@@ -25,8 +25,9 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { MissionState, CandidateLandingSite } from '../types/mission';
 import { LAYER_MAP } from './config';
+import { API_ORIGIN } from '../services/api';
 
-const TILE_BASE = 'http://127.0.0.1:8000/tiles/faustini';
+const TILE_BASE = `${API_ORIGIN}/tiles/faustini`;
 const MAP_SIZE = 256;
 const IMAGE_BOUNDS: L.LatLngBoundsLiteral = [[0, 0], [MAP_SIZE, MAP_SIZE]];
 const MAX_NATIVE = 3;

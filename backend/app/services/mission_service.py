@@ -97,6 +97,20 @@ class MissionPipelineService:
         # ------------------------------------------------------------------
         crater_has_real_data = bool(getattr(crater_info, "is_real_data", False))
         is_real = (data_mode == "REAL") or crater_has_real_data
+        # Robustness: a crater may be flagged real, but the raw raster files are
+        # only present on the local workstation (the 9GB SAR set is not deployed).
+        # If none of the real inputs exist on THIS host, transparently downgrade to
+        # the DEMO generator instead of failing — the UI already labels this DEMO.
+        _real_inputs_present = (
+            Path(f"d:/FYP/data/pradan/dem/{crater_id}_lola_dem.tif").exists()
+            or Path("d:/FYP/data/pradan/dem/real_dem.tif").exists()
+            or (
+                Path("d:/FYP/data/pradan/dfsar/cpr_real.tif").exists()
+                and Path("d:/FYP/data/pradan/dfsar/dop_real.tif").exists()
+            )
+        )
+        if is_real and not _real_inputs_present:
+            is_real = False
         effective_data_mode = "REAL" if is_real else "DEMO"
 
         # Cache key includes the EFFECTIVE mode so a stale DEMO-mode cache

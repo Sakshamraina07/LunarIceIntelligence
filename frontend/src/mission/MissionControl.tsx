@@ -51,7 +51,10 @@ export default function MissionControl() {
   useEffect(() => {
     setLoading(true);
     setError(null);
-    fetchMissionState(craterId, { dataMode: 'REAL', cprThreshold: cprTh, dopThreshold: dopTh, iceDepthM: iceDepth, iceFraction: iceFrac, algorithm: roverAlgo })
+    // REAL locally (raw SAR present); DEMO in hosted deploys where the 9GB
+    // dataset isn't available — set VITE_DATA_MODE=DEMO on Vercel. UI badge reflects this.
+    const dataMode = (import.meta.env.VITE_DATA_MODE as string) ?? 'REAL';
+    fetchMissionState(craterId, { dataMode, cprThreshold: cprTh, dopThreshold: dopTh, iceDepthM: iceDepth, iceFraction: iceFrac, algorithm: roverAlgo })
       .then((d) => { setMission(d); setSelectedSite(d.recommended_landing_site); setLoading(false); })
       .catch((e) => { setError(e.message || 'Mission execution error'); setLoading(false); });
   }, [craterId, cprTh, dopTh, iceDepth, iceFrac, roverAlgo]);

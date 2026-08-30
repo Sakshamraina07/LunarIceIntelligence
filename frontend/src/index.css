@@ -1,0 +1,141 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #020617;
+    color: #f8fafc;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #090d16;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #06b6d4;
+}
+
+/* Glassmorphism & High-Tech UI Utilities */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+.glass-panel-cyan {
+  background: rgba(6, 182, 212, 0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.12);
+}
+
+.neon-border-cyan {
+  border-color: rgba(6, 182, 212, 0.6);
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+}
+
+.neon-glow-cyan {
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.35);
+}
+
+.bg-lunar-grid {
+  background-size: 30px 30px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+/* Radar Scan Line Effect */
+@keyframes radarSweep {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.radar-sweep-line {
+  transform-origin: center center;
+  animation: radarSweep 6s linear infinite;
+}
+
+/* Leaflet Dark Theme Overrides */
+.leaflet-container {
+  background: #020617 !important;
+  font-family: 'Outfit', sans-serif;
+}
+
+.leaflet-dark-popup .leaflet-popup-content-wrapper {
+  background: rgba(2, 6, 23, 0.94) !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  border-radius: 12px !important;
+  color: #e2e8f0 !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.7), 0 0 20px rgba(6, 182, 212, 0.2) !important;
+}
+
+.leaflet-dark-popup .leaflet-popup-tip {
+  background: rgba(2, 6, 23, 0.94) !important;
+}
+
+.leaflet-dark-popup .leaflet-popup-close-button {
+  color: #64748b !important;
+}
+
+.leaflet-dark-popup .leaflet-popup-close-button:hover {
+  color: #06b6d4 !important;
+}
+
+.leaflet-tooltip {
+  background: rgba(15, 23, 42, 0.95) !important;
+  border: 1px solid rgba(6, 182, 212, 0.4) !important;
+  border-radius: 8px !important;
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+.leaflet-tooltip::before {
+  border-right-color: rgba(15, 23, 42, 0.95) !important;
+  border-left-color: rgba(15, 23, 42, 0.95) !important;
+  border-top-color: rgba(15, 23, 42, 0.95) !important;
+  border-bottom-color: rgba(15, 23, 42, 0.95) !important;
+}
+
+.leaflet-science-overlay {
+  filter: saturate(1.35) contrast(1.15) brightness(1.05);
+  mix-blend-mode: normal;
+}
+
+.leaflet-control-attribution {
+  background: rgba(2, 6, 23, 0.85) !important;
+  color: #475569 !important;
+  font-size: 9px !important;
+}
+
+@keyframes targetPulse {
+  0%, 100% { stroke-opacity: 1.0; stroke-width: 2.5; }
+  50% { stroke-opacity: 0.3; stroke-width: 1.5; }
+}
+
+.leaflet-target-marker path {
+  animation: targetPulse 2s ease-in-out infinite;
+}

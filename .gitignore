@@ -16,7 +16,8 @@ node_modules
 .next/
 .DS_Store
 # Large raw data — not for GitHub (9GB Chandrayaan SAR)
-data/
+# Large raw SAR dataset at repo root only (9GB) — NOT app source dirs like frontend/src/landing/data
+/data/
 .next/
 .pytest_cache/
 *.tif

@@ -62,7 +62,10 @@ export default function MissionControl() {
   const gotoStep = (s: number) => { setStep(s); if (STEP_LAYER[s]) setActiveLayer(STEP_LAYER[s]); };
   const activeRoutes = showRoute ? ['Shortest', 'Safest', 'Science-Aware'] : [];
   const legend = LAYER_MAP[activeLayer];
-  const isReal = mission?.selected_crater.is_real_data || mission?.data_mode === 'REAL';
+  // Honesty: reflect the EFFECTIVE data mode the backend actually used, not the
+  // crater's capability flag. A real-capable crater served from a host without the
+  // raw SAR files comes back as DEMO — the badge must say DEMO, never "REAL".
+  const isReal = mission?.data_mode === 'REAL';
 
   // PLACEHOLDER_RENDER
   return (
@@ -154,13 +157,16 @@ export default function MissionControl() {
               <div className="mc-legend-title">{legend.label}</div>
               <div className="mc-legend-bar" style={{ background: legend.gradient }} />
               <div className="mc-legend-ends"><span>{legend.low}</span><span>{legend.high}</span></div>
+              {legend.description && <div className="mc-legend-hint">{legend.description}</div>}
             </div>
           )}
 
           {/* readout */}
           <div className="mc-map-overlay mc-map-panel mc-map-readout">
             <div>{coords}</div>
-            <div style={{ color: 'var(--mc-accent)' }}>ZOOM {zoom} · {Math.min(zoom, 3)} native</div>
+            <div style={{ color: 'var(--mc-accent)' }}>
+              ZOOM {zoom} · {zoom > 3 ? 'UPSCALED (max native detail)' : `${Math.min(zoom, 3)} native`}
+            </div>
           </div>
 
           {loading && (

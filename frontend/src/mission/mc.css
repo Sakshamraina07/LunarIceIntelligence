@@ -430,3 +430,76 @@
 /* Leaflet: hide default zoom focus outlines, keep tiles crisp on upscaling */
 .mc-map .leaflet-container { background: #03060c; outline: none; }
 .mc-map img.leaflet-tile { image-rendering: auto; }
+
+/* Terrain base: lift relief so the hillshade reads as a real lunar surface —
+   deeper shadows, brighter sunlit crests, a touch of warmth like regolith. */
+.mc-base-tiles {
+  filter: contrast(1.14) brightness(1.16) saturate(0.92);
+}
+.leaflet-pane .mc-base-tiles img,
+.mc-base-tiles img.leaflet-tile {
+  image-rendering: auto;
+}
+
+/* Depth: gentle top-lit vignette for a curved-surface feel (kept light so the
+   terrain and data stay legible) */
+.mc-mapwrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 450;
+  background:
+    radial-gradient(120% 80% at 50% -25%, rgba(150,180,210,0.08), transparent 45%),
+    radial-gradient(150% 130% at 50% 125%, rgba(0,0,0,0.28), transparent 55%);
+  mix-blend-mode: soft-light;
+}
+
+/* Tile-streaming shimmer so the map never flashes solid black */
+.mc-mapwrap.mc-map--tiles-loading::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 440;
+  pointer-events: none;
+  background: linear-gradient(100deg,
+    rgba(79,209,230,0) 30%,
+    rgba(79,209,230,0.06) 50%,
+    rgba(79,209,230,0) 70%);
+  background-size: 220% 100%;
+  animation: mc-shimmer 1.3s linear infinite;
+}
+@keyframes mc-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
+
+/* Plain-language legend hint under the gradient bar */
+.mc-legend-hint {
+  font-size: 0.66rem;
+  line-height: 1.4;
+  color: var(--mc-text-mute);
+  margin-top: 0.45rem;
+}
+
+/* Scale bar (bottom, computed in km from the mission domain) */
+.mc-map-scale {
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  pointer-events: none;
+}
+.mc-scale-bar {
+  height: 4px;
+  border: 1px solid rgba(255,255,255,0.55);
+  border-top: none;
+  background: rgba(255,255,255,0.12);
+}
+.mc-scale-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  color: var(--mc-text-dim);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+}

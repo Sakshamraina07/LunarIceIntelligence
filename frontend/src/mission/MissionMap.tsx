@@ -141,7 +141,22 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     });
     mapRef.current = map;
 
-    baseRef.current = new LunarTileLayer('hillshade', { zIndex: 100 }).addTo(map);
+    // Dedicated panes so science layers blend ONTO the terrain (soft-light)
+    // rather than flatly hiding it — the hillshade relief shows through, so the
+    // data reads as painted on a real surface instead of covering it.
+    map.createPane('mc-terrain');
+    map.getPane('mc-terrain')!.style.zIndex = '100';
+    map.createPane('mc-science');
+    const sciPane = map.getPane('mc-science')!;
+    sciPane.style.zIndex = '350';
+    sciPane.style.mixBlendMode = 'soft-light';
+
+    baseRef.current = new LunarTileLayer('hillshade', { pane: 'mc-terrain', className: 'mc-base-tiles' }).addTo(map);
+
+    // never flash black: shimmer the wrap while the base pyramid streams in
+    const wrap = containerRef.current!.parentElement;
+    baseRef.current.on('loading', () => wrap?.classList.add('mc-map--tiles-loading'));
+    baseRef.current.on('load', () => wrap?.classList.remove('mc-map--tiles-loading'));
 
     // faint engineering graticule
     const grid = L.layerGroup().addTo(map);
@@ -155,8 +170,31 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     sitesRef.current = L.layerGroup().addTo(map);
     routesRef.current = L.layerGroup().addTo(map);
 
+    // Dynamic scale bar — CRS.Simple lat/lng ARE map units, so we convert
+    // pixels → units → km (domainKm spans the full 256-unit swath) and snap to a
+    // clean round distance. Rendered bottom-center, clear of the legend/readout.
+    const kmPerUnit = domainKm / MAP_SIZE;
+    const scaleEl = L.DomUtil.create('div', 'mc-map-overlay mc-map-scale', containerRef.current!.parentElement!);
+    scaleEl.innerHTML = `<span class="mc-scale-label"></span><div class="mc-scale-bar"></div>`;
+    const updateScale = () => {
+      const cx = map.getSize().x / 2;
+      const cy = map.getSize().y / 2;
+      const a = map.containerPointToLatLng([cx, cy]);
+      const b = map.containerPointToLatLng([cx + 100, cy]);
+      const kmPer100px = Math.abs(b.lng - a.lng) * kmPerUnit;
+      if (!isFinite(kmPer100px) || kmPer100px <= 0) return;
+      const pow = Math.pow(10, Math.floor(Math.log10(kmPer100px)));
+      const niceKm = (kmPer100px / pow >= 5 ? 5 : kmPer100px / pow >= 2 ? 2 : 1) * pow;
+      const px = (niceKm / kmPer100px) * 100;
+      (scaleEl.querySelector('.mc-scale-bar') as HTMLElement).style.width = `${px}px`;
+      (scaleEl.querySelector('.mc-scale-label') as HTMLElement).textContent =
+        niceKm >= 1 ? `${niceKm} km` : `${(niceKm * 1000).toFixed(0)} m`;
+    };
+    map.on('zoomend moveend', updateScale);
+
     map.fitBounds(IMAGE_BOUNDS);
     onZoom(map.getZoom());
+    updateScale();
     map.on('zoomend', () => onZoom(map.getZoom()));
     map.on('mousemove', (e: L.LeafletMouseEvent) => {
       const gx = Math.round((e.latlng.lng / MAP_SIZE) * 100);
@@ -166,7 +204,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       onCoords(`GRID ${gx},${gy}  ·  ${lat.toFixed(3)}° ${lon.toFixed(3)}°`);
     });
 
-    return () => { map.remove(); mapRef.current = null; };
+    return () => { map.remove(); scaleEl.remove(); mapRef.current = null; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -179,10 +217,10 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
 
     const def = LAYER_MAP[activeLayer];
     if (def?.tiled) {
-      overlayRef.current = new LunarTileLayer(activeLayer, { opacity: 0.82, zIndex: 200 }).addTo(map);
+      overlayRef.current = new LunarTileLayer(activeLayer, { pane: 'mc-science', opacity: 1 }).addTo(map);
     } else {
       const src = mission.raster_layers[activeLayer];
-      if (src) overlayRef.current = L.imageOverlay(src, IMAGE_BOUNDS, { opacity: 0.82, zIndex: 200, interactive: false }).addTo(map);
+      if (src) overlayRef.current = L.imageOverlay(src, IMAGE_BOUNDS, { pane: 'mc-science', opacity: 1, interactive: false }).addTo(map);
     }
   }, [activeLayer, mission]);
 

@@ -605,6 +605,28 @@ def build(crater_id: str = "faustini") -> dict:
           f"{footprint.mean() * 100:6.3f} %   (ISRO sri_ma: where the beam pointed)")
     print(f"  returned / pointed = {valid.sum() / max(footprint.sum(), 1) * 100:.2f} %")
 
+    # ------------------------------------------------------- illumination
+    # Absent unless the horizon product exists. There is deliberately no
+    # fallback: substituting the deleted proxy here would put a modelled
+    # quantity back into a slot the UI marks as measured.
+    illum_frame = None
+    illum_meta = None
+    try:
+        from app.ingestion.horizon_frame import load_horizon
+        hp = load_horizon(LOLA_DIR)
+        frame_geom = None
+        try:
+            from app.ingestion.sar_geometry import read_geotiff_frame
+            frame_geom = read_geotiff_frame(LH_TIF, LH_XML)
+        except Exception as exc:
+            print(f"  ! horizon found but the SAR frame is unreadable ({exc}); "
+                  f"illumination stays UNAVAILABLE")
+        if frame_geom is not None:
+            illum_frame = hp.to_frame(frame_geom, cpr.shape)
+            illum_meta = hp.meta
+    except FileNotFoundError as exc:
+        print(f"  ! {exc}")
+
     # One summary of the illumination state, derived once. Every value, every
     # evidence row and every note below reads from THIS, so the file cannot say
     # illumination is available in one place and absent in another.
@@ -652,27 +674,6 @@ def build(crater_id: str = "faustini") -> dict:
         print(f"  {nm}  naive   mean {n['mean']:.6f}  p50 {n['p50']:.6f}                      max {n['max']:.6f}"
               f"   <- padding-contaminated")
 
-    # ------------------------------------------------------- illumination
-    # Absent unless the horizon product exists. There is deliberately no
-    # fallback: substituting the deleted proxy here would put a modelled
-    # quantity back into a slot the UI marks as measured.
-    illum_frame = None
-    illum_meta = None
-    try:
-        from app.ingestion.horizon_frame import load_horizon
-        hp = load_horizon(LOLA_DIR)
-        frame_geom = None
-        try:
-            from app.ingestion.sar_geometry import read_geotiff_frame
-            frame_geom = read_geotiff_frame(LH_TIF, LH_XML)
-        except Exception as exc:
-            print(f"  ! horizon found but the SAR frame is unreadable ({exc}); "
-                  f"illumination stays UNAVAILABLE")
-        if frame_geom is not None:
-            illum_frame = hp.to_frame(frame_geom, cpr.shape)
-            illum_meta = hp.meta
-    except FileNotFoundError as exc:
-        print(f"  ! {exc}")
 
     t = terrain_from_dem(dem, spacing)
     boulder_available = False  # data/pradan/ohrc/ is empty; see hazard_model.boulder
@@ -695,8 +696,24 @@ def build(crater_id: str = "faustini") -> dict:
               f"{m.get('subsolar_latitude_range_deg', ['?', '?'])} deg integrated in closed form")
         print(f"  elevation   computed PER PIXEL from its own latitude: "
               f"{m.get('solar_elevation_formula', 'n/a')}")
-        print(f"              reaches {m['elevation_range_deg'][1]:.2f} deg at this frame's outer "
-              f"edge — NOT a flat 1.54 deg, which bounds the subsolar latitude, not the elevation")
+        # The frame's OWN maximum, from the frame's own latitude bounds. The
+        # sidecar's figure is over the whole polar array (outer corner -75.9 deg,
+        # 15.64 deg) and quoting it here would attach an array-wide number to a
+        # frame-wide statement — the same domain error as an unlabelled area.
+        _frame_lat = -84.833408
+        _frame_el = 1.54 + (90.0 - abs(_frame_lat))
+        # The polar array's own figure, derived from the grid the sidecar records
+        # rather than read from a key older sidecars do not carry. Exact, not a
+        # fallback estimate: the corner latitude is a closed form of the shape
+        # and the spacing.
+        _n = ILLUM["meta"]["array_shape"][0]
+        _rho = (( _n - 1) / 2.0) * (2 ** 0.5) * ILLUM["effective_m"]
+        _arr_lat = np.degrees(2.0 * np.arctan(_rho / (2.0 * 1737400.0)) - np.pi / 2.0)
+        _arr_el = 1.54 + (90.0 - abs(_arr_lat))
+        print(f"              reaches {_frame_el:.2f} deg at THIS FRAME's outer edge "
+              f"({_frame_lat:.4f} deg), and {_arr_el:.2f} deg at the polar array's "
+              f"({_arr_lat:.2f} deg) — NOT a flat 1.54 deg, which bounds the subsolar "
+              f"latitude, not the elevation")
         print(f"  illum frac  mean {ILLUM['mean_fraction']:.4f}  "
               f"p25 {np.nanpercentile(ILLUM['fraction'], 25):.4f}  "
               f"p50 {np.nanpercentile(ILLUM['fraction'], 50):.4f}  "

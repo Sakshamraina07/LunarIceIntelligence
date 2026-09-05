@@ -125,10 +125,15 @@ export const LAYERS: LayerDef[] = [
     provenance: 'measured',
   },
   {
-    id: 'illumination', label: 'Shadowed Areas', swatch: '#f97316', tiled: true,
+    id: 'illumination', label: 'Solar Illumination', swatch: '#f97316', tiled: true,
     gradient: 'linear-gradient(to right,#000004,#420a68,#932667,#dd513a,#fca50a,#fcffa4)',
-    low: 'Darker', high: 'Brighter',
-    provenance: 'model',
+    low: 'Never lit (PSR)', high: 'Most lit',
+    // Was 'model', for a brightness proxy with no horizon term. Phase 2 replaced
+    // that with a horizon computation over the full LOLA polar array, so this is
+    // now a geometric consequence of measured topography. The badge itself is
+    // driven from layers.json (see provBadge in MissionControl), so this field
+    // is the fallback rather than the authority.
+    provenance: 'measured',
   },
   {
     id: 'cpr_heatmap', label: 'Radar Signals (CPR)', swatch: '#06b6d4', tiled: true,

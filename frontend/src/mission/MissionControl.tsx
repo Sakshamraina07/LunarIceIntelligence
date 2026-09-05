@@ -51,7 +51,30 @@ const STEP_LAYER: Record<number, string> = {
  */
 const RADAR_LAYERS = new Set(['cpr_heatmap', 'dop_heatmap']);
 
-function provBadge(l: LayerDef): string {
+/**
+ * The legend badge, driven by layers.json when it is loaded.
+ *
+ * config.ts is a fallback, not the authority. The manifest is written by the
+ * same script that renders the pixels, so a layer cannot wear a badge that
+ * describes a different computation than the one that produced it — which is
+ * exactly what happened when the illumination layer became a real horizon
+ * computation and the legend went on saying MODEL OUTPUT.
+ */
+const MANIFEST_BADGE: Record<string, string> = {
+  'measured-topography': 'MEASURED TOPOGRAPHY',
+  'measured-radar': 'MEASURED RADAR',
+  'computed-solar-horizon': 'COMPUTED ILLUMINATION',
+};
+/** The six words the map treats as "this is not a measurement". */
+const PLACEHOLDER_PROVENANCE = /synthetic|placeholder|analytic|unknown|unavailable/i;
+
+function provBadge(l: LayerDef, manifestProv?: string): string {
+  if (manifestProv) {
+    if (PLACEHOLDER_PROVENANCE.test(manifestProv)) return 'PLACEHOLDER';
+    const known = MANIFEST_BADGE[manifestProv];
+    if (known) return known;
+    return manifestProv.replace(/-/g, ' ').toUpperCase();
+  }
   if (l.provenance === 'measured') {
     return RADAR_LAYERS.has(l.id) ? 'MEASURED RADAR' : 'MEASURED TOPOGRAPHY';
   }
@@ -137,10 +160,12 @@ export default function MissionControl() {
   // cannot describe different formulas. Empty until the manifest lands; the
   // legend simply omits the hint until then rather than showing a stale one.
   const [layerCopy, setLayerCopy] = useState<Record<string, string>>({});
+  const [layerProv, setLayerProv] = useState<Record<string, string>>({});
   useEffect(() => {
     loadManifest().then((m) => {
       if (!m) return;
       setLayerCopy(Object.fromEntries(m.layers.map((l) => [l.id, l.description])));
+      setLayerProv(Object.fromEntries(m.layers.map((l) => [l.id, l.provenance])));
     });
   }, []);
 
@@ -293,7 +318,9 @@ export default function MissionControl() {
             <div className="mc-map-overlay mc-map-panel mc-map-legend">
               <div className="mc-legend-title">
                 {legend.label}
-                <span className={`mc-prov mc-prov--${legend.provenance}`}>{provBadge(legend)}</span>
+                <span className={`mc-prov mc-prov--${legend.provenance}`}>
+                  {provBadge(legend, layerProv[activeLayer])}
+                </span>
               </div>
               <div className="mc-legend-bar" style={{ background: legend.gradient }} />
               <div className="mc-legend-ends"><span>{legend.low}</span><span>{legend.high}</span></div>

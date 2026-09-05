@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-05T18:57:34.356071+00:00",
+  "generated_utc": "2026-09-05T21:38:57.215964+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -81,13 +81,44 @@
     "note": "Slope and roughness both come from measured LOLA topography, so the hazard blend is measured too -- but it is a two-term blend at 80 m posts, not the three-term one config.py describes. 80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
   },
   "illumination_model": {
-    "provenance": "MODELLED",
-    "expression": "clip(hillshade(sun_altitude=1.5 deg, azimuth=315 deg) * elev_norm ** 1.3, 0, 1)",
-    "psr_cut": 0.05,
-    "psr_fraction_of_frame": 0.7718154529839306,
-    "doubly_fraction_of_frame": 0.19883856760195306,
-    "why_it_is_not_measured": "Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not.",
-    "what_would_fix_it": "A horizon computation on the full 7600 x 7600 LOLA array: for each azimuth, horizon(az) = max_r atan((h(p + r*u) - h(p)) / r), lit when the solar elevation exceeds it. The frame's farthest corner sits 156.79 km from the pole inside a 304 km half-span array, so the rims that set these horizons are on disk already."
+    "provenance": "MEASURED",
+    "method": "horizon computation: for each azimuth, horizon(az) = max over r of atan((h(p + r*u) - h(p)) / r), lit when the solar elevation exceeds it",
+    "algorithm": "O(n) skyline scan per row (Dozier/Frew), verified against an O(n^2) brute force to 1.7e-06 on white, smooth, spiky and monotone profiles",
+    "source_product": "LDEM_80S_80M.IMG",
+    "array_shape": [
+      2533,
+      2533
+    ],
+    "computed_over": "the FULL LOLA polar array, not the frame -- at the pole the horizon is set by rim crests tens of kilometres outside this 165 x 56 km frame, and a horizon computed only inside it would invent sunlight that real terrain blocks",
+    "native_metres_per_pixel": 80.0,
+    "decimation_factor": 3,
+    "effective_metres_per_pixel": 240.0,
+    "decimation_method": "block mean",
+    "azimuths": 360,
+    "subsolar_band_integration": null,
+    "subsolar_latitude_range_deg": [
+      -1.54,
+      1.54
+    ],
+    "solar_elevation_formula": "sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H)",
+    "max_solar_elevation_deg": 15.638854064941407,
+    "why_not_a_flat_cap": "1.54 deg is the Moon's obliquity, which bounds the SUBSOLAR LATITUDE, not the solar elevation seen from a site. Max elevation at latitude phi is 1.54 + (90 - |phi|): 1.54 deg at the pole but 6.71 deg at this frame's outer edge (-84.833408). A flat 1.54 deg cap inflated this array's PSR from 26,900 to 65,398 km2 and would not have looked wrong.",
+    "sun_state_model": "az uniform over 360 deg; subsolar latitude uniform over +/-1.54 deg (the Moon's obliquity). The solar ELEVATION is then computed PER PIXEL from its own latitude by sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H) -- it is not sampled directly, because a fixed el range is correct only at the pole and under-illuminates this frame by up to 4.4x. illumination_fraction is the fraction of SAMPLED SUN STATES in which the point is lit: a geometric visibility fraction, NOT a time-weighted illumination and not a duty cycle. psr_mask (never lit) is independent of that weighting question.",
+    "psr_definition": "illumination_fraction == 0, i.e. lit in no sampled sun state",
+    "psr_fraction_of_frame": 0.2424334042406824,
+    "doubly_shadowed": {
+      "computed": true,
+      "definition": "never directly lit AND, in every one of the swept azimuths, the crest forming this point's horizon is itself never directly lit",
+      "approximation": "Tests the BOUNDING CREST per azimuth, not every cell visible below it, and models no multiple scattering or thermal re-radiation. A floor called doubly shadowed here could still receive some scattered light from lit terrain lying below a dark crest.",
+      "not_the_old_proxy": "The discarded version was the brightness proxy's shadow intersected with the lowest elevation quintile of the DEM. An elevation percentile is not a shadowing event.",
+      "provenance": "DERIVED",
+      "pixels": 45,
+      "area_km2": 2.592,
+      "fraction_of_psr": 9.635829869787819e-05,
+      "seconds": 1512.8
+    },
+    "resolution_caveat": "Computed from 80 m LOLA posts decimated 3x to 240 m. Any resampling onto a finer grid adds no shadow detail; read this as a 240 m shadow mask however it is displayed.",
+    "replaces": "clip(hillshade(sun_altitude=1.5 deg, azimuth=315 deg) * elev_norm ** 1.3, 0, 1) < 0.05 -- an invented brightness proxy with no horizon term, which darkened 77.18 % of the frame"
   },
   "masks": {
     "amplitude": {
@@ -132,9 +163,9 @@
     "screening_status": "FAIL",
     "criteria_passed": 1,
     "criteria_total": 5,
-    "criteria_evaluable": 2,
-    "criteria_withheld": 3,
-    "criteria_note": "1 of 2 criteria that can be evaluated in this build passed. The other 3 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.",
+    "criteria_evaluable": 5,
+    "criteria_withheld": 0,
+    "criteria_note": "1 of 5 criteria that can be evaluated in this build passed. The other 0 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.",
     "label": "No radar ice signature in this swath",
     "sublabel": "0.00 km² of the 1,461 km² measured swath passed CPR > 1.00 and DOP < 0.13",
     "confidence": "Low",
@@ -148,28 +179,34 @@
   },
   "values": {
     "psr_area_km2": {
-      "value": null,
+      "value": 2264.244,
       "unit": "km²",
-      "provenance": "UNAVAILABLE",
-      "reason": "The topography is measured, but the shadow on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. A PSR area is withheld until the Phase 2 horizon computation replaces the proxy; a number from this model would describe the expression, not the Moon."
+      "provenance": "MEASURED",
+      "note": "Terrain lit in NO sun state, over all 360 azimuths and the whole subsolar band. Horizon computation over the full 2533x2533 LOLA polar array at 240 m (80 m posts decimated 3x), swept over 360 azimuths. The solar elevation is computed PER PIXEL from its own latitude and the subsolar band is integrated in closed form; it reaches 15.64 deg at this frame's outer edge, not a flat 1.54 deg. az uniform over 360 deg; subsolar latitude uniform over +/-1.54 deg (the Moon's obliquity). The solar ELEVATION is then computed PER PIXEL from its own latitude by sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H) -- it is not sampled directly, because a fixed el range is correct only at the pole and under-illuminates this frame by up to 4.4x. illumination_fraction is the fraction of SAMPLED SUN STATES in which the point is lit: a geometric visibility fraction, NOT a time-weighted illumination and not a duty cycle. psr_mask (never lit) is independent of that weighting question. READ THIS AS A 240 m QUANTITY however it is displayed: resampling it onto the 25 m grid adds no shadow detail."
+    },
+    "psr_fraction_of_frame": {
+      "value": 0.242433,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Horizon computation over the full 2533x2533 LOLA polar array at 240 m (80 m posts decimated 3x), swept over 360 azimuths. The solar elevation is computed PER PIXEL from its own latitude and the subsolar band is integrated in closed form; it reaches 15.64 deg at this frame's outer edge, not a flat 1.54 deg. az uniform over 360 deg; subsolar latitude uniform over +/-1.54 deg (the Moon's obliquity). The solar ELEVATION is then computed PER PIXEL from its own latitude by sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H) -- it is not sampled directly, because a fixed el range is correct only at the pole and under-illuminates this frame by up to 4.4x. illumination_fraction is the fraction of SAMPLED SUN STATES in which the point is lit: a geometric visibility fraction, NOT a time-weighted illumination and not a duty cycle. psr_mask (never lit) is independent of that weighting question. READ THIS AS A 240 m QUANTITY however it is displayed: resampling it onto the 25 m grid adds no shadow detail."
     },
     "doubly_shadowed_area_km2": {
-      "value": null,
+      "value": 0.938,
       "unit": "km²",
-      "provenance": "UNAVAILABLE",
-      "reason": "A doubly-shadowed core is terrain that is never directly lit AND receives no scattered light from lit terrain. This build computes neither term. The previous definition -- the brightness proxy's shadow intersected with the lowest elevation quintile -- is not a second shadowing event. Phase 2."
+      "provenance": "DERIVED",
+      "note": "never directly lit AND, in every one of the swept azimuths, the crest forming this point's horizon is itself never directly lit — Tests the BOUNDING CREST per azimuth, not every cell visible below it, and models no multiple scattering or thermal re-radiation. A floor called doubly shadowed here could still receive some scattered light from lit terrain lying below a dark crest."
     },
     "mean_illumination_fraction": {
-      "value": null,
+      "value": 0.114422,
       "unit": "",
-      "provenance": "UNAVAILABLE",
-      "reason": "There is no illumination fraction here, only a brightness proxy. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. A mean of that expression would be a statistic about the expression. Phase 2 computes a real per-pixel lit fraction by sweeping the solar azimuth against a horizon."
+      "provenance": "MEASURED",
+      "note": "The fraction of SAMPLED SUN STATES in which a point is lit, averaged over the frame — a geometric visibility fraction, not a time-weighted duty cycle. Horizon computation over the full 2533x2533 LOLA polar array at 240 m (80 m posts decimated 3x), swept over 360 azimuths. The solar elevation is computed PER PIXEL from its own latitude and the subsolar band is integrated in closed form; it reaches 15.64 deg at this frame's outer edge, not a flat 1.54 deg. az uniform over 360 deg; subsolar latitude uniform over +/-1.54 deg (the Moon's obliquity). The solar ELEVATION is then computed PER PIXEL from its own latitude by sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H) -- it is not sampled directly, because a fixed el range is correct only at the pole and under-illuminates this frame by up to 4.4x. illumination_fraction is the fraction of SAMPLED SUN STATES in which the point is lit: a geometric visibility fraction, NOT a time-weighted illumination and not a duty cycle. psr_mask (never lit) is independent of that weighting question. READ THIS AS A 240 m QUANTITY however it is displayed: resampling it onto the 25 m grid adds no shadow detail."
     },
     "thermal_stability_k": {
-      "value": null,
+      "value": 110.0,
       "unit": "K",
-      "provenance": "UNAVAILABLE",
-      "reason": "No thermal product is on disk and no thermal model runs in this build. Phase 2 derives a stability flag from the illumination fraction and labels it DERIVED, not MEASURED."
+      "provenance": "DERIVED",
+      "note": "INFERRED FROM ILLUMINATION, NOT FROM MEASURED TEMPERATURE. No thermal product is on disk and no thermal model runs here. A surface lit in none of the sampled sun states has no direct solar input, and the water-ice stability limit over geological time is about 110 K; the 2,264.2 km² of PSR in this frame is therefore inferred to sit below it. The 110 K figure is an assumed threshold from the literature, not something measured here. If a Diviner product is ever ingested this becomes MEASURED and nothing else changes."
     },
     "cpr_mean": {
       "value": 0.001312,
@@ -283,7 +320,7 @@
       "value": 1,
       "unit": "",
       "provenance": "MEASURED",
-      "note": "Of 5 named criteria: CPR above CBOE threshold = FAIL, DOP depressed (volume scattering) = PASS, Overlap with a shadowed cold trap = WITHHELD, Overlap with a doubly-shadowed core = WITHHELD, Thermal stability expected = WITHHELD"
+      "note": "Of 5 named criteria: CPR above CBOE threshold = FAIL, DOP depressed (volume scattering) = PASS, Overlap with a shadowed cold trap = FAIL, Overlap with a doubly-shadowed core = FAIL, Thermal stability expected = FAIL"
     },
     "p_ice_max": {
       "value": null,
@@ -520,35 +557,35 @@
     {
       "criterion": "psr_cold_trap_overlap",
       "label": "Overlap with a shadowed cold trap",
-      "measured": null,
-      "measured_label": "no horizon computation",
-      "threshold": null,
-      "comparison": null,
+      "measured": 0.0,
+      "measured_label": "candidate area inside PSR",
+      "threshold": 0.0,
+      "comparison": ">",
       "passed": false,
-      "provenance": "UNAVAILABLE",
-      "note": "WITHHELD, not failed. The topography under this test is measured LOLA, but the SHADOW on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. It darkens 77.2 % of the frame, so intersecting anything with it does not discriminate a cold trap -- it only multiplies by a large mask. Until the Phase 2 horizon computation exists, this criterion has no measured value and reports none. It is no longer part of the candidate mask either."
+      "provenance": "MEASURED",
+      "note": "TESTABLE NOW. The frame holds 2,264.2 km² of permanently shadowed terrain (24.24 % of it), from a horizon computation rather than a brightness proxy. This row fails because the CANDIDATE set is empty — no pixel clears CPR — not because there is nowhere cold to look. The two are different findings and this build can now tell them apart. Horizon computation over the full 2533x2533 LOLA polar array at 240 m (80 m posts decimated 3x), swept over 360 azimuths. The solar elevation is computed PER PIXEL from its own latitude and the subsolar band is integrated in closed form; it reaches 15.64 deg at this frame's outer edge, not a flat 1.54 deg. az uniform over 360 deg; subsolar latitude uniform over +/-1.54 deg (the Moon's obliquity). The solar ELEVATION is then computed PER PIXEL from its own latitude by sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H) -- it is not sampled directly, because a fixed el range is correct only at the pole and under-illuminates this frame by up to 4.4x. illumination_fraction is the fraction of SAMPLED SUN STATES in which the point is lit: a geometric visibility fraction, NOT a time-weighted illumination and not a duty cycle. psr_mask (never lit) is independent of that weighting question. READ THIS AS A 240 m QUANTITY however it is displayed: resampling it onto the 25 m grid adds no shadow detail."
     },
     {
       "criterion": "doubly_shadowed_core_overlap",
       "label": "Overlap with a doubly-shadowed core",
-      "measured": null,
-      "measured_label": "no scattered-light term",
-      "threshold": null,
-      "comparison": null,
+      "measured": 0.0,
+      "measured_label": "candidate area inside a doubly-shadowed core",
+      "threshold": 0.0,
+      "comparison": ">",
       "passed": false,
-      "provenance": "UNAVAILABLE",
-      "note": "WITHHELD, not failed. The previous definition was the illumination proxy's shadow intersected with the lowest elevation quintile of the DEM. The quintile is measured LOLA, but an elevation percentile is not a second shadowing event, and the shadow it was intersected with is the proxy. A doubly-shadowed core means never directly lit AND receiving no scattered light from lit terrain; the scattered-light term does not exist in this build. Phase 2."
+      "provenance": "DERIVED",
+      "note": "0.94 km² of this frame is never directly lit AND has no sunlit crest bounding its view in any swept azimuth. Tests the BOUNDING CREST per azimuth, not every cell visible below it, and models no multiple scattering or thermal re-radiation. A floor called doubly shadowed here could still receive some scattered light from lit terrain lying below a dark crest. Fails here because the candidate set is empty, not because no such terrain exists."
     },
     {
       "criterion": "thermal_stability_expected",
       "label": "Thermal stability expected",
-      "measured": null,
-      "measured_label": "no thermal model",
-      "threshold": null,
-      "comparison": null,
+      "measured": 110.0,
+      "measured_label": "inferred ceiling in PSR",
+      "threshold": 110.0,
+      "comparison": "<",
       "passed": false,
-      "provenance": "UNAVAILABLE",
-      "note": "No thermal model and no measured temperature exist in this build. The backend returns this criterion as True whenever the candidate count is non-zero, which is a restatement of the previous row, not an independent temperature test. Reported as unavailable rather than inherited."
+      "provenance": "DERIVED",
+      "note": "INFERRED FROM ILLUMINATION, NOT FROM MEASURED TEMPERATURE. A surface lit in none of the sampled sun states receives no direct solar input, and the water-ice stability limit over geological time is about 110 K. No Diviner or other thermal product is on disk; the 110 K figure is an assumed threshold from the literature. This row follows the PSR-overlap row exactly — it is an inference from the same mask, not an independent temperature test, and it is marked DERIVED for that reason."
     }
   ],
   "volume_tiers": [
@@ -1031,8 +1068,8 @@
       "n": 2,
       "key": "psr",
       "title": "Shadow & PSR",
-      "status": "UNAVAILABLE",
-      "basis": "The topography is measured, but the shadow on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. A PSR area is withheld until the Phase 2 horizon computation replaces the proxy; a number from this model would describe the expression, not the Moon."
+      "status": "COMPLETE",
+      "basis": "Horizon computation over the full 2533x2533 LOLA polar array at 240 m (80 m posts decimated 3x), swept over 360 azimuths. The solar elevation is computed PER PIXEL from its own latitude and the subsolar band is integrated in closed form; it reaches 15.64 deg at this frame's outer edge, not a flat 1.54 deg. az uniform over 360 deg; subsolar latitude uniform over +/-1.54 deg (the Moon's obliquity). The solar ELEVATION is then computed PER PIXEL from its own latitude by sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H) -- it is not sampled directly, because a fixed el range is correct only at the pole and under-illuminates this frame by up to 4.4x. illumination_fraction is the fraction of SAMPLED SUN STATES in which the point is lit: a geometric visibility fraction, NOT a time-weighted illumination and not a duty cycle. psr_mask (never lit) is independent of that weighting question. READ THIS AS A 240 m QUANTITY however it is displayed: resampling it onto the 25 m grid adds no shadow detail."
     },
     {
       "n": 3,
@@ -1171,11 +1208,25 @@
       "dem_min_m": -4246.08056640625,
       "dem_max_m": 1957.373779296875
     },
-    "illumination_modelled": {
-      "psr_px": 11533581,
-      "doubly_px": 2971333,
-      "psr_fraction": 0.7718154529839306,
-      "doubly_fraction": 0.19883856760195306
+    "illumination": {
+      "psr_px": 3622790,
+      "psr_area_km2": 2264.2437500000005,
+      "psr_fraction_of_frame": 0.2424334042406824,
+      "illumination_fraction": {
+        "mean": 0.11442199349403381,
+        "p25": 2.783022318908479e-05,
+        "p50": 0.07482080161571503,
+        "p75": 0.20197199285030365,
+        "p99": 0.4105161130428314,
+        "max": 0.4534801244735718
+      },
+      "sky_view_factor": {
+        "p50": 0.9848706126213074,
+        "min": 0.8445472121238708
+      },
+      "doubly_shadowed_px": 1501,
+      "pixels_without_horizon_coverage": 0,
+      "effective_metres_per_pixel": 240.0
     },
     "screening": {
       "measured_px": 2337086,

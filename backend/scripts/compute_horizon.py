@@ -623,6 +623,12 @@ def main() -> int:
             "(0.06 %) over 25 (cos H, horizon) combinations x 5,000 latitudes."
         ),
         "subsolar_latitude_range_deg": [-SUBSOLAR_LATITUDE_MAX_DEG, SUBSOLAR_LATITUDE_MAX_DEG],
+        # The maximum over the WHOLE POLAR ARRAY, whose outer corner reaches
+        # -75.9 deg. It is NOT the frame's figure — the frame stops at -84.83,
+        # where the maximum is 6.71 deg. Naming the domain in the key because an
+        # elevation without one is the same defect as an area without one.
+        "array_latitude_range_deg": [float(lat_deg.min()), float(lat_deg.max())],
+        "max_solar_elevation_over_array_deg": float(el_at(float(lat_deg.max()))),
         "elevation_range_deg": [0.0, float(el_at(float(lat_deg.max())))],
         "solar_elevation_formula": "sin(el) = sin(lat) sin(dec) + cos(lat) cos(dec) cos(H)",
         "azimuth_approximation": (

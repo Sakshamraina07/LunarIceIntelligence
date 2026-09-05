@@ -289,16 +289,18 @@ maximum elevation of **1.54° + (90° − |φ|)**:
 The DFSAR frame spans −89.263057° to −84.833408°, so the naive model
 under-illuminates it by between 1.6× and 4.4×.
 
-**Measured consequence.** The full sweep was run both ways over the same array:
+**Measured consequence.** The full sweep was run both ways over the same array.
+**Both figures below are over the full 608 × 608 km LOLA array — 369,567 km² —
+which is a diagnostic domain, not this project's scene.** See §5.8 for why that
+distinction is load-bearing.
 
-| sun model | PSR over the 7600² array |
-|---|---|
-| naive, `el ∈ [0°, 1.54°]` for every pixel | 65,398 km² |
-| **per-pixel, `sin(el) = sin φ sin δ + cos φ cos δ cos H`** | **26,900 km²** |
+| sun model | PSR ∩ full array | of 369,567 km² |
+|---|---:|---:|
+| naive, `el ∈ [0°, 1.54°]` for every pixel | 65,398 km² | 17.70 % |
+| **per-pixel, `sin(el) = sin φ sin δ + cos φ cos δ cos H`** | **26,900 km²** | **7.28 %** |
 
-The naive figure is 2.4× the corrected one and 5× the published ~13,000 km²
-south of 80°S (Mazarico et al. 2011). It would have been this phase's headline
-number, and nothing about it would have looked wrong.
+The naive figure is 2.40× the corrected one. It would have been this phase's
+headline number, and nothing about it would have looked wrong.
 
 **Azimuth.** Near the pole the solar azimuth measured from north is `−H` to
 within a fraction of a degree — the exact form
@@ -380,7 +382,222 @@ independently and which was validated separately against ISRO's geolocation grid
 A 240 m block mean cannot reproduce a 25 m crop exactly; the point is that there
 is no *offset*. The control shows a half-pixel error would be caught.
 
+### 5.8 Every PSR area, with the denominator it belongs to
+
+**An area without its domain is as defective as a number without its provenance
+mark.** The horizon runs over the whole polar array; the DFSAR frame is 3.9 % of
+it. Quoting the full-array total as "the PSR area" would state a figure 2.88×
+larger than the entire scene.
+
+`backend/scripts/psr_domains.py` prints all four, and only the last may reach
+`faustini.json`:
+
+| domain | PSR | of domain | % | status |
+|---|---:|---:|---:|---|
+| full 608 × 608 km array | 26,899.6 km² | 369,566.7 km² | 7.28 % | **diagnostic only** |
+| inscribed 80°S circle | 25,848.8 km² | 290,345.3 km² | 8.90 % | the product's nominal coverage |
+| poleward of 87.5°S | 5,474.9 km² | 18,057.4 km² | 30.32 % | Mazarico comparison band |
+| **DFSAR frame** | **2,264.2 km²** | **9,339.7 km²** | **24.24 %** | **the only value in the UI** |
+
+### 5.9 Sanity anchor — Mazarico et al. (2011)
+
+Mazarico et al. (2011, LPI *Lunar Volatiles* abstract 6007) report **3,660 km²**
+of PSR poleward of 87.5°S at 240 m/px, and note explicitly that their figure is
+*larger* than earlier work (2,751 km² for the same band).
+
+| | area poleward of 87.5°S | % of the 18,060 km² band |
+|---|---:|---:|
+| Mazarico et al. 2011, 240 m/px | 3,660 km² | 20.3 % |
+| **this project, 240 m/px** | **5,475 km²** | **30.3 %** |
+| ratio | **1.50×** | |
+
+**We report 50 % more shadow than the published figure, and the direction is
+worth stating rather than explaining away.** Three candidate causes, in the order
+I think they matter:
+
+1. **A point Sun.** This model treats the Sun as a point. Its true angular radius
+   is ~0.25°, which is large next to a ±1.54° subsolar band at grazing incidence.
+   A finite solar disc lights terrain a point source leaves dark, so a point Sun
+   systematically **over**-predicts shadow. This is the most likely single cause
+   and it has the right sign.
+2. **Uniform band weighting.** The subsolar latitude is sampled uniformly over
+   ±1.54°, whereas the real ephemeris does not distribute uniformly. `psr_mask`
+   is *never lit under any state*, so it is insensitive to weighting — but it is
+   sensitive to whether the extreme states are reachable at all.
+3. **An exact-zero definition.** PSR here is `illumination_fraction == 0` with no
+   tolerance. A definition with any threshold above zero returns less area.
+
+Decimation is **not** a candidate: block mean lowers crests and raises floors,
+both of which reduce shadow, so it biases the other way.
+
+The decisive comparison is not this one but §5.10 — against the LOLA team's own
+published PSR raster, on the same grid, pixel for pixel.
+
+### 5.10 External validation — against the LOLA team's own published PSR
+
+Everything above §5.10 is an internal consistency argument: the algorithm matches
+its own brute force, the projection has no offset, the closed form matches
+sampling. **None of that says the shadows are right.**
+
+The LOLA team publishes its own permanently-shadowed masks and average-visibility
+rasters — same instrument, same PDS node, same PDS3 `.IMG` + `.LBL` format, same
+south polar stereographic projection on the same 1737.4 km sphere. So this is not
+an argument. It is a measurement against the instrument team's own product, pixel
+for pixel, with no reprojection.
+
+| product | m/px | role |
+|---|---:|---|
+| `LPSR_75S_120M_201608` | 120 | binary permanent-shadow mask |
+| `AVGVISIB_75S_120M_201608` | 120 | average solar visibility — checks the *continuous* field, not just the mask |
+
+Fetched from **PDS Geosciences** (`pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/
+lrolol_1xxx/extras/illumination/img/`); `imbrium.mit.edu` was unreachable
+throughout this session, including the path that served the DEM. Identical
+products, same 2016 release.
+
+**The mask is resampled nearest-neighbour, never bilinear.** An interpolated
+boolean invents half-shadowed pixels and would quietly improve the very agreement
+it is meant to test. `AVGVISIB` is continuous and is resampled bilinearly.
+
+#### The prediction, stated before looking
+
+> Ours is 80 m posts decimated to 240 m; theirs is 120 m and epoch-specific.
+> Finer topography resolves more small shadows, and this model treats the Sun as
+> a **point** when its angular radius is ~0.25° — large next to a ±1.54° band at
+> grazing incidence. Both bias toward more shadow. **Predicted: we over-call PSR
+> by roughly 1.2–1.6×, with high recall and lower precision.**
+
+#### The result
+
+Confusion matrix over the frame (14,943,444 px):
+
+| | LPSR shadow | LPSR lit |
+|---|---:|---:|
+| **ours shadow** | 2,577,749 | 1,045,041 |
+| **ours lit** | 206,513 | 11,114,141 |
+
+| | |
+|---|---:|
+| our PSR ∩ frame | 2,264.2 km² |
+| their PSR ∩ frame | 1,740.2 km² |
+| **ratio** | **1.301×** |
+| Jaccard (IoU) | 0.6732 |
+| Dice | 0.8047 |
+| precision | 0.7115 |
+| recall | 0.9258 |
+| overall agreement | 0.9162 |
+
+Against `AVGVISIB`, on the continuous field:
+
+| | |
+|---|---:|
+| Pearson r | **0.8925** |
+| rms difference | 0.0890 |
+| least-squares fit | ours = 0.755 × theirs − 0.018 |
+
+**Measured 1.301×, inside the predicted 1.2–1.6× band, in the predicted
+direction, with the predicted shape** — recall 0.926 against precision 0.712, i.e.
+we find nearly all of their shadow and add some of our own. The regression slope
+of 0.755 says the same thing from the other side: we report systematically *less*
+illumination than they do.
+
+Nine out of ten pixels agree. The disagreement is one-sided and its sign was
+predicted from the physics before the comparison was run.
+
+### 5.11 The doubly-shadowed term — computed, and its approximation stated
+
+A doubly-shadowed core is terrain that is **never directly lit** *and* **receives
+no scattered light from lit terrain**. Pass 1 gives the first half. Pass 2
+(`compute_horizon.py --doubly`, a second full sweep) approximates the second:
+
+> For each azimuth, find the crest that forms this point's horizon, and ask
+> whether **that crest** is itself permanently shadowed. A point is doubly
+> shadowed when this holds in **every** azimuth.
+
+The crest mask is rotated with `order=0` (nearest) — a PSR flag is boolean and
+interpolating it would invent half-shadowed crests.
+
+| | |
+|---|---:|
+| doubly shadowed ∩ frame | **0.94 km²** |
+| as a fraction of our PSR ∩ frame | 0.04 % |
+
+**What it captures and what it does not.** It captures the dominant term: a floor
+ringed by rims that are themselves in permanent shadow has no nearby sunlit
+surface to scatter from. It does **not** test every cell visible below each crest,
+and models neither multiple scattering nor thermal re-radiation. So it is marked
+`DERIVED`, not `MEASURED`, and a floor it calls doubly shadowed could still
+receive some scattered light from lit terrain lying below a dark crest.
+
+It is **not** the discarded proxy. That was the brightness proxy's shadow
+intersected with the lowest elevation quintile of the DEM — an elevation
+percentile, which is not a shadowing event.
+
 ---
 
-*Sections 6 (site search), 7 (traverse) and 8 (Stokes derivation) arrive with
+## 6 · The screening thresholds, and whose they are
+
+`CPR_THRESHOLD = 1.00` and `DOP_THRESHOLD = 0.13` are **not** inherited magic
+numbers. They are exactly the published criterion in:
+
+> Sinha, R. K. et al. (2026). *npj Space Exploration* **2**:22.
+> doi:[10.1038/s44453-026-00038-9](https://doi.org/10.1038/s44453-026-00038-9)
+
+which reports crater **F2** inside Faustini at 87.39°S, 82.31°E, ~1.1 km across,
+with peak CPR **1.95** and CPR > 1 over ~47 % of its interior, DOP 0.1–0.13 where
+CPR is elevated, and reads the combination as strong evidence for subsurface ice.
+
+The criterion is **disputed**. Saran et al. (2026, Research Square preprint)
+report mean CPR 1.01 ± 0.3 and DOP 0.32 ± 0.1 for the same feature and attribute
+it to roughness. That is precisely why the thresholds are *cited* rather than
+tuned (PRD §2 rule 4).
+
+### 6.1 We cannot replicate their formula, and do not claim to
+
+Both 2026 papers use **full polarimetry** (HH/HV/VH/VV). These products are
+**hybrid / compact pol** (`_cp_`, channels LH/LV), for which the correct
+formulation is the Stokes one:
+
+```
+CPR = (S0 − S3)/(S0 + S3)        DOP = √(S1² + S2² + S3²)/S0
+```
+
+already implemented in `module_b_radar.compute_cpr_from_stokes()`. This project
+can state which mode it used and why its derivation is the right one for that
+mode. It cannot enter the formula dispute, and must not imply it has.
+
+### 6.2 Does the published detection fall inside our data?
+
+Run through `sar_geometry`'s forward projection — the one validated to 13.2 mm —
+and not by hand:
+
+| question | answer |
+|---|---|
+| F2 projected position | E 78,445.7 m, N 10,592.3 m → frame pixel line 1,120.3, sample 3,676.9 |
+| Inside the 2258 × 6618 frame? | **YES** |
+| Inside ISRO's pointed swath? | **YES — 100 %** of the 1,521-pixel disc |
+| Inside the measured amplitude ribbon? | **No — only 17.09 %** of the disc returned amplitude |
+
+**So F2 was targeted, and this product carries almost no usable signal over it.**
+That is itself a finding: a published detection sits in a part of the swath where
+56 % of the pointed area returned literal zero.
+
+Over the 260 pixels of F2 that *did* return amplitude:
+
+| | mean | median | extreme |
+|---|---:|---:|---:|
+| CPR (amplitude-only) | 0.001442 | 0.000798 | max **0.015383** |
+| DOP | 0.061965 | 0.056468 | min 0.000455 |
+
+Their peak CPR of 1.95 is **127× our maximum** — and **this is not a
+contradiction**. Our CPR is the amplitude-only ratio, which §1 proves cannot
+exceed 0.0042611 wherever DOP < 0.13 and cannot reach 1.95 anywhere by
+construction. Different polarimetric mode, different quantity. The comparison
+becomes meaningful only after Phase 5b recovers true Stokes CPR — at which point
+it becomes a direct test against a specific published claim on a specific 1.1 km
+crater, which is a far stronger position than a general improvement.
+
+---
+
+*Sections 7 (site search), 8 (traverse) and 9 (Stokes derivation) arrive with
 Phases 3, 4 and 5b.*

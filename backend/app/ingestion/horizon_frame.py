@@ -44,6 +44,11 @@ class HorizonProduct:
         self.horizon_min_tan = arrays["horizon_min_tan"]
         self.horizon_max_tan = arrays["horizon_max_tan"]
         self.sky_view_factor = arrays["sky_view_factor"]
+        # Written only when compute_horizon.py ran pass 2 (--doubly). Absent is a
+        # real state: the scattered-light term simply was not computed, and the
+        # single-shadow mask must NOT be substituted for it.
+        self.doubly_shadowed = arrays.get("doubly_shadowed")
+        self.lit_crest_fraction = arrays.get("lit_crest_fraction")
         self.meta = meta
         self.path = npz_path
 
@@ -109,6 +114,22 @@ class HorizonProduct:
 
         # RE-DERIVED, not resampled. See the module docstring.
         out["psr_mask"] = out["illumination_fraction"] == 0.0
+
+        # doubly_shadowed is CATEGORICAL, so it is resampled NEAREST (order=0)
+        # and never bilinearly — an interpolated boolean would invent
+        # half-doubly-shadowed pixels. It cannot be re-derived from a continuous
+        # field the way psr_mask can, because it is not a threshold on one.
+        if self.doubly_shadowed is not None:
+            dbl = map_coordinates(self.doubly_shadowed.astype(np.uint8), coords,
+                                  order=0, mode="nearest")
+            # Intersected with the frame's own PSR: doubly shadowed is a SUBSET
+            # of never-lit by definition, and resampling two masks on slightly
+            # different rules could otherwise let a cell out of that subset.
+            out["doubly_shadowed"] = (dbl > 0) & out["psr_mask"]
+        if self.lit_crest_fraction is not None:
+            out["lit_crest_fraction"] = map_coordinates(
+                self.lit_crest_fraction.astype(np.float64), coords,
+                order=1, mode="nearest").astype(np.float32)
         out["effective_metres_per_pixel"] = self.effective_m
         out["native_metres_per_pixel"] = native
         out["decimation_factor"] = dec

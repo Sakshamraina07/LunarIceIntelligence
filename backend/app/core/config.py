@@ -30,9 +30,36 @@ class Settings(BaseModel):
     HENRY_LABS_BASE_URL: str = os.getenv("HENRY_LABS_BASE_URL", "https://api.heurist.ai/v1")
     HENRY_LABS_MODEL: str = os.getenv("HENRY_LABS_MODEL", "mistralai/mixtral-8x7b-instruct")
 
-    # Scientific Radar Screening Thresholds (Baseline PRD criteria)
-    # CPR: Circular Polarization Ratio (Same-sense to Opposite-sense)
-    # DOP: Degree of Polarization (Polarimetric purity of Stokes vector)
+    # Scientific Radar Screening Thresholds.
+    #
+    # THESE ARE NOT INHERITED MAGIC NUMBERS. They are exactly the published
+    # criterion in:
+    #
+    #     Sinha, R. K. et al. (2026). npj Space Exploration 2:22.
+    #     doi:10.1038/s44453-026-00038-9
+    #
+    # which reports crater F2 inside Faustini (87.39 S, 82.31 E, 1.1 km across)
+    # at peak CPR 1.95 with DOP 0.1-0.13 where CPR is elevated, and reads the
+    # combination as strong evidence for subsurface ice. CPR > 1.0 with a
+    # depressed DOP is the coherent-backscatter opposition effect (CBOE)
+    # signature those thresholds are drawn from.
+    #
+    # ONE DIFFERENCE THAT MATTERS, AND IT IS NOT A DETAIL. Sinha et al. work in
+    # FULL POLARIMETRY (HH/HV/VH/VV). This project's DFSAR products are
+    # HYBRID / COMPACT POL (`_cp_`, channels LH/LV), for which the correct
+    # formulation is the Stokes one,
+    #
+    #     CPR = (S0 - S3) / (S0 + S3)      DOP = sqrt(S1^2 + S2^2 + S3^2) / S0
+    #
+    # already implemented in module_b_radar.compute_cpr_from_stokes(). So this
+    # project CANNOT replicate their formula and must not claim to; it can state
+    # which mode it used and why its derivation is the right one for that mode.
+    #
+    # Saran et al. (2026, Research Square preprint) dispute the same feature,
+    # reporting mean CPR 1.01 +/- 0.3 and DOP 0.32 +/- 0.1, and argue the
+    # signature is better explained by roughness. The thresholds below are the
+    # criterion under dispute, not a settled fact -- which is exactly why they
+    # are cited rather than tuned. See PRD 2 rule 4 and docs/METHODS.md 1.
     CPR_THRESHOLD: float = 1.00
     DOP_THRESHOLD: float = 0.13
 

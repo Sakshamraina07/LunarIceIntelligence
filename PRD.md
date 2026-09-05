@@ -12,6 +12,37 @@ previous sessions. Everything needed is in this file or in the repo.
 
 **Last verified against the working tree:** 2026-09-05.
 
+**Revision v1.7** — **Phase 8 re-framed after a ten-paper review, and this is the
+settled answer on novelty.** The contribution is executing the multi-wavelength radar
+comparison that Fa & Cai (2013) and Virkki & Bhiravarasu (2019) explicitly recommend
+in their conclusions and that Sinha et al. (2026) and Saran et al. (2026) had the data
+for and skipped — on Faustini, the crater those two 2026 papers dispute. Plus a second
+free result: S-band polar coverage is >99% (Fa & Cai) while L-band is sparse strips,
+so the deepest-penetrating radar has the thinnest coverage. Not a priority claim;
+a stated open recommendation, which is why it is safe.
+
+**Revision v1.6** — **Phase 8 rewritten.** v1.5's dual-frequency novelty claim was
+checked against the literature and retracted: it is substantially published, on this
+crater (npj Space Exploration, 6 May 2026), and PSR accessibility/traverse planning
+is well covered too. Phase 8 is now **"Coverage is not evidence"** — an evidential-
+status audit of cold traps, which is a question the detection literature does not ask
+and which only this project's provenance architecture can answer. Also: the paper's
+CPR>1 / DOP<0.13 criterion is now a **citation for config.py's thresholds**, and an
+F2-in-footprint check is added to Phase 5a.
+
+**Revision v1.5** — adds **Phase 8, optional: dual-frequency depth-differential
+scattering**. The bundle contains simultaneous L-band AND S-band products from the
+same pass; their 2:1 penetration-depth ratio is a physically motivated discriminant
+for the ice-vs-roughness ambiguity, testable against the LOLA roughness this project
+already computes independently. Runs after Phase 7, before 5b. 8-12 h, skippable.
+
+**Revision v1.4** — after the Phase 2 interim report. Two changes, both material:
+Gate 2 gains **external validation against LOLA's own published PSR and average-
+illumination products** (same PDS node, same label format) plus a citable sanity
+anchor, and a **domain-discipline rule** — a full-array PSR figure is a diagnostic,
+the UI value is PSR ∩ frame. Phase order changed: **6 and 7 now run before 5b**, so
+the one phase that can fail is not standing between you and a finished product.
+
 **Revision v1.3** — after the Gate 1 report. Phase 1 closed. §2 rule 14 corrected
 (`verify_v8_view.mjs`, not the deleted `verify_map.mjs`). **Phase 5 gains a new
 subsection proving the amplitude-only ice screen is self-contradictory, not merely
@@ -726,10 +757,67 @@ string. Note the string is regex-tested by `MissionMap.tsx:385`
 (`/synthetic|placeholder|analytic|unknown|unavailable/i`) — the new string must
 contain none of those six words or the UI will keep captioning it a placeholder.
 
-**Gate 2** — `PSR AREA` in km²; `illumination_fraction` percentiles; the azimuth
-count and elevation samples used; the decimation factor and effective metres per
-pixel; whether the doubly-shadowed term was computed or emitted absent; and a
-visual check that the PSR mask lands on crater floors, not on a smooth gradient.
+#### External validation against LOLA's own published PSR product (v1.4 — added)
+
+This was not in v1.0–v1.3 and it is now the strongest single piece of evidence
+available to this project. **The LOLA team publishes its own permanently-shadowed
+masks and average-illumination rasters, on the same PDS node the DEM came from,
+in the same `.IMG` + `.LBL` format `ingest_lola_polar_dem.py` already parses.**
+
+`https://imbrium.mit.edu/BROWSE/EXTRAS/ILLUMINATION/`
+
+| product | m/px | coverage | use |
+|---|---|---|---|
+| `LPSR_75S_120M_201608` | 120 | 75°S → pole | **binary PSR mask — covers the whole frame (outer corner −84.833°)** |
+| `AVGVISIB_75S_120M_201608` | 120 | 75°S → pole | average **solar** illumination — validates the *continuous* `illumination_fraction`, not just the mask |
+| `LPSR_85S_060M_201608` | 60 | 85°S → pole | finer, but does **not** reach the frame's outer corner |
+| `LPSR_65S_240M_201608` | 240 | 65°S → pole | coarse fallback |
+
+Take **`LPSR_75S_120M`** and **`AVGVISIB_75S_120M`** (tens of MB each, `.IMG` not
+`.JP2`). Same south polar stereographic projection on the same 1737.4 km sphere,
+so the DFSAR ↔ LPSR mapping is the same scale-and-offset arithmetic
+`verify_projection.py` already validates — no reprojection.
+
+Report three things:
+
+1. **Confusion matrix** of our PSR mask against `LPSR_75S_120M`, over the frame:
+   true positive / false positive / false negative, plus **Jaccard and Dice**.
+   Resample the coarser product to the finer grid with nearest-neighbour, never
+   bilinear — a shadow mask is categorical.
+2. **Correlation** of our `illumination_fraction` against `AVGVISIB_75S_120M`
+   over the frame: Pearson r, rms difference, and a scatter or 2-D histogram.
+3. **A stated expectation before you look.** Agreement will not be 100 % and
+   should not be: their product is 120 m and epoch-specific, ours is 80 m posts
+   with a closed-form subsolar band. Finer topography resolves more small
+   shadows, so **a modest positive bias in our PSR area is expected and
+   defensible; a large one is not.** Say which you got and which way.
+
+If the agreement is good this is the answer to *"how do you know your shadows are
+right?"* — not an argument, a measurement against the instrument team's own
+product. If it is poor, that is a finding worth having before Gate 2 closes
+rather than after submission.
+
+**Sanity anchor, independent of the above.** Mazarico et al. (2011, LPI Volatiles
+abstract 6007) report **3,660 km² of PSR poleward of 87.5°S** at 240 m/px, and
+explicitly note theirs is *larger* than earlier studies (2,751 km² for the same
+band). The 87.5°S circle is 18,060 km², so that is **20.3 %** of it. Clip our own
+mask to poleward of 87.5°S and compare directly against 3,660 km². That is a
+like-for-like number in a citable paper.
+
+**Gate 2** — `PSR AREA` in km², **stated with its domain**; `illumination_fraction`
+percentiles; the azimuth count, the subsolar band and how it is integrated; the
+decimation factor and effective metres per pixel; whether the doubly-shadowed term
+was computed or emitted absent; a visual check that the PSR mask lands on crater
+floors, not on a smooth gradient; **the LPSR confusion matrix and the AVGVISIB
+correlation**; and **the >87.5°S clipped area against Mazarico's 3,660 km²**.
+
+**Domain discipline — do not skip this.** The horizon runs on the full
+608 × 608 km LOLA array (369,664 km²; the inscribed 80°S circle is 290,344 km²),
+but the DFSAR frame is only **9,339.65 km²**. A full-array PSR figure is a
+diagnostic, **not** a UI value — 26,900 km² is 2.88× the entire frame and would be
+nonsense in the analysis JSON. Every PSR area that reaches `faustini.json` must be
+**PSR ∩ frame**, and the report must print both with their denominators beside
+them.
 
 ---
 
@@ -904,6 +992,26 @@ construction.**
    which is why their conjunction is empty. That is the sentence to say in the
    viva.
 
+#### Phase order revision (v1.4) — 6 and 7 now run BEFORE 5b
+
+v1.0–v1.3 ordered `… → 5a → 5b → 6 → 7`. **Change it to `… → 5a → 6 → 7 → 5b`.**
+
+Reason: **5b is the only phase in this plan that can fail to deliver.** It is
+8–14 hours against two 2.17 GB complex products, a slant-range geocoding step and
+a label layout that has to be parsed exactly right, and its honest outcome may
+still be a measured zero. Phase 6 (map clarity, 3–4 h) and Phase 7 (the
+provenance and methods documents, 3–4 h) are short, certain, and are what make
+the project *finished*.
+
+Putting 5b last means a 5b that overruns or fails costs nothing — you already have
+a complete, documented, sharp product with a null ice result explained in closed
+form. Putting 5b before them means a bad week in 5b leaves the map unimproved and
+the documentation unwritten. **Do not let the one uncertain phase stand between
+you and a finished deliverable.**
+
+5a still runs before 6, because it fills the stat cell vacated by P(ice) and takes
+about an hour.
+
 #### 5a · Ship something honest now (¼ session)
 
 Add a **relative** CPR anomaly ranking within the measured swath: top percentiles
@@ -1053,6 +1161,296 @@ asserts corresponds to a statement in §6.
   tolerance 0.0 m if the elevation is not the LOLA product.
 
 ---
+
+### PHASE 8 (v1.7) — The step four papers asked for and nobody took
+
+**Read this before the v1.6 text below, which it supersedes as the headline.**
+A ten-paper review settled the novelty question. The contribution is not a new
+method and not a new detection. It is **executing a step that the radar literature
+has explicitly recommended twice and skipped four times**, on the one crater
+currently under dispute. That framing is citable, it cannot be beaten on priority,
+and it is one sentence to explain.
+
+#### The finding — thirteen years, four papers, two explicit recommendations, zero execution
+
+| paper | year | dual-frequency data in hand? | did it separate bands? |
+|---|---|---|---|
+| Fa & Cai, *JGR Planets* 118, 1582 | 2013 | Mini-RF S **and** X band | **No** — and its conclusions recommend X-band as *"a feasible way"* |
+| Virkki & Bhiravarasu, *JGR Planets* 124, 3025 | 2019 | Mini-RF S **and** C/X band | **No** — and its conclusion states *"constraints obtained using observations at other wavelengths are needed"* |
+| Sinha et al., *npj Space Exploration* 2:22 | 2026 | DFSAR **L and S**, full-pol | **No** — advertises both in the abstract, reports not one band-resolved number |
+| Saran et al., Research Square preprint | 2026 | DFSAR **L and S** | **No** — even though its own proposed discriminator (coherent backscatter) is wavelength-dependent |
+
+**Two papers asked for it. Two more had the data and did not do it.** This project
+has simultaneous L-band and S-band from a single DFSAR pass over **Faustini** —
+the exact crater the 2026 dispute is about.
+
+#### Why nobody did it — and this is the second, free contribution
+
+Fa & Cai (2013) state, verbatim: *"Mini-RF coverage ratio is **>99% for the polar
+region (with latitude > 80°)**, which is much larger than that of the equatorial
+region with a value of 66% on average."*
+
+So **S-band coverage of the pole is essentially complete.** DFSAR **L-band**
+coverage is narrow, discontinuous strips — plainly visible in Saran et al.'s own
+Figure 1, and **quantified by nobody**. Sinha et al. say only *"Radar data are
+unavailable for one of the doubly shadowed craters (crater F4)."*
+
+That gives a one-sentence result worth stating on its own:
+
+> **The deepest-penetrating radar has the thinnest coverage.** L-band, which
+> reaches 2.0–5.8 m into dry regolith against S-band's 1.0–2.9 m, images only a
+> small fraction of the polar cap that S-band covers almost completely — so the
+> depth comparison is possible only in the few places where both exist, and this
+> frame is one of them.
+
+That both motivates Phase 8 and explains why the step has gone untaken.
+
+#### The live dispute this lands in
+
+The two 2026 papers disagree about the same crater by a factor of two:
+
+| | Sinha et al. 2026 | Saran et al. 2026 |
+|---|---|---|
+| F2 CPR | peak **1.95**, 47 % of interior pixels > 1 | mean **1.01 ± 0.3** |
+| F2 DOP | **0.1–0.13** where CPR elevated | mean **0.32 ± 0.1** |
+| verdict | *"Strong evidence"* for subsurface ice | *"better explained by roughness-induced changes"* |
+
+Saran et al. further argue Sinha's CPR formula *"only applies to the special case
+of dihedral scatterers where there are no cross-pol (HV/VH) components, and is
+uncommon for natural surfaces"*, and that low DOP is the **wrong** sign for thick
+clean ice, since coherent backscatter should drive DOP **up**, not down. They then
+prescribe an evidence standard — *"strong radar linear and circular polarization
+ratios, and enhanced DOP values, along with a high degree of correlation between
+radar-bright features and regions of permanent shadow"* — **and do not compute
+that correlation themselves.**
+
+**Note the pol-mode difference before building.** Both 2026 papers use
+**full-pol** (HH/HV/VH/VV). This project's products are **hybrid/compact pol**
+(`_cp_`, channels LH/LV), where the Stokes formulation
+`CPR = (S0 − S3)/(S0 + S3)` is the standard and correct one — already implemented
+in `module_b_radar.compute_cpr_from_stokes()`. So the project **cannot** replicate
+the formula dispute directly, and must not claim to. It can state which mode it
+used and why its derivation is the correct one for that mode.
+
+#### What to build — unchanged in substance from v1.6, changed in framing
+
+1. **Ingest S-band** through the existing path; parse S-band's own calibration and
+   incidence from its own label.
+2. **Compute both bands' quantities over the amplitude mask**, and emit the
+   **L−S differential** as a per-pixel layer. Do not call the amplitude quantity
+   CPR (Phase 5's ceiling proof).
+3. **Regress the differential against the independent LOLA roughness field** —
+   stating first that LOLA roughness is a *decametre-scale proxy* for the
+   centimetre-scale roughness that drives depolarisation.
+4. **Stratify by the Phase 2 PSR mask** — do pixels inside PSRs differ at matched
+   roughness?
+5. **Quantify the L-band coverage gap**: PSR area with S-band coverage vs L-band
+   coverage vs neither. This is the "coverage is not evidence" work below, now
+   correctly scoped to **L-band**, since Fa & Cai settle S-band at >99 %.
+
+**Cost 8–12 h.** Run after Phase 7, before 5b. If 5b lands, redo with true Stokes
+at both bands — that is the strong version.
+
+#### One sentence for the viva
+
+> *"Two papers recommended a multi-wavelength radar comparison and did not do it.
+> Two more had dual-frequency data and reported neither band separately. I did it,
+> on the crater those two 2026 papers are arguing about, and I first measured why
+> nobody had: the L-band coverage that makes it possible barely exists."*
+
+---
+
+### PHASE 8 (v1.6 text, retained) — "Coverage is not evidence": an evidential-status audit of cold traps under DFSAR (6–9 h)
+
+**v1.6 supersedes v1.5's framing of this phase.** v1.5 pitched the dual-frequency
+L/S differential as novel. A literature check — which v1.5 told you to run and
+did not run itself — found it substantially published, on this crater:
+[npj Space Exploration, 6 May 2026](https://www.nature.com/articles/s44453-026-00038-9)
+studies nine doubly-shadowed craters including F1/F2/F3 **inside Faustini**, using
+DFSAR full-pol L- and S-band, with the criterion **CPR > 1 and DOP < 0.13** — the
+exact constants in `config.py`. Accessibility and traverse planning to PSRs is
+likewise well covered (Cannon & Britt 2020; Frontiers 2026 on 31 priority PSRs;
+Wueller 2026 JGR Planets). **Neither is this project's novelty. Cite both; claim
+neither.**
+
+#### What IS this project's own contribution
+
+Not a detection, and not a method — a **question the detection literature does not
+ask, which this architecture is uniquely able to answer**:
+
+> **What does the DFSAR archive actually permit anyone to say about a given cold
+> trap — and about which cold traps does it permit nothing?**
+
+The detection papers report ice signatures in the craters they examined. Nobody
+publishes the **denominator**. This project can, because it carries three distinct
+spatial masks at matched resolution plus an independently computed PSR mask, and
+because every pixel already knows its own evidential status.
+
+**Three failure modes, all measured here, that "covered by a radar swath" hides:**
+
+1. **Never pointed.** Outside the ISRO `sri_ma` footprint entirely — 64.4 % of
+   this frame.
+2. **Pointed but silent.** Inside the pointed swath, no amplitude returned. This
+   project's own measurement: `amplitude / footprint = 0.438927`, i.e. **56.1 % of
+   the ground DFSAR actually illuminated in this pass returned no usable signal.**
+   That number is striking, it is yours, and nobody publishes it.
+3. **Measured but below the product's algebraic ceiling.** Even where amplitude
+   exists, the distributed `sri`/`gri` amplitude products **cannot** reach the
+   published criterion — see Phase 5: `DOP < 0.13` caps `CPR_amp` at **0.0042610**,
+   235× below the threshold. So a cold trap can sit in a fully measured swath and
+   still be **unscreenable with the products most users will reach for.**
+
+#### What to build
+
+For each connected component of the Phase 2 PSR mask within the frame, emit:
+area; the fraction of that area in each of the three states above; within the
+measured fraction, the CPR/DOP statistics and the explicit
+`screenable_with_this_product: false` with the ceiling as its reason; and distance
+to the nearest measured pixel.
+
+Deliverables: a table of N cold traps with evidential status, a **map layer
+coloured by evidential status** (not by signal), and one headline sentence of the
+form —
+
+> *Of N cold traps in this frame totalling X km², M % of their combined area has
+> never been pointed at by DFSAR, P % was pointed but returned no signal, and
+> **0 % is screenable against the published CPR > 1 / DOP < 0.13 criterion using
+> the distributed amplitude products.***
+
+**Optional regional extension, if PRADAN publishes swath footprint metadata:**
+repeat the audit over all polar DFSAR passes using footprints alone — no bulk
+download. Confirm the metadata exists before promising this.
+
+#### Calibrate the claim honestly
+
+This is a **framing and quantification** contribution, not a new method and not a
+new detection. That is the correct size for a final-year project, and it is
+defensible precisely because it does not overreach. Say "we derive and quantify",
+never "we discovered".
+
+**Before claiming leg 3 or the coverage framing, run the literature check.** A
+search for radar-coverage completeness of lunar PSRs returned no direct prior
+work, but *absence of a search hit is weak evidence*. Look properly, and if prior
+work exists, cite it and position as extension. That instruction cost this
+document one retraction already.
+
+#### Why the honesty architecture is the enabling capability
+
+Worth stating in the report, because it reframes what looked like mere
+engineering: this audit is **only** computable because the pipeline marks
+provenance per value and carries the two coverage masks separately from the signal.
+A conventional pipeline that renders CPR and stops cannot produce it — it has
+thrown away the distinction between "zero" and "never looked". **The provenance
+discipline is not scaffolding around the science. It is the instrument that makes
+this particular result possible.**
+
+#### Superseded — the dual-frequency differential
+
+Still worth doing as a **replication with one extension**, if time allows after
+the above: the L−S differential as a *per-pixel map* regressed against the
+independent LOLA roughness field, where the published work uses per-crater
+aggregates with depth-to-diameter and ShadowCam boulders. **Read the paper's
+methods section before asserting that gap exists.** The physics stands either way:
+penetration depth goes as λ, giving L-band 2.0–5.8 m against S-band 1.0–2.9 m — a
+2:1 ratio set by wavelength alone — and because both bands share one pass, the
+incidence and geometry terms cancel exactly. Both product sets are on disk
+(`ncxl` and `ncxs`, identical timestamp and byte sizes; verify from the labels).
+Do not call the amplitude quantity CPR.
+
+#### Immediate high-value check, do this in Phase 5a
+
+The npj paper's crater **F2 is centred 87.39°S, 82.31°E**, 1.1 km across, inside
+Faustini, with **max CPR 1.95 over ~47 % of its interior**. That is ~79 km from
+the pole; this frame's projected bbox spans easting −13.5 … +152 km and northing
+−17.8 … +38.6 km, so it is **plausibly inside**. Run it through
+`sar_geometry`'s validated forward projection — not by hand — and report whether
+F2 falls inside the frame, and separately whether it falls inside the **amplitude
+ribbon** (15.6 % of the frame). If it does, the null result becomes directly
+comparable to a published positive, and Phase 5b's value stops being theoretical.
+
+#### The finding this rests on
+
+`data/pradan/raw/data/calibrated/20200808/` contains **two** complete product
+sets, not one:
+
+```
+ch2_sar_ncxl_20200808t201154198_...    L-band, ~1.25 GHz, lambda 24 cm
+ch2_sar_ncxs_20200808t201154198_...    S-band, ~2.50 GHz, lambda 12 cm
+```
+
+**Identical timestamp, identical orbit, identical byte sizes** (`sri` LH/LV
+29,905,588 each; `sri_in` 59,792,476 each; `sri_ma` 14,962,144 each). DFSAR is one
+of very few planetary radars that acquires both frequencies **simultaneously**, so
+these are the same ground pixels, the same incidence angle, the same epoch, the
+same speckle realisation geometry. **Verify this from the two labels before
+building on it** — do not take it from this document.
+
+#### Why it matters — it attacks the field's actual open problem
+
+The unresolved question in lunar polar radar is not "is CPR high?" It is
+**"is high CPR ice, or is it surface roughness and blocky ejecta?"** That
+ambiguity is why Mini-RF results were contested for a decade. A single-frequency
+instrument cannot separate the two.
+
+Two frequencies can, because the two mechanisms scale with wavelength differently:
+
+- **Penetration depth** goes as lambda. Computed for dry regolith
+  (`delta = lambda / (2*pi*sqrt(eps')*tan_delta)`), with `eps' = 2.7–3.5`,
+  `tan_delta = 0.004–0.010`: **L-band 2.0–5.8 m, S-band 1.0–2.9 m — a clean 2:1
+  ratio set by wavelength alone.** L and S therefore sample *different depths of
+  the same column*.
+- **Surface/roughness scattering** depends on roughness relative to wavelength, so
+  a surface that is electrically rough at 12 cm can be smoother at 24 cm. Blocky,
+  cm-to-decimetre roughness depolarises S more than L.
+- **Volume scattering** from buried inclusions depends on penetration, so a
+  subsurface volatile-bearing layer weights toward L.
+
+**So the sign of the L-minus-S differential is a physically motivated
+discriminant**, and — because both bands share one pass — the geometric and
+incidence terms cancel exactly rather than approximately. That cancellation is the
+methodological advantage, and it is rare.
+
+#### What to build
+
+1. **Ingest S-band through the existing path.** Same code, one product id. Parse
+   S-band's *own* calibration constants and incidence from its *own* label — never
+   reuse L-band's.
+2. **Compute per pixel, over the amplitude mask, at both bands:** calibrated
+   `sigma0_total`, and the channel ratio. **Do not call the amplitude quantity
+   CPR** — Phase 5 proves it is a reparameterised channel imbalance. Name it what
+   it is. If 5b lands, redo this with true Stokes at both bands; that is the
+   strong version.
+3. **Emit the differentials as layers:** `sigma0_L / sigma0_S` and the
+   channel-ratio difference, with the same stretch, mask and provenance discipline
+   as every other layer.
+4. **The falsifiable test — this is the contribution.** Regress the differential
+   against **LOLA-derived roughness**, which you already compute independently and
+   which is not radar-derived. Almost no CPR study has an independent roughness
+   measurement at matching resolution; you do.
+   - **State honestly that LOLA roughness (5x5 elevation std at 25 m posts) is a
+     decametre-scale proxy for the centimetre-scale roughness that actually drives
+     depolarisation.** They correlate because blocky terrain is rough at both
+     scales, but they are not the same quantity. Report the correlation
+     coefficient whatever it is, including if it is weak. **That caveat, stated
+     first, is what makes the result credible rather than overclaimed.**
+5. **The payoff analysis — stratify by shadow.** Using the Phase 2 PSR mask, ask:
+   **do pixels inside PSRs show a different L/S signature than pixels outside PSRs
+   at matched LOLA roughness?** Report as a stratified comparison with counts,
+   medians, and a distribution overlap statistic per roughness bin.
+
+#### Every outcome is publishable, which is why this is safe to attempt
+
+| result | what it means |
+|---|---|
+| differential tracks roughness, no PSR effect | the swath's scattering is roughness-dominated — **a direct, measured contribution to the ice-vs-roughness debate for this frame** |
+| PSR effect survives at matched roughness | a genuine anomaly worth naming, stated as an anomaly and not as a detection |
+| no structure in either | the frame is homogeneous at these wavelengths — still a measured null, with the discriminant's sensitivity quantified |
+
+**Gate 8** — verification that L and S share a grid, epoch and geometry, from the
+labels; both calibrations, parsed separately; the two differential layers with
+percentiles; the roughness regression with its scale caveat stated first; the
+PSR-stratified comparison with per-bin counts; and a plain statement of which of
+the three outcomes above was observed.
 
 ## 5 · Out of scope — do not start these
 

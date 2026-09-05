@@ -1,0 +1,42 @@
+{
+  "target": {
+    "name": "F2",
+    "lat_deg": -87.39,
+    "lon_deg": 82.31,
+    "diameter_km": 1.1,
+    "published_peak_cpr": 1.95,
+    "published_fraction_cpr_gt_1": 0.47
+  },
+  "citation": "Sinha et al. 2026, npj Space Exploration 2:22, doi:10.1038/s44453-026-00038-9",
+  "projection": "app/ingestion/sar_geometry forward transform, validated to 13.2 mm",
+  "projected_xy_m": [
+    78445.73464673692,
+    10592.338131916786
+  ],
+  "frame_pixel": {
+    "line": 1120.2592294833287,
+    "sample": 3676.880851229477
+  },
+  "inside_frame": true,
+  "disc_pixels": 1521,
+  "centre_in_amplitude": false,
+  "centre_in_pointed_swath": true,
+  "disc_amplitude_fraction": 0.17094017094017094,
+  "disc_pointed_fraction": 1.0,
+  "measured_over_covered_part": {
+    "pixels": 260,
+    "fraction_of_crater": 0.17094017094017094,
+    "cpr_amplitude_only": {
+      "mean": 0.0014421329833567142,
+      "median": 0.000798424705862999,
+      "max": 0.015383257530629635
+    },
+    "dop": {
+      "mean": 0.06196494400501251,
+      "median": 0.05646766722202301,
+      "min": 0.00045494557707570493
+    },
+    "caveat": "amplitude-only CPR, algebraically capped at 0.0042611 where DOP < 0.13 (docs/METHODS.md 1); hybrid/compact pol against their full-pol. NOT comparable to their 1.95 until Phase 5b."
+  },
+  "verdict": "pointed_but_no_amplitude"
+}

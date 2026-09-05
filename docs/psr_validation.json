@@ -1,0 +1,38 @@
+{
+  "generated_by": "backend/scripts/validate_psr_vs_lola.py",
+  "reference_products": {
+    "psr": "LPSR_75S_120M_201608",
+    "illumination": "AVGVISIB_75S_120M_201608",
+    "source": "PDS Geosciences Node, lro-l-lola-3-rdr-v1/lrolol_1xxx/extras/illumination/img/ (imbrium.mit.edu was unreachable)",
+    "resample": "PSR nearest-neighbour (categorical); AVGVISIB bilinear (continuous)"
+  },
+  "ours": {
+    "psr_km2": 2264.24375,
+    "effective_metres_per_pixel": 240.0,
+    "azimuths": 360
+  },
+  "theirs": {
+    "psr_km2": 1740.16375,
+    "metres_per_pixel": 120.0
+  },
+  "confusion": {
+    "tp": 2577749,
+    "fp": 1045041,
+    "fn": 206513,
+    "tn": 11114141
+  },
+  "jaccard": 0.6731640196662422,
+  "dice": 0.8046599278420091,
+  "precision": 0.7115369646046279,
+  "recall": 0.9258284601089983,
+  "area_ratio_ours_over_theirs": 1.3011670597091796,
+  "avgvisib": {
+    "pearson_r": 0.8925249571390163,
+    "rms": 0.08895501088470593,
+    "fit_ours_vs_theirs": {
+      "slope": 0.7546371624827543,
+      "intercept": -0.017662461663113443
+    }
+  },
+  "prediction": "modest positive bias 1.2-1.6x, high recall and lower precision, stated before looking"
+}

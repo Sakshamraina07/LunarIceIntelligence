@@ -25,7 +25,7 @@ is marked `MODELLED`, or if an absent value carries no reason.
 | Frame | 2258 × 6618 @ 25 m/px = 9,340 km² |
 | Measured swath | 1,460.68 km² (15.640 % of frame) — every MEASURED radar figure uses this mask only |
 | Thresholds | CPR > 1, DOP < 0.13 — read from backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, MAX_TRAVERSABLE_SLOPE_DEG, CRITICAL_LANDING_SLOPE_DEG), **not retuned** |
-| Generated | 2026-09-05T18:49:02.865319+00:00 |
+| Generated | 2026-09-05T18:57:34.356071+00:00 |
 
 ## Mark counts
 
@@ -119,6 +119,34 @@ was an extrapolation from fabricated examples. It is unwired, not retrained.
 > 1 of 2 criteria that can be evaluated in this build passed. The other 3 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.
 
 > **This is a NULL RESULT on an incomplete measurement, not evidence against ice. Peak CPR in the swath is 0.0534 against a 1.00 threshold — the product cannot reach it, because this build derives CPR from amplitude alone. The Stokes S3 phase term from the complex sli products is required before this scene can be screened at all.**
+
+---
+
+## Why the ice screen is empty — an identity, not a measurement
+
+This build forms both polarimetric quantities from the same two smoothed
+amplitudes, so with `x = ln(lh/lv)`:
+
+```
+cpr = tanh(x/4)**2   dop = |tanh(x/2)|
+=>  cpr = tanh(artanh(dop) / 2)**2
+```
+
+They are not two observables — they are **two reparameterisations of one**
+**channel ratio**, 1 degree of freedom between them. So `DOP < 0.13` places a hard
+ceiling on achievable CPR:
+
+| | |
+|---|---|
+| Ceiling implied by the DOP gate | **CPR < 0.0042611** |
+| Highest CPR observed where DOP passes | 0.0042611 |
+| Configured `CPR_THRESHOLD` | 1 — **235× the ceiling** |
+| Identity verified over | 2,337,086 pixels |
+| max\|residual\| · rms · Pearson r | 1.241e-06 · 8.025e-09 · 0.999999999994 |
+
+No pixel with DOP < 0.13 can exhibit CPR > 0.0042611, whatever the terrain and whatever the instrument. The configured CPR_THRESHOLD of 1 is 235x above that ceiling, so this screen is LOGICALLY EMPTY, not merely unsatisfied. A candidate area of exactly 0.0 is the only arithmetically possible answer, and a non-zero value here would be a bug rather than a detection.
+
+The true Stokes forms are built from DIFFERENT combinations of the four Stokes parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so they are genuinely independent and their conjunction selects a real population. The amplitude proxy's defect is not that it is small: it collapses two independent physical observables onto one degree of freedom. Phase 5b.
 
 ---
 

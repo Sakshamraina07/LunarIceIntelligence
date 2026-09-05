@@ -1,9 +1,4 @@
-# v0 sandbox internal files
-__v0_runtime_loader.js
-__v0_devtools.tsx
-__v0_jsx-dev-runtime.ts
-.snowflake/
-.v0-trash/
+# Deployment
 .vercel/
 
 # Environment variables
@@ -13,7 +8,6 @@ __v0_jsx-dev-runtime.ts
 
 # Common ignores
 node_modules
-.next/
 .DS_Store
 # Large raw data — not for GitHub (9GB Chandrayaan SAR)
 # Large raw SAR dataset at repo root only (9GB) — NOT app source dirs like frontend/src/landing/data

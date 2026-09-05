@@ -1098,6 +1098,70 @@ def build(crater_id: str = "faustini") -> dict:
             "behind them, three of them stamped is_synthetic_evaluation=False; it was deleted in "
             "Phase 0.")),
     }
+    # ------------------------------------------------- the CPR/DOP identity
+    # Emitted as DATA, not prose, so emit_provenance.py can assert on it and so
+    # the UI can state the reason the screen is empty rather than just showing a
+    # zero. See docs/METHODS.md for the derivation.
+    #
+    # This build forms both quantities from the same two smoothed amplitudes:
+    #     cpr = ((sqrt(lh) - sqrt(lv)) / (sqrt(lh) + sqrt(lv)))^2 = tanh^2(x/4)
+    #     dop = |lh - lv| / (lh + lv)                             = |tanh(x/2)|
+    # with x = ln(lh/lv). They are two reparameterisations of ONE channel ratio,
+    # so cpr is a strictly increasing function of dop and the conjunction
+    # "cpr > a AND dop < b" is empty for every a above the ceiling below.
+    ceiling = float(np.tanh(2.0 * np.arctanh(dop_th) / 4.0) ** 2) if dop_th < 1.0 else 1.0
+    with np.errstate(divide="ignore", invalid="ignore"):
+        d_ok = dop[valid].astype(np.float64)
+        m = d_ok < 1.0
+        predicted = np.tanh(np.arctanh(np.clip(d_ok[m], 0.0, 1.0 - 1e-12)) / 2.0) ** 2
+        residual = predicted - cpr[valid].astype(np.float64)[m]
+    identity = {
+        "applies_when": "cpr_source == 'amplitude-only'",
+        "cpr_source": "amplitude-only",
+        "cpr_expression": "((sqrt(lh) - sqrt(lv)) / (sqrt(lh) + sqrt(lv)))**2",
+        "dop_expression": "|lh - lv| / (lh + lv)",
+        "single_variable": "x = ln(lh / lv)",
+        "cpr_of_x": "tanh(x/4)**2",
+        "dop_of_x": "|tanh(x/2)|",
+        "cpr_from_dop": "tanh(artanh(dop) / 2)**2",
+        "degrees_of_freedom": 1,
+        "dop_threshold": dop_th,
+        "implied_cpr_ceiling": ceiling,
+        "verified_over_pixels": int(m.sum()),
+        "max_abs_residual": float(np.abs(residual).max()),
+        "rms_residual": float(np.sqrt((residual ** 2).mean())),
+        "pearson_r": float(np.corrcoef(predicted, cpr[valid].astype(np.float64)[m])[0, 1]),
+        "max_cpr_where_dop_passes": float(cpr[valid][dop[valid] < dop_th].max())
+        if int((dop[valid] < dop_th).sum()) else None,
+        "screen_is_empty_by_construction": bool(cpr_th > ceiling),
+        "threshold_over_ceiling_ratio": float(cpr_th / ceiling) if ceiling > 0 else None,
+        "consequence": (
+            f"No pixel with DOP < {dop_th:g} can exhibit CPR > {ceiling:.7f}, whatever the terrain "
+            f"and whatever the instrument. The configured CPR_THRESHOLD of {cpr_th:g} is "
+            f"{cpr_th / ceiling:.0f}x above that ceiling, so this screen is LOGICALLY EMPTY, not "
+            "merely unsatisfied. A candidate area of exactly 0.0 is the only arithmetically "
+            "possible answer, and a non-zero value here would be a bug rather than a detection."
+        ),
+        "what_fixes_it": (
+            "The true Stokes forms are built from DIFFERENT combinations of the four Stokes "
+            "parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so "
+            "they are genuinely independent and their conjunction selects a real population. The "
+            "amplitude proxy's defect is not that it is small: it collapses two independent "
+            "physical observables onto one degree of freedom. Phase 5b."
+        ),
+    }
+    doc["cpr_dop_identity"] = identity
+
+    hr("CPR/DOP IDENTITY -- the screen is empty by construction, not by measurement")
+    print(f"  cpr = tanh^2(x/4), dop = |tanh(x/2)|, x = ln(lh/lv)  ->  ONE degree of freedom")
+    print(f"  cpr = tanh^2(artanh(dop)/2)  verified over {identity['verified_over_pixels']:,} px:")
+    print(f"      max|residual| {identity['max_abs_residual']:.3e}   "
+          f"rms {identity['rms_residual']:.3e}   pearson r {identity['pearson_r']:.12f}")
+    print(f"  DOP < {dop_th:g}  =>  CPR < {ceiling:.7f}"
+          f"   (observed max where DOP passes: {identity['max_cpr_where_dop_passes']:.7f})")
+    print(f"  CPR_THRESHOLD {cpr_th:g} is {cpr_th / ceiling:.0f}x the ceiling"
+          f"  ->  screen empty by construction: {identity['screen_is_empty_by_construction']}")
+
     doc["evidence"] = evidence
     doc["volume_tiers"] = volume_tiers
     doc["sensitivity"] = sensitivity

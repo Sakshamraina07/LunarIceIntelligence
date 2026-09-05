@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-05T18:49:02.865319+00:00",
+  "generated_utc": "2026-09-05T18:57:34.356071+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -471,6 +471,28 @@
       "provenance": "UNAVAILABLE",
       "reason": "A real ablation reruns the planner with each hazard weight zeroed in turn and reports the measured deltas in distance, mean hazard and max slope. It needs the Phase 4 planner. The previous experiments_runner.py returned four hand-written experiments with no computation behind them, three of them stamped is_synthetic_evaluation=False; it was deleted in Phase 0."
     }
+  },
+  "cpr_dop_identity": {
+    "applies_when": "cpr_source == 'amplitude-only'",
+    "cpr_source": "amplitude-only",
+    "cpr_expression": "((sqrt(lh) - sqrt(lv)) / (sqrt(lh) + sqrt(lv)))**2",
+    "dop_expression": "|lh - lv| / (lh + lv)",
+    "single_variable": "x = ln(lh / lv)",
+    "cpr_of_x": "tanh(x/4)**2",
+    "dop_of_x": "|tanh(x/2)|",
+    "cpr_from_dop": "tanh(artanh(dop) / 2)**2",
+    "degrees_of_freedom": 1,
+    "dop_threshold": 0.13,
+    "implied_cpr_ceiling": 0.004261082862785302,
+    "verified_over_pixels": 2337086,
+    "max_abs_residual": 1.2414956257877224e-06,
+    "rms_residual": 8.025280870672378e-09,
+    "pearson_r": 0.9999999999935325,
+    "max_cpr_where_dop_passes": 0.004261057358235121,
+    "screen_is_empty_by_construction": true,
+    "threshold_over_ceiling_ratio": 234.68212944968158,
+    "consequence": "No pixel with DOP < 0.13 can exhibit CPR > 0.0042611, whatever the terrain and whatever the instrument. The configured CPR_THRESHOLD of 1 is 235x above that ceiling, so this screen is LOGICALLY EMPTY, not merely unsatisfied. A candidate area of exactly 0.0 is the only arithmetically possible answer, and a non-zero value here would be a bug rather than a detection.",
+    "what_fixes_it": "The true Stokes forms are built from DIFFERENT combinations of the four Stokes parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so they are genuinely independent and their conjunction selects a real population. The amplitude proxy's defect is not that it is small: it collapses two independent physical observables onto one degree of freedom. Phase 5b."
   },
   "evidence": [
     {

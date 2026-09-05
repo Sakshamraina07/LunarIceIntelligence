@@ -97,62 +97,24 @@ def estimate_ice_volume(
     )
 
 
-def run_sensitivity_sweep(
-    parameter_name: str,
-    base_candidate_area_km2: float,
-    sweep_values: Optional[List[float]] = None
-) -> SensitivityAnalysisResult:
-    """
-    Simulates parameter sensitivity sweeps for PRD Section 20.
-    """
-    if parameter_name == "cpr_threshold":
-        baseline = settings.CPR_THRESHOLD
-        values = sweep_values or [0.7, 0.85, 1.0, 1.15, 1.3, 1.5]
-        summary = "Higher CPR threshold restricts screening to pure CBOE cores, reducing total candidate area."
-    elif parameter_name == "dop_threshold":
-        baseline = settings.DOP_THRESHOLD
-        values = sweep_values or [0.08, 0.10, 0.13, 0.16, 0.20]
-        summary = "Higher DOP threshold permits less depolarized terrain, expanding the candidate area."
-    elif parameter_name == "assumed_depth_m":
-        baseline = settings.DEFAULT_ICE_DEPTH_M
-        values = sweep_values or [1.0, 3.0, 5.0, 8.0, 12.0]
-        summary = "Ice volume scales linearly with assumed deposit depth."
-    else:  # ice_fraction
-        baseline = settings.DEFAULT_ICE_FRACTION
-        values = sweep_values or [0.05, 0.10, 0.15, 0.20, 0.30]
-        summary = "Ice volume scales linearly with regolith pore ice volumetric fraction."
-
-    points: List[SensitivityPoint] = []
-    for val in values:
-        if parameter_name == "cpr_threshold":
-            scale = max(0.2, 1.0 - (val - 1.0) * 0.8)
-            area = base_candidate_area_km2 * scale
-            vol = area * 1e6 * settings.DEFAULT_ICE_DEPTH_M * settings.DEFAULT_ICE_FRACTION
-        elif parameter_name == "dop_threshold":
-            scale = max(0.3, 1.0 + (val - 0.13) * 3.0)
-            area = base_candidate_area_km2 * scale
-            vol = area * 1e6 * settings.DEFAULT_ICE_DEPTH_M * settings.DEFAULT_ICE_FRACTION
-        elif parameter_name == "assumed_depth_m":
-            area = base_candidate_area_km2
-            vol = area * 1e6 * val * settings.DEFAULT_ICE_FRACTION
-        else:
-            area = base_candidate_area_km2
-            vol = area * 1e6 * settings.DEFAULT_ICE_DEPTH_M * val
-
-        points.append(SensitivityPoint(
-            parameter_name=parameter_name,
-            parameter_value=round(val, 3),
-            candidate_ice_area_km2=round(area, 2),
-            expected_volume_m3=round(vol, 0),
-            best_landing_site_id="site_1",
-            rover_distance_km=round(11.2 + (val * 0.1), 2),
-            rover_energy_wh=round(145.0 + (val * 2.5), 1)
-        ))
-
-    return SensitivityAnalysisResult(
-        parameter_tested=parameter_name,
-        baseline_value=baseline,
-        sweep_values=values,
-        results=points,
-        sensitivity_summary=summary
-    )
+# run_sensitivity_sweep() WAS HERE. Deleted in PRD Phase 1B.
+#
+# It computed nothing. The whole "sweep" was three closed-form scalings of a
+# single baseline number handed in by the caller:
+#
+#     cpr_threshold:  scale = max(0.2, 1.0 - (val - 1.0) * 0.8)
+#     dop_threshold:  scale = max(0.3, 1.0 + (val - 0.13) * 3.0)
+#     area = base_candidate_area_km2 * scale
+#
+# No raster was read, so no threshold was ever actually applied to any data.
+# The remaining three columns were worse: best_landing_site_id was the string
+# "site_1" at every row, rover_distance_km was 11.2 + val * 0.1 and
+# rover_energy_wh was 145.0 + val * 2.5 -- straight lines through the swept
+# parameter, presented as a replanned traverse. The endpoint's default
+# base_area_km2 was 8.75, a number with no origin anywhere in this project.
+#
+# The real sweep is computed offline by backend/scripts/build_analysis.py
+# (sweep_threshold / sweep_assumption): it re-thresholds the native 25 m/px
+# arrays and counts pixels, so every area column is a measurement. It ships in
+# frontend/public/analysis/<crater>.json under "sensitivity", and
+# GET /api/sensitivity/{param} now serves that table rather than inventing one.

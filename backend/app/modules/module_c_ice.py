@@ -1,8 +1,46 @@
 """
-MODULE C: Ice Intelligence (Scientific Baseline + ML Ice-Likelihood Model).
-PRD Compliance: Combines multi-criteria scientific screening (CPR > th AND DOP < th AND PSR overlap)
-with an explainable Random Forest ML model. Adheres strictly to the PRD Data Limitation Rule:
-Never fabricates ground truth or unverified accuracy claims.
+MODULE C -- UNWIRED IN PRD PHASE 1C. NOTHING IMPORTS THIS FILE.
+
+The live implementation is `module_c_screen.screen_ice_criteria`, which keeps
+the measured two-criterion screen and drops the classifier below.
+
+WHY THIS MODEL WAS WITHDRAWN RATHER THAN RETRAINED
+--------------------------------------------------
+`train_prototype_model()` fits a RandomForestClassifier to labels drawn from
+`np.random.uniform` under a fixed seed. Read the two class definitions:
+
+    Class 0 (regolith): cpr ~ U(0.20, 0.70)
+    Class 1 (ice):      cpr ~ U(1.05, 2.50)
+
+Now read the product. Peak CPR across all 2,257,905 measured pixels of this
+frame is 0.0534, and its median is 0.000565. The positive class therefore lies
+ENTIRELY OUTSIDE the range this product can produce -- by a factor of about 20
+at its closest point. Every `predict_proba` call on real data was an
+extrapolation beyond the convex hull of the training set, in the direction of
+the class it had never seen real evidence for.
+
+That is why the deployed card read P(ice) 0.96 beside a measured swath whose
+peak CPR was 19x below the ice threshold. The two numbers were not in tension by
+accident; the model had no way to produce anything else.
+
+Two further defects, either of which is disqualifying on its own:
+
+  * one of the six input features is `illumination`, which in this build is the
+    invented brightness proxy `hillshade(sun 1.5 deg) * elev_norm**1.3`, not a
+    measured or computed lit fraction;
+  * the backend evaluated it over the full padded grid, where ~84 % of rows are
+    literal zeros -- and a row of zeros resembles the trained ice class closely
+    (low cpr, low dop, illumination 0, flat), so the padding itself voted for
+    ice.
+
+IT MUST NOT BE RETRAINED ON BETTER SYNTHETIC LABELS. Better synthetic labels are
+still synthetic: the output would remain a model of the label generator, not of
+the Moon, and it would still carry a MODELLED mark it cannot earn. A real
+classifier here needs ground-truth ice labels, and none exist anywhere in this
+project.
+
+The file is retained so the claim above can be checked against the code that
+made it. `git log` and PRD 1.2 item 1 carry the rest of the history.
 """
 
 import numpy as np

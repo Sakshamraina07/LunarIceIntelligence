@@ -43,6 +43,30 @@ def compute_hillshade(
     return np.clip(shaded, 0.0, 1.0).astype(np.float32)
 
 
+def _psr_confidence(psr_area_km2: float, psr_cells: int) -> str:
+    """
+    'Low' / 'Medium' / 'High' -- and 'Low' is now reachable.
+
+    The previous expression was `"High" if psr_area_km2 > 5.0 else "Medium"`,
+    which has no Low branch at all: a crater with a single shadowed cell, or
+    with none, reported Medium confidence. A three-valued field that can only
+    take two of its values is worse than a two-valued one, because the reader
+    assumes the third was considered and ruled out.
+
+    Note this rates the SIZE of the shadow mask, not its physical validity. In
+    this build the mask comes from an invented brightness proxy, so the whole
+    quantity is MODELLED whatever this returns; Phase 2 replaces the mask with a
+    horizon computation and only then does the rating describe the Moon.
+    """
+    if psr_cells == 0:
+        return "Low"
+    if psr_area_km2 > 5.0:
+        return "High"
+    if psr_area_km2 > 0.5:
+        return "Medium"
+    return "Low"
+
+
 def analyze_psr(
     crater_id: str,
     dem: np.ndarray,
@@ -64,7 +88,7 @@ def analyze_psr(
     total_cells = dem.size
     total_area_km2 = total_cells * cell_area_km2
 
-    psr_cells = np.sum(psr_mask)
+    psr_cells = int(np.sum(psr_mask))
     psr_area_km2 = float(psr_cells * cell_area_km2)
     psr_area_fraction = float(psr_cells / total_cells)
 
@@ -76,19 +100,32 @@ def analyze_psr(
     # Shadow depth estimate: Height difference between surrounding rim crest and deepest shadow floor
     shadow_depth_estimate_m = float(np.max(dem) - np.min(dem[psr_mask])) if psr_cells > 0 else 0.0
 
-    hillshade = compute_hillshade(dem, spacing_m)
+    # The hillshade geometry is bound to names here and then handed BOTH to the
+    # function and to the provenance dict, so the two cannot drift. The previous
+    # version called compute_hillshade(dem, spacing_m) with its defaults and then
+    # wrote 45.0 / 315.0 into provenance as literals -- correct only by
+    # coincidence, and silently wrong the moment a default changed.
+    hillshade_azimuth_deg = 315.0
+    hillshade_altitude_deg = 45.0
+    hillshade = compute_hillshade(
+        dem, spacing_m,
+        azimuth_deg=hillshade_azimuth_deg,
+        altitude_deg=hillshade_altitude_deg,
+    )
 
     provenance = create_provenance(
         dataset_name=f"{crater_id.upper()}_DEM_LOLA",
         algorithm="Analytical Ray-Tracing & Horn Hillshade with Cold-Trap Partitioning",
         parameters={
-            # Report the spacing actually used on each axis, and the hillshade
-            # geometry actually used. The previous dict claimed sun_elevation 1.5
-            # deg / azimuth 45 deg while compute_hillshade ran at altitude 45 /
-            # azimuth 315 — the provenance described a run that never happened.
+            # The spacing and the hillshade geometry ACTUALLY PASSED, read
+            # from the same variables the call used. An earlier version wrote
+            # sun_elevation 1.5 / azimuth 45 here while compute_hillshade ran at
+            # altitude 45 / azimuth 315, so the provenance described a run that
+            # never happened; the version after that hardcoded the right numbers,
+            # which is the same defect one edit away from recurring.
             "spacing_m": [float(sy), float(sx)],
-            "hillshade_altitude_deg": 45.0,
-            "hillshade_azimuth_deg": 315.0
+            "hillshade_altitude_deg": float(hillshade_altitude_deg),
+            "hillshade_azimuth_deg": float(hillshade_azimuth_deg),
         },
         data_mode=data_mode
     )
@@ -101,7 +138,7 @@ def analyze_psr(
         doubly_shadowed_area_km2=round(doubly_shadowed_area_km2, 2),
         mean_illumination_fraction=round(mean_illumination, 3),
         shadow_depth_estimate_m=round(shadow_depth_estimate_m, 1),
-        confidence_level="High" if psr_area_km2 > 5.0 else "Medium",
+        confidence_level=_psr_confidence(psr_area_km2, psr_cells),
         provenance=provenance
     )
 

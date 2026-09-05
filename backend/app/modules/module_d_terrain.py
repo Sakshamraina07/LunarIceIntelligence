@@ -47,36 +47,59 @@ def compute_terrain_metrics(
 def compute_hazard_score(
     slope_deg: np.ndarray,
     roughness: np.ndarray,
-    boulder_risk: np.ndarray,
+    boulder_risk: Optional[np.ndarray],
     w_slope: Optional[float] = None,
     w_roughness: Optional[float] = None,
     w_boulder: Optional[float] = None
 ) -> np.ndarray:
     """
-    Calculates normalized terrain hazard score in range [0, 1].
+    Normalised terrain hazard score in [0, 1].
+
+    `boulder_risk` may be None, and None is NOT a zeros array. No optical
+    product exists for this frame, so a zeros array would assert "imaged and
+    found free of rocks" for every cell. When it is None the boulder term is
+    dropped and the blend is RENORMALISED over the terms that remain, so the
+    score still spans [0, 1] and means a slope-and-roughness hazard.
+
+    Passing a boulder raster while forcing `w_boulder=0.0` gives the same
+    renormalisation, which is how mission_service already called it.
     """
     w1 = w_slope if w_slope is not None else settings.WEIGHT_SLOPE
     w2 = w_roughness if w_roughness is not None else settings.WEIGHT_ROUGHNESS
     w3 = w_boulder if w_boulder is not None else settings.WEIGHT_BOULDER
 
-    # Normalize individual components
-    # Critical traversability limit for small lunar rover is ~20 degrees
-    slope_risk = np.clip(slope_deg / settings.MAX_TRAVERSABLE_SLOPE_DEG, 0.0, 1.0)
+    if boulder_risk is None:
+        w3 = 0.0
 
-    # Roughness risk: Normalized against maximum expected local height variance (e.g. 50m)
+    # Critical traversability limit for a small lunar rover is ~20 degrees.
+    slope_risk = np.clip(slope_deg / settings.MAX_TRAVERSABLE_SLOPE_DEG, 0.0, 1.0)
+    # Roughness risk, normalised against a 50 m local height variance.
     roughness_risk = np.clip(roughness / 50.0, 0.0, 1.0)
 
-    boulder_risk_norm = np.clip(boulder_risk, 0.0, 1.0)
-
     total_weight = w1 + w2 + w3
-    hazard = (w1 * slope_risk + w2 * roughness_risk + w3 * boulder_risk_norm) / total_weight
+    if total_weight <= 0.0:
+        raise ValueError(
+            "compute_hazard_score: every weight is zero, so there is no hazard model left to "
+            "evaluate. Refusing to divide by zero and return a plausible-looking array."
+        )
+
+    numerator = w1 * slope_risk + w2 * roughness_risk
+    if w3 > 0.0:
+        if boulder_risk is None:
+            raise ValueError(
+                "compute_hazard_score: w_boulder > 0 but boulder_risk is None. A boulder weight "
+                "cannot be applied to a term that was never measured."
+            )
+        numerator = numerator + w3 * np.clip(boulder_risk, 0.0, 1.0)
+
+    hazard = numerator / total_weight
     return np.clip(hazard, 0.0, 1.0).astype(np.float32)
 
 
 def analyze_terrain_safety(
     crater_id: str,
     dem: np.ndarray,
-    boulder_risk: np.ndarray,
+    boulder_risk: Optional[np.ndarray],
     spacing_m: Tuple[float, float],
     w_slope: Optional[float] = None,
     w_roughness: Optional[float] = None,

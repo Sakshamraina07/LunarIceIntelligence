@@ -60,21 +60,33 @@ class RadarAnalysisResult(BaseModel):
     radar_anomalous_area_km2: float
     screening_pass_fraction: float
     scientific_interpretation: str
-    regional_classification: str = "Low/No ice signature (Typical dry regolith)"
-    anomaly_classification: str = "Candidate signature consistent with potential ice"
-    classification_label: str = "Low/No ice signature"
-    data_source_tag: str = "Simulated placeholder — pending real data"
+    # All four were defaulted, and `anomaly_classification` defaulted to
+    # "Candidate signature consistent with potential ice" — a caller who forgot
+    # the field inherited the strongest possible claim about the scene. Required
+    # now: a caller who forgets must fail, not inherit an ice detection.
+    regional_classification: str
+    anomaly_classification: str
+    classification_label: str
+    data_source_tag: str
     provenance: ProvenanceMetadata
 
 
 class IceIntelligenceResult(BaseModel):
     crater_id: str
     scientific_candidate_area_km2: float
-    ml_ice_likelihood_mean: float
-    ml_ice_likelihood_max: float
+    # None, not 0.0. The Random Forest that produced these was unwired in PRD
+    # Phase 1C — it was fitted to np.random.uniform labels whose ice class lies
+    # outside this product's achievable CPR range. A 0.0 here would read as
+    # "the model ran and found no ice"; None reads as "no model ran".
+    ml_ice_likelihood_mean: Optional[float] = None
+    ml_ice_likelihood_max: Optional[float] = None
+    ml_model_status: str
     confidence: str  # 'Low', 'Medium', 'High'
     scientific_screening_status: str  # 'PASS' or 'FAIL'
-    evidence_checklist: Dict[str, bool]
+    # A criterion that cannot be evaluated is not a failed criterion. False
+    # would collapse "tested and failed" into "never tested", which is exactly
+    # the distinction the whole provenance discipline exists to keep.
+    evidence_checklist: Dict[str, Optional[bool]]
     explainability_notes: List[str]
     provenance: ProvenanceMetadata
 
@@ -103,11 +115,18 @@ class CandidateLandingSite(BaseModel):
     hazard_score: float  # 0 to 1
     illumination_fraction: float  # 0 to 1
     distance_to_target_km: float
-    scientific_value: float  # 0 to 1
+    # Renamed from `scientific_value`. It contains only a distance term, so the
+    # old name claimed a scientific merit the number does not carry — and it was
+    # then blended into the composite score alongside the distance term it
+    # duplicates. It is reported, not scored, until the Phase 3 site search.
+    distance_proximity_index: float  # 0 to 1
     composite_landing_score: float  # 0 to 100
     rank: int
     is_recommended: bool
     selection_rationale: List[str]
+    # Without these, a fabricated site is structurally unlabelable.
+    data_mode: str
+    provenance: ProvenanceMetadata
 
 
 class PathWaypoint(BaseModel):
@@ -136,6 +155,8 @@ class RoverRouteResult(BaseModel):
     waypoints: List[PathWaypoint]
     avoidance_explanations: List[str]
     failure_reason: Optional[str] = None
+    data_mode: str
+    provenance: ProvenanceMetadata
 
 
 class IceVolumeEstimateResult(BaseModel):
@@ -158,21 +179,36 @@ class IceVolumeEstimateResult(BaseModel):
 
 
 class SensitivityPoint(BaseModel):
+    """
+    One row of a real sweep, computed by re-thresholding the native arrays in
+    backend/scripts/build_analysis.py.
+
+    `best_landing_site_id`, `rover_distance_km` and `rover_energy_wh` were
+    removed in PRD Phase 1B. They were `"site_1"` constant, `11.2 + val * 0.1`
+    and `145.0 + val * 2.5` — straight lines through the swept parameter with no
+    planner behind them. They return when Phases 3 and 4 can actually replan.
+    """
     parameter_name: str
     parameter_value: float
+    is_configured_value: bool
+    candidate_px: Optional[int] = None
     candidate_ice_area_km2: float
+    candidate_area_provenance: str
     expected_volume_m3: float
-    best_landing_site_id: str
-    rover_distance_km: float
-    rover_energy_wh: float
+    volume_provenance: str
 
 
 class SensitivityAnalysisResult(BaseModel):
     parameter_tested: str
     baseline_value: float
+    grid_source: str
+    held_constant: Dict[str, float]
     sweep_values: List[float]
     results: List[SensitivityPoint]
     sensitivity_summary: str
+    withheld_columns: Dict[str, str]
+    data_mode: str
+    provenance: ProvenanceMetadata
 
 
 class MissionState(BaseModel):

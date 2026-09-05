@@ -6,25 +6,34 @@ Tests CPR, DOP, Slope, Roughness, Hazard Scoring, and Ice Volume calculation.
 import pytest
 import numpy as np
 from app.modules.module_a_psr import compute_hillshade
-from app.modules.module_b_radar import compute_cpr_from_sigma, compute_dop_from_stokes
+from app.modules.module_b_radar import compute_cpr_from_stokes, compute_dop_from_stokes
 from app.modules.module_d_terrain import compute_hazard_score
 from app.modules.module_g_volume import estimate_ice_volume
 from app.core.config import settings
 
 
-def test_cpr_computation():
-    sigma_sc = np.array([1.2, 0.5, 0.0])
-    sigma_oc = np.array([0.8, 1.0, 0.0])
+def test_cpr_from_stokes():
+    """
+    CPR = sigma_sc / sigma_oc = (S0 - S3) / (S0 + S3).
 
-    cpr = compute_cpr_from_sigma(sigma_sc, sigma_oc)
+    This replaces the old test of compute_cpr_from_sigma(), deleted in PRD
+    Phase 1C: it had no caller anywhere in the app, and the Stokes form is the
+    one Phase 5 feeds from the complex sli products.
+    """
+    # (1.0 - -0.2) / (1.0 + -0.2) = 1.2 / 0.8 = 1.5  -> anomalous, CBOE-like
+    # (2.0 -  0.6667) / (2.0 + 0.6667)          = 0.5 -> ordinary regolith
+    # S0 = S3 = 0 is the never-observed cell: must not divide by zero or NaN
+    s0 = np.array([1.0, 2.0, 0.0])
+    s3 = np.array([-0.2, 2.0 / 3.0, 0.0])
 
-    # 1.2 / 0.8 = 1.5
+    cpr = compute_cpr_from_stokes(s0, s3)
+
     assert np.isclose(cpr[0], 1.5, atol=1e-3)
-    # 0.5 / 1.0 = 0.5
     assert np.isclose(cpr[1], 0.5, atol=1e-3)
-    # Zero division handled safely via epsilon
     assert cpr[2] >= 0.0
     assert not np.isnan(cpr).any()
+    # S3 > S0 would give a negative ratio; the clip floor keeps it physical.
+    assert (cpr >= 0.0).all()
 
 
 def test_dop_computation():

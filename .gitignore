@@ -21,3 +21,10 @@ node_modules
 .next/
 .pytest_cache/
 *.tif
+
+# Python bytecode. These were TRACKED, and churned on every test run, so every
+# diff carried dozens of binary .pyc changes and the real edits were buried.
+__pycache__/
+*.pyc
+*.pyo
+*.pyd

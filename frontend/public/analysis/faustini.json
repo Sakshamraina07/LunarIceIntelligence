@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-05T09:51:51.226644+00:00",
+  "generated_utc": "2026-09-05T18:18:42.354717+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -130,59 +130,191 @@
     "screening_status": "FAIL",
     "criteria_passed": 1,
     "criteria_total": 5,
+    "criteria_evaluable": 2,
+    "criteria_withheld": 3,
+    "criteria_note": "1 of 2 criteria that can be evaluated in this build passed. The other 3 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.",
     "label": "No radar ice signature in this swath",
-    "sublabel": "0.00 km² passed CPR > 1.00 and DOP < 0.13 within modelled shadow",
+    "sublabel": "0.00 km² of the 1,461 km² measured swath passed CPR > 1.00 and DOP < 0.13",
     "confidence": "Low",
     "headline": {
       "value": 0.0,
       "unit": "km²",
       "provenance": "MEASURED",
-      "note": "Area whose measured radar passes both polarimetric criteria inside shadow."
+      "note": "Area whose measured radar passes both polarimetric criteria, inside the amplitude mask. No shadow term is in this mask: the illumination proxy was removed from it, and the horizon computation that would replace it is Phase 2."
     },
     "null_result_caveat": "This is a NULL RESULT on an incomplete measurement, not evidence against ice. Peak CPR in the swath is 0.0534 against a 1.00 threshold — the product cannot reach it, because this build derives CPR from amplitude alone. The Stokes S3 phase term from the complex sli products is required before this scene can be screened at all."
   },
   "values": {
+    "psr_area_km2": {
+      "value": null,
+      "unit": "km²",
+      "provenance": "UNAVAILABLE",
+      "reason": "The topography is measured, but the shadow on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. A PSR area is withheld until the Phase 2 horizon computation replaces the proxy; a number from this model would describe the expression, not the Moon."
+    },
+    "doubly_shadowed_area_km2": {
+      "value": null,
+      "unit": "km²",
+      "provenance": "UNAVAILABLE",
+      "reason": "A doubly-shadowed core is terrain that is never directly lit AND receives no scattered light from lit terrain. This build computes neither term. The previous definition -- the brightness proxy's shadow intersected with the lowest elevation quintile -- is not a second shadowing event. Phase 2."
+    },
+    "mean_illumination_fraction": {
+      "value": null,
+      "unit": "",
+      "provenance": "UNAVAILABLE",
+      "reason": "There is no illumination fraction here, only a brightness proxy. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. A mean of that expression would be a statistic about the expression. Phase 2 computes a real per-pixel lit fraction by sweeping the solar azimuth against a horizon."
+    },
+    "thermal_stability_k": {
+      "value": null,
+      "unit": "K",
+      "provenance": "UNAVAILABLE",
+      "reason": "No thermal product is on disk and no thermal model runs in this build. Phase 2 derives a stability flag from the illumination fraction and labels it DERIVED, not MEASURED."
+    },
     "cpr_mean": {
       "value": 0.001312,
       "unit": "",
       "provenance": "MEASURED",
-      "note": "Mean over 2,337,086 pixels carrying amplitude. The API reports 0.000221 by averaging across the void as well."
-    },
-    "cpr_max": {
-      "value": 0.053411,
-      "unit": "",
-      "provenance": "MEASURED"
+      "note": "Mean over the 2,337,086 pixels carrying amplitude. The request path reports 0.000221 by averaging across the never-observed void."
     },
     "cpr_p50": {
       "value": 0.000565,
       "unit": "",
-      "provenance": "MEASURED"
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
+    },
+    "cpr_p90": {
+      "value": 0.003546,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
+    },
+    "cpr_p99": {
+      "value": 0.009258,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
+    },
+    "cpr_max": {
+      "value": 0.053411,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
+    },
+    "cpr_std": {
+      "value": 0.00196,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
     },
     "dop_mean": {
       "value": 0.057053,
       "unit": "",
       "provenance": "MEASURED",
-      "note": "Mean over the amplitude mask. The API reports 0.009234."
+      "note": "Mean over the amplitude mask. The request path reports 0.009234."
     },
     "dop_min": {
       "value": 0.0,
       "unit": "",
       "provenance": "MEASURED",
-      "note": "Minimum over measured pixels only; the API's 0.0 is padding."
+      "note": "Minimum over measured pixels only; the request path's 0.0 is padding."
     },
     "dop_p50": {
       "value": 0.047532,
       "unit": "",
-      "provenance": "MEASURED"
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
     },
-    "psr_area_km2": {
-      "value": null,
+    "dop_p90": {
+      "value": 0.11868,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
+    },
+    "dop_p99": {
+      "value": 0.190668,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
+    },
+    "dop_max": {
+      "value": 0.438779,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Over the amplitude mask at native 25 m/px. The request path resamples to 100 x 100 and averages across the never-observed void, which moves CPR mean by 5.5x and destroys the DOP median outright."
+    },
+    "measured_area_km2": {
+      "value": 1460.68,
       "unit": "km²",
+      "provenance": "MEASURED",
+      "note": "Amplitude mask area: where DFSAR actually returned signal. Every MEASURED radar statistic on this page is taken over this and nothing else."
+    },
+    "pointed_area_km2": {
+      "value": 3327.84,
+      "unit": "km²",
+      "provenance": "MEASURED",
+      "note": "ISRO sri_ma > 0: where the beam was pointed. The difference from the measured area is swath that was pointed at and returned literal zero."
+    },
+    "cpr_pass_fraction": {
+      "value": 0.0,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Fraction of the measured swath with CPR > 1."
+    },
+    "dop_pass_fraction": {
+      "value": 0.92714817,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Fraction of the measured swath with DOP < 0.13."
+    },
+    "screening_pass_fraction": {
+      "value": 0.0,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Fraction of the MEASURED SWATH passing both criteria — not of the frame. The frame is 84 % never-observed padding and a fraction over it would be meaningless."
+    },
+    "candidate_area_km2": {
+      "value": 0.0,
+      "unit": "km²",
+      "provenance": "MEASURED",
+      "note": "Pixel count passing both criteria, times the frame's own cell area. A measured zero here is a result, not a gap."
+    },
+    "criteria_passed": {
+      "value": 1,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Of 5 named criteria: CPR above CBOE threshold = FAIL, DOP depressed (volume scattering) = PASS, Overlap with a shadowed cold trap = WITHHELD, Overlap with a doubly-shadowed core = WITHHELD, Thermal stability expected = WITHHELD"
+    },
+    "p_ice_max": {
+      "value": null,
+      "unit": "",
       "provenance": "UNAVAILABLE",
-      "reason": "The topography is measured now, but the shadow on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. It puts 77.2 % of the frame below the 0.05 cut — 7,208 km² of a 9,340 km² scene. A PSR area is withheld until the horizon computation replaces the proxy; a number from this model would describe the expression, not the Moon."
+      "reason": "WITHDRAWN, not missing. The Random Forest behind this figure was fitted to np.random.uniform labels with a fixed seed, and its ice class was defined as CPR 1.05-2.5 -- a range this amplitude-only product cannot reach at all, since the swath's peak CPR is 0.0534. Every probability it produced was an extrapolation from fabricated examples, and one of its six features was the illumination proxy. It is unwired, not retrained: better synthetic labels are still synthetic. Step 4 now reports the criteria screen, which is measured."
+    },
+    "p_ice_mean": {
+      "value": null,
+      "unit": "",
+      "provenance": "UNAVAILABLE",
+      "reason": "WITHDRAWN, not missing. The Random Forest behind this figure was fitted to np.random.uniform labels with a fixed seed, and its ice class was defined as CPR 1.05-2.5 -- a range this amplitude-only product cannot reach at all, since the swath's peak CPR is 0.0534. Every probability it produced was an extrapolation from fabricated examples, and one of its six features was the illumination proxy. It is unwired, not retrained: better synthetic labels are still synthetic. Step 4 now reports the criteria screen, which is measured."
     },
     "mean_slope_deg": {
       "value": 10.5766,
+      "unit": "°",
+      "provenance": "MEASURED",
+      "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "slope_p50_deg": {
+      "value": 9.343,
+      "unit": "°",
+      "provenance": "MEASURED",
+      "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "slope_p90_deg": {
+      "value": 20.1725,
+      "unit": "°",
+      "provenance": "MEASURED",
+      "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "slope_p99_deg": {
+      "value": 31.5309,
       "unit": "°",
       "provenance": "MEASURED",
       "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
@@ -193,49 +325,149 @@
       "provenance": "MEASURED",
       "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "p_ice_max": {
-      "value": 0.72,
+    "safe_slope_fraction": {
+      "value": 0.896826,
       "unit": "",
-      "provenance": "MODELLED",
-      "note": "Random Forest peak over the 2,337,086 measured pixels. This can never be MEASURED: there is no ground-truth ice label anywhere in this project, so nothing exists to validate it against, and MODELLED is its honest ceiling. It also disagrees with the physics screening — it puts 45.9 % of the swath at P >= 0.5 while peak CPR is 19x below threshold. Its ice class was trained on CPR 1.05-2.5, a range this amplitude-only product cannot reach, and one of its six features (illumination) is the invented proxy. The number describes the model, not the ground."
+      "provenance": "MEASURED",
+      "note": "Fraction of the frame at or below MAX_TRAVERSABLE_SLOPE_DEG = 20°, read from config.py. 80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "p_ice_mean": {
-      "value": 0.4905,
+    "landable_slope_fraction": {
+      "value": 0.624944,
       "unit": "",
-      "provenance": "MODELLED"
+      "provenance": "MEASURED",
+      "note": "Fraction at or below CRITICAL_LANDING_SLOPE_DEG = 12°. 80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "candidate_area_km2": {
-      "value": 0.0,
-      "unit": "km²",
-      "provenance": "MEASURED"
+    "mean_roughness_m": {
+      "value": 6.7183,
+      "unit": "m",
+      "provenance": "MEASURED",
+      "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "expected_volume_m3": {
-      "value": 0.0,
-      "unit": "m³",
-      "provenance": "DERIVED",
-      "note": "candidate area x 5.0 m depth x 0.15 pore fraction. Zero area gives zero volume; the assumptions are untested either way."
+    "roughness_p50_m": {
+      "value": 5.8058,
+      "unit": "m",
+      "provenance": "MEASURED",
+      "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "conservative_volume_m3": {
-      "value": 0.0,
-      "unit": "m³",
-      "provenance": "DERIVED"
+    "roughness_p90_m": {
+      "value": 12.9228,
+      "unit": "m",
+      "provenance": "MEASURED",
+      "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "upper_volume_m3": {
-      "value": 0.0,
-      "unit": "m³",
-      "provenance": "DERIVED"
+    "roughness_p99_m": {
+      "value": 21.649,
+      "unit": "m",
+      "provenance": "MEASURED",
+      "note": "80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "rover_traverse_km": {
+    "mean_hazard": {
+      "value": 0.364696,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Slope and roughness both come from measured LOLA topography, so the hazard blend is measured too -- but it is a two-term blend at 80 m posts, not the three-term one config.py describes. 80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "hazard_p50": {
+      "value": 0.335508,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Slope and roughness both come from measured LOLA topography, so the hazard blend is measured too -- but it is a two-term blend at 80 m posts, not the three-term one config.py describes. 80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "hazard_p90": {
+      "value": 0.721047,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Slope and roughness both come from measured LOLA topography, so the hazard blend is measured too -- but it is a two-term blend at 80 m posts, not the three-term one config.py describes. 80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "hazard_p99": {
+      "value": 0.787368,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Slope and roughness both come from measured LOLA topography, so the hazard blend is measured too -- but it is a two-term blend at 80 m posts, not the three-term one config.py describes. 80 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 80 m posts and the upsample added no relief below that. Read this as a 80 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "critical_hazard_fraction": {
+      "value": 0.114575,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Fraction of the frame above a 0.70 composite hazard. The 0.70 cut is a display convention stated here, not a measured property; the hazard field under it is measured."
+    },
+    "boulder_risk": {
       "value": null,
-      "unit": "km",
+      "unit": "",
       "provenance": "UNAVAILABLE",
-      "reason": "Traverse planning is not wired to this file yet. The cost surface would now be measured LOLA slope and hazard, but the target still comes from a hardcoded grid centre and no Dijkstra solve runs here, so a distance would be an unfinished code path, not a result."
+      "reason": "No boulder detector and no optical product exist in this build; data/pradan/ohrc/ is empty. Boulder risk is UNMEASURED, not zero. The weight is dropped and the blend renormalised over slope and roughness, so hazard is a two-term hazard and says so."
+    },
+    "min_elevation_m": {
+      "value": -4246.08,
+      "unit": "m",
+      "provenance": "MEASURED",
+      "note": "Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
+    },
+    "max_elevation_m": {
+      "value": 1957.37,
+      "unit": "m",
+      "provenance": "MEASURED",
+      "note": "Elevation is LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid. Despite its filename, native/dem_native_synthetic.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
     "landing_site": {
       "value": null,
       "unit": "",
       "provenance": "UNAVAILABLE",
-      "reason": "The backend's five sites are hardcoded grid offsets (Alpha 18,50 / Beta 82,75 / Gamma 78,25 / Delta 50,15 / Epsilon 48,85), asserted rather than searched, and their lat/lon comes from a flat 30.37 km per degree constant that is wrong by ~57x in longitude at this latitude. Withheld until the site search runs."
+      "reason": "The five sites are hardcoded grid offsets (18,50 / 82,75 / 78,25 / 50,15 / 48,85), asserted and then scored, not searched -- and their lat/lon came from a flat 30.37 km per degree constant that is wrong by about 57x in longitude at this latitude. Withheld until the Phase 3 per-pixel search over the native frame runs."
+    },
+    "landing_site_score": {
+      "value": null,
+      "unit": "",
+      "provenance": "UNAVAILABLE",
+      "reason": "The five sites are hardcoded grid offsets (18,50 / 82,75 / 78,25 / 50,15 / 48,85), asserted and then scored, not searched -- and their lat/lon came from a flat 30.37 km per degree constant that is wrong by about 57x in longitude at this latitude. Withheld until the Phase 3 per-pixel search over the native frame runs."
+    },
+    "landing_sites_evaluated": {
+      "value": null,
+      "unit": "",
+      "provenance": "UNAVAILABLE",
+      "reason": "The five sites are hardcoded grid offsets (18,50 / 82,75 / 78,25 / 50,15 / 48,85), asserted and then scored, not searched -- and their lat/lon came from a flat 30.37 km per degree constant that is wrong by about 57x in longitude at this latitude. Withheld until the Phase 3 per-pixel search over the native frame runs."
+    },
+    "rover_traverse_km": {
+      "value": null,
+      "unit": "km",
+      "provenance": "UNAVAILABLE",
+      "reason": "No traverse is planned from this file. The cost surface would be measured LOLA slope and hazard, but the target is still a hardcoded grid centre and no Dijkstra solve runs here, so a distance or an energy figure would be an unfinished code path rather than a result. Phase 4."
+    },
+    "rover_energy_wh": {
+      "value": null,
+      "unit": "Wh",
+      "provenance": "UNAVAILABLE",
+      "reason": "No traverse is planned from this file. The cost surface would be measured LOLA slope and hazard, but the target is still a hardcoded grid centre and no Dijkstra solve runs here, so a distance or an energy figure would be an unfinished code path rather than a result. Phase 4."
+    },
+    "rover_mean_hazard": {
+      "value": null,
+      "unit": "",
+      "provenance": "UNAVAILABLE",
+      "reason": "No traverse is planned from this file. The cost surface would be measured LOLA slope and hazard, but the target is still a hardcoded grid centre and no Dijkstra solve runs here, so a distance or an energy figure would be an unfinished code path rather than a result. Phase 4."
+    },
+    "conservative_volume_m3": {
+      "value": 0.0,
+      "unit": "m³",
+      "provenance": "DERIVED",
+      "note": "candidate area x 2 m assumed depth x 0.05 assumed pore fraction. Both assumptions are untested in this build; neither is a measurement."
+    },
+    "expected_volume_m3": {
+      "value": 0.0,
+      "unit": "m³",
+      "provenance": "DERIVED",
+      "note": "candidate area x 5 m assumed depth x 0.15 assumed pore fraction. Both assumptions are untested in this build; neither is a measurement."
+    },
+    "upper_volume_m3": {
+      "value": 0.0,
+      "unit": "m³",
+      "provenance": "DERIVED",
+      "note": "candidate area x 10 m assumed depth x 0.3 assumed pore fraction. Both assumptions are untested in this build; neither is a measurement."
+    },
+    "ablation_runs": {
+      "value": null,
+      "unit": "",
+      "provenance": "UNAVAILABLE",
+      "reason": "A real ablation reruns the planner with each hazard weight zeroed in turn and reports the measured deltas in distance, mean hazard and max slope. It needs the Phase 4 planner. The previous experiments_runner.py returned four hand-written experiments with no computation behind them, three of them stamped is_synthetic_evaluation=False; it was deleted in Phase 0."
     }
   },
   "evidence": [
@@ -264,24 +496,24 @@
     {
       "criterion": "psr_cold_trap_overlap",
       "label": "Overlap with a shadowed cold trap",
-      "measured": 0.0,
-      "measured_label": "candidate area",
-      "threshold": 0.0,
-      "comparison": ">",
+      "measured": null,
+      "measured_label": "no horizon computation",
+      "threshold": null,
+      "comparison": null,
       "passed": false,
-      "provenance": "MODELLED",
-      "note": "The topography is measured LOLA, but the SHADOW on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. It puts 77.2 % of the frame in shadow, so the overlap test is not discriminating anything. The row fails only because no pixel cleared CPR."
+      "provenance": "UNAVAILABLE",
+      "note": "WITHHELD, not failed. The topography under this test is measured LOLA, but the SHADOW on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. It darkens 77.2 % of the frame, so intersecting anything with it does not discriminate a cold trap -- it only multiplies by a large mask. Until the Phase 2 horizon computation exists, this criterion has no measured value and reports none. It is no longer part of the candidate mask either."
     },
     {
       "criterion": "doubly_shadowed_core_overlap",
       "label": "Overlap with a doubly-shadowed core",
-      "measured": 0.0,
-      "measured_label": "overlap area",
-      "threshold": 0.0,
-      "comparison": ">",
+      "measured": null,
+      "measured_label": "no scattered-light term",
+      "threshold": null,
+      "comparison": null,
       "passed": false,
-      "provenance": "MODELLED",
-      "note": "Doubly-shadowed cores are the illumination proxy's shadow intersected with the lowest elevation quintile of the DEM. The elevation quintile is measured LOLA; the shadow is not, and an elevation percentile is not a second shadowing event. A real doubly-shadowed mask needs scattered light from lit terrain, which this build does not compute. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not."
+      "provenance": "UNAVAILABLE",
+      "note": "WITHHELD, not failed. The previous definition was the illumination proxy's shadow intersected with the lowest elevation quintile of the DEM. The quintile is measured LOLA, but an elevation percentile is not a second shadowing event, and the shadow it was intersected with is the proxy. A doubly-shadowed core means never directly lit AND receiving no scattered light from lit terrain; the scattered-light term does not exist in this build. Phase 2."
     },
     {
       "criterion": "thermal_stability_expected",
@@ -293,6 +525,560 @@
       "passed": false,
       "provenance": "UNAVAILABLE",
       "note": "No thermal model and no measured temperature exist in this build. The backend returns this criterion as True whenever the candidate count is non-zero, which is a restatement of the previous row, not an independent temperature test. Reported as unavailable rather than inherited."
+    }
+  ],
+  "volume_tiers": [
+    {
+      "tier": "conservative",
+      "assumed_depth_m": 2.0,
+      "assumed_pore_fraction": 0.05,
+      "volume_m3": 0.0,
+      "volume_m3_per_km2": 100000.0,
+      "provenance": "DERIVED",
+      "source": "backend/app/core/config.py",
+      "note": "candidate area x 2 m assumed depth x 0.05 assumed pore fraction. Both assumptions are untested in this build; neither is a measurement."
+    },
+    {
+      "tier": "expected",
+      "assumed_depth_m": 5.0,
+      "assumed_pore_fraction": 0.15,
+      "volume_m3": 0.0,
+      "volume_m3_per_km2": 750000.0,
+      "provenance": "DERIVED",
+      "source": "backend/app/core/config.py",
+      "note": "candidate area x 5 m assumed depth x 0.15 assumed pore fraction. Both assumptions are untested in this build; neither is a measurement."
+    },
+    {
+      "tier": "upper",
+      "assumed_depth_m": 10.0,
+      "assumed_pore_fraction": 0.3,
+      "volume_m3": 0.0,
+      "volume_m3_per_km2": 3000000.0,
+      "provenance": "DERIVED",
+      "source": "backend/app/core/config.py",
+      "note": "candidate area x 10 m assumed depth x 0.3 assumed pore fraction. Both assumptions are untested in this build; neither is a measurement."
+    }
+  ],
+  "sensitivity": {
+    "cpr_threshold": {
+      "parameter": "cpr_threshold",
+      "unit": "",
+      "baseline": 1.0,
+      "grid_source": "measured CPR percentiles (p50/p90/p99/p99.9/max), union a 0.0-1.2 linear ramp, union the configured threshold",
+      "held_constant": {
+        "dop_threshold": 0.13
+      },
+      "rows": [
+        {
+          "threshold": 0.0,
+          "is_configured_value": false,
+          "candidate_px": 2166823,
+          "candidate_area_km2": 1354.264375,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 1015698281.25,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.000565,
+          "is_configured_value": false,
+          "candidate_px": 998738,
+          "candidate_area_km2": 624.21125,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 468158437.5,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.003546,
+          "is_configured_value": false,
+          "candidate_px": 63481,
+          "candidate_area_km2": 39.675625,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 29756718.75,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.009258,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.016204,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.053411,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.15,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.3,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.45,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.6,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.75,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.9,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 1.0,
+          "is_configured_value": true,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 1.05,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 1.2,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        }
+      ]
+    },
+    "dop_threshold": {
+      "parameter": "dop_threshold",
+      "unit": "",
+      "baseline": 0.13,
+      "grid_source": "measured DOP percentiles (p50/p90/p99/p99.9/max), union a 0.0-0.5 linear ramp, union the configured threshold",
+      "held_constant": {
+        "cpr_threshold": 1.0
+      },
+      "rows": [
+        {
+          "threshold": 0.0,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.047532,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.0625,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.11868,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.125,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.13,
+          "is_configured_value": true,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.1875,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.190668,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.25,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.250531,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.3125,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.375,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.4375,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.438779,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.5,
+          "is_configured_value": false,
+          "candidate_px": 0,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_provenance": "DERIVED"
+        }
+      ]
+    },
+    "assumed_depth_m": {
+      "parameter": "assumed_depth_m",
+      "unit": "m",
+      "baseline": 5.0,
+      "grid_source": "stated grid; the candidate AREA does not move on this axis",
+      "held_constant": {
+        "ice_fraction": 0.15,
+        "cpr_threshold": 1.0,
+        "dop_threshold": 0.13
+      },
+      "rows": [
+        {
+          "threshold": 0.5,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 75000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 1.0,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 150000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 2.0,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 300000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 5.0,
+          "is_configured_value": true,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 750000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 10.0,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 1500000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 20.0,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 3000000.0,
+          "volume_provenance": "DERIVED"
+        }
+      ]
+    },
+    "ice_fraction": {
+      "parameter": "ice_fraction",
+      "unit": "",
+      "baseline": 0.15,
+      "grid_source": "stated grid; the candidate AREA does not move on this axis",
+      "held_constant": {
+        "assumed_depth_m": 5.0,
+        "cpr_threshold": 1.0,
+        "dop_threshold": 0.13
+      },
+      "rows": [
+        {
+          "threshold": 0.01,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 50000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.05,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 250000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.1,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 500000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.15,
+          "is_configured_value": true,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 750000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.2,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 1000000.0,
+          "volume_provenance": "DERIVED"
+        },
+        {
+          "threshold": 0.3,
+          "is_configured_value": false,
+          "candidate_area_km2": 0.0,
+          "candidate_area_provenance": "MEASURED",
+          "volume_m3": 0.0,
+          "volume_m3_per_km2": 1500000.0,
+          "volume_provenance": "DERIVED"
+        }
+      ]
+    },
+    "provenance": "MEASURED",
+    "computed_by": "backend/scripts/build_analysis.py (sweep_threshold / sweep_assumption)",
+    "withheld_columns": {
+      "rover_distance_km": "Phase 4. No traverse is planned from this file, so a distance column would be an unfinished code path, not a result.",
+      "rover_energy_wh": "Phase 4, same reason.",
+      "best_landing_site_id": "Phase 3. The sites are still hardcoded grid offsets, so the winner cannot move with a threshold and a column saying so would be noise."
+    },
+    "note": "candidate_area_km2 is a pixel count times the frame's own cell area, so it is MEASURED at every row. volume_m3 is DERIVED from it by the assumed depth and pore fraction. The CPR axis is degenerate at the configured operating point: the swath's peak CPR is 0.053411, so every threshold at or above it returns exactly zero pixels. That flat line is the measurement, not a defect in the sweep."
+  },
+  "steps": [
+    {
+      "n": 1,
+      "key": "site",
+      "title": "Target Selection",
+      "status": "COMPLETE",
+      "basis": "Crater catalogue plus the frame's own georeferencing."
+    },
+    {
+      "n": 2,
+      "key": "psr",
+      "title": "Shadow & PSR",
+      "status": "UNAVAILABLE",
+      "basis": "The topography is measured, but the shadow on top of it is not. Illumination here is NOT a horizon computation. It is the expression hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy with no physical horizon in it, inherited from the ingest path. It puts 77 % of the frame below the 0.05 cut, which does not delimit a cold trap; it only says the proxy is dark almost everywhere. The topography beneath it is measured; the shadow on top of it is not. A PSR area is withheld until the Phase 2 horizon computation replaces the proxy; a number from this model would describe the expression, not the Moon."
+    },
+    {
+      "n": 3,
+      "key": "radar",
+      "title": "DFSAR Radar",
+      "status": "COMPLETE",
+      "basis": "Masked native statistics from the calibrated L2 amplitude products."
+    },
+    {
+      "n": 4,
+      "key": "ice",
+      "title": "Ice Criteria Screen",
+      "status": "COMPLETE",
+      "basis": "Five named criteria. Two are measured and evaluated; three are withheld (two shadow terms, one thermal) and say so."
+    },
+    {
+      "n": 5,
+      "key": "terrain",
+      "title": "Terrain Hazards",
+      "status": "COMPLETE",
+      "basis": "Slope, roughness and hazard from measured LOLA topography."
+    },
+    {
+      "n": 6,
+      "key": "landing",
+      "title": "Landing Sites",
+      "status": "UNAVAILABLE",
+      "basis": "The five sites are hardcoded grid offsets (18,50 / 82,75 / 78,25 / 50,15 / 48,85), asserted and then scored, not searched -- and their lat/lon came from a flat 30.37 km per degree constant that is wrong by about 57x in longitude at this latitude. Withheld until the Phase 3 per-pixel search over the native frame runs."
+    },
+    {
+      "n": 7,
+      "key": "rover",
+      "title": "Rover Traverse",
+      "status": "UNAVAILABLE",
+      "basis": "No traverse is planned from this file. The cost surface would be measured LOLA slope and hazard, but the target is still a hardcoded grid centre and no Dijkstra solve runs here, so a distance or an energy figure would be an unfinished code path rather than a result. Phase 4."
+    },
+    {
+      "n": 8,
+      "key": "volume",
+      "title": "Volume Estimate",
+      "status": "COMPLETE",
+      "basis": "Three DERIVED tiers over the measured candidate area, each carrying its own assumed depth and pore fraction as data."
+    },
+    {
+      "n": 9,
+      "key": "sweep",
+      "title": "Sensitivity Studio",
+      "status": "COMPLETE",
+      "basis": "Real sweeps computed by re-thresholding the native arrays."
+    },
+    {
+      "n": 10,
+      "key": "research",
+      "title": "Ablation",
+      "status": "UNAVAILABLE",
+      "basis": "A real ablation needs the Phase 4 planner to rerun with each hazard weight zeroed. The previous four hand-written experiments were deleted in Phase 0."
+    },
+    {
+      "n": 11,
+      "key": "defense",
+      "title": "Viva Rationale",
+      "status": "COMPLETE",
+      "basis": "Reads the evidence rows and the provenance legend in this file."
+    },
+    {
+      "n": 12,
+      "key": "provenance",
+      "title": "Provenance",
+      "status": "COMPLETE",
+      "basis": "Source rasters, masks, thresholds and the generator that produced this file."
     }
   ],
   "measured_statistics": {
@@ -332,14 +1118,6 @@
         "min": 0.0
       }
     },
-    "p_ice_over_measured": {
-      "n": 2337086,
-      "mean": 0.4905109867587247,
-      "p50": 0.38,
-      "p99": 0.72,
-      "max": 0.72,
-      "fraction_above_0_5": 0.45941527183852027
-    },
     "terrain_measured": {
       "post_spacing_m": 80.0,
       "grid_spacing_m": [
@@ -376,11 +1154,16 @@
       "doubly_fraction": 0.19883856760195306
     },
     "screening": {
+      "measured_px": 2337086,
       "cpr_pass_px": 0,
+      "cpr_pass_fraction_of_measured": 0.0,
       "dop_pass_px": 2166825,
+      "dop_pass_fraction_of_measured": 0.9271481665629763,
       "candidate_px": 0,
       "candidate_area_km2": 0.0,
-      "doubly_overlap_px": 0
+      "screening_pass_fraction_of_measured": 0.0,
+      "mask_definition": "(cpr > CPR_THRESHOLD) & (dop < DOP_THRESHOLD) & amplitude_mask",
+      "shadow_term_removed": "v1.0 also intersected the illumination proxy's shadow mask. Removed: it darkens 77 % of the frame, so it discriminated nothing while making a MEASURED-marked area partly modelled."
     }
   },
   "notes": [
@@ -389,7 +1172,9 @@
     "The DEM is measured LOLA topography (LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid), verified bit-identical to lola/ldem_frame_25m.tif on every run, so elevation, slope, roughness and hazard are MEASURED. They are 80 m-post quantities on a 25 m grid and are labelled with the 80 m spacing they were computed at, not the grid they are carried on.",
     "Illumination, PSR and the doubly-shadowed mask are the one remaining invented model here: a brightness proxy with no horizon term. They stay MODELLED, and PSR area stays UNAVAILABLE.",
     "Boulder risk is NO DATA, not zero. The hazard blend drops its weight and renormalises over slope and roughness, so hazard is a two-term hazard in [0, 1] and hazard_model says so.",
-    "P(ice) can never be MEASURED in this project: there are no ground-truth ice labels to validate it against. MODELLED is its ceiling.",
+    "P(ice) is WITHDRAWN, not downgraded. Its Random Forest was fitted to np.random.uniform labels whose ice class (CPR 1.05-2.5) lies entirely outside this product's achievable range, so every prediction was an extrapolation from fabricated examples. Step 4 reports the measured criteria screen instead.",
+    "The candidate mask is (CPR > threshold) AND (DOP < threshold) AND amplitude mask. The illumination proxy's shadow was removed from it: darkening 77 % of the frame discriminates nothing, and its presence made a MEASURED-marked area partly modelled.",
+    "The sensitivity sweeps are computed by re-thresholding the native arrays, not by scaling a baseline. Every area column is a pixel count; every volume column is that area times a stated depth and pore fraction.",
     "The screening threshold was NOT retuned to make this scene pass.",
     "A FAIL here is a null result on an incomplete product, not evidence against ice."
   ]

@@ -6,10 +6,13 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 # Input & Output Paths
-RAW_DIR = Path(r"D:\FYP\data\pradan\raw\data\calibrated\20200808")
+# Repository root, derived from this file's location rather than a hardcoded
+# drive letter. backend/scripts/ -> parents[2] is the root.
+BASE_DIR = Path(__file__).resolve().parents[2]
+RAW_DIR = BASE_DIR / "data" / "pradan" / "raw" / "data" / "calibrated" / "20200808"
 OUT_DIR = Path(r"C:\Users\hp\.gemini\antigravity-ide\brain\6f0784ac-46e7-45a2-a432-2a1cdee24e89")
-OUT_DFSAR_DIR = Path(r"D:\FYP\data\pradan\dfsar")
-OUT_DEM_DIR = Path(r"D:\FYP\data\pradan\dem")
+OUT_DFSAR_DIR = BASE_DIR / "data" / "pradan" / "dfsar"
+OUT_DEM_DIR = BASE_DIR / "data" / "pradan" / "dem"
 
 def run_sanity_check():
     print("=" * 70)
@@ -159,7 +162,7 @@ def run_sanity_check():
     plt.imsave(heatmap_path, cpr_colored)
     print(f"      Saved CPR heatmap image to: {heatmap_path}")
     
-    # Update real GeoTIFF overlay files in D:\FYP\data\pradan\
+    # Update real GeoTIFF overlay files under data/pradan/
     print("\nUpdating production GeoTIFF assets with calibrated calculations...")
     tifffile.imwrite(OUT_DFSAR_DIR / "cpr_real.tif", cpr_512)
     tifffile.imwrite(OUT_DFSAR_DIR / "dop_real.tif", dop_512)

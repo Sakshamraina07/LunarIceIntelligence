@@ -144,13 +144,42 @@ def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
     rover_dist = mission_data["rover_distance_km"]
     rover_energy = mission_data["rover_energy_wh"]
 
+    # Thresholds and assumptions are READ from the payload, never captioned as
+    # literals. "CPR > 1.0 & DOP < 0.13 in PSR" and "Nominal 5m depth, 15% pore
+    # ice fraction" were hardcoded strings beside numbers computed from
+    # config.py, so editing a threshold silently made the report describe a run
+    # that never happened. The PSR clause was wrong twice over: the candidate
+    # mask no longer has a shadow term in it at all.
+    assumptions = mission_data.get("assumptions") or {}
+    cpr_th = assumptions.get("cpr_threshold")
+    dop_th = assumptions.get("dop_threshold")
+    depth_m = assumptions.get("expected_depth_m")
+    pore_frac = assumptions.get("expected_fraction")
+
+    screen_note = (f"CPR > {cpr_th:.2f} AND DOP < {dop_th:.2f}, over cells carrying radar"
+                   if cpr_th is not None and dop_th is not None
+                   else "screening thresholds not supplied in payload")
+    volume_note = (f"candidate area x {depth_m:g} m assumed depth x {pore_frac:g} assumed pore "
+                   f"fraction — an assumption, not a measurement"
+                   if depth_m is not None and pore_frac is not None
+                   else "depth and pore fraction not supplied in payload")
+
+    def _cell(value, fmt, absent="NO DATA"):
+        """A missing figure prints NO DATA. It never prints a default."""
+        return absent if value is None else format(value, fmt)
+
     table_data = [
         ["Metric", "Value", "Operational Significance"],
-        ["Candidate Ice Area", f"{radar_area:.2f} km²", "Screened via CPR > 1.0 & DOP < 0.13 in PSR"],
-        ["Estimated Ice-Equivalent Volume", f"{exp_vol:,.0f} m³", "Nominal 5m depth, 15% pore ice fraction"],
-        ["Recommended Landing Site", str(best_site), "Highest composite score (Safety + Illumination)"],
-        ["Rover Traverse Distance", f"{rover_dist:.2f} km", "Science-Aware balanced multi-objective path"],
-        ["Estimated Rover Energy", f"{rover_energy:.1f} Wh", "Simplified Engineering Model (30 kg rover)"]
+        ["Candidate Ice Area", _cell(radar_area, ",.2f") + (" km²" if radar_area is not None else ""),
+         screen_note],
+        ["Estimated Ice-Equivalent Volume", _cell(exp_vol, ",.0f") + (" m³" if exp_vol is not None else ""),
+         volume_note],
+        ["Recommended Landing Site", "NO DATA" if best_site is None else str(best_site),
+         "Highest composite score (safety + illumination - distance)"],
+        ["Rover Traverse Distance", _cell(rover_dist, ",.2f") + (" km" if rover_dist is not None else ""),
+         "Science-Aware route, uniform-cost search over slope and hazard"],
+        ["Estimated Rover Energy", _cell(rover_energy, ",.1f") + (" Wh" if rover_energy is not None else ""),
+         "Simplified engineering estimate, 30 kg rover"],
     ]
 
     t = Table(table_data, colWidths=[1.8 * inch, 1.8 * inch, 3.4 * inch])
@@ -217,19 +246,24 @@ def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
     story.append(Paragraph("4. ROVER TRAVERSE STRATEGY COMPARISON", section_heading))
     rover_headers = ["Strategy", "Algorithm", "Distance (km)", "Mean Hazard", "Energy (Wh)", "Science Yield"]
     rover_rows = [rover_headers]
+    # Every `.get()` here used to carry a plausible default — 12.0 km, 0.25 mean
+    # hazard, 140.0 Wh, 8.0 science yield — so a route that returned nothing
+    # printed a complete, credible row. Defaults removed: a missing field prints
+    # NO DATA.
     for strat, r_res in mission_data.get("rover_routes", {}).items():
         rover_rows.append([
             strat,
-            r_res.get('algorithm_used', 'A*'),
-            f"{r_res.get('total_distance_km', 12.0):.2f}",
-            f"{r_res.get('mean_hazard_encountered', 0.25):.2f}",
-            f"{r_res.get('total_energy_wh', 140.0):.1f}",
-            f"{r_res.get('total_scientific_value_collected', 8.0):.1f}"
+            r_res.get('algorithm_used') or "NO DATA",
+            _cell(r_res.get('total_distance_km'), ",.2f"),
+            _cell(r_res.get('mean_hazard_encountered'), ".2f"),
+            _cell(r_res.get('total_energy_wh'), ",.1f"),
+            _cell(r_res.get('total_scientific_value_collected'), ".1f"),
         ])
     if len(rover_rows) == 1:
-        rover_rows.append(["Shortest", "A*", "10.40", "0.58", "182.4", "3.2"])
-        rover_rows.append(["Safest", "A*", "14.80", "0.19", "128.6", "2.1"])
-        rover_rows.append(["Science-Aware", "A*", "12.10", "0.28", "141.2", "9.4"])
+        # Was three fully invented rows ("Shortest A* 10.40 0.58 182.4 3.2" and
+        # two more). They were the only rover figures in the report whenever the
+        # planner returned nothing, and nothing marked them as fabricated.
+        rover_rows.append(["—", "No route returned", "NO DATA", "NO DATA", "NO DATA", "NO DATA"])
 
     rt = Table(rover_rows, colWidths=[1.5 * inch, 1.0 * inch, 1.2 * inch, 1.1 * inch, 1.1 * inch, 1.1 * inch])
     rt.setStyle(TableStyle([
@@ -245,20 +279,33 @@ def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
     story.append(Spacer(1, 10))
 
     # Scientific Limitations & Assumptions (Section 48)
+    tiers = mission_data.get("volume_tiers") or []
+    if tiers:
+        tier_note = ", ".join(
+            f"{tv['tier']} {tv['assumed_depth_m']:g} m / {tv['assumed_pore_fraction']:g}"
+            for tv in tiers
+        )
+    else:
+        tier_note = "tier assumptions not supplied in payload"
+
     story.append(KeepTogether([
         Paragraph("5. SCIENTIFIC LIMITATIONS & MISSION ASSUMPTIONS", section_heading),
         Paragraph(
             "1. <b>Radar Signatures:</b> Polarimetric anomalies (CPR > 1.0, DOP < 0.13) are consistent with potential "
             "subsurface ice, but do not constitute certified ground truth confirmation without in-situ drilling or neutron spectrometry.<br/>"
-            "2. <b>ML Model:</b> The Random Forest classifier is a research prototype trained on synthetic physical response curves "
-            "and does not claim unverified empirical accuracy figures.<br/>"
-            "3. <b>Volumetric Uncertainty:</b> Ice volume is presented as a 3-tier range (Conservative, Expected, Upper) based on "
-            "assumed regolith stratigraphy (2m - 10m depth, 5% - 30% pore ice fraction).<br/>"
-            "4. <b>Rover Energy:</b> Power calculations represent a simplified engineering estimate for a 30kg micro-rover "
-            "and do not substitute for certified NASA/ISRO flight dynamic models.<br/>"
-            "5. <b>Reproducibility:</b> Every figure above is computed from the Chandrayaan-2 DFSAR product named on page 1; "
-            "re-running the pipeline on that product reproduces them exactly. No pseudo-random seed is involved, because "
-            "no quantity in this report is generated.",
+            "2. <b>No ML model:</b> the Random Forest ice-likelihood classifier was WITHDRAWN. It was "
+            "fitted to uniformly random labels whose positive class was defined as CPR 1.05-2.5 — a "
+            "range this amplitude-only product cannot reach — so every probability it produced was an "
+            "extrapolation from fabricated examples. No probability appears in this report.<br/>"
+            f"3. <b>Volumetric uncertainty:</b> ice volume is a 3-tier range over assumed regolith "
+            f"stratigraphy ({tier_note}). The area is measured; the depth and the pore fraction are "
+            f"assumptions and are stated with every figure.<br/>"
+            "4. <b>Rover energy:</b> a simplified engineering estimate for a 30 kg micro-rover, not a "
+            "substitute for certified NASA/ISRO flight dynamic models. The planner is a uniform-cost "
+            "(Dijkstra) search; no optimality beyond that is claimed.<br/>"
+            "5. <b>Reproducibility:</b> every figure above is computed from the Chandrayaan-2 DFSAR "
+            "product named on page 1, and re-running the pipeline on that product reproduces them. "
+            "Any quantity that could not be computed is printed as NO DATA rather than filled in.",
             limitation_style
         ),
         Spacer(1, 8),

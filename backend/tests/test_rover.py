@@ -5,6 +5,7 @@ Tests A* vs Dijkstra, impassable cliff avoidance, and energy consumption model.
 
 import pytest
 import numpy as np
+from app.core.config import settings
 from app.modules.module_f_rover import plan_rover_path, compute_step_energy_wh
 
 
@@ -28,8 +29,6 @@ def test_rover_path_reachability():
     illumination = np.ones((size, size))
     scientific_mask = np.zeros((size, size), dtype=bool)
     scientific_mask[15, 15] = True
-    ml_likelihood = np.zeros((size, size))
-    ml_likelihood[15, 15] = 0.9
 
     start_xy = (2, 2)
     target_xy = (15, 15)
@@ -42,11 +41,11 @@ def test_rover_path_reachability():
         hazard=hazard,
         illumination=illumination,
         scientific_mask=scientific_mask,
-        ml_likelihood=ml_likelihood,
         start_xy=start_xy,
         target_xy=target_xy,
         strategy="Science-Aware",
         algorithm="A*",
+        data_mode="DEMO",
         spacing_m=(100.0, 100.0)
     )
 
@@ -71,9 +70,9 @@ def test_anisotropic_spacing_changes_reported_distance():
         hazard=np.zeros((size, size)),
         illumination=np.ones((size, size)),
         scientific_mask=np.zeros((size, size), dtype=bool),
-        ml_likelihood=np.zeros((size, size)),
         strategy="Shortest",
         algorithm="A*",
+        data_mode="DEMO",
         spacing_m=(100.0, 400.0),
     )
 
@@ -89,14 +88,15 @@ def test_anisotropic_spacing_changes_reported_distance():
 def test_impassable_cliff_barrier_failure():
     size = 20
     dem = np.zeros((size, size))
-    # Vertical impassable barrier at column x=10 with slope 30 deg (> 22 deg limit)
+    # Vertical impassable barrier at column x=10, slope 30 deg — above
+    # settings.MAX_TRAVERSABLE_SLOPE_DEG (20 deg), which the planner now reads
+    # instead of its own 22.0 default.
     slope = np.zeros((size, size))
     slope[:, 10] = 30.0
     roughness = np.zeros((size, size))
     hazard = np.zeros((size, size))
     illumination = np.ones((size, size))
     scientific_mask = np.zeros((size, size), dtype=bool)
-    ml_likelihood = np.zeros((size, size))
 
     start_xy = (2, 5)
     target_xy = (18, 5)
@@ -108,14 +108,20 @@ def test_impassable_cliff_barrier_failure():
         hazard=hazard,
         illumination=illumination,
         scientific_mask=scientific_mask,
-        ml_likelihood=ml_likelihood,
         start_xy=start_xy,
         target_xy=target_xy,
         strategy="Shortest",
         algorithm="A*",
+        data_mode="DEMO",
         spacing_m=(100.0, 100.0)
     )
 
     # PRD Rule: Never fabricate a path when terrain is impassable!
     assert res.path_found is False
-    assert "NO FEASIBLE PATH FOUND" in res.failure_reason
+    assert "NO FEASIBLE PATH" in res.failure_reason
+    # The reason must name the limit that was actually applied, and it must be
+    # the configured one. The module used to carry its own 22.0 default while
+    # config.py declared 20.0.
+    assert str(settings.MAX_TRAVERSABLE_SLOPE_DEG).rstrip('0').rstrip('.') in res.failure_reason
+    # Optimality is not claimed: only Dijkstra is implemented.
+    assert res.algorithm_used == "Dijkstra"

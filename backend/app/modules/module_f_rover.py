@@ -1,6 +1,15 @@
 """
 MODULE F: Multi-Objective Rover Path Planning & Engineering Energy Model.
-PRD Compliance: Implements A* and Dijkstra graph traversal comparing 3 strategies:
+
+ONE search is implemented: uniform-cost (Dijkstra) over an 8-connected grid.
+The "A*" mode was removed in PRD Phase 1C -- its heuristic added a distance in
+CELLS to a priority measured in composite cost units whose steps are floored at
+0.1, so it was not admissible, the search was not guaranteed to return the
+cheapest path, and the label asserted an optimality the code did not have. A
+caller may still pass algorithm="A*"; it gets Dijkstra and `algorithm_used`
+says Dijkstra.
+
+Three strategies over that one search:
 1. Shortest Path (Distance minimization)
 2. Safest Path (Hazard/slope avoidance)
 3. Science-Aware Path (Multi-objective balancing safety, energy, and volatile scientific sampling)
@@ -12,6 +21,7 @@ import numpy as np
 from typing import List, Dict, Any, Tuple, Optional
 from app.core.config import settings
 from app.core.schemas import RoverRouteResult, PathWaypoint
+from app.core.provenance import create_provenance
 
 
 class PriorityQueue:
@@ -26,10 +36,6 @@ class PriorityQueue:
 
     def get(self):
         return heapq.heappop(self.elements)[1]
-
-
-def heuristic_euclidean(a: Tuple[int, int], b: Tuple[int, int], scale: float = 1.0) -> float:
-    return np.sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2) * scale
 
 
 def compute_step_energy_wh(
@@ -76,13 +82,14 @@ def plan_rover_path(
     hazard: np.ndarray,
     illumination: np.ndarray,
     scientific_mask: np.ndarray,
-    ml_likelihood: np.ndarray,
     start_xy: Tuple[int, int],
     target_xy: Tuple[int, int],
     spacing_m: Tuple[float, float],
     strategy: str = "Science-Aware",
-    algorithm: str = "A*",
-    max_slope_limit_deg: float = 22.0
+    algorithm: str = "Dijkstra",
+    max_slope_limit_deg: Optional[float] = None,
+    *,
+    data_mode: str,
 ) -> RoverRouteResult:
     """
     Plans traversal path between landing site and candidate ice deposit.
@@ -106,6 +113,42 @@ def plan_rover_path(
     target = (target_xy[0], target_xy[1])
     sy, sx = spacing_m
 
+    # ONE supported search. A caller asking for "A*" gets Dijkstra and is told
+    # so in `algorithm_used`, rather than getting a uniform-cost search wearing
+    # an A* label. See the comment at the frontier push for why the heuristic
+    # that used to be applied there was not admissible.
+    algorithm_requested = algorithm
+    algorithm = "Dijkstra"
+
+    slope_limit_deg_pre = (max_slope_limit_deg if max_slope_limit_deg is not None
+                           else float(settings.MAX_TRAVERSABLE_SLOPE_DEG))
+    route_provenance = create_provenance(
+        dataset_name=f"ROVER_ROUTE_{strategy.upper().replace('-', '_')}",
+        algorithm=("Uniform-cost search (Dijkstra) over an 8-connected grid with a composite "
+                   "step cost. Not A*: no admissible heuristic is applied."),
+        parameters={
+            "strategy": strategy,
+            "algorithm_requested": algorithm_requested,
+            "algorithm_used": "Dijkstra",
+            "a_star_available": False,
+            "why_no_a_star": ("the previous heuristic added a distance in CELLS to a priority in "
+                              "composite cost units, so it was not admissible and the search was "
+                              "not guaranteed optimal"),
+            "max_traversable_slope_deg": float(slope_limit_deg_pre),
+            "slope_limit_source": ("caller override" if max_slope_limit_deg is not None
+                                   else "settings.MAX_TRAVERSABLE_SLOPE_DEG"),
+            "spacing_m": [float(sy), float(sx)],
+            "cost_scalers": {
+                "hazard": 15.0, "energy": 5.0, "science": 8.0,
+                "note": ("dimensionless scalers that put the three terms on comparable ranges "
+                         "before the configured weights are applied; not measured quantities"),
+            },
+            "science_term": ("binary membership of the measured criteria mask; the Random Forest "
+                             "P(ice) that used to weight it was withdrawn in Phase 1C"),
+        },
+        data_mode=data_mode,
+    )
+
     # Validate boundaries
     if not (0 <= start[0] < width and 0 <= start[1] < height):
         return RoverRouteResult(
@@ -121,11 +164,18 @@ def plan_rover_path(
             total_scientific_value_collected=0.0,
             waypoints=[],
             avoidance_explanations=[],
-            failure_reason="Start coordinates outside simulation grid."
+            failure_reason=(f"Start coordinates {start} lie outside the {width} x {height} grid."),
+            data_mode=data_mode,
+            provenance=route_provenance,
         )
 
     # Impassable barrier mask: Cliffs exceeding rover physical tilt limits
-    impassable = slope_deg > max_slope_limit_deg
+    # settings.MAX_TRAVERSABLE_SLOPE_DEG, not a 22.0 default. The module used to
+    # carry its own 22.0 while config.py declared 20.0, so the planner drove over
+    # terrain the rest of the app called impassable and the two numbers appeared
+    # side by side in the UI.
+    slope_limit_deg = slope_limit_deg_pre
+    impassable = slope_deg > slope_limit_deg
 
     # Strategy Cost Weights
     if strategy == "Shortest":
@@ -184,7 +234,10 @@ def plan_rover_path(
             step_slope = float(slope_deg[ny, nx])
             step_hazard = float(hazard[ny, nx])
             step_illum = float(illumination[ny, nx])
-            step_sci = float(ml_likelihood[ny, nx]) if scientific_mask[ny, nx] else 0.0
+            # Was ml_likelihood[ny, nx] -- the withdrawn Random Forest's P(ice).
+            # The measured criteria mask is binary, so the science incentive is
+            # now "this cell passed both polarimetric criteria" and nothing more.
+            step_sci = 1.0 if scientific_mask[ny, nx] else 0.0
 
             # Simplified energy estimate for this step
             step_energy_wh = compute_step_energy_wh(
@@ -215,9 +268,17 @@ def plan_rover_path(
             next_node = (nx, ny)
             if next_node not in cost_so_far or new_cost < cost_so_far[next_node]:
                 cost_so_far[next_node] = new_cost
+                # DIJKSTRA ONLY. The A* branch that stood here added
+                # heuristic_euclidean(next, target) -- a distance in CELLS --
+                # to a priority measured in composite cost units, where a single
+                # step can cost w_hazard * hazard * 15.0 + w_energy * energy * 5.0
+                # and is floored at 0.1. The two quantities are not commensurate,
+                # so the heuristic was not admissible and the search was not
+                # guaranteed to return the cheapest path. Labelling that "A*" is
+                # a claim of optimality that was false. A scaled, admissible
+                # heuristic arrives with the Phase 4 planner, which drops this
+                # hand-rolled search for scipy.sparse.csgraph.dijkstra.
                 priority = new_cost
-                if algorithm == "A*":
-                    priority += heuristic_euclidean(next_node, target, scale=1.0)
                 frontier.put(next_node, priority)
                 came_from[next_node] = current
 
@@ -234,8 +295,18 @@ def plan_rover_path(
             max_slope_encountered_deg=0.0,
             total_scientific_value_collected=0.0,
             waypoints=[],
-            avoidance_explanations=["Target crater floor isolated by continuous ring of impassable cliffs (> 22°)."],
-            failure_reason="NO FEASIBLE PATH FOUND: Impassable crater wall gradients (> 22°) obstruct all traversable channels."
+            avoidance_explanations=[
+                f"UNREACHABLE. Every 8-connected route from {start} to {target} crosses cells above "
+                f"the {slope_limit_deg:g}° traversability limit "
+                f"({int(np.sum(impassable)):,} of {slope_deg.size:,} cells excluded)."
+            ],
+            failure_reason=(
+                f"NO FEASIBLE PATH: no 8-connected sequence of cells at or below "
+                f"{slope_limit_deg:g}° (settings.MAX_TRAVERSABLE_SLOPE_DEG) connects the start to "
+                f"the target."
+            ),
+            data_mode=data_mode,
+            provenance=route_provenance,
         )
 
     # Reconstruct path
@@ -259,7 +330,7 @@ def plan_rover_path(
         s_deg = float(slope_deg[py, px])
         h_score = float(hazard[py, px])
         illum = float(illumination[py, px])
-        sci = float(ml_likelihood[py, px]) if scientific_mask[py, px] else 0.0
+        sci = 1.0 if scientific_mask[py, px] else 0.0
 
         if i > 0:
             prev_px, prev_py = path_nodes[i - 1]
@@ -291,15 +362,37 @@ def plan_rover_path(
 
     est_time_hrs = (cum_dist_km * 1000.0 / settings.NOMINAL_SPEED_MPS) / 3600.0
 
+    # DERIVED FROM THE PATH THAT WAS ACTUALLY WALKED. The previous version
+    # printed one of three fixed paragraphs chosen by `strategy` alone --
+    # "traversed wide switchbacks around boulder-strewn debris tongues" was
+    # emitted for every Safest route regardless of geometry, in a build with no
+    # boulder product at all. Each statement below is a measurement of `path_nodes`
+    # or it is not made.
     avoidance_notes = []
-    if strategy == "Safest":
-        avoidance_notes.append("Route skirted along gentle ridge crests to avoid steep crater inner walls.")
-        avoidance_notes.append("Traversed wide switchbacks around boulder-strewn debris tongues.")
-    elif strategy == "Science-Aware":
-        avoidance_notes.append("Route diverted dynamically into secondary high-CPR cold traps to maximize volatile sampling.")
-        avoidance_notes.append("Maintained solar illumination exposure where available to preserve battery reserves.")
-    else:
-        avoidance_notes.append("Direct line trajectory prioritizing minimal distance.")
+    n_impassable = int(np.sum(impassable))
+    avoidance_notes.append(
+        f"{len(waypoints)} waypoints over {cum_dist_km:.2f} km; mean hazard "
+        f"{float(np.mean(hazards)):.3f}, peak slope {float(np.max(slopes)):.2f}°."
+    )
+    avoidance_notes.append(
+        f"{n_impassable:,} of {slope_deg.size:,} cells ({n_impassable / slope_deg.size * 100:.1f} %) "
+        f"were excluded as impassable at > {slope_limit_deg:g}° "
+        f"(settings.MAX_TRAVERSABLE_SLOPE_DEG)."
+    )
+    n_sci = int(np.sum([w.science_value > 0.0 for w in waypoints]))
+    avoidance_notes.append(
+        f"{n_sci} of {len(waypoints)} waypoints fall inside the measured criteria mask."
+        if n_sci else
+        f"No waypoint falls inside the measured criteria mask; the mask is empty for this frame, so "
+        f"the science term contributed nothing to this route and the three strategies differ only in "
+        f"their hazard and energy weighting."
+    )
+    straight_km = float(np.hypot((target[0] - start[0]) * sx, (target[1] - start[1]) * sy) / 1000.0)
+    if straight_km > 0:
+        avoidance_notes.append(
+            f"Path is {cum_dist_km / straight_km:.2f}x the {straight_km:.2f} km straight-line "
+            f"distance between start and target."
+        )
 
     return RoverRouteResult(
         strategy=strategy,
@@ -314,5 +407,7 @@ def plan_rover_path(
         total_scientific_value_collected=round(float(np.sum(sci_values)), 2),
         waypoints=waypoints,
         avoidance_explanations=avoidance_notes,
-        failure_reason=None
+        failure_reason=None,
+        data_mode=data_mode,
+        provenance=route_provenance,
     )

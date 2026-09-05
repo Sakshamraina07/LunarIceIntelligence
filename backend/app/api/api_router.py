@@ -2,13 +2,16 @@
 FastAPI API Router exposing modular endpoints for Lunar Ice Intelligence.
 """
 
+import json
+from pathlib import Path
+
 from fastapi import APIRouter, HTTPException, Query, Response
 from typing import Optional, Dict, Any
 
 from app.core.config import settings
+from app.core.exceptions import UnknownCraterError
 from app.demo.lunar_generator import demo_generator_enabled
 from app.services.mission_service import mission_orchestrator
-from app.modules.module_g_volume import run_sensitivity_sweep
 from app.services.pdf_generator import generate_mission_pdf_report
 
 router = APIRouter()
@@ -53,6 +56,13 @@ def get_mission_state(
             rover_algorithm=algorithm
         )
         return mission_data
+    except UnknownCraterError as e:
+        # 404, not 500 and not a Shackleton payload. The orchestrator used to
+        # answer an unknown id with CRATER_CATALOG["shackleton"], so a typo
+        # returned a complete confident payload attributed to the wrong crater.
+        raise HTTPException(status_code=404, detail={"error": e.error_code,
+                                                     "message": e.message,
+                                                     **e.details})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -60,12 +70,65 @@ def get_mission_state(
 @router.get("/sensitivity/{parameter_name}")
 def get_sensitivity_analysis(
     parameter_name: str,
-    base_area_km2: float = Query(8.75, description="Base candidate ice area in km2")
+    crater_id: str = Query("faustini", description="Crater whose precomputed sweep to serve"),
 ):
+    """
+    Serve the PRECOMPUTED sweep, or refuse.
+
+    This endpoint used to accept `base_area_km2` (defaulting to 8.75, a number
+    with no origin in this project) and hand it to run_sensitivity_sweep, which
+    scaled it by a closed-form expression and returned the result as a threshold
+    study. No raster was read and no threshold was applied to any data.
+
+    The real sweep is computed offline from the native arrays by
+    backend/scripts/build_analysis.py and committed alongside layers.json. This
+    reads that file. If the crater has no precomputed analysis, the answer is
+    404 -- not a curve.
+    """
     valid_params = ["cpr_threshold", "dop_threshold", "assumed_depth_m", "ice_fraction"]
     if parameter_name not in valid_params:
         raise HTTPException(status_code=400, detail=f"Parameter must be one of: {valid_params}")
-    return run_sensitivity_sweep(parameter_name, base_candidate_area_km2=base_area_km2)
+
+    analysis_path = (Path(__file__).resolve().parents[3]
+                     / "frontend" / "public" / "analysis" / f"{crater_id}.json")
+    if not analysis_path.is_file():
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "NO_PRECOMPUTED_ANALYSIS",
+                "crater_id": crater_id,
+                "message": (f"No precomputed analysis exists for {crater_id}, so no measured sweep "
+                            f"can be served. Run: python backend/scripts/build_analysis.py "
+                            f"{crater_id}"),
+            },
+        )
+
+    doc = json.loads(analysis_path.read_text(encoding="utf-8"))
+    block = (doc.get("sensitivity") or {}).get(parameter_name)
+    if not block:
+        raise HTTPException(
+            status_code=404,
+            detail={
+                "error": "PARAMETER_NOT_SWEPT",
+                "parameter": parameter_name,
+                "message": f"{analysis_path.name} carries no sweep for {parameter_name}.",
+            },
+        )
+
+    return {
+        "parameter_tested": parameter_name,
+        "crater_id": crater_id,
+        "source": "frontend/public/analysis/%s.json (build_analysis.py)" % crater_id,
+        "generated_utc": doc.get("generated_utc"),
+        "data_mode": doc.get("data_mode"),
+        "baseline_value": block.get("baseline"),
+        "grid_source": block.get("grid_source"),
+        "held_constant": block.get("held_constant"),
+        "sweep_values": [r["threshold"] for r in block.get("rows", [])],
+        "results": block.get("rows", []),
+        "withheld_columns": (doc.get("sensitivity") or {}).get("withheld_columns"),
+        "sensitivity_summary": (doc.get("sensitivity") or {}).get("note"),
+    }
 
 
 @router.get("/report/pdf/{crater_id}")
@@ -86,16 +149,42 @@ def download_mission_report_pdf(crater_id: str):
             },
         )
 
+    # A route that did not find a path has no distance and no energy. Reading
+    # `.total_distance_km` off it yields 0.0, which the report would print as a
+    # measured zero-kilometre traverse; None makes the generator print NO DATA.
+    science_route = mission_data["rover_routes"].get("Science-Aware")
+    route_found = bool(science_route is not None and science_route.path_found)
+    volume = mission_data["volume"]
+
     pdf_payload = {
         "crater_name": mission_data["selected_crater"].name,
         "data_mode": mission_data["data_mode"],
         "candidate_area_km2": mission_data["ice"].scientific_candidate_area_km2,
-        "expected_volume_m3": mission_data["volume"].expected_volume_m3,
+        "expected_volume_m3": volume.expected_volume_m3,
         "recommended_site": mission_data["recommended_landing_site"].name,
-        "rover_distance_km": mission_data["rover_routes"]["Science-Aware"].total_distance_km,
-        "rover_energy_wh": mission_data["rover_routes"]["Science-Aware"].total_energy_wh,
+        "rover_distance_km": science_route.total_distance_km if route_found else None,
+        "rover_energy_wh": science_route.total_energy_wh if route_found else None,
         "landing_sites": [s.dict() for s in mission_data["landing_sites"]],
-        "rover_routes": {k: v.dict() for k, v in mission_data["rover_routes"].items()}
+        "rover_routes": {k: v.dict() for k, v in mission_data["rover_routes"].items()},
+        # The thresholds and assumptions the run ACTUALLY used, so the report
+        # states them instead of captioning literals that can drift from config.
+        "assumptions": {
+            "cpr_threshold": mission_data["radar"].cpr_threshold_used,
+            "dop_threshold": mission_data["radar"].dop_threshold_used,
+            "expected_depth_m": volume.expected_assumptions.get("assumed_depth_m"),
+            "expected_fraction": volume.expected_assumptions.get("ice_volume_fraction"),
+        },
+        "volume_tiers": [
+            {"tier": "conservative",
+             "assumed_depth_m": volume.conservative_assumptions.get("assumed_depth_m"),
+             "assumed_pore_fraction": volume.conservative_assumptions.get("ice_volume_fraction")},
+            {"tier": "expected",
+             "assumed_depth_m": volume.expected_assumptions.get("assumed_depth_m"),
+             "assumed_pore_fraction": volume.expected_assumptions.get("ice_volume_fraction")},
+            {"tier": "upper",
+             "assumed_depth_m": volume.upper_assumptions.get("assumed_depth_m"),
+             "assumed_pore_fraction": volume.upper_assumptions.get("ice_volume_fraction")},
+        ],
     }
 
     pdf_bytes = generate_mission_pdf_report(pdf_payload)

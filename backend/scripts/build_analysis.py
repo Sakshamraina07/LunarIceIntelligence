@@ -183,6 +183,42 @@ ILLUM_MODEL = (
     "it is measured; the shadow on top of it is not."
 )
 
+MASK_NOTE = (
+    "Over the amplitude mask at native 25 m/px. The request path resamples to "
+    "100 x 100 and averages across the never-observed void, which moves CPR mean "
+    "by 5.5x and destroys the DOP median outright."
+)
+
+# One reason string per withheld quantity, written once and referenced, so the
+# UI cannot end up showing two different explanations for the same absence.
+PSR_ABSENT_REASON = (
+    "The topography is measured, but the shadow on top of it is not. " + ILLUM_MODEL +
+    " A PSR area is withheld until the Phase 2 horizon computation replaces the proxy; a number "
+    "from this model would describe the expression, not the Moon."
+)
+
+P_ICE_ABSENT_REASON = (
+    "WITHDRAWN, not missing. The Random Forest behind this figure was fitted to np.random.uniform "
+    "labels with a fixed seed, and its ice class was defined as CPR 1.05-2.5 -- a range this "
+    "amplitude-only product cannot reach at all, since the swath's peak CPR is 0.0534. Every "
+    "probability it produced was an extrapolation from fabricated examples, and one of its six "
+    "features was the illumination proxy. It is unwired, not retrained: better synthetic labels are "
+    "still synthetic. Step 4 now reports the criteria screen, which is measured."
+)
+
+LANDING_ABSENT_REASON = (
+    "The five sites are hardcoded grid offsets (18,50 / 82,75 / 78,25 / 50,15 / 48,85), asserted and "
+    "then scored, not searched -- and their lat/lon came from a flat 30.37 km per degree constant that "
+    "is wrong by about 57x in longitude at this latitude. Withheld until the Phase 3 per-pixel search "
+    "over the native frame runs."
+)
+
+ROVER_ABSENT_REASON = (
+    "No traverse is planned from this file. The cost surface would be measured LOLA slope and hazard, "
+    "but the target is still a hardcoded grid centre and no Dijkstra solve runs here, so a distance or "
+    "an energy figure would be an unfinished code path rather than a result. Phase 4."
+)
+
 
 def assert_dem_is_lola(dem: np.ndarray) -> dict:
     """
@@ -427,38 +463,91 @@ def hazard_from(slope_deg: np.ndarray, roughness: np.ndarray, cfg,
     return hazard, model
 
 
-def p_ice_over_valid(cpr, dop, slope_deg, roughness, illumination, psr_mask, valid) -> dict:
+def threshold_grid(measured: np.ndarray, configured: float, span: tuple[float, float],
+                   steps: int = 9) -> list[float]:
     """
-    Run the project's Random Forest, but ONLY on pixels that carry radar.
+    The thresholds a sweep is evaluated at. STATED, not adaptive.
 
-    The backend runs it over the whole 100 x 100 frame, so 84 % of its input
-    rows are literal-zero padding -- and a row of zeros looks exactly like the
-    trained "ice" class (cpr low, dop low, illumination 0, flat), which is a
-    large part of why the fabricated card reads 0.96. Restricting the model to
-    the amplitude mask removes that artefact.
+    Two things have to be visible at once, and a single linear ramp shows
+    neither: where the data actually lives, and where the configured threshold
+    sits relative to it. So the grid is the union of
+
+      * the measured distribution's own percentiles (p50, p90, p99, p99.9, max),
+      * a fixed linear ramp across `span`,
+      * the configured threshold itself, always, so the sweep can never be read
+        without seeing the operating point.
+
+    This is a sensitivity study, not a search for a threshold that passes. Rule 4
+    stands: nothing here is fed back into config.py.
     """
-    from app.modules.module_c_ice import ice_ml_model
+    qs = [float(np.percentile(measured, q)) for q in (50.0, 90.0, 99.0, 99.9)]
+    ramp = list(np.linspace(span[0], span[1], steps))
+    grid = sorted({round(float(x), 6) for x in (qs + ramp + [float(measured.max()), configured])})
+    return [x for x in grid if x >= 0.0]
 
-    X = np.column_stack([
-        cpr[valid].astype(np.float64),
-        dop[valid].astype(np.float64),
-        slope_deg[valid].astype(np.float64),
-        roughness[valid].astype(np.float64),
-        illumination[valid].astype(np.float64),
-        psr_mask[valid].astype(np.float64),
-    ])
-    if not ice_ml_model._is_trained:
-        ice_ml_model.train_prototype_model()
-    p = ice_ml_model.model.predict_proba(X)[:, 1]
-    del X
-    return {
-        "n": int(p.size),
-        "mean": float(p.mean()),
-        "p50": float(np.percentile(p, 50)),
-        "p99": float(np.percentile(p, 99)),
-        "max": float(p.max()),
-        "fraction_above_0_5": float((p >= 0.5).mean()),
-    }
+
+def sweep_threshold(cpr, dop, valid, *, axis: str, grid: list[float],
+                    cpr_th: float, dop_th: float, cell_km2: float,
+                    depth_m: float, fraction: float) -> list[dict]:
+    """
+    Re-threshold the native arrays and count. Nothing is modelled here.
+
+    `area_km2` is MEASURED: a pixel count times the frame's own cell area. The
+    volume column is DERIVED from it by the stated depth and pore fraction, and
+    is only ever as good as those two assumptions.
+
+    The other axis is held at its configured value, so a row answers "what would
+    the candidate area be if THIS threshold moved and nothing else did".
+    """
+    rows = []
+    for th in grid:
+        if axis == "cpr_threshold":
+            m = (cpr > th) & (dop < dop_th) & valid
+        elif axis == "dop_threshold":
+            m = (cpr > cpr_th) & (dop < th) & valid
+        else:
+            raise ValueError(f"sweep_threshold does not sweep {axis!r}")
+        n = int(m.sum())
+        area = n * cell_km2
+        rows.append({
+            "threshold": th,
+            "is_configured_value": bool(abs(th - (cpr_th if axis == "cpr_threshold" else dop_th)) < 1e-12),
+            "candidate_px": n,
+            "candidate_area_km2": round(area, 6),
+            "candidate_area_provenance": MEASURED,
+            "volume_m3": round(area * 1e6 * depth_m * fraction, 3),
+            "volume_provenance": DERIVED,
+        })
+    return rows
+
+
+def sweep_assumption(area_km2: float, *, axis: str, grid: list[float],
+                     depth_m: float, fraction: float) -> list[dict]:
+    """
+    Depth and pore-fraction sweeps. The candidate AREA does not move on these
+    axes -- only the assumption multiplying it does -- so the area column is
+    constant and the volume column is linear in the swept value.
+
+    `volume_m3_per_km2` is carried as well. When the candidate area is a measured
+    zero the volume column is all zeros and says nothing; the per-km2 rate still
+    shows the assumption's actual sensitivity, and is labelled as a rate rather
+    than as a result.
+    """
+    rows = []
+    for x in grid:
+        d = x if axis == "assumed_depth_m" else depth_m
+        f = x if axis == "ice_fraction" else fraction
+        rate = 1e6 * d * f
+        rows.append({
+            "threshold": x,
+            "is_configured_value": bool(abs(x - (depth_m if axis == "assumed_depth_m" else fraction)) < 1e-12),
+            "candidate_area_km2": round(area_km2, 6),
+            "candidate_area_provenance": MEASURED,
+            "volume_m3": round(area_km2 * rate, 3),
+            "volume_m3_per_km2": round(rate, 3),
+            "volume_provenance": DERIVED,
+        })
+    return rows
 
 
 def build(crater_id: str = "faustini") -> dict:
@@ -524,35 +613,146 @@ def build(crater_id: str = "faustini") -> dict:
     print(f"  model       hillshade(sun 1.5 deg) * elev_norm**1.3 -- a brightness proxy, no horizon term")
 
     # ---------------------------------------------------------------- screening
-    # module_c_ice.evaluate_ice_intelligence, verbatim criteria, with one
-    # addition: the mask is intersected with `valid`, so a candidate can only be
-    # claimed where radar actually exists. Without that, the illumination proxy's
-    # shadow could nominate pixels the radar never saw.
+    # THE CRITERIA SCREEN, and nothing else. Two measured polarimetric tests
+    # inside the amplitude mask:
+    #
+    #     candidate = (cpr > CPR_THRESHOLD) & (dop < DOP_THRESHOLD) & valid
+    #
+    # v1.0 of this file intersected that with `t["psr_mask"]`, the illumination
+    # PROXY's shadow. That made the headline area a partly-modelled quantity
+    # wearing a MEASURED mark: the proxy darkens 77 % of the frame, so it was
+    # not discriminating a cold trap, it was only multiplying by a large mask.
+    # The shadow terms are now criteria of their own and both read UNAVAILABLE
+    # until the Phase 2 horizon computation exists. The headline is a measured
+    # zero, which is a result.
     cpr_th, dop_th = float(cfg.CPR_THRESHOLD), float(cfg.DOP_THRESHOLD)
     cpr_pass = (cpr > cpr_th) & valid
     dop_pass = (dop < dop_th) & valid
-    candidate = cpr_pass & dop_pass & t["psr_mask"]
+    candidate = cpr_pass & dop_pass
     cand_n = int(candidate.sum())
     cand_km2 = cand_n * cell_km2
-    doubly_overlap = int((candidate & t["doubly"]).sum())
+    valid_n = int(valid.sum())
+    cpr_pass_frac = float(cpr_pass.sum()) / max(valid_n, 1)
+    dop_pass_frac = float(dop_pass.sum()) / max(valid_n, 1)
+    screen_frac = float(cand_n) / max(valid_n, 1)
 
-    hr("SCREENING -- CPR > th AND DOP < th AND in PSR, restricted to measured pixels")
-    print(f"  threshold   CPR > {cpr_th}   DOP < {dop_th}   (backend/app/core/config.py)")
-    print(f"  CPR > {cpr_th}   {int(cpr_pass.sum()):>12,d} px of {int(valid.sum()):,} measured"
-          f"   -> highest CPR anywhere in the swath is {cpr_s['max']:.6f}")
-    print(f"  DOP < {dop_th}  {int(dop_pass.sum()):>12,d} px  ({dop_pass.sum() / max(valid.sum(), 1) * 100:.2f} % of measured)")
-    print(f"  candidates  {cand_n:>12,d} px  {cand_km2:.2f} km2   doubly-shadowed overlap {doubly_overlap:,} px")
-    print(f"  status      {'PASS' if cand_n > 0 else 'FAIL'}")
+    hr("SCREENING -- CPR > th AND DOP < th, over the amplitude mask only")
+    print(f"  threshold   CPR > {cpr_th}   DOP < {dop_th}   (backend/app/core/config.py, NOT retuned)")
+    print(f"  CPR > {cpr_th}   {int(cpr_pass.sum()):>12,d} px of {valid_n:,} measured  "
+          f"({cpr_pass_frac * 100:6.3f} %)   -> highest CPR in the swath is {cpr_s['max']:.6f}")
+    print(f"  DOP < {dop_th}  {int(dop_pass.sum()):>12,d} px of {valid_n:,} measured  "
+          f"({dop_pass_frac * 100:6.3f} %)")
+    print(f"  candidates  {cand_n:>12,d} px  {cand_km2:.4f} km2  "
+          f"({screen_frac * 100:6.3f} % of the measured swath)")
+    print(f"  status      {'PASS' if cand_n > 0 else 'FAIL'}"
+          f"   <- a MEASURED zero: no pixel clears CPR, so the AND cannot be non-empty")
+    print("  the shadow terms are no longer inside this mask; they are criteria 3 and 4 "
+          "and both read UNAVAILABLE until Phase 2.")
 
-    pice = p_ice_over_valid(cpr, dop, t["slope_deg"], t["roughness"], t["illumination"], t["psr_mask"], valid)
-    print(f"\n  P(ice) over the {pice['n']:,} MEASURED pixels only:"
-          f"  mean {pice['mean']:.4f}  p50 {pice['p50']:.4f}  p99 {pice['p99']:.4f}  max {pice['max']:.4f}")
-    print(f"  fraction >= 0.5: {pice['fraction_above_0_5'] * 100:.2f} %")
+    # ------------------------------------------------------------ volume tiers
+    # Each tier carries the two assumptions that produced it AS DATA, so the UI
+    # never hardcodes "2 m / 5 %" in a caption that can drift away from config.
+    tier_spec = [
+        ("conservative", cfg.CONSERVATIVE_ICE_DEPTH_M, cfg.CONSERVATIVE_ICE_FRACTION),
+        ("expected", cfg.DEFAULT_ICE_DEPTH_M, cfg.DEFAULT_ICE_FRACTION),
+        ("upper", cfg.UPPER_ICE_DEPTH_M, cfg.UPPER_ICE_FRACTION),
+    ]
+    volume_tiers = []
+    for name, depth, frac in tier_spec:
+        volume_tiers.append({
+            "tier": name,
+            "assumed_depth_m": float(depth),
+            "assumed_pore_fraction": float(frac),
+            "volume_m3": round(cand_km2 * 1e6 * float(depth) * float(frac), 3),
+            "volume_m3_per_km2": round(1e6 * float(depth) * float(frac), 3),
+            "provenance": DERIVED,
+            "source": "backend/app/core/config.py",
+            "note": (f"candidate area x {depth:g} m assumed depth x {frac:g} assumed pore fraction. "
+                     "Both assumptions are untested in this build; neither is a measurement."),
+        })
+    v_cons, v_exp, v_up = (tv["volume_m3"] for tv in volume_tiers)
+    print(f"\n  volume tiers from {cand_km2:.4f} km2 (each DERIVED, assumptions carried as data):")
+    for tv in volume_tiers:
+        print(f"    {tv['tier']:13s} depth {tv['assumed_depth_m']:5.1f} m  "
+              f"fraction {tv['assumed_pore_fraction']:.2f}"
+              f"  -> {tv['volume_m3']:>14,.0f} m3   ({tv['volume_m3_per_km2']:,.0f} m3 per km2)")
 
-    v_exp = cand_km2 * 1e6 * cfg.DEFAULT_ICE_DEPTH_M * cfg.DEFAULT_ICE_FRACTION
-    v_cons = cand_km2 * 1e6 * cfg.CONSERVATIVE_ICE_DEPTH_M * cfg.CONSERVATIVE_ICE_FRACTION
-    v_up = cand_km2 * 1e6 * cfg.UPPER_ICE_DEPTH_M * cfg.UPPER_ICE_FRACTION
-    print(f"\n  volume bounds from {cand_km2:.2f} km2:  conservative {v_cons:,.0f}  expected {v_exp:,.0f}  upper {v_up:,.0f} m3")
+    # -------------------------------------------------------------- 1B sweeps
+    # Previously module_g_volume.run_sensitivity_sweep, which computed nothing:
+    # scale = max(0.2, 1.0 - (val - 1.0) * 0.8), a constant best_landing_site_id,
+    # and rover columns that were straight-line functions of the swept value.
+    # This is the real thing -- re-threshold the native arrays and count.
+    cpr_grid = threshold_grid(cpr[valid], cpr_th, (0.0, 1.2))
+    dop_grid = threshold_grid(dop[valid], dop_th, (0.0, 0.5))
+    depth_grid = [0.5, 1.0, 2.0, 5.0, 10.0, 20.0]
+    frac_grid = [0.01, 0.05, 0.10, 0.15, 0.20, 0.30]
+    sensitivity = {
+        "cpr_threshold": {
+            "parameter": "cpr_threshold", "unit": "", "baseline": cpr_th,
+            "grid_source": ("measured CPR percentiles (p50/p90/p99/p99.9/max), union a 0.0-1.2 linear "
+                            "ramp, union the configured threshold"),
+            "held_constant": {"dop_threshold": dop_th},
+            "rows": sweep_threshold(cpr, dop, valid, axis="cpr_threshold", grid=cpr_grid,
+                                    cpr_th=cpr_th, dop_th=dop_th, cell_km2=cell_km2,
+                                    depth_m=float(cfg.DEFAULT_ICE_DEPTH_M),
+                                    fraction=float(cfg.DEFAULT_ICE_FRACTION)),
+        },
+        "dop_threshold": {
+            "parameter": "dop_threshold", "unit": "", "baseline": dop_th,
+            "grid_source": ("measured DOP percentiles (p50/p90/p99/p99.9/max), union a 0.0-0.5 linear "
+                            "ramp, union the configured threshold"),
+            "held_constant": {"cpr_threshold": cpr_th},
+            "rows": sweep_threshold(cpr, dop, valid, axis="dop_threshold", grid=dop_grid,
+                                    cpr_th=cpr_th, dop_th=dop_th, cell_km2=cell_km2,
+                                    depth_m=float(cfg.DEFAULT_ICE_DEPTH_M),
+                                    fraction=float(cfg.DEFAULT_ICE_FRACTION)),
+        },
+        "assumed_depth_m": {
+            "parameter": "assumed_depth_m", "unit": "m",
+            "baseline": float(cfg.DEFAULT_ICE_DEPTH_M),
+            "grid_source": "stated grid; the candidate AREA does not move on this axis",
+            "held_constant": {"ice_fraction": float(cfg.DEFAULT_ICE_FRACTION),
+                              "cpr_threshold": cpr_th, "dop_threshold": dop_th},
+            "rows": sweep_assumption(cand_km2, axis="assumed_depth_m", grid=depth_grid,
+                                     depth_m=float(cfg.DEFAULT_ICE_DEPTH_M),
+                                     fraction=float(cfg.DEFAULT_ICE_FRACTION)),
+        },
+        "ice_fraction": {
+            "parameter": "ice_fraction", "unit": "",
+            "baseline": float(cfg.DEFAULT_ICE_FRACTION),
+            "grid_source": "stated grid; the candidate AREA does not move on this axis",
+            "held_constant": {"assumed_depth_m": float(cfg.DEFAULT_ICE_DEPTH_M),
+                              "cpr_threshold": cpr_th, "dop_threshold": dop_th},
+            "rows": sweep_assumption(cand_km2, axis="ice_fraction", grid=frac_grid,
+                                     depth_m=float(cfg.DEFAULT_ICE_DEPTH_M),
+                                     fraction=float(cfg.DEFAULT_ICE_FRACTION)),
+        },
+        "provenance": MEASURED,
+        "computed_by": "backend/scripts/build_analysis.py (sweep_threshold / sweep_assumption)",
+        "withheld_columns": {
+            "rover_distance_km": ("Phase 4. No traverse is planned from this file, so a distance column "
+                                  "would be an unfinished code path, not a result."),
+            "rover_energy_wh": "Phase 4, same reason.",
+            "best_landing_site_id": ("Phase 3. The sites are still hardcoded grid offsets, so the winner "
+                                     "cannot move with a threshold and a column saying so would be noise."),
+        },
+        "note": ("candidate_area_km2 is a pixel count times the frame's own cell area, so it is MEASURED "
+                 "at every row. volume_m3 is DERIVED from it by the assumed depth and pore fraction. The "
+                 "CPR axis is degenerate at the configured operating point: the swath's peak CPR is "
+                 f"{cpr_s['max']:.6f}, so every threshold at or above it returns exactly zero pixels. "
+                 "That flat line is the measurement, not a defect in the sweep."),
+    }
+
+    hr("SENSITIVITY -- 1B, computed by re-thresholding the native arrays")
+    for axis in ("cpr_threshold", "dop_threshold"):
+        blk = sensitivity[axis]
+        nz = [row for row in blk["rows"] if row["candidate_px"] > 0]
+        print(f"  {axis:16s} {len(blk['rows']):2d} rows, baseline {blk['baseline']:g}, "
+              f"{len(nz)} row(s) with a non-zero candidate count")
+        for row in blk["rows"]:
+            flag = "  <- configured" if row["is_configured_value"] else ""
+            print(f"      th {row['threshold']:<10.6g} {row['candidate_px']:>10,d} px  "
+                  f"{row['candidate_area_km2']:>12.4f} km2{flag}")
 
     # ------------------------------------------------------------- evidence rows
     # Each row carries the MEASURED value beside the ACTUAL threshold, so the
@@ -584,27 +784,30 @@ def build(crater_id: str = "faustini") -> dict:
         {
             "criterion": "psr_cold_trap_overlap",
             "label": "Overlap with a shadowed cold trap",
-            "measured": round(cand_km2, 4), "measured_label": "candidate area",
-            "threshold": 0.0, "comparison": ">",
-            "passed": bool(cand_n > 0),
-            "provenance": MODELLED,
-            "note": (f"The topography is measured LOLA, but the SHADOW on top of it is not. "
-                     f"{ILLUM_MODEL} It puts {float(t['psr_mask'].mean()) * 100:.1f} % of the frame in "
-                     f"shadow, so the overlap test is not discriminating anything. The row fails only "
-                     f"because no pixel cleared CPR."),
+            "measured": None, "measured_label": "no horizon computation",
+            "threshold": None, "comparison": None,
+            "passed": False,
+            "provenance": UNAVAILABLE,
+            "note": ("WITHHELD, not failed. The topography under this test is measured LOLA, but the "
+                     f"SHADOW on top of it is not. {ILLUM_MODEL} It darkens "
+                     f"{float(t['psr_mask'].mean()) * 100:.1f} % of the frame, so intersecting anything "
+                     "with it does not discriminate a cold trap -- it only multiplies by a large mask. "
+                     "Until the Phase 2 horizon computation exists, this criterion has no measured value "
+                     "and reports none. It is no longer part of the candidate mask either."),
         },
         {
             "criterion": "doubly_shadowed_core_overlap",
             "label": "Overlap with a doubly-shadowed core",
-            "measured": round(doubly_overlap * cell_km2, 4), "measured_label": "overlap area",
-            "threshold": 0.0, "comparison": ">",
-            "passed": bool(doubly_overlap > 0),
-            "provenance": MODELLED,
-            "note": ("Doubly-shadowed cores are the illumination proxy's shadow intersected with the "
-                     "lowest elevation quintile of the DEM. The elevation quintile is measured LOLA; the "
-                     "shadow is not, and an elevation percentile is not a second shadowing event. A real "
-                     "doubly-shadowed mask needs scattered light from lit terrain, which this build does "
-                     "not compute. " + ILLUM_MODEL),
+            "measured": None, "measured_label": "no scattered-light term",
+            "threshold": None, "comparison": None,
+            "passed": False,
+            "provenance": UNAVAILABLE,
+            "note": ("WITHHELD, not failed. The previous definition was the illumination proxy's shadow "
+                     "intersected with the lowest elevation quintile of the DEM. The quintile is measured "
+                     "LOLA, but an elevation percentile is not a second shadowing event, and the shadow "
+                     "it was intersected with is the proxy. A doubly-shadowed core means never directly "
+                     "lit AND receiving no scattered light from lit terrain; the scattered-light term "
+                     "does not exist in this build. Phase 2."),
         },
         {
             "criterion": "thermal_stability_expected",
@@ -623,11 +826,18 @@ def build(crater_id: str = "faustini") -> dict:
     for e in evidence:
         m = "n/a" if e["measured"] is None else f"{e['measured']:.6g}"
         th = "n/a" if e["threshold"] is None else f"{e['comparison']} {e['threshold']}"
-        print(f"  [{'PASS' if e['passed'] else 'FAIL'}] {e['label']:38s} {e['measured_label']:20s} "
+        verdict_word = ("PASS" if e["passed"]
+                        else "HELD" if e["provenance"] == UNAVAILABLE
+                        else "FAIL")
+        print(f"  [{verdict_word}] {e['label']:38s} {e['measured_label']:24s} "
               f"{m:>12s}  vs {th:<10s} {e['provenance']}")
 
     passed_n = sum(1 for e in evidence if e["passed"])
+    evaluable = [e for e in evidence if e["provenance"] != UNAVAILABLE]
+    withheld_n = len(evidence) - len(evaluable)
     status = "PASS" if cand_n > 0 else "FAIL"
+    print(f"\n  {passed_n} passed / {len(evaluable)} evaluable / {withheld_n} withheld "
+          f"of {len(evidence)} named criteria")
 
     doc = {
         "schema": SCHEMA,
@@ -735,13 +945,23 @@ def build(crater_id: str = "faustini") -> dict:
         "screening_status": status,
         "criteria_passed": passed_n,
         "criteria_total": len(evidence),
+        "criteria_evaluable": len(evaluable),
+        "criteria_withheld": withheld_n,
+        "criteria_note": (f"{passed_n} of {len(evaluable)} criteria that can be evaluated in this build "
+                          f"passed. The other {withheld_n} are WITHHELD, not failed: two shadow terms "
+                          f"awaiting the Phase 2 horizon computation, and thermal stability, for which "
+                          f"no product and no model exist here. A withheld criterion is not evidence "
+                          f"against ice."),
         "label": "No radar ice signature in this swath" if status == "FAIL"
                  else "Radar signature consistent with potential ice",
-        "sublabel": (f"{cand_km2:.2f} km² passed CPR > {cpr_th:.2f} and DOP < {dop_th:.2f} "
-                     f"within modelled shadow"),
+        "sublabel": (f"{cand_km2:.2f} km² of the {valid_n * cell_km2:,.0f} km² measured swath passed "
+                     f"CPR > {cpr_th:.2f} and DOP < {dop_th:.2f}"),
         "confidence": "Low",
         "headline": val(round(cand_km2, 2), "km²", MEASURED,
-                        note="Area whose measured radar passes both polarimetric criteria inside shadow."),
+                        note=("Area whose measured radar passes both polarimetric criteria, inside the "
+                              "amplitude mask. No shadow term is in this mask: the illumination proxy was "
+                              "removed from it, and the horizon computation that would replace it is "
+                              "Phase 2.")),
         "null_result_caveat": (
             "This is a NULL RESULT on an incomplete measurement, not evidence against ice. Peak CPR in "
             f"the swath is {cpr_s['max']:.4f} against a {cpr_th:.2f} threshold — the product cannot "
@@ -750,63 +970,166 @@ def build(crater_id: str = "faustini") -> dict:
         ),
     }
 
+    # Every figure the twelve steps render, each an AnalysisValue. A step that
+    # cannot be computed honestly yet emits UNAVAILABLE with the reason, and the
+    # UI prints an em dash plus that reason. Nothing here is a placeholder.
     doc["values"] = {
+        # -- step 2 · shadow & PSR --------------------------------------------
+        # All three withheld. The proxy's 77 % is a property of the expression,
+        # not of the Moon, and must not be carried forward as a shadow fraction.
+        "psr_area_km2": val(None, "km²", UNAVAILABLE, reason=PSR_ABSENT_REASON),
+        "doubly_shadowed_area_km2": val(None, "km²", UNAVAILABLE, reason=(
+            "A doubly-shadowed core is terrain that is never directly lit AND receives no scattered "
+            "light from lit terrain. This build computes neither term. The previous definition -- the "
+            "brightness proxy's shadow intersected with the lowest elevation quintile -- is not a "
+            "second shadowing event. Phase 2.")),
+        "mean_illumination_fraction": val(None, "", UNAVAILABLE, reason=(
+            "There is no illumination fraction here, only a brightness proxy. " + ILLUM_MODEL +
+            " A mean of that expression would be a statistic about the expression. Phase 2 computes a "
+            "real per-pixel lit fraction by sweeping the solar azimuth against a horizon.")),
+        "thermal_stability_k": val(None, "K", UNAVAILABLE, reason=(
+            "No thermal product is on disk and no thermal model runs in this build. Phase 2 derives a "
+            "stability flag from the illumination fraction and labels it DERIVED, not MEASURED.")),
+
+        # -- step 3 · DFSAR radar, masked native statistics ---------------------
         "cpr_mean": val(round(cpr_s["mean"], 6), "", MEASURED,
-                        note=f"Mean over {cpr_s['n']:,} pixels carrying amplitude. The API reports "
-                             f"{cpr_n['mean']:.6f} by averaging across the void as well."),
-        "cpr_max": val(round(cpr_s["max"], 6), "", MEASURED),
-        "cpr_p50": val(round(cpr_s["p50"], 6), "", MEASURED),
+                        note=f"Mean over the {cpr_s['n']:,} pixels carrying amplitude. The request path "
+                             f"reports {cpr_n['mean']:.6f} by averaging across the never-observed void."),
+        "cpr_p50": val(round(cpr_s["p50"], 6), "", MEASURED, note=MASK_NOTE),
+        "cpr_p90": val(round(cpr_s["p90"], 6), "", MEASURED, note=MASK_NOTE),
+        "cpr_p99": val(round(cpr_s["p99"], 6), "", MEASURED, note=MASK_NOTE),
+        "cpr_max": val(round(cpr_s["max"], 6), "", MEASURED, note=MASK_NOTE),
+        "cpr_std": val(round(cpr_s["std"], 6), "", MEASURED, note=MASK_NOTE),
         "dop_mean": val(round(dop_s["mean"], 6), "", MEASURED,
-                        note=f"Mean over the amplitude mask. The API reports {dop_n['mean']:.6f}."),
+                        note=f"Mean over the amplitude mask. The request path reports {dop_n['mean']:.6f}."),
         "dop_min": val(round(dop_s["min"], 6), "", MEASURED,
-                       note="Minimum over measured pixels only; the API's 0.0 is padding."),
-        "dop_p50": val(round(dop_s["p50"], 6), "", MEASURED),
-        "psr_area_km2": val(None, "km²", UNAVAILABLE,
-                            reason=(f"The topography is measured now, but the shadow on top of it is not. "
-                                    f"{ILLUM_MODEL} It puts {float(t['psr_mask'].mean()) * 100:.1f} % of "
-                                    f"the frame below the 0.05 cut — "
-                                    f"{float(t['psr_mask'].sum()) * cell_km2:,.0f} km² of a "
-                                    f"{cpr.size * cell_km2:,.0f} km² scene. A PSR area is withheld until "
-                                    f"the horizon computation replaces the proxy; a number from this "
-                                    f"model would describe the expression, not the Moon.")),
+                       note="Minimum over measured pixels only; the request path's 0.0 is padding."),
+        "dop_p50": val(round(dop_s["p50"], 6), "", MEASURED, note=MASK_NOTE),
+        "dop_p90": val(round(dop_s["p90"], 6), "", MEASURED, note=MASK_NOTE),
+        "dop_p99": val(round(dop_s["p99"], 6), "", MEASURED, note=MASK_NOTE),
+        "dop_max": val(round(dop_s["max"], 6), "", MEASURED, note=MASK_NOTE),
+        "measured_area_km2": val(round(valid_n * cell_km2, 2), "km²", MEASURED,
+                                 note="Amplitude mask area: where DFSAR actually returned signal. Every "
+                                      "MEASURED radar statistic on this page is taken over this and "
+                                      "nothing else."),
+        "pointed_area_km2": val(round(int(footprint.sum()) * cell_km2, 2), "km²", MEASURED,
+                                note="ISRO sri_ma > 0: where the beam was pointed. The difference from "
+                                     "the measured area is swath that was pointed at and returned "
+                                     "literal zero."),
+
+        # -- step 4 · ice criteria screen (not a probability) ------------------
+        "cpr_pass_fraction": val(round(cpr_pass_frac, 8), "", MEASURED,
+                                 note=f"Fraction of the measured swath with CPR > {cpr_th:g}."),
+        "dop_pass_fraction": val(round(dop_pass_frac, 8), "", MEASURED,
+                                 note=f"Fraction of the measured swath with DOP < {dop_th:g}."),
+        "screening_pass_fraction": val(round(screen_frac, 8), "", MEASURED,
+                                       note="Fraction of the MEASURED SWATH passing both criteria — not "
+                                            "of the frame. The frame is 84 % never-observed padding and "
+                                            "a fraction over it would be meaningless."),
+        "candidate_area_km2": val(round(cand_km2, 4), "km²", MEASURED,
+                                  note="Pixel count passing both criteria, times the frame's own cell "
+                                       "area. A measured zero here is a result, not a gap."),
+        "criteria_passed": val(passed_n, "", MEASURED,
+                               note=f"Of {len(evidence)} named criteria: "
+                                    + ", ".join(f"{e['label']} = "
+                                                + ("PASS" if e["passed"] else
+                                                   "WITHHELD" if e["provenance"] == UNAVAILABLE else "FAIL")
+                                                for e in evidence)),
+        "p_ice_max": val(None, "", UNAVAILABLE, reason=P_ICE_ABSENT_REASON),
+        "p_ice_mean": val(None, "", UNAVAILABLE, reason=P_ICE_ABSENT_REASON),
+
+        # -- step 5 · terrain, all from measured LOLA --------------------------
         "mean_slope_deg": val(round(float(t["slope_deg"].mean()), 4), "°", MEASURED, note=SLOPE_NOTE),
+        "slope_p50_deg": val(round(float(np.percentile(t["slope_deg"], 50)), 4), "°", MEASURED, note=SLOPE_NOTE),
+        "slope_p90_deg": val(round(float(np.percentile(t["slope_deg"], 90)), 4), "°", MEASURED, note=SLOPE_NOTE),
+        "slope_p99_deg": val(round(float(np.percentile(t["slope_deg"], 99)), 4), "°", MEASURED, note=SLOPE_NOTE),
         "max_slope_deg": val(round(float(t["slope_deg"].max()), 4), "°", MEASURED, note=SLOPE_NOTE),
-        "p_ice_max": val(round(pice["max"], 4), "", MODELLED,
-                         note=(f"Random Forest peak over the {pice['n']:,} measured pixels. This can never "
-                               f"be MEASURED: there is no ground-truth ice label anywhere in this project, "
-                               f"so nothing exists to validate it against, and MODELLED is its honest "
-                               f"ceiling. It also disagrees with the physics screening — it puts "
-                               f"{pice['fraction_above_0_5'] * 100:.1f} % of the swath at P >= 0.5 while "
-                               f"peak CPR is {cpr_th / max(cpr_s['max'], 1e-9):.0f}x below threshold. Its "
-                               f"ice class was trained on CPR 1.05-2.5, a range this amplitude-only "
-                               f"product cannot reach, and one of its six features (illumination) is the "
-                               f"invented proxy. The number describes the model, not the ground.")),
-        "p_ice_mean": val(round(pice["mean"], 4), "", MODELLED),
-        "candidate_area_km2": val(round(cand_km2, 2), "km²", MEASURED),
-        "expected_volume_m3": val(round(v_exp, 0), "m³", DERIVED,
-                                  note=f"candidate area x {cfg.DEFAULT_ICE_DEPTH_M} m depth x "
-                                       f"{cfg.DEFAULT_ICE_FRACTION} pore fraction. Zero area gives zero "
-                                       "volume; the assumptions are untested either way."),
-        "conservative_volume_m3": val(round(v_cons, 0), "m³", DERIVED),
-        "upper_volume_m3": val(round(v_up, 0), "m³", DERIVED),
-        "rover_traverse_km": val(None, "km", UNAVAILABLE,
-                                 reason="Traverse planning is not wired to this file yet. The cost surface "
-                                        "would now be measured LOLA slope and hazard, but the target still "
-                                        "comes from a hardcoded grid centre and no Dijkstra solve runs "
-                                        "here, so a distance would be an unfinished code path, not a "
-                                        "result."),
-        "landing_site": val(None, "", UNAVAILABLE,
-                            reason="The backend's five sites are hardcoded grid offsets (Alpha 18,50 / "
-                                   "Beta 82,75 / Gamma 78,25 / Delta 50,15 / Epsilon 48,85), asserted "
-                                   "rather than searched, and their lat/lon comes from a flat 30.37 km per "
-                                   "degree constant that is wrong by ~57x in longitude at this latitude. "
-                                   "Withheld until the site search runs."),
+        "safe_slope_fraction": val(round(float((t["slope_deg"] <= cfg.MAX_TRAVERSABLE_SLOPE_DEG).mean()), 6),
+                                   "", MEASURED,
+                                   note=f"Fraction of the frame at or below MAX_TRAVERSABLE_SLOPE_DEG = "
+                                        f"{cfg.MAX_TRAVERSABLE_SLOPE_DEG:g}°, read from config.py. " + SLOPE_NOTE),
+        "landable_slope_fraction": val(round(float((t["slope_deg"] <= cfg.CRITICAL_LANDING_SLOPE_DEG).mean()), 6),
+                                       "", MEASURED,
+                                       note=f"Fraction at or below CRITICAL_LANDING_SLOPE_DEG = "
+                                            f"{cfg.CRITICAL_LANDING_SLOPE_DEG:g}°. " + SLOPE_NOTE),
+        "mean_roughness_m": val(round(float(t["roughness"].mean()), 4), "m", MEASURED, note=SLOPE_NOTE),
+        "roughness_p50_m": val(round(float(np.percentile(t["roughness"], 50)), 4), "m", MEASURED, note=SLOPE_NOTE),
+        "roughness_p90_m": val(round(float(np.percentile(t["roughness"], 90)), 4), "m", MEASURED, note=SLOPE_NOTE),
+        "roughness_p99_m": val(round(float(np.percentile(t["roughness"], 99)), 4), "m", MEASURED, note=SLOPE_NOTE),
+        "mean_hazard": val(round(float(haz.mean()), 6), "", MEASURED, note=hazard_model["note"]),
+        "hazard_p50": val(round(float(np.percentile(haz, 50)), 6), "", MEASURED, note=hazard_model["note"]),
+        "hazard_p90": val(round(float(np.percentile(haz, 90)), 6), "", MEASURED, note=hazard_model["note"]),
+        "hazard_p99": val(round(float(np.percentile(haz, 99)), 6), "", MEASURED, note=hazard_model["note"]),
+        "critical_hazard_fraction": val(round(float((haz > 0.70).mean()), 6), "", MEASURED,
+                                        note="Fraction of the frame above a 0.70 composite hazard. The "
+                                             "0.70 cut is a display convention stated here, not a "
+                                             "measured property; the hazard field under it is measured."),
+        "boulder_risk": val(None, "", UNAVAILABLE, reason=hazard_model["boulder"]["reason"]),
+        "min_elevation_m": val(round(float(dem.min()), 2), "m", MEASURED, note=DEM_NOTE),
+        "max_elevation_m": val(round(float(dem.max()), 2), "m", MEASURED, note=DEM_NOTE),
+
+        # -- step 6 · landing sites (Phase 3) -----------------------------------
+        "landing_site": val(None, "", UNAVAILABLE, reason=LANDING_ABSENT_REASON),
+        "landing_site_score": val(None, "", UNAVAILABLE, reason=LANDING_ABSENT_REASON),
+        "landing_sites_evaluated": val(None, "", UNAVAILABLE, reason=LANDING_ABSENT_REASON),
+
+        # -- step 7 · rover traverse (Phase 4) ----------------------------------
+        "rover_traverse_km": val(None, "km", UNAVAILABLE, reason=ROVER_ABSENT_REASON),
+        "rover_energy_wh": val(None, "Wh", UNAVAILABLE, reason=ROVER_ABSENT_REASON),
+        "rover_mean_hazard": val(None, "", UNAVAILABLE, reason=ROVER_ABSENT_REASON),
+
+        # -- step 8 · volume, DERIVED, assumptions carried in volume_tiers ------
+        "conservative_volume_m3": val(round(v_cons, 0), "m³", DERIVED, note=volume_tiers[0]["note"]),
+        "expected_volume_m3": val(round(v_exp, 0), "m³", DERIVED, note=volume_tiers[1]["note"]),
+        "upper_volume_m3": val(round(v_up, 0), "m³", DERIVED, note=volume_tiers[2]["note"]),
+
+        # -- step 10 · ablation (Phase 4) ---------------------------------------
+        "ablation_runs": val(None, "", UNAVAILABLE, reason=(
+            "A real ablation reruns the planner with each hazard weight zeroed in turn and reports the "
+            "measured deltas in distance, mean hazard and max slope. It needs the Phase 4 planner. The "
+            "previous experiments_runner.py returned four hand-written experiments with no computation "
+            "behind them, three of them stamped is_synthetic_evaluation=False; it was deleted in "
+            "Phase 0.")),
     }
     doc["evidence"] = evidence
+    doc["volume_tiers"] = volume_tiers
+    doc["sensitivity"] = sensitivity
+
+    # What each of the twelve steps can honestly show today. The UI reads this
+    # to decide whether a step renders figures or renders its own absence; it is
+    # not allowed to infer that from whether a value happens to be null.
+    doc["steps"] = [
+        {"n": 1, "key": "site", "title": "Target Selection", "status": "COMPLETE",
+         "basis": "Crater catalogue plus the frame's own georeferencing."},
+        {"n": 2, "key": "psr", "title": "Shadow & PSR", "status": "UNAVAILABLE",
+         "basis": PSR_ABSENT_REASON},
+        {"n": 3, "key": "radar", "title": "DFSAR Radar", "status": "COMPLETE",
+         "basis": "Masked native statistics from the calibrated L2 amplitude products."},
+        {"n": 4, "key": "ice", "title": "Ice Criteria Screen", "status": "COMPLETE",
+         "basis": ("Five named criteria. Two are measured and evaluated; three are withheld "
+                   "(two shadow terms, one thermal) and say so.")},
+        {"n": 5, "key": "terrain", "title": "Terrain Hazards", "status": "COMPLETE",
+         "basis": "Slope, roughness and hazard from measured LOLA topography."},
+        {"n": 6, "key": "landing", "title": "Landing Sites", "status": "UNAVAILABLE",
+         "basis": LANDING_ABSENT_REASON},
+        {"n": 7, "key": "rover", "title": "Rover Traverse", "status": "UNAVAILABLE",
+         "basis": ROVER_ABSENT_REASON},
+        {"n": 8, "key": "volume", "title": "Volume Estimate", "status": "COMPLETE",
+         "basis": "Three DERIVED tiers over the measured candidate area, each carrying its own "
+                  "assumed depth and pore fraction as data."},
+        {"n": 9, "key": "sweep", "title": "Sensitivity Studio", "status": "COMPLETE",
+         "basis": "Real sweeps computed by re-thresholding the native arrays."},
+        {"n": 10, "key": "research", "title": "Ablation", "status": "UNAVAILABLE",
+         "basis": ("A real ablation needs the Phase 4 planner to rerun with each hazard weight "
+                   "zeroed. The previous four hand-written experiments were deleted in Phase 0.")},
+        {"n": 11, "key": "defense", "title": "Viva Rationale", "status": "COMPLETE",
+         "basis": "Reads the evidence rows and the provenance legend in this file."},
+        {"n": 12, "key": "provenance", "title": "Provenance", "status": "COMPLETE",
+         "basis": "Source rasters, masks, thresholds and the generator that produced this file."},
+    ]
     doc["measured_statistics"] = {
         "cpr": {"masked": cpr_s, "naive_frame": cpr_n},
         "dop": {"masked": dop_s, "naive_frame": dop_n},
-        "p_ice_over_measured": pice,
         "terrain_measured": {
             "post_spacing_m": NATIVE_POST_M,
             "grid_spacing_m": list(spacing),
@@ -827,9 +1150,15 @@ def build(crater_id: str = "faustini") -> dict:
             "psr_fraction": float(t["psr_mask"].mean()), "doubly_fraction": float(t["doubly"].mean()),
         },
         "screening": {
-            "cpr_pass_px": int(cpr_pass.sum()), "dop_pass_px": int(dop_pass.sum()),
+            "measured_px": valid_n,
+            "cpr_pass_px": int(cpr_pass.sum()), "cpr_pass_fraction_of_measured": cpr_pass_frac,
+            "dop_pass_px": int(dop_pass.sum()), "dop_pass_fraction_of_measured": dop_pass_frac,
             "candidate_px": cand_n, "candidate_area_km2": cand_km2,
-            "doubly_overlap_px": doubly_overlap,
+            "screening_pass_fraction_of_measured": screen_frac,
+            "mask_definition": "(cpr > CPR_THRESHOLD) & (dop < DOP_THRESHOLD) & amplitude_mask",
+            "shadow_term_removed": ("v1.0 also intersected the illumination proxy's shadow mask. Removed: "
+                                    "it darkens 77 % of the frame, so it discriminated nothing while "
+                                    "making a MEASURED-marked area partly modelled."),
         },
     }
     doc["notes"] = [
@@ -844,8 +1173,16 @@ def build(crater_id: str = "faustini") -> dict:
         "brightness proxy with no horizon term. They stay MODELLED, and PSR area stays UNAVAILABLE.",
         "Boulder risk is NO DATA, not zero. The hazard blend drops its weight and renormalises over slope "
         "and roughness, so hazard is a two-term hazard in [0, 1] and hazard_model says so.",
-        "P(ice) can never be MEASURED in this project: there are no ground-truth ice labels to validate it "
-        "against. MODELLED is its ceiling.",
+        "P(ice) is WITHDRAWN, not downgraded. Its Random Forest was fitted to np.random.uniform labels "
+        "whose ice class (CPR 1.05-2.5) lies entirely outside this product's achievable range, so every "
+        "prediction was an extrapolation from fabricated examples. Step 4 reports the measured criteria "
+        "screen instead.",
+        "The candidate mask is (CPR > threshold) AND (DOP < threshold) AND amplitude mask. The "
+        "illumination proxy's shadow was removed from it: darkening 77 % of the frame discriminates "
+        "nothing, and its presence made a MEASURED-marked area partly modelled.",
+        "The sensitivity sweeps are computed by re-thresholding the native arrays, not by scaling a "
+        "baseline. Every area column is a pixel count; every volume column is that area times a stated "
+        "depth and pore fraction.",
         "The screening threshold was NOT retuned to make this scene pass.",
         "A FAIL here is a null result on an incomplete product, not evidence against ice.",
     ]
@@ -863,9 +1200,11 @@ def emit(crater_id: str) -> Path:
     print(f"  {out.stat().st_size:,} bytes")
     v = doc["values"]
     print("\n  the headline cells, each with the mark the UI must render:")
-    for k in ("cpr_mean", "cpr_max", "dop_mean", "dop_p50", "psr_area_km2", "mean_slope_deg",
-              "max_slope_deg", "p_ice_max", "candidate_area_km2", "expected_volume_m3",
-              "rover_traverse_km", "landing_site"):
+    for k in ("cpr_mean", "cpr_max", "dop_mean", "dop_p50", "measured_area_km2",
+              "screening_pass_fraction", "candidate_area_km2", "criteria_passed",
+              "mean_slope_deg", "max_slope_deg", "mean_hazard", "expected_volume_m3",
+              "psr_area_km2", "mean_illumination_fraction", "p_ice_max",
+              "landing_site", "rover_traverse_km", "ablation_runs"):
         rec = v[k]
         shown = ("—  (" + rec["provenance"] + ")" if rec["value"] is None
                  else f"{rec['value']:<14g} {rec['provenance']}")

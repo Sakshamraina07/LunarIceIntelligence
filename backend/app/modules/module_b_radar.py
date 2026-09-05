@@ -2,7 +2,9 @@
 MODULE B: DFSAR Polarimetric Radar Analysis.
 PRD Compliance: Calculates Circular Polarization Ratio (CPR) and Degree of Polarization (DOP).
 Applies configurable scientific screening (CPR > CPR_THRESHOLD and DOP < DOP_THRESHOLD).
-Adheres strictly to scientific terminology: 'Radar signature consistent with potential ice-bearing region'.
+The screening verdict is CONDITIONAL on the count. A screen that found nothing
+reports a null result and says why; it does not narrate an ice signature over a
+0.00 km² area, which is what this module did before PRD Phase 1C.
 """
 
 import numpy as np
@@ -10,16 +12,6 @@ from typing import Dict, Any, Tuple, Optional
 from app.core.config import settings
 from app.core.schemas import RadarAnalysisResult
 from app.core.provenance import create_provenance
-
-
-def compute_cpr_from_sigma(sigma_sc: np.ndarray, sigma_oc: np.ndarray, eps: float = 1e-6) -> np.ndarray:
-    """
-    Computes CPR = sigma_sc / sigma_oc.
-    Handles division by zero safely using epsilon thresholding.
-    """
-    safe_oc = np.maximum(sigma_oc, eps)
-    cpr = sigma_sc / safe_oc
-    return np.clip(cpr, 0.0, 10.0).astype(np.float32)
 
 
 def compute_cpr_from_stokes(s0: np.ndarray, s3: np.ndarray, eps: float = 1e-6) -> np.ndarray:
@@ -117,18 +109,46 @@ def analyze_dfsar_radar(
         data_mode=data_mode
     )
 
-    interpretation = (
-        f"Detected {anomalous_area_km2:.2f} km² with CPR > {cpr_th:.2f} and DOP < {dop_th:.2f}. "
-        "Radar signature consistent with potential ice-bearing volume scattering."
-    )
-
     mean_cpr_val = round(float(np.mean(cpr)), 3)
     max_cpr_val = round(float(np.max(cpr)), 3)
     mean_dop_val = round(float(np.mean(dop)), 3)
     min_dop_val = round(float(np.min(dop)), 3)
 
+    # The interpretation was UNCONDITIONAL: it asserted "radar signature
+    # consistent with potential ice-bearing volume scattering" even when
+    # anomalous_area_km2 was 0.00, which is what this frame actually returns.
+    # A screen that found nothing has to read as a null result.
+    if anomalous_cells > 0:
+        interpretation = (
+            f"{anomalous_area_km2:.2f} km² ({anomalous_cells:,} cells) pass CPR > {cpr_th:.2f} and "
+            f"DOP < {dop_th:.2f}. That combination is consistent with volume scattering from a "
+            f"low-loss medium such as ice, but neither criterion is diagnostic of ice on its own."
+        )
+    else:
+        interpretation = (
+            f"NULL RESULT: no cell passes CPR > {cpr_th:.2f} and DOP < {dop_th:.2f}. "
+            f"Peak CPR in this grid is {max_cpr_val:.4f}, "
+            f"{cpr_th / max(max_cpr_val, 1e-9):.0f}x below the threshold. This is a measured absence "
+            f"of signature, not evidence against ice: CPR here is derived from amplitude alone, and "
+            f"the hybrid-polarity CPR the threshold refers to needs the Stokes S3 phase term."
+        )
+
     regional_class = classify_radar_polarimetry(mean_cpr_val, mean_dop_val, cpr_th, dop_th)
-    anomaly_class = classify_radar_polarimetry(max_cpr_val, min_dop_val, cpr_th, dop_th)
+
+    # anomaly_classification used to be classify(max_cpr, min_dop) — the frame's
+    # highest CPR paired with its lowest DOP, almost certainly two different
+    # pixels, so it described a cell that need not exist. It is now the count of
+    # cells that genuinely satisfy both at once, which is the radar_mask itself.
+    if anomalous_cells > 0:
+        anomaly_class = (
+            f"{anomalous_cells:,} cells satisfy CPR > {cpr_th:.2f} AND DOP < {dop_th:.2f} "
+            f"simultaneously ({anomalous_area_km2:.2f} km²)"
+        )
+    else:
+        anomaly_class = (
+            f"No cell satisfies both criteria simultaneously. Peak CPR {max_cpr_val:.4f} and minimum "
+            f"DOP {min_dop_val:.4f} are reported separately below and are not necessarily the same cell."
+        )
     
     data_source = "Real DFSAR/OHRC (PRADAN)" if data_mode == "REAL" else "Simulated placeholder — pending real data"
 
@@ -145,7 +165,8 @@ def analyze_dfsar_radar(
         scientific_interpretation=interpretation,
         regional_classification=regional_class,
         anomaly_classification=anomaly_class,
-        classification_label="Low/No ice signature" if mean_cpr_val <= cpr_th or mean_dop_val >= dop_th else "Consistent with potential ice",
+        classification_label=("Consistent with potential ice" if anomalous_cells > 0
+                              else "No ice signature in this grid"),
         data_source_tag=data_source,
         provenance=provenance
     )

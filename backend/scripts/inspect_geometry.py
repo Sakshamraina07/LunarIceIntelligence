@@ -2,7 +2,10 @@ import csv
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-raw = Path(r"D:\FYP\data\pradan\raw")
+# Repository root, derived from this file's location rather than a hardcoded
+# drive letter. backend/scripts/ -> parents[2] is the root.
+BASE_DIR = Path(__file__).resolve().parents[2]
+raw = BASE_DIR / "data" / "pradan" / "raw"
 
 def inspect_geometry():
     print("--- SRI XML Content ---")

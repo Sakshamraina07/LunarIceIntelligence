@@ -1,14 +1,22 @@
 """
 MODULE E: Multi-Criteria Landing-Site Selection.
 PRD Compliance: Generates multiple candidate landing locations along accessible rim plateaus,
-evaluates safety, solar illumination, traverse distance to candidate ice targets, and scientific value.
-Ranks sites algorithmically from 0 to 100 with clear explainability.
+evaluates safety, solar illumination and traverse distance to candidate ice targets.
+
+The five positions are HARDCODED GRID OFFSETS scored after the fact; no search
+runs here. That is stated in every site's provenance block and in its rationale,
+and PRD Phase 3 replaces it with a per-pixel search over the native frame.
+
+There is no "scientific value" term any more. The field of that name held a
+decreasing function of the traverse distance and nothing else, and it was then
+blended into the composite score beside the distance penalty it duplicated.
 """
 
 import numpy as np
 from typing import List, Dict, Any, Tuple, Optional, TYPE_CHECKING
 from app.core.config import settings
 from app.core.schemas import CandidateLandingSite, CraterInfo
+from app.core.provenance import create_provenance
 
 if TYPE_CHECKING:  # import only for type checkers — keeps app.modules free of an ingestion import at runtime
     from app.ingestion.sar_geometry import SarFrame
@@ -31,7 +39,9 @@ def select_landing_candidates(
     w_safety: Optional[float] = None,
     w_illum: Optional[float] = None,
     w_sci: Optional[float] = None,
-    w_dist: Optional[float] = None
+    w_dist: Optional[float] = None,
+    *,
+    data_mode: str,
 ) -> Tuple[List[CandidateLandingSite], CandidateLandingSite]:
     """
     Identifies and ranks candidate landing sites outside dangerous inner slopes.
@@ -54,6 +64,35 @@ def select_landing_candidates(
     wd = w_dist if w_dist is not None else settings.WEIGHT_LANDING_DISTANCE
 
     sy, sx = spacing_m
+
+    # Every site carries this. Without it a hardcoded grid offset is
+    # structurally indistinguishable from a searched one in the payload.
+    site_provenance = create_provenance(
+        dataset_name=f"{crater_info.id.upper()}_LANDING_CANDIDATES",
+        algorithm=("HARDCODED GRID OFFSETS, scored after the fact — not a search. Five fixed "
+                   "(row, col) positions are evaluated over a 3x3 window and ranked by "
+                   "safety/illumination/distance. Phase 3 replaces this with a per-pixel search."),
+        parameters={
+            "n_candidates": 5,
+            "offsets_are_hardcoded": True,
+            "search_performed": False,
+            "sampling_window_cells": "3x3",
+            "weights_applied": {
+                "WEIGHT_LANDING_SAFETY": float(ws),
+                "WEIGHT_LANDING_ILLUM": float(wi),
+                "WEIGHT_LANDING_DISTANCE": float(wd),
+            },
+            "weight_not_applied": {
+                "WEIGHT_LANDING_SCIENCE": float(wsc),
+                "why": ("the term it weighted was a restatement of the distance term already "
+                        "subtracted, so applying it double-counted distance"),
+            },
+            "latlon_source": "sar_geometry inverse polar stereographic" if frame is not None
+                             else "spherical approximation about the crater centre",
+            "spacing_m": [float(sy), float(sx)],
+        },
+        data_mode=data_mode,
+    )
 
     # Locate centroid of primary ice candidate deposit
     candidate_y, candidate_x = np.where(scientific_mask)
@@ -95,24 +134,32 @@ def select_landing_candidates(
         # Distance penalty normalized (0 to 1)
         dist_penalty = min(1.0, dist_km / max_diag_km)
 
-        # "Scientific value" here is a PROXIMITY PROXY, not an independent
-        # science score: it is purely a decreasing function of the distance to
-        # the CPR/DOP-anomaly centroid. It is surfaced in the rationale as such
-        # so the ranking cannot be read as measured science content.
-        sci_value = float(max(0.1, 1.0 - (dist_km / (max_diag_km * 0.7))))
+        # RENAMED from `sci_value` / `scientific_value`, and REMOVED from the
+        # composite score. It is a decreasing function of dist_km and of nothing
+        # else, so it was never a science term: the score subtracted the distance
+        # penalty at wd and then added the SAME distance back, inverted, at wsc.
+        # 20 % of the ranking was the distance term counted a second time. It is
+        # still reported per site, because proximity to the anomaly centroid is a
+        # real thing to know -- it is just not independent evidence.
+        proximity_index = float(max(0.1, 1.0 - (dist_km / (max_diag_km * 0.7))))
 
         # Landing Safety (inversely proportional to hazard and slope)
         safety_score = max(0.0, 1.0 - local_hazard)
 
-        # Composite Landing Score formula (0 - 100)
-        # Score = ws * safety + wi * illum + wsc * sci - wd * dist_penalty
+        # Composite Landing Score (0 - 100), over the three INDEPENDENT terms.
+        # Score = ws * safety + wi * illum - wd * dist_penalty
+        #
+        # WEIGHT_LANDING_SCIENCE (wsc) is deliberately not applied and not in
+        # the denominator: the term it weighted was the distance term already
+        # present at wd. Including it double-counted distance at 20 % of the
+        # ranking. The weight returns in Phase 3, when the site search gives it
+        # something measured to weigh.
         raw_score = (
             ws * safety_score +
-            wi * local_illum +
-            wsc * sci_value -
+            wi * local_illum -
             wd * dist_penalty
         )
-        total_weight = ws + wi + wsc + wd
+        total_weight = ws + wi + wd
         composite_score = float(np.clip((raw_score / total_weight) * 100.0, 0.0, 100.0))
 
         # Site lat/lon. Exact when the SAR frame is available (inverse polar
@@ -149,8 +196,15 @@ def select_landing_candidates(
             rationale.append(f"Extended traverse distance ({dist_km:.1f} km) to target")
 
         rationale.append(
-            f"Science score {sci_value:.2f} is a proximity proxy to the radar-anomaly "
-            "centroid, not an independent measurement of science content"
+            f"Proximity index {proximity_index:.2f} is a restatement of the {dist_km:.1f} km "
+            f"distance above, not independent science content. It is REPORTED but NOT SCORED "
+            f"(WEIGHT_LANDING_SCIENCE = {wsc:g} is not applied), because the composite already "
+            f"subtracts that distance."
+        )
+        rationale.append(
+            "This site is a HARDCODED GRID OFFSET, scored after the fact, not the result of a "
+            "search. Phase 3 replaces these five with the argmax of a six-criterion per-pixel "
+            "search over the native frame."
         )
 
         candidates.append(CandidateLandingSite(
@@ -165,11 +219,13 @@ def select_landing_candidates(
             hazard_score=round(local_hazard, 3),
             illumination_fraction=round(local_illum, 3),
             distance_to_target_km=round(dist_km, 2),
-            scientific_value=round(sci_value, 3),
+            distance_proximity_index=round(proximity_index, 3),
             composite_landing_score=round(composite_score, 1),
             rank=0,
             is_recommended=False,
-            selection_rationale=rationale
+            selection_rationale=rationale,
+            data_mode=data_mode,
+            provenance=site_provenance,
         ))
 
     # Rank candidates by composite score descending

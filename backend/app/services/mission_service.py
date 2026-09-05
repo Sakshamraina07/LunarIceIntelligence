@@ -39,6 +39,7 @@ from pathlib import Path
 
 from app.core.config import settings
 from app.core.schemas import MissionState, CraterInfo
+from app.core.exceptions import UnknownCraterError
 from app.demo.lunar_generator import CRATER_CATALOG, demo_generator_enabled
 from app.ingestion.real_data_gate import (
     PRADAN_ROOT,
@@ -48,7 +49,7 @@ from app.ingestion.real_data_gate import (
 )
 from app.modules.module_a_psr import analyze_psr
 from app.modules.module_b_radar import analyze_dfsar_radar
-from app.modules.module_c_ice import evaluate_ice_intelligence
+from app.modules.module_c_screen import screen_ice_criteria
 from app.modules.module_d_terrain import analyze_terrain_safety
 from app.modules.module_e_landing import select_landing_candidates
 from app.modules.module_f_rover import plan_rover_path
@@ -138,6 +139,14 @@ class MissionPipelineService:
         """
         crater_info = CRATER_CATALOG.get(crater_id)
 
+        # BEFORE the eligibility gate, deliberately. An id that is not in the
+        # catalogue is not an un-ingested crater -- answering NOT_INGESTED for
+        # it asserts that such a crater exists and merely lacks a product, which
+        # is a claim about the Moon rather than about this repository. Unknown
+        # is unknown, and the API turns this into a 404.
+        if crater_info is None:
+            raise UnknownCraterError(crater_id, sorted(CRATER_CATALOG))
+
         # ------------------------------------------------------------------
         # The gate. Provenance decides, and `data_mode` no longer votes.
         #
@@ -153,9 +162,6 @@ class MissionPipelineService:
         if not status.eligible and not demo_generator_enabled():
             # The serving path. No numbers, no seeded substitute.
             return self._not_ingested_payload(crater_id, crater_info, status, data_mode)
-
-        if crater_info is None:
-            crater_info = CRATER_CATALOG["shackleton"]
 
         # Past this point `demo_generator_enabled()` is the only way a
         # non-eligible crater can still be running, and that flag is set by
@@ -200,10 +206,14 @@ class MissionPipelineService:
             )
             ensure_pradan_directories()
 
-            # No availability re-test and no ValueError branch here any more:
-            # reaching this line means the gate found all three rasters, so
-            # "real but nothing loaded" is not a state that can occur.
-            real_radar_available = True
+            # There is no `real_radar_available` flag any more. It was assigned a
+            # literal True, which made the `else:` branch beneath it -- the one
+            # that would have derived CPR and DOP from the Stokes products --
+            # unreachable code that nonetheless read as a working alternative
+            # path. Reaching this line means the gate found all three rasters,
+            # so "real but nothing loaded" is not a state that can occur. The
+            # Stokes derivation returns in Phase 5, wired to the complex sli
+            # products rather than to a dead branch.
 
             # Real spacing comes from the frame's own georeferencing, not a
             # constant. Two sources, in order of directness:
@@ -240,16 +250,24 @@ class MissionPipelineService:
                 spacing_tuple = frame.metres_per_pixel((100, 100))
                 spacing_absent_reason = None
             else:
-                # No georeferencing reachable. Do not invent a spacing: say so.
-                # The grid is still 100x100 cells, but every km, km2 and slope
-                # derived from it is uncalibrated, and the payload says which.
-                spacing_tuple = (250.0, 250.0)
-                spacing_absent_reason = (
-                    "Ground spacing is UNCALIBRATED. Neither the DEM's GeoTIFF "
-                    "tags nor dfsar/metadata_real.json could supply the frame, "
-                    "so 250 m per axis is a placeholder, not a measurement. "
-                    "Every distance, area and slope on this run is therefore "
-                    "uncalibrated and must not be quoted."
+                # FATAL, not a caveat. This used to fall back to (250.0, 250.0)
+                # and carry on, so the run still published areas in km2, volumes
+                # in m3 and a traverse in km -- every one of them a placeholder
+                # squared -- with nothing but a string in `grid_dimensions` to
+                # say so. A number that is not calibrated must not be computed
+                # at all, let alone served. The crater degrades to NOT_INGESTED,
+                # which is the honest state: its georeferencing is unreadable.
+                return self._not_ingested_payload(
+                    crater_id, crater_info,
+                    status.with_failure(
+                        "SPACING_UNRESOLVED",
+                        "Ground spacing could not be resolved. Neither the DEM's GeoTIFF tags nor "
+                        "dfsar/metadata_real.json supplied a frame, so there is no metres-per-pixel "
+                        "for this product. Every area, distance and slope would be uncalibrated, so "
+                        "none is computed. Re-run backend/scripts/process_real_sar_pipeline.py to "
+                        "regenerate dfsar/metadata_real.json.",
+                    ),
+                    data_mode,
                 )
 
             dem_dict = process_real_dem(str(dem_pradan_path), spacing_m=spacing_tuple)
@@ -260,17 +278,12 @@ class MissionPipelineService:
             doubly_shadowed_mask = dem_dict["doubly_shadowed"]
             hillshade = dem_dict["hillshade"]
 
-            if real_radar_available:
-                cpr = read_raster_file(str(cpr_real_path))
-                dop = read_raster_file(str(dop_real_path))
-                if cpr.shape != dem.shape:
-                    cpr = cv2.resize(cpr, (dem.shape[1], dem.shape[0]), interpolation=cv2.INTER_LINEAR)
-                if dop.shape != dem.shape:
-                    dop = cv2.resize(dop, (dem.shape[1], dem.shape[0]), interpolation=cv2.INTER_LINEAR)
-            else:
-                stokes_dict = process_real_dfsar_stokes(str(dfsar_s0_path), s3_path=str(dfsar_s3_path))
-                cpr = stokes_dict["cpr"]
-                dop = stokes_dict["dop"]
+            cpr = read_raster_file(str(cpr_real_path))
+            dop = read_raster_file(str(dop_real_path))
+            if cpr.shape != dem.shape:
+                cpr = cv2.resize(cpr, (dem.shape[1], dem.shape[0]), interpolation=cv2.INTER_LINEAR)
+            if dop.shape != dem.shape:
+                dop = cv2.resize(dop, (dem.shape[1], dem.shape[0]), interpolation=cv2.INTER_LINEAR)
 
             # Boulder risk is ABSENT, not zero, when there is no OHRC product.
             #
@@ -286,7 +299,11 @@ class MissionPipelineService:
                 boulder_risk = extract_boulders_from_ohrc(str(ohrc_path))
                 boulder_absent_reason = None
             else:
-                boulder_risk = np.zeros_like(dem, dtype=np.float32)
+                # `None`, not `np.zeros_like(dem)`. The zeros array was passed
+                # downstream where it was indistinguishable from a measured
+                # boulder-free surface; every consumer already branches on
+                # `boulder_available`, so there is nothing for it to be.
+                boulder_risk = None
                 boulder_absent_reason = (
                     f"No OHRC product on disk for {crater_id}. Boulder risk is "
                     "UNMEASURED, not zero: the hazard score below is the "
@@ -360,16 +377,21 @@ class MissionPipelineService:
             data_mode=effective_data_mode
         )
 
-        # Step 5: Module C - Ice Intelligence (Scientific Screening + ML)
-        ice_res, ice_rasters = evaluate_ice_intelligence(
+        # Step 5: Module C - the measured CRITERIA SCREEN.
+        #
+        # Was evaluate_ice_intelligence(), which also returned a Random Forest
+        # P(ice). That classifier is unwired: it was fitted to np.random.uniform
+        # labels whose positive class (CPR 1.05-2.5) lies outside this product's
+        # achievable range, so every probability was an extrapolation from
+        # fabricated examples. See module_c_ice.py's header.
+        #
+        # The psr_mask term is gone from the candidate mask too. It came from
+        # the illumination proxy, which darkens 77 % of the frame, so ANDing it
+        # in discriminated nothing while making a measured area partly modelled.
+        ice_res, ice_rasters = screen_ice_criteria(
             crater_id=crater_id,
             cpr=cpr,
             dop=dop,
-            slope_deg=terrain_rasters["slope_deg"],
-            roughness=terrain_rasters["roughness"],
-            illumination=illumination,
-            psr_mask=psr_mask,
-            doubly_shadowed_mask=doubly_shadowed_mask,
             spacing_m=spacing_m,
             cpr_threshold=cpr_threshold,
             dop_threshold=dop_threshold,
@@ -390,7 +412,8 @@ class MissionPipelineService:
             # polar-stereographic transform rather than a flat degrees-per-metre
             # guess applied to both axes.
             frame=frame,
-            grid_max=float(dem.shape[1])
+            grid_max=float(dem.shape[1]),
+            data_mode=effective_data_mode
         )
 
         # Step 7: Target centroid for rover traverse (ensure target cell is traversable)
@@ -420,10 +443,10 @@ class MissionPipelineService:
             hazard=terrain_rasters["hazard"],
             illumination=illumination,
             scientific_mask=ice_rasters["scientific_candidate_mask"],
-            ml_likelihood=ice_rasters["ml_likelihood"],
             start_xy=start_xy,
             target_xy=target_xy,
             spacing_m=spacing_m,
+            data_mode=effective_data_mode,
             strategy="Shortest",
             algorithm=rover_algorithm
         )
@@ -436,10 +459,10 @@ class MissionPipelineService:
             hazard=terrain_rasters["hazard"],
             illumination=illumination,
             scientific_mask=ice_rasters["scientific_candidate_mask"],
-            ml_likelihood=ice_rasters["ml_likelihood"],
             start_xy=start_xy,
             target_xy=target_xy,
             spacing_m=spacing_m,
+            data_mode=effective_data_mode,
             strategy="Safest",
             algorithm=rover_algorithm
         )
@@ -452,10 +475,10 @@ class MissionPipelineService:
             hazard=terrain_rasters["hazard"],
             illumination=illumination,
             scientific_mask=ice_rasters["scientific_candidate_mask"],
-            ml_likelihood=ice_rasters["ml_likelihood"],
             start_xy=start_xy,
             target_xy=target_xy,
             spacing_m=spacing_m,
+            data_mode=effective_data_mode,
             strategy="Science-Aware",
             algorithm=rover_algorithm
         )
@@ -483,7 +506,6 @@ class MissionPipelineService:
             "psr_mask": array_to_base64_png(psr_mask.astype(float), cv2.COLORMAP_BONE),
             "cpr_heatmap": array_to_base64_png(cpr, cv2.COLORMAP_TURBO),
             "dop_heatmap": array_to_base64_png(dop, cv2.COLORMAP_CIVIDIS),
-            "ml_likelihood": array_to_base64_png(ice_rasters["ml_likelihood"], cv2.COLORMAP_MAGMA),
             "hazard_map": array_to_base64_png(terrain_rasters["hazard"], cv2.COLORMAP_JET)
         }
 

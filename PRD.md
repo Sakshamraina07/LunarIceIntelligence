@@ -12,6 +12,14 @@ previous sessions. Everything needed is in this file or in the repo.
 
 **Last verified against the working tree:** 2026-09-05.
 
+**Revision v1.1** — after the Phase 0 report. Six statements in v1.0 were wrong and
+are corrected here; the Phase 0 report found all of them. Changed sections:
+§1.1 (one false claim removed), §1.3 (rewritten — `lunarBasemap.ts` is live, not
+dead), **new §1.2b** (seven live defects v1.0 missed), Phase 0 (closed), Phase 1
+(four items added, execution order stated), Phase 2 (**resolution decision changed
+— this is the one that affects the science**), Phase 7.3. Read those before
+starting. Everything else stands.
+
 ---
 
 ## 0 · What this project is, in one paragraph
@@ -41,9 +49,16 @@ Read this before believing anything in the old handoffs.
 | Slope / roughness / hillshade / hazard | Derived from that DEM with per-axis spacing `(25.0, 25.0)` read from GeoKeys | `layers.json.m2_gradient_spacing` |
 | CPR / DOP (amplitude-only) | `((√lh − √lv)/(√lh + √lv))²` and `|lh−lv|/(lh+lv)` | native p50 **0.000565**, max **0.053411** |
 
-The whole imagery path is genuinely clean: six lossless WebP layers at full
-native 6618 × 2258, one global stretch per layer, served from Vercel's CDN, map
-paints with the backend stopped.
+The whole imagery *pipeline* is genuinely clean: six lossless WebP layers at full
+native 6618 × 2258, one global stretch per layer, served from Vercel's CDN.
+
+**Correction (v1.1):** v1.0 wrote that the "map paints with the backend stopped".
+That is false and the Phase 0 report proved it. The imagery *can* paint without
+the backend, but `MissionControl.tsx:220` renders `{mission && <MissionMap …>}`,
+so the component never mounts until `/api/mission/{id}` answers. With the backend
+down the verdict card and context bar render from the static analysis and the map
+area is empty. The capability was built; the gate was never removed. See §1.2b
+item 25 and Phase 1D.
 
 ### 1.2 What is NOT real and still reaches a screen
 
@@ -78,7 +93,56 @@ but an examiner reading the source will find it).
 | 23 | Tile URL hardcodes `http://127.0.0.1:8000` **and** `faustini`; `||` fallbacks print a specific `product_id` and observation date as provenance for a mission that supplied neither. | `GISMapViewer.tsx:114, 588-591` | **R** |
 | 24 | `MODE: REAL` printed unconditionally; loading strings claim "L2 calibrated Stokes vectors" and "Random Forest ice probability inference". | `App.tsx:207, 43-50` | **R** |
 
-### 1.3 The finding that changes the plan — half the frontend is dead code
+### 1.2b Live defects v1.0 missed — found by the Phase 0 report
+
+| # | Defect | Location | Phase |
+|---|---|---|---|
+| 25 | **The map is gated on the backend.** `{mission && <MissionMap …>}` — with the backend down, or during a 30–50 s Render cold start, the user stares at nothing while every pixel is already on the CDN. This is V5 §3b, specified once and never done. | `MissionControl.tsx:220` | **1D** |
+| 26 | `backendChandrayaanTiles()` and `ALL_PROVIDERS` in `lunarBasemap.ts` point at `/tiles/{crater}/{layer}/{z}/{x}/{y}.png` — an endpoint Phase 0 deleted. Dead references to a 404. | `lunarBasemap.ts:82-93, 124-128` | 1C |
+| 27 | `STATIC_DEM` describes `/lunar-dem.png` as a `'Real elevation raster'` in `notes` and a `'bundled demo asset'` in `attribution`, in the same object, and names no body, mission or resolution. It textures the Moon on the landing page — the first thing anyone sees. An unverified provenance claim is the exact failure this project exists to avoid. | `lunarBasemap.ts:111-114`, `Moon.tsx:16` | 1C |
+| 28 | **A third dead surface: a Next.js scaffold at the repo root** (`app/`, `components/`, `lib/`, `next.config.mjs`, root `package.json`) duplicating `frontend/src`, whose only page redirects to a hardcoded `localhost:5173`. `lib/api.ts` still calls the now-404 `/api/experiments`. In a submitted repo this is worse than clutter — a marker opening the root finds a second, broken app. | repo root | **1E** |
+| 29 | `frontend/scripts/verify_map.mjs` is already dead: it asserts `getPane('mc-void')`, a pane v8 deliberately removed, and exits 3 before producing any evidence. A dead verifier in the tree is a trap for every gate that follows. | `verify_map.mjs` | **1F** |
+| 30 | `verify_v8_view.mjs` gate `routes_visible` returns a **false FAIL**: it flags `stroke #4fd1e6 w 9.5 o 0.15` as "too faint to see", which is the Science-Aware route's own deliberate glow underlay. Deterministic across runs. A gate that cries wolf is how a real failure gets waved through later. | `verify_v8_view.mjs`, vs `MissionMap.tsx:1043` | **1F** |
+| 31 | Six more `d:/FYP` absolutes in `backend/scripts/` — `analyze_cpr_clusters`, `fast_cluster_analysis`, `inspect_channels`, `inspect_geometry`, `inspect_pds4_raw`, `sanity_check_sar`. Dev-only and never imported, but they are scripts a reviewer may run, and they name the author's D: drive. | `backend/scripts/` | 1C |
+| 32 | `__pycache__` / `*.pyc` are tracked in git and churn on every run, so every future diff is noisy. | `.gitignore` | 1C |
+
+### 1.3 Phase 0 outcome — the dead-code trace, corrected
+
+v1.0 predicted eight unreachable frontend files. The Phase 0 import trace found
+**seven of the eight, plus one v1.0 missed, minus one v1.0 got wrong.** The trace
+is the authority; this section records its result.
+
+`main.tsx → Root.tsx → { LandingPage | MissionControl }` — 25 reachable,
+8 unreachable. Removed in Phase 0 (`425584e`, parked at `parked/tile-pyramid`
+`4a683ea`):
+
+```
+App.tsx · App.css · WorkflowViews.tsx · GISMapViewer.tsx
+MissionStepper.tsx · HenryAICopilotDrawer.tsx · utils/lunarCRS.ts
+components/Common/Tooltip.tsx          <- v1.0 missed this; only importer was WorkflowViews
+```
+
+**`landing/services/lunarBasemap.ts` is LIVE and was correctly kept.**
+`landing/scene/Moon.tsx:16` imports `DEFAULT_SURFACE_PROVIDER` from it. v1.0
+listed it as having no importer; that was a tooling error on my side, not a
+judgement — the file had not finished landing when the import graph was read, and
+the result was trusted without a retry. Deleting it as v1.0 instructed would have
+broken the landing page. **This is why §2 rule 17(d) exists, and why Phase 0.2
+required the trace to be proved rather than assumed.** Two live defects inside
+that file are now §1.2b items 26 and 27.
+
+Also confirmed by Phase 0: `frontend/src` went 33 → 25 source files;
+`/api/experiments` and `/tiles/...` both 404; 510 tracked tile PNGs (1,567 files,
+44 MB) removed and recoverable; `tsc` exit 0, `pytest` 17 passed, `vite build`
+exit 0.
+
+**One thing the report surfaced that is not a code defect and matters more than
+any of them:** every piece of real work in this project — `sar_geometry.py`,
+`build_analysis.py`, `render_layers.py`, `analysis.ts`, `public/layers/` — was
+**uncommitted** until `4a683ea`. It is baselined now. Push both branches to a
+remote before Phase 1 touches anything.
+
+### 1.3.1 Historical note — why v1.0 called this "the finding that changes the plan"
 
 `main.tsx` → `Root.tsx` → `LandingPage` (default route) or `MissionControl`
 (`#mission`). **`App.tsx` is imported by nothing.** Its own docstring in
@@ -234,7 +298,13 @@ unless stated. **Do not start a phase before its gate predecessor passes.**
 
 ---
 
-### PHASE 0 — Cut the clutter (½ session)
+### PHASE 0 — Cut the clutter — ✅ **COMPLETE** (`425584e`, parked `4a683ea`)
+
+Gate 0 passed: `tsc` exit 0, `pytest` 17 passed, `vite build` exit 0, import trace
+delivered, 42 files changed / +182 / −3,642, `frontend/src` 33 → 25 files.
+Deviations from spec, all correct: `lunarBasemap.ts` kept (live), `Tooltip.tsx`
+additionally removed (dead). **LOLA 20 m download continues in the background —
+nothing before Phase 6 needs it (see Phase 2).** Retained below for the record.
 
 Nothing here changes a number. It removes ~122 KB of unreachable fabricated code
 and nine contradictory specification files, so every later phase is read against
@@ -425,6 +495,87 @@ Frontend:
   than hedging in the UI.
 - `VerdictCard.tsx:45-51` — evidence rows 3 and 4 print `0.00 vs > 0.00`.
   Suppress a threshold clause when the threshold is 0.
+- `lunarBasemap.ts:82-93, 124-128` — delete `backendChandrayaanTiles()` and
+  `ALL_PROVIDERS`. They point at the tile endpoint Phase 0 deleted. Keep
+  `STATIC_DEM` and `DEFAULT_SURFACE_PROVIDER`; `Moon.tsx:16` imports them.
+- `lunarBasemap.ts:111-114` — `STATIC_DEM` calls `/lunar-dem.png` a *"Real
+  elevation raster"* in one field and a *"bundled demo asset"* in the next, and
+  names no body, mission or resolution. **Establish its provenance or withdraw
+  the claim.** If it cannot be traced, relabel it as a decorative texture with no
+  provenance claim. Do not guess a source. (A later, optional improvement: texture
+  the landing-page Moon from the real LOLA product you already have — out of scope
+  for Phase 1, worth noting in `docs/`.)
+
+Housekeeping, same phase:
+
+- Fix the six remaining `d:/FYP` absolutes in `backend/scripts/` (§1.2b item 31)
+  with `Path(__file__).resolve().parents[N]`. Phase 1 already edits
+  `build_analysis.py`; do the other five in the same pass.
+- Add `__pycache__/` and `*.pyc` to `.gitignore` and `git rm -r --cached` them
+  (§1.2b item 32), so every later diff is readable.
+
+#### 1D · Un-gate the map from the backend
+
+`MissionControl.tsx:220` is `{mission && <MissionMap …>}`. Remove the gate. This
+is V5 §3b, approved once and never executed, and it is the highest visible payoff
+in the phase: the imagery is already on the CDN and returns in tens of
+milliseconds with the backend dead.
+
+Do it as an **additive widening, not a restructure**:
+
+- `mission` becomes optional/nullable in `Props`. Every other prop keeps its exact
+  name and type. **`MissionMapHandle` stays byte-identical.**
+- With no `mission`: render the raster layers, panes, graticule, scale bar,
+  footprint rings and coordinate readout. Skip only what genuinely needs the
+  analysis — landing-site markers, rover routes, the target marker.
+- Show an honest status chip while analysis is in flight:
+  `TERRAIN LOADED · ANALYSIS PENDING`. **Do not fabricate placeholder markers.**
+- Keep the failure banner for the analysis panels. The map painting and the
+  analysis failing are different states and must look different.
+
+After 1A, the map's vectors should read the **static analysis**, not the backend
+— so the correct final gate is `analysis && <vectors>` inside an unconditionally
+mounted map, and the backend stops being on the map's critical path at all.
+
+#### 1E · Delete the Next.js root scaffold — **prove the deploy root first**
+
+§1.2b item 28. A second, non-functional app at the repo root that redirects to a
+hardcoded `localhost:5173` is the first thing a marker sees.
+
+**Do not delete blind.** Establish, and report, which directory the deployment
+actually builds from: check `vercel.json` / the Vercel project root setting, the
+root `package.json` scripts, `pnpm-workspace.yaml`, and whether `frontend/` is
+the configured root. If the root Next app is what Vercel builds, deleting it takes
+the site down — **stop and report instead.**
+
+If it is confirmed dead: same treatment as Phase 0 — park it on a branch, then
+remove `app/`, `components/`, `lib/`, `next.config.mjs`, `next-env.d.ts`,
+`postcss.config.mjs`, `components.json`, `.next/`, the root `tsconfig.json` and
+the root `package.json`/lockfiles that exist only to serve it. Report the file
+count. `AGENTS.md` is generated by `next dev` and goes with it.
+
+#### 1F · Repair the verifier — Gate 1 needs a working instrument
+
+- **Delete `frontend/scripts/verify_map.mjs`** (§1.2b item 29). It asserts a pane
+  v8 removed and exits 3 before producing evidence. This moves here from Phase 7.3
+  because every gate from now on depends on the verifier being trustworthy.
+- **Fix the `routes_visible` false FAIL** in `verify_v8_view.mjs` (§1.2b item 30).
+  The check is flagging the Science-Aware glow underlay
+  (`MissionMap.tsx:1043`, `weight: s.weight + 6, opacity: 0.15`) as an invisible
+  route. Evaluate the route stroke, not every polyline in the pane — exclude the
+  underlay by class, or test the maximum opacity among strokes sharing a path.
+  **Do not waive the gate and do not lower its threshold.** A gate that cries wolf
+  is how a real failure gets waved through three phases from now.
+- Extend it with the Gate 1 assertion: `imageOverlays.length === expectedActiveLayers`,
+  printing every `_url`.
+
+#### Execution order within Phase 1
+
+One backend pass, one frontend pass, one tooling pass — not twelve small ones:
+
+**1A → 1B** (both are `build_analysis.py`) **→ 1C backend** → **1C frontend +
+1D together** (both consume the new JSON; doing 1D first would touch
+`MissionMap`/`MissionControl` twice) **→ 1E → 1F.** One report at Gate 1.
 
 **Gate 1** — this is the hard one. Produce a single table with one row per number
 rendered on `#mission`, listing: the label, the value shown, the provenance mark,
@@ -453,10 +604,32 @@ per pixel and `psr_mask = (fraction == 0)`.
 
 **Three things that decide whether this is science or decoration:**
 
-1. **Compute the horizon on the FULL 7600 × 7600 LOLA array, then crop.** At the
-   pole the horizon is set by crater rims tens of kilometres outside the
-   165 × 56 km frame. A horizon computed only inside the frame invents sunlight
-   that real terrain blocks. The whole 80S product is on disk — use it.
+1. **Compute the horizon on the FULL `LDEM_80S_80M` array — 7600 × 7600 — then
+   crop.** At the pole the horizon is set by crater rims tens of kilometres
+   outside the 165 × 56 km frame. A horizon computed only inside the frame
+   invents sunlight that real terrain blocks.
+
+   **Resolution decision (v1.1), and it is a real design change, not a note.**
+   The Phase 0 report established that `LDEM_80S_20M` is **30400 × 30400 =
+   924 M pixels** (label validated: `SAMPLE_BITS 16`, `MAP_SCALE 20 <m/pix>`,
+   1,848,320,000 bytes matching `Content-Length` exactly), not the 57.8 M v1.0
+   specced against. At float32 that is a **3.7 GB** array; rotating it 360 times
+   is not feasible on this machine, and it is not necessary either.
+
+   **The horizon runs on the 80 m product. The 20 m product is for terrain
+   rendering in Phase 6 and nothing else.** The horizon at a point is set by
+   distant rim crests, so its useful angular resolution is coarse — a multi-scale
+   horizon (coarse far field, finer near field) is standard practice in lunar
+   illumination work, not a compromise. At 7600² float32 = 231 MB, 360 azimuths
+   of rotate + running-max + rotate-back is minutes, not hours.
+
+   Optionally refine the near field (within a few km) at 20 m once it lands, and
+   **report both scales**. Do not silently mix them.
+
+   **Consequence for scheduling: Phase 2 is NOT blocked on the download.** It can
+   start the moment Gate 1 passes. Phase 6's ingest reads only the frame's
+   projected bbox as a windowed `np.memmap` (~8270 × 2820 at 20 m), so the file
+   being 16× larger costs Phase 6 nothing either.
 2. **Rotate-and-scan, not per-pixel ray marching.** For each azimuth, rotate with
    `scipy.ndimage.rotate(order=1)`, take a running maximum of `(h−h0)/r` along
    rows, rotate back. O(N) per azimuth instead of O(N · ray length). Decimate
@@ -719,9 +892,11 @@ validation (13.2 mm), the LOLA label parse and its four traps, the horizon
 algorithm and its resolution, the site search and NMS, the traverse graph and its
 planning resolution, the Stokes derivation. Include the numbers, not the prose.
 
-**7.3** Fold `frontend/scripts/verify_map.mjs` and `verify_v8_view.mjs` into one
-committed script that reproduces every gate's evidence in a single command and
-writes to `docs/`. Delete the other.
+**7.3** *(Moved to Phase 1F — `verify_map.mjs` was already dead and the
+`routes_visible` false positive had to be fixed before Gate 1 could mean
+anything.)* What remains here: confirm the single surviving verifier reproduces
+every gate's evidence in one command and writes to `docs/`, and that each gate it
+asserts corresponds to a statement in §6.
 
 **7.4** Update `README.md` and the four stale `docs/*.md`
 (`ml-methodology.md` in particular describes the deleted Random Forest).

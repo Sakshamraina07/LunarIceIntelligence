@@ -3,7 +3,10 @@ import numpy as np
 import tifffile
 from pathlib import Path
 
-RAW_DIR = Path(r"D:\FYP\data\pradan\raw\data\calibrated\20200808")
+# Repository root, derived from this file's location rather than a hardcoded
+# drive letter. backend/scripts/ -> parents[2] is the root.
+BASE_DIR = Path(__file__).resolve().parents[2]
+RAW_DIR = BASE_DIR / "data" / "pradan" / "raw" / "data" / "calibrated" / "20200808"
 
 def main():
     print("=" * 95)

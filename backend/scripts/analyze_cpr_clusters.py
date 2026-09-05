@@ -5,7 +5,10 @@ import tifffile
 from pathlib import Path
 from scipy.ndimage import label, center_of_mass
 
-RAW_DIR = Path(r"D:\FYP\data\pradan\raw\data\calibrated\20200808")
+# Repository root, derived from this file's location rather than a hardcoded
+# drive letter. backend/scripts/ -> parents[2] is the root.
+BASE_DIR = Path(__file__).resolve().parents[2]
+RAW_DIR = BASE_DIR / "data" / "pradan" / "raw" / "data" / "calibrated" / "20200808"
 OUT_DIR = Path(r"C:\Users\hp\.gemini\antigravity-ide\brain\6f0784ac-46e7-45a2-a432-2a1cdee24e89")
 
 def main():

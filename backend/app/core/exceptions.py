@@ -38,6 +38,24 @@ class PathPlanningFailureError(LunarScienceException):
         )
 
 
+class UnknownCraterError(LunarScienceException):
+    """
+    A crater id that is not in the catalogue.
+
+    mission_service used to answer this with CRATER_CATALOG["shackleton"], so a
+    typo in the URL returned a complete, confident Shackleton payload labelled
+    with whatever id was asked for. That is the cheapest possible way to
+    attribute one crater's measurements to another, and it returned HTTP 200.
+    """
+
+    def __init__(self, crater_id: str, known: list):
+        super().__init__(
+            message=f"Unknown crater id '{crater_id}'.",
+            error_code="UNKNOWN_CRATER",
+            details={"crater_id": crater_id, "known_crater_ids": list(known)},
+        )
+
+
 def lunar_exception_handler(request: Request, exc: LunarScienceException):
     return JSONResponse(
         status_code=400,

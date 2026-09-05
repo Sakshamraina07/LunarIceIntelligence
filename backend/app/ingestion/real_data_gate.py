@@ -59,6 +59,30 @@ class RealDataStatus:
     product_id: Optional[str] = None
     inputs: Dict[str, str] = field(default_factory=dict)
     missing_roles: List[str] = field(default_factory=list)
+    #: Set when a crater passed the provenance gate but failed a later
+    #: precondition -- so far only an unresolvable ground spacing. Kept separate
+    #: from `reason` so the payload can say "registered, but not computable"
+    #: rather than implying the product was never ingested.
+    failure_code: Optional[str] = None
+
+    def with_failure(self, code: str, reason: str) -> "RealDataStatus":
+        """
+        A copy of this status demoted to ineligible, carrying why.
+
+        Used when the pipeline gets past the provenance gate and then finds it
+        cannot compute honestly -- the spacing case. The alternative was to
+        publish areas and distances off a placeholder constant, which is the
+        defect this method exists to make impossible.
+        """
+        return RealDataStatus(
+            crater_id=self.crater_id,
+            eligible=False,
+            reason=reason,
+            product_id=self.product_id,
+            inputs=dict(self.inputs),
+            missing_roles=list(self.missing_roles),
+            failure_code=code,
+        )
 
     def as_payload(self) -> Dict[str, object]:
         """The absent-state block the API hands to the UI. No numbers in it."""
@@ -68,6 +92,7 @@ class RealDataStatus:
             "reason": self.reason,
             "product_id": self.product_id,
             "missing_roles": list(self.missing_roles),
+            "failure_code": self.failure_code,
             "resolved_inputs": dict(self.inputs),
             "what_would_change_it": (
                 "Ingest a Chandrayaan-2 DFSAR product covering this crater and "

@@ -38,6 +38,18 @@ import time
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[2]
+# ── console encoding ────────────────────────────────────────────────────────
+# The Windows console is cp1252 by default, and a single unencodable character
+# in a progress line raises UnicodeEncodeError and kills a 30-minute run at
+# minute 28. Reconfiguring here rather than relying on PYTHONIOENCODING means it
+# cannot be forgotten by whoever launches the script. errors="replace" because a
+# diagnostic print must never be the thing that fails a computation.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        pass
+
 SCRIPTS = Path(__file__).resolve().parent
 
 

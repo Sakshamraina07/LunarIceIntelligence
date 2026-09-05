@@ -211,5 +211,176 @@ median outright. Nothing is resampled and nothing is averaged across the void.
 
 ---
 
-*Sections 5 (illumination and PSR), 6 (site search), 7 (traverse) and 8 (Stokes
-derivation) arrive with Phases 2, 3, 4 and 5b.*
+## 5 · Illumination, and permanent shadow
+
+### 5.1 What replaced what
+
+Two invented brightness proxies, which disagreed with each other:
+
+```
+render_layers.py    hillshade(alt 30°) × elev_norm^1.2
+build_analysis.py   hillshade(alt 1.5°) × elev_norm^1.3     < 0.05  →  "PSR"
+```
+
+Neither contains a horizon term, so neither is solar geometry. The second put
+77.18 % of the frame in "shadow", which is a statement about the expression and
+not about the Moon. The map and the statistics were computed from *different*
+formulas for the same quantity, and nothing in the build could notice.
+
+The old "doubly shadowed" mask was that proxy's shadow intersected with the
+lowest elevation quintile of the DEM. An elevation percentile is not a shadowing
+event.
+
+Both are deleted. Illumination is now a horizon computation, and the layer and
+the statistics are the same array.
+
+### 5.2 The quantity
+
+For a point `p` and azimuth `az`, the horizon is the elevation angle of the
+highest terrain along that ray:
+
+```
+horizon(p, az) = max over r > 0 of  atan( (h(p + r·u_az) − h(p)) / r )
+```
+
+`p` is lit for a sun at `(az, el)` when `el > horizon(p, az)`. A permanently
+shadowed region is a point for which that is false for every sun state.
+
+**Not a running maximum.** The obvious implementation — sweep along the ray
+keeping a running max of `(h − h₀)/r` — is wrong, because `r` differs for every
+pair: a low ridge nearby can subtend a larger angle than a high one far away, so
+the maximising point is not the highest point. `app/ingestion/horizon.py`
+implements the O(n) skyline scan (Dozier, Bruno & Downey 1981; Dozier & Frew
+1990), vectorised across rows so the per-row Python loop disappears.
+
+| Check | Result |
+|---|---|
+| Fast scan vs O(n²) brute force, 12 profiles across white / smooth / spiky / monotone terrain | **max diff 1.7 × 10⁻⁶** |
+| Crest index reproduces its own reported slope | 4.7 × 10⁻⁷ |
+| Backward-scan crest indices lie behind their column | true |
+
+### 5.3 The correction that matters — solar elevation is not capped at 1.54°
+
+**This is a correction to the specification, not a bug fix, and it changes the
+headline number by a factor of 2.4.**
+
+The natural-sounding model is: *at the lunar south pole the Sun stays within
+±1.54° of the horizon, so sample the solar elevation over [0°, 1.54°]*. That is
+true only **at** the pole. 1.54° is the Moon's obliquity to the ecliptic, which
+bounds the **subsolar latitude** — not the elevation seen from a site.
+
+```
+sin(el) = sin(φ)·sin(δ) + cos(φ)·cos(δ)·cos(H)
+```
+
+At φ = −90° the first term is all that survives and the bound really is 1.54°.
+Away from the pole `cos(φ)` grows and the second term dominates, giving a
+maximum elevation of **1.54° + (90° − |φ|)**:
+
+| latitude | naive cap | true maximum solar elevation |
+|---|---|---|
+| −90.000° | 1.54° | **1.54°** |
+| −89.000° | 1.54° | 2.54° |
+| −88.000° | 1.54° | 3.54° |
+| −85.000° | 1.54° | 6.54° |
+| **−84.833408°** (this frame's outer edge) | 1.54° | **6.7066°** |
+| −80.000° | 1.54° | 11.54° |
+
+The DFSAR frame spans −89.263057° to −84.833408°, so the naive model
+under-illuminates it by between 1.6× and 4.4×.
+
+**Measured consequence.** The full sweep was run both ways over the same array:
+
+| sun model | PSR over the 7600² array |
+|---|---|
+| naive, `el ∈ [0°, 1.54°]` for every pixel | 65,398 km² |
+| **per-pixel, `sin(el) = sin φ sin δ + cos φ cos δ cos H`** | **26,900 km²** |
+
+The naive figure is 2.4× the corrected one and 5× the published ~13,000 km²
+south of 80°S (Mazarico et al. 2011). It would have been this phase's headline
+number, and nothing about it would have looked wrong.
+
+**Azimuth.** Near the pole the solar azimuth measured from north is `−H` to
+within a fraction of a degree — the exact form
+`A = atan2(−sin H cos δ, cos φ sin δ − sin φ cos δ cos H)` differs from `−H` by
+0.05° at −88° and 0.14° at −84.8°, both well inside the 1° azimuth sampling.
+That approximation is what allows the sun model to ride along inside the
+per-azimuth horizon sweep instead of requiring a per-pixel horizon lookup table
+of 360 planes (9.2 GB).
+
+### 5.4 The lit fraction is integrated, not sampled
+
+For each azimuth the fraction of the subsolar band in which the Sun clears the
+pixel's horizon is computed **in closed form** rather than by sampling `n`
+discrete subsolar latitudes. `sin(el)` is very nearly linear in `δ` across the
+±1.54° band — its curvature is bounded by `|cos φ|·δ_max²/2 ≤ 8.7 × 10⁻⁵` — so
+`sin(el)` is evaluated *exactly* at both band endpoints and the crossing is
+interpolated between them.
+
+| Check | Result |
+|---|---|
+| Closed form vs 20,001-sample brute force, 25 (cos H, horizon) combinations × 5,000 latitudes | **max error 0.00059** — 0.06 % of the band |
+
+This is both faster (it removed ~7 s from every one of 180 rotations) and more
+correct: discrete sampling quantises every pixel's illumination fraction to
+multiples of `1/n` and puts a sampling artefact into the headline number.
+
+### 5.5 Computed on the full array, then cropped
+
+At the pole the horizon is set by crater rims tens of kilometres outside the
+165 × 56 km frame, so the sweep runs over the whole 7600 × 7600 LOLA polar array
+and the frame is cropped out afterwards. A horizon computed only inside the
+frame would invent sunlight that real terrain blocks.
+
+The square's corners reach 430 km from the pole — beyond the −80° circle the
+product nominally covers — and were checked rather than assumed: 0.01 % zeros,
+min −7,274 m, max +5,071 m, 245 distinct values in a sample block. They hold real
+terrain, so the rotation uses `reshape=True` and keeps them.
+
+Azimuth `a` and `a + 180°` are the same line scanned in opposite senses, so 360
+azimuths cost 180 rotations.
+
+### 5.6 Resolution, and how it is labelled
+
+The horizon runs on the 80 m LOLA product decimated 3× by **block mean** to
+240 m. Block mean rather than stride-sampling (which would drop narrow rim
+crests entirely and un-shadow a crater floor) or block max (which would
+manufacture occlusion). The mean slightly lowers sharp crests, which biases
+marginally toward calling a pixel **lit** — the conservative direction for a
+shadow map, so a PSR reported here is not an artefact of the smoothing.
+
+The 20 m LOLA product is deliberately **not** used: it is 30400 × 30400 = 924 M
+pixels, 3.7 GB as float32, and rotating that 180 times is neither feasible nor
+necessary, because a horizon is set by distant rim crests and is a coarse
+quantity. It is for terrain rendering in Phase 6.
+
+Every consumer receives `native_metres_per_pixel`, the decimation factor and the
+effective spacing alongside the arrays, and
+`horizon_frame.assert_resolution_declared()` fails a caller that publishes
+illumination without them. **A 240 m shadow mask resampled onto the 25 m grid is
+still a 240 m shadow mask.**
+
+`psr_mask` is *re-derived* on the frame grid by the same `fraction == 0` rule,
+never interpolated — bilinear interpolation of a boolean would invent
+half-shadowed pixels.
+
+### 5.7 The polar → frame mapping, checked end to end
+
+`app/ingestion/horizon_frame.py` is the single place the two grids meet. Its
+mapping was verified by using it to sample **elevation** — the one quantity that
+exists on both grids and was produced by a different code path — and comparing
+against `ldem_frame_25m.tif`, which `ingest_lola_polar_dem.py` produced
+independently and which was validated separately against ISRO's geolocation grid.
+
+| | rms | bias | Pearson r |
+|---|---:|---:|---:|
+| Mapping as implemented | **2.93 m** | **−0.00 m** | **0.999997870** |
+| Control: same mapping shifted one decimated pixel (240 m) | 36.34 m | — | 0.999673870 |
+
+A 240 m block mean cannot reproduce a 25 m crop exactly; the point is that there
+is no *offset*. The control shows a half-pixel error would be caught.
+
+---
+
+*Sections 6 (site search), 7 (traverse) and 8 (Stokes derivation) arrive with
+Phases 3, 4 and 5b.*

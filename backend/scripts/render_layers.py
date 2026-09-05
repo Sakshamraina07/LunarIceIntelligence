@@ -67,7 +67,20 @@ if str(BACKEND_DIR) not in sys.path:
 
 NATIVE_DIR = BASE_DIR / "data" / "pradan" / "native"
 DFSAR_DIR = BASE_DIR / "data" / "pradan" / "dfsar"
-LOLA_SIDECAR = BASE_DIR / "data" / "pradan" / "lola" / "ldem_frame_25m.provenance.json"
+# ── console encoding ────────────────────────────────────────────────────────
+# The Windows console is cp1252 by default, and a single unencodable character
+# in a progress line raises UnicodeEncodeError and kills a 30-minute run at
+# minute 28. Reconfiguring here rather than relying on PYTHONIOENCODING means it
+# cannot be forgotten by whoever launches the script. errors="replace" because a
+# diagnostic print must never be the thing that fails a computation.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        pass
+
+LOLA_DIR = BASE_DIR / "data" / "pradan" / "lola"
+LOLA_SIDECAR = LOLA_DIR / "ldem_frame_25m.provenance.json"
 RAW_DIR = BASE_DIR / "data" / "pradan" / "raw" / "data" / "calibrated" / "20200808"
 OUT_DIR = BASE_DIR / "frontend" / "public" / "layers"
 
@@ -540,7 +553,7 @@ DEM_NOTE = (
 
 
 def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
-                 illumination: np.ndarray) -> list[dict]:
+                 illumination, illum_meta) -> list[dict]:
     """
     Six layers, each with an explicit mask, stretch mode, colormap and honest
     provenance string. `mask` is what alpha is built from AND what the stretch
@@ -577,14 +590,36 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
                    "so the roughness divisor is a display scaling, not a threshold "
                    "validated against this terrain. " + DEM_NOTE},
 
-        {"id": "illumination", "label": "Shadowed Areas", "data": illumination, "mask": dense,
+        # `provenance` is regex-tested by MissionMap.tsx against
+        # /synthetic|placeholder|analytic|unknown|unavailable/i — a hit makes the
+        # UI caption the layer a placeholder. "computed-solar-horizon" contains
+        # none of the six, which is correct now and was correct to be caught
+        # before, when the layer really was a heuristic.
+        {"id": "illumination", "label": "Solar Illumination", "data": illumination,
+         "mask": dense,
          "stretch": "linear", "colormap": "inferno", "opaque_alpha": 255,
-         "provenance": "modelled-from-measured-topography",
-         "sources": ["native/dem_native_synthetic.tif"],
-         "detail": "hillshade * normalised elevation ^1.2. NOT a solar-geometry PSR product "
-                   "-- no true cold traps are computed in this build, and this is a shading "
-                   "heuristic rather than an illumination measurement. The topography under "
-                   "it is real: " + DEM_NOTE},
+         "provenance": "computed-solar-horizon",
+         "sources": [(illum_meta or {}).get("source_product", "LDEM_80S_80M.IMG")],
+         "detail": (
+             "Fraction of sampled sun states in which each point is lit, from a HORIZON "
+             "COMPUTATION over the full {shape} LOLA polar array at {eff:g} m ({native:g} m "
+             "posts, {dec}x block mean), swept over {az} azimuths. For each azimuth the "
+             "horizon is max over r of atan((h(p+r*u) - h(p))/r), and the solar elevation is "
+             "computed PER PIXEL from its own latitude — a fixed elevation band is correct "
+             "only at the pole and under-illuminates this frame by up to 4.4x. Black is "
+             "permanent shadow: lit in no sampled state. "
+             "REPLACES hillshade * normalised elevation^1.2, a shading heuristic with no "
+             "horizon term, which this file rendered while build_analysis.py used a "
+             "different invented expression for the same quantity. "
+             "READ IT AS A {eff:g} m PRODUCT however it is displayed — resampling onto the "
+             "25 m frame adds no shadow detail. " + DEM_NOTE
+         ).format(
+             shape="x".join(str(v) for v in (illum_meta or {}).get("array_shape", ["?", "?"])),
+             eff=(illum_meta or {}).get("effective_metres_per_pixel", 0),
+             native=(illum_meta or {}).get("native_metres_per_pixel", 0),
+             dec=(illum_meta or {}).get("decimation_factor", "?"),
+             az=(illum_meta or {}).get("azimuths", "?"),
+         )},
 
         {"id": "cpr_heatmap", "label": "Radar Signals (CPR)", "data": src["cpr"], "mask": valid,
          "stretch": "log", "colormap": "turbo", "opaque_alpha": 235,
@@ -765,17 +800,51 @@ def main() -> None:
     print(hazard_table)
 
     hillshade = compute_hillshade(src["dem"], spacing)
-    illumination = np.clip(
-        hillshade * ((src["dem"] - src["dem"].min()) / (np.ptp(src["dem"]) + 1e-6)) ** 1.2,
-        0.0, 1.0).astype(np.float32)
 
-    specs = build_layers(src, terrain, hillshade, illumination)
+    # ONE EXPRESSION, ONE SUN, ONE NUMBER.
+    #
+    # This used to be `hillshade * elev_norm**1.2` — a shading heuristic with no
+    # horizon term — while build_analysis.py carried a DIFFERENT invented
+    # expression, `hillshade(sun 1.5 deg) * elev_norm**1.3`. So the picture and
+    # the percentage beside it were computed from two different formulas, and
+    # nothing in the build could notice.
+    #
+    # Both are deleted. The layer is now the SAME illumination_fraction array
+    # that produces the reported statistics, resampled onto this frame by the
+    # single mapping in app/ingestion/horizon_frame.py.
+    illumination = None
+    illum_meta = None
+    try:
+        from app.ingestion.horizon_frame import load_horizon
+        from app.ingestion.sar_geometry import read_geotiff_frame
+        hp = load_horizon(LOLA_DIR)
+        frame_geom = read_geotiff_frame(LH_TIF, LH_XML)
+        proj = hp.to_frame(frame_geom, src["dem"].shape)
+        illumination = np.nan_to_num(proj["illumination_fraction"], nan=0.0)
+        illum_meta = hp.meta
+        print(f"\n  illumination: horizon product {hp.path.name} "
+              f"({hp.effective_m:g} m effective, {hp.meta['azimuths']} azimuths) "
+              f"resampled onto the {src['dem'].shape[0]}x{src['dem'].shape[1]} frame")
+    except (FileNotFoundError, Exception) as exc:  # noqa: B014
+        print(f"\n  ! illumination layer SKIPPED: {exc}")
+        print("    The deleted brightness proxy is NOT used as a fallback. Run:")
+        print("      python backend/scripts/compute_horizon.py")
+
+    specs = build_layers(src, terrain, hillshade, illumination, illum_meta)
     if args.only:
         specs = [s for s in specs if s["id"] in set(args.only)]
         print(f"\n(--only) rendering {[s['id'] for s in specs]}")
 
     out_dir: Path = args.out
     out_dir.mkdir(parents=True, exist_ok=True)
+    # A layer with no data is DROPPED, not rendered black. An all-zero
+    # illumination raster would read as "the whole frame is in shadow", which is
+    # a claim, and a false one.
+    dropped = [sp["id"] for sp in specs if sp.get("data") is None]
+    if dropped:
+        print(f"\n  dropping {dropped}: no data. The manifest will not list them, "
+              f"so the UI shows no layer rather than an empty one.")
+        specs = [sp for sp in specs if sp.get("data") is not None]
     entries = [render_layer(s, out_dir, not args.no_histograms) for s in specs]
 
     manifest = {

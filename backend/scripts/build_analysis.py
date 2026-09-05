@@ -101,6 +101,18 @@ BACKEND_DIR = Path(__file__).resolve().parents[1]
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
+# ── console encoding ────────────────────────────────────────────────────────
+# The Windows console is cp1252 by default, and a single unencodable character
+# in a progress line raises UnicodeEncodeError and kills a 30-minute run at
+# minute 28. Reconfiguring here rather than relying on PYTHONIOENCODING means it
+# cannot be forgotten by whoever launches the script. errors="replace" because a
+# diagnostic print must never be the thing that fails a computation.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+    except (AttributeError, OSError):
+        pass
+
 NATIVE_DIR = BASE_DIR / "data" / "pradan" / "native"
 LOLA_DIR = BASE_DIR / "data" / "pradan" / "lola"
 LOLA_SIDECAR = LOLA_DIR / "ldem_frame_25m.provenance.json"
@@ -174,13 +186,14 @@ SLOPE_NOTE = (
     f"posts and the upsample added no relief below that. Read this as a "
     f"{NATIVE_POST_M:g} m slope, not a {GRID_POST_M:g} m one. " + DEM_NOTE
 )
+#: Filled from the horizon product's own sidecar when it is present, so the
+#: wording can never describe a run that did not happen. The fallback is the
+#: honest absent state, not the deleted proxy.
 ILLUM_MODEL = (
-    "Illumination here is NOT a horizon computation. It is the expression "
-    "hillshade(sun 1.5 deg) * elev_norm**1.3 -- an invented brightness proxy "
-    "with no physical horizon in it, inherited from the ingest path. It puts "
-    "77 % of the frame below the 0.05 cut, which does not delimit a cold trap; "
-    "it only says the proxy is dark almost everywhere. The topography beneath "
-    "it is measured; the shadow on top of it is not."
+    "No horizon product has been computed for this build, so illumination and PSR are "
+    "UNAVAILABLE. They are NOT filled from the brightness proxy this project used to carry "
+    "(hillshade(sun 1.5 deg) * elev_norm**1.3), which had no horizon term in it and darkened "
+    "77 % of the frame. Run: python backend/scripts/compute_horizon.py"
 )
 
 MASK_NOTE = (
@@ -192,9 +205,7 @@ MASK_NOTE = (
 # One reason string per withheld quantity, written once and referenced, so the
 # UI cannot end up showing two different explanations for the same absence.
 PSR_ABSENT_REASON = (
-    "The topography is measured, but the shadow on top of it is not. " + ILLUM_MODEL +
-    " A PSR area is withheld until the Phase 2 horizon computation replaces the proxy; a number "
-    "from this model would describe the expression, not the Moon."
+    "The topography is measured, but no shadow has been computed on top of it. " + ILLUM_MODEL
 )
 
 P_ICE_ABSENT_REASON = (
@@ -204,6 +215,14 @@ P_ICE_ABSENT_REASON = (
     "probability it produced was an extrapolation from fabricated examples, and one of its six "
     "features was the illumination proxy. It is unwired, not retrained: better synthetic labels are "
     "still synthetic. Step 4 now reports the criteria screen, which is measured."
+)
+
+DOUBLY_ABSENT_REASON = (
+    "A doubly-shadowed core is terrain that is never directly lit AND receives no scattered light "
+    "from lit terrain. The second term is the missing one: pass 2 of compute_horizon.py "
+    "(--doubly) tests whether the crest bounding each view direction is itself in shadow, and it "
+    "has not been run. Reported absent rather than substituted with the single-shadow mask, which "
+    "would silently answer a different question."
 )
 
 LANDING_ABSENT_REASON = (
@@ -359,11 +378,12 @@ def load_native() -> dict:
 
 def terrain_from_dem(dem: np.ndarray, spacing_m: tuple[float, float]) -> dict:
     """
-    Slope / roughness / illumination, using the SAME formulas as the backend
-    modules so the static file cannot silently disagree with them:
+    Slope and roughness ONLY, using the SAME formulas as the backend modules so
+    the static file cannot silently disagree with them:
       module_d_terrain.compute_terrain_metrics / compute_hazard_score
-      module_a_psr.compute_hillshade
-      pradan_pipeline.simulate_grazing_illumination
+
+    Illumination is NOT computed here any more -- see the note below and
+    backend/scripts/compute_horizon.py.
 
     `spacing_m` is (metres per line, metres per sample) and has NO DEFAULT, for
     the same reason module_d_terrain.compute_terrain_metrics no longer has one:
@@ -387,24 +407,23 @@ def terrain_from_dem(dem: np.ndarray, spacing_m: tuple[float, float]) -> dict:
     roughness = np.sqrt(np.maximum(0.0, mean_sq - mean_elev**2)).astype(np.float32)
     del mean_elev, mean_sq
 
-    # Horn hillshade at the grazing polar sun elevation used by the ingest path.
-    az, alt = np.radians(315.0), np.radians(1.5)
-    hill = np.clip(
-        np.sin(alt) * np.cos(slope_rad) + np.cos(alt) * np.sin(slope_rad) * np.cos(az - aspect_rad),
-        0.0, 1.0,
-    ).astype(np.float32)
+    # THE BRIGHTNESS PROXY IS GONE. It was:
+    #     hillshade(sun 1.5 deg) * elev_norm**1.3   < 0.05
+    # an invented expression with no horizon term in it, which darkened 77.18 %
+    # of the frame and therefore told you about the expression rather than about
+    # the Moon. Its "doubly shadowed" companion was that shadow intersected with
+    # the lowest elevation quintile of the DEM -- an elevation percentile, which
+    # is not a shadowing event at all.
+    #
+    # Illumination now comes from a horizon computation over the FULL LOLA polar
+    # array (backend/scripts/compute_horizon.py), because at the pole the horizon
+    # is set by rim crests tens of kilometres outside this frame. This function
+    # computes terrain only.
     del slope_rad, aspect_rad
-
-    elev_norm = (dem - dem.min()) / (np.ptp(dem) + 1e-6)
-    illumination = np.clip(hill * (elev_norm ** 1.3), 0.0, 1.0).astype(np.float32)
-    del hill, elev_norm
 
     return {
         "slope_deg": slope_deg,
         "roughness": roughness,
-        "illumination": illumination,
-        "psr_mask": illumination < 0.05,
-        "doubly": (illumination < 0.05) & (dem < np.percentile(dem, 20)),
     }
 
 
@@ -586,6 +605,45 @@ def build(crater_id: str = "faustini") -> dict:
           f"{footprint.mean() * 100:6.3f} %   (ISRO sri_ma: where the beam pointed)")
     print(f"  returned / pointed = {valid.sum() / max(footprint.sum(), 1) * 100:.2f} %")
 
+    # One summary of the illumination state, derived once. Every value, every
+    # evidence row and every note below reads from THIS, so the file cannot say
+    # illumination is available in one place and absent in another.
+    if illum_frame is not None:
+        ifrac = illum_frame["illumination_fraction"]
+        psr_m = illum_frame["psr_mask"]
+        finite_i = np.isfinite(ifrac)
+        ILLUM = {
+            "available": True,
+            "fraction": ifrac,
+            "psr": psr_m,
+            "psr_px": int(psr_m.sum()),
+            "psr_km2": float(psr_m.sum() * cell_km2),
+            "psr_fraction_of_frame": float(psr_m.mean()),
+            "mean_fraction": float(np.nanmean(ifrac)),
+            "n_nan": int((~finite_i).sum()),
+            "doubly": illum_frame.get("doubly_shadowed"),
+            "svf": illum_frame["sky_view_factor"],
+            "native_m": illum_frame["native_metres_per_pixel"],
+            "effective_m": illum_frame["effective_metres_per_pixel"],
+            "decimation": illum_frame["decimation_factor"],
+            "meta": illum_meta,
+        }
+        ILLUM["note"] = (
+            f"Horizon computation over the full {illum_meta['array_shape'][0]}x"
+            f"{illum_meta['array_shape'][1]} LOLA polar array at "
+            f"{ILLUM['effective_m']:g} m ({ILLUM['native_m']:g} m posts decimated "
+            f"{ILLUM['decimation']}x), swept over {illum_meta['azimuths']} azimuths. The solar "
+            f"elevation is computed PER PIXEL from its own latitude and the subsolar band is "
+            f"integrated in closed form; it reaches "
+            f"{illum_meta['elevation_range_deg'][1]:.2f} deg at this frame's outer edge, not a "
+            f"flat 1.54 deg. "
+            f"{illum_meta['sun_state_model']} "
+            f"READ THIS AS A {ILLUM['effective_m']:g} m QUANTITY however it is displayed: "
+            f"resampling it onto the {GRID_POST_M:g} m grid adds no shadow detail."
+        )
+    else:
+        ILLUM = {"available": False, "note": ILLUM_MODEL, "psr": None, "doubly": None}
+
     cpr_s, dop_s = stats(cpr, valid), stats(dop, valid)
     cpr_n, dop_n = naive(cpr), naive(dop)
     hr("RADAR -- MEASURED, over the amplitude mask (and the naive figure the API prints)")
@@ -593,6 +651,28 @@ def build(crater_id: str = "faustini") -> dict:
         print(f"  {nm}  masked  mean {s['mean']:.6f}  p50 {s['p50']:.6f}  p99 {s['p99']:.6f}  max {s['max']:.6f}")
         print(f"  {nm}  naive   mean {n['mean']:.6f}  p50 {n['p50']:.6f}                      max {n['max']:.6f}"
               f"   <- padding-contaminated")
+
+    # ------------------------------------------------------- illumination
+    # Absent unless the horizon product exists. There is deliberately no
+    # fallback: substituting the deleted proxy here would put a modelled
+    # quantity back into a slot the UI marks as measured.
+    illum_frame = None
+    illum_meta = None
+    try:
+        from app.ingestion.horizon_frame import load_horizon
+        hp = load_horizon(LOLA_DIR)
+        frame_geom = None
+        try:
+            from app.ingestion.sar_geometry import read_geotiff_frame
+            frame_geom = read_geotiff_frame(LH_TIF, LH_XML)
+        except Exception as exc:
+            print(f"  ! horizon found but the SAR frame is unreadable ({exc}); "
+                  f"illumination stays UNAVAILABLE")
+        if frame_geom is not None:
+            illum_frame = hp.to_frame(frame_geom, cpr.shape)
+            illum_meta = hp.meta
+    except FileNotFoundError as exc:
+        print(f"  ! {exc}")
 
     t = terrain_from_dem(dem, spacing)
     boulder_available = False  # data/pradan/ohrc/ is empty; see hazard_model.boulder
@@ -606,11 +686,36 @@ def build(crater_id: str = "faustini") -> dict:
     print(f"  boulder     NO DATA -- weight {cfg.WEIGHT_BOULDER:g} in config, {hazard_model['weights_applied']['boulder']:g} applied. "
           f"Not zero risk: unmeasured risk.")
 
-    hr("ILLUMINATION / PSR -- MODELLED, and the model is the remaining defect")
-    print(f"  psr_mask    {int(t['psr_mask'].sum()):>12,d} px  {t['psr_mask'].sum() * cell_km2:10.2f} km2  {t['psr_mask'].mean() * 100:6.2f} %"
-          f"   <- DEGENERATE: shadows most of the frame, so PSR area stays UNAVAILABLE")
-    print(f"  doubly      {int(t['doubly'].sum()):>12,d} px  {t['doubly'].sum() * cell_km2:10.2f} km2  {t['doubly'].mean() * 100:6.2f} %")
-    print(f"  model       hillshade(sun 1.5 deg) * elev_norm**1.3 -- a brightness proxy, no horizon term")
+    if ILLUM["available"]:
+        m = ILLUM["meta"]
+        hr(f"ILLUMINATION / PSR -- horizon computation at {ILLUM['effective_m']:g} m")
+        print(f"  source      {m['source_product']}  {m['array_shape'][0]}x{m['array_shape'][1]} "
+              f"@ {ILLUM['effective_m']:g} m ({ILLUM['native_m']:g} m posts, {ILLUM['decimation']}x block mean)")
+        print(f"  sweep       {m['azimuths']} azimuths; subsolar band "
+              f"{m.get('subsolar_latitude_range_deg', ['?', '?'])} deg integrated in closed form")
+        print(f"  elevation   computed PER PIXEL from its own latitude: "
+              f"{m.get('solar_elevation_formula', 'n/a')}")
+        print(f"              reaches {m['elevation_range_deg'][1]:.2f} deg at this frame's outer "
+              f"edge — NOT a flat 1.54 deg, which bounds the subsolar latitude, not the elevation")
+        print(f"  illum frac  mean {ILLUM['mean_fraction']:.4f}  "
+              f"p25 {np.nanpercentile(ILLUM['fraction'], 25):.4f}  "
+              f"p50 {np.nanpercentile(ILLUM['fraction'], 50):.4f}  "
+              f"p75 {np.nanpercentile(ILLUM['fraction'], 75):.4f}  "
+              f"max {np.nanmax(ILLUM['fraction']):.4f}")
+        print(f"  PSR         {ILLUM['psr_px']:>12,d} px  {ILLUM['psr_km2']:10.2f} km2  "
+              f"{ILLUM['psr_fraction_of_frame'] * 100:6.3f} % of the frame")
+        if ILLUM["doubly"] is not None:
+            db = ILLUM["doubly"]
+            print(f"  doubly      {int(db.sum()):>12,d} px  {db.sum() * cell_km2:10.2f} km2  "
+                  f"({db.sum() / max(ILLUM['psr_px'], 1) * 100:.2f} % of the PSR)")
+        else:
+            print(f"  doubly      ABSENT -- pass 2 (--doubly) not run; the scattered-light term "
+                  f"is the missing one")
+        print(f"  resolution  {ILLUM['effective_m']:g} m shadow mask carried on a {GRID_POST_M:g} m grid "
+              f"(ratio {ILLUM['effective_m'] / GRID_POST_M:.1f}x) -- labelled, not upgraded")
+    else:
+        hr("ILLUMINATION / PSR -- UNAVAILABLE, and not substituted")
+        print(f"  {ILLUM['note']}")
 
     # ---------------------------------------------------------------- screening
     # THE CRITERIA SCREEN, and nothing else. Two measured polarimetric tests
@@ -781,35 +886,66 @@ def build(crater_id: str = "faustini") -> dict:
                      f"{dop_th}. Depolarised returns are consistent with volume scattering, but on their own "
                      "they do not discriminate ice from fine dry regolith."),
         },
-        {
+        ({
+            "criterion": "psr_cold_trap_overlap",
+            "label": "Overlap with a shadowed cold trap",
+            "measured": round(float((candidate & ILLUM["psr"]).sum()) * cell_km2, 4),
+            "measured_label": "candidate area inside PSR",
+            "threshold": 0.0, "comparison": ">",
+            "passed": bool((candidate & ILLUM["psr"]).sum() > 0),
+            "provenance": MEASURED,
+            "note": (f"TESTABLE NOW. The frame holds {ILLUM['psr_km2']:,.1f} km² of permanently "
+                     f"shadowed terrain ({ILLUM['psr_fraction_of_frame'] * 100:.2f} % of it), from a "
+                     f"horizon computation rather than a brightness proxy. This row fails because the "
+                     f"CANDIDATE set is empty — no pixel clears CPR — not because there is nowhere "
+                     f"cold to look. The two are different findings and this build can now tell them "
+                     f"apart. {ILLUM['note']}"),
+        } if ILLUM["available"] else {
             "criterion": "psr_cold_trap_overlap",
             "label": "Overlap with a shadowed cold trap",
             "measured": None, "measured_label": "no horizon computation",
             "threshold": None, "comparison": None,
             "passed": False,
             "provenance": UNAVAILABLE,
-            "note": ("WITHHELD, not failed. The topography under this test is measured LOLA, but the "
-                     f"SHADOW on top of it is not. {ILLUM_MODEL} It darkens "
-                     f"{float(t['psr_mask'].mean()) * 100:.1f} % of the frame, so intersecting anything "
-                     "with it does not discriminate a cold trap -- it only multiplies by a large mask. "
-                     "Until the Phase 2 horizon computation exists, this criterion has no measured value "
-                     "and reports none. It is no longer part of the candidate mask either."),
-        },
-        {
+            "note": "WITHHELD, not failed. " + ILLUM["note"],
+        }),
+        ({
+            "criterion": "doubly_shadowed_core_overlap",
+            "label": "Overlap with a doubly-shadowed core",
+            "measured": round(float((candidate & ILLUM["doubly"]).sum()) * cell_km2, 4),
+            "measured_label": "candidate area inside a doubly-shadowed core",
+            "threshold": 0.0, "comparison": ">",
+            "passed": bool((candidate & ILLUM["doubly"]).sum() > 0),
+            "provenance": DERIVED,
+            "note": (f"{float(ILLUM['doubly'].sum()) * cell_km2:,.2f} km² of this frame is never "
+                     f"directly lit AND has no sunlit crest bounding its view in any swept azimuth. "
+                     + (ILLUM["meta"].get("doubly_shadowed") or {}).get("approximation", "")
+                     + " Fails here because the candidate set is empty, not because no such terrain "
+                     "exists."),
+        } if (ILLUM["available"] and ILLUM["doubly"] is not None) else {
             "criterion": "doubly_shadowed_core_overlap",
             "label": "Overlap with a doubly-shadowed core",
             "measured": None, "measured_label": "no scattered-light term",
             "threshold": None, "comparison": None,
             "passed": False,
             "provenance": UNAVAILABLE,
-            "note": ("WITHHELD, not failed. The previous definition was the illumination proxy's shadow "
-                     "intersected with the lowest elevation quintile of the DEM. The quintile is measured "
-                     "LOLA, but an elevation percentile is not a second shadowing event, and the shadow "
-                     "it was intersected with is the proxy. A doubly-shadowed core means never directly "
-                     "lit AND receiving no scattered light from lit terrain; the scattered-light term "
-                     "does not exist in this build. Phase 2."),
-        },
-        {
+            "note": "WITHHELD, not failed. " + DOUBLY_ABSENT_REASON,
+        }),
+        ({
+            "criterion": "thermal_stability_expected",
+            "label": "Thermal stability expected",
+            "measured": 110.0, "measured_label": "inferred ceiling in PSR",
+            "threshold": 110.0, "comparison": "<",
+            "passed": bool((candidate & ILLUM["psr"]).sum() > 0),
+            "provenance": DERIVED,
+            "note": ("INFERRED FROM ILLUMINATION, NOT FROM MEASURED TEMPERATURE. A surface lit in "
+                     "none of the sampled sun states receives no direct solar input, and the "
+                     "water-ice stability limit over geological time is about 110 K. No Diviner or "
+                     "other thermal product is on disk; the 110 K figure is an assumed threshold "
+                     "from the literature. This row follows the PSR-overlap row exactly — it is an "
+                     "inference from the same mask, not an independent temperature test, and it is "
+                     "marked DERIVED for that reason."),
+        } if ILLUM["available"] else {
             "criterion": "thermal_stability_expected",
             "label": "Thermal stability expected",
             "measured": None, "measured_label": "no thermal model",
@@ -820,7 +956,7 @@ def build(crater_id: str = "faustini") -> dict:
                      "returns this criterion as True whenever the candidate count is non-zero, which is a "
                      "restatement of the previous row, not an independent temperature test. Reported as "
                      "unavailable rather than inherited."),
-        },
+        }),
     ]
     print()
     for e in evidence:
@@ -897,19 +1033,46 @@ def build(crater_id: str = "faustini") -> dict:
             "sidecar": str(LOLA_SIDECAR.relative_to(BASE_DIR)).replace("\\", "/"),
         },
         "hazard_model": hazard_model,
-        "illumination_model": {
-            "provenance": MODELLED,
-            "expression": "clip(hillshade(sun_altitude=1.5 deg, azimuth=315 deg) * elev_norm ** 1.3, 0, 1)",
-            "psr_cut": 0.05,
-            "psr_fraction_of_frame": float(t["psr_mask"].mean()),
-            "doubly_fraction_of_frame": float(t["doubly"].mean()),
-            "why_it_is_not_measured": ILLUM_MODEL,
-            "what_would_fix_it": ("A horizon computation on the full 7600 x 7600 LOLA array: for each "
-                                  "azimuth, horizon(az) = max_r atan((h(p + r*u) - h(p)) / r), lit when "
-                                  "the solar elevation exceeds it. The frame's farthest corner sits "
-                                  "156.79 km from the pole inside a 304 km half-span array, so the rims "
-                                  "that set these horizons are on disk already."),
-        },
+        "illumination_model": ({
+            "provenance": MEASURED,
+            "method": ("horizon computation: for each azimuth, "
+                       "horizon(az) = max over r of atan((h(p + r*u) - h(p)) / r), "
+                       "lit when the solar elevation exceeds it"),
+            "algorithm": ILLUM["meta"]["horizon_algorithm"],
+            "source_product": ILLUM["meta"]["source_product"],
+            "array_shape": ILLUM["meta"]["array_shape"],
+            "computed_over": ("the FULL LOLA polar array, not the frame -- at the pole the horizon "
+                              "is set by rim crests tens of kilometres outside this 165 x 56 km "
+                              "frame, and a horizon computed only inside it would invent sunlight "
+                              "that real terrain blocks"),
+            "native_metres_per_pixel": ILLUM["native_m"],
+            "decimation_factor": ILLUM["decimation"],
+            "effective_metres_per_pixel": ILLUM["effective_m"],
+            "decimation_method": ILLUM["meta"]["decimation_method"],
+            "azimuths": ILLUM["meta"]["azimuths"],
+            "subsolar_band_integration": ILLUM["meta"].get("subsolar_band_integration"),
+            "subsolar_latitude_range_deg": ILLUM["meta"].get("subsolar_latitude_range_deg"),
+            "solar_elevation_formula": ILLUM["meta"].get("solar_elevation_formula"),
+            "max_solar_elevation_deg": ILLUM["meta"]["elevation_range_deg"][1],
+            "why_not_a_flat_cap": (
+                "1.54 deg is the Moon's obliquity, which bounds the SUBSOLAR LATITUDE, not the "
+                "solar elevation seen from a site. Max elevation at latitude phi is "
+                "1.54 + (90 - |phi|): 1.54 deg at the pole but 6.71 deg at this frame's outer "
+                "edge (-84.833408). A flat 1.54 deg cap inflated this array's PSR from 26,900 "
+                "to 65,398 km2 and would not have looked wrong."
+            ),
+            "sun_state_model": ILLUM["meta"]["sun_state_model"],
+            "psr_definition": "illumination_fraction == 0, i.e. lit in no sampled sun state",
+            "psr_fraction_of_frame": ILLUM["psr_fraction_of_frame"],
+            "doubly_shadowed": ILLUM["meta"].get("doubly_shadowed"),
+            "resolution_caveat": ILLUM["meta"]["resolution_caveat"],
+            "replaces": ("clip(hillshade(sun_altitude=1.5 deg, azimuth=315 deg) * elev_norm ** 1.3, "
+                         "0, 1) < 0.05 -- an invented brightness proxy with no horizon term, which "
+                         "darkened 77.18 % of the frame"),
+        } if ILLUM["available"] else {
+            "provenance": UNAVAILABLE,
+            "reason": ILLUM["note"],
+        }),
         "masks": {
             "amplitude": {
                 "source": r["paths"]["valid"], "pixels": int(valid.sum()),
@@ -984,19 +1147,45 @@ def build(crater_id: str = "faustini") -> dict:
         # -- step 2 · shadow & PSR --------------------------------------------
         # All three withheld. The proxy's 77 % is a property of the expression,
         # not of the Moon, and must not be carried forward as a shadow fraction.
-        "psr_area_km2": val(None, "km²", UNAVAILABLE, reason=PSR_ABSENT_REASON),
-        "doubly_shadowed_area_km2": val(None, "km²", UNAVAILABLE, reason=(
-            "A doubly-shadowed core is terrain that is never directly lit AND receives no scattered "
-            "light from lit terrain. This build computes neither term. The previous definition -- the "
-            "brightness proxy's shadow intersected with the lowest elevation quintile -- is not a "
-            "second shadowing event. Phase 2.")),
-        "mean_illumination_fraction": val(None, "", UNAVAILABLE, reason=(
-            "There is no illumination fraction here, only a brightness proxy. " + ILLUM_MODEL +
-            " A mean of that expression would be a statistic about the expression. Phase 2 computes a "
-            "real per-pixel lit fraction by sweeping the solar azimuth against a horizon.")),
-        "thermal_stability_k": val(None, "K", UNAVAILABLE, reason=(
-            "No thermal product is on disk and no thermal model runs in this build. Phase 2 derives a "
-            "stability flag from the illumination fraction and labels it DERIVED, not MEASURED.")),
+        "psr_area_km2": (
+            val(round(ILLUM["psr_km2"], 3), "km²", MEASURED, note=(
+                f"Terrain lit in NO sun state, over all {ILLUM['meta']['azimuths']} azimuths "
+                f"and the whole subsolar band. {ILLUM['note']}"))
+            if ILLUM["available"] else val(None, "km²", UNAVAILABLE, reason=PSR_ABSENT_REASON)),
+
+        "psr_fraction_of_frame": (
+            val(round(ILLUM["psr_fraction_of_frame"], 6), "", MEASURED, note=ILLUM["note"])
+            if ILLUM["available"] else val(None, "", UNAVAILABLE, reason=PSR_ABSENT_REASON)),
+
+        "doubly_shadowed_area_km2": (
+            val(round(float(ILLUM["doubly"].sum()) * cell_km2, 3), "km²", DERIVED, note=(
+                (ILLUM["meta"].get("doubly_shadowed") or {}).get("definition", "") + " — " +
+                (ILLUM["meta"].get("doubly_shadowed") or {}).get("approximation", "")))
+            if (ILLUM["available"] and ILLUM["doubly"] is not None)
+            else val(None, "km²", UNAVAILABLE, reason=(
+                (ILLUM["meta"].get("doubly_shadowed") or {}).get("reason", DOUBLY_ABSENT_REASON)
+                if ILLUM["available"] else DOUBLY_ABSENT_REASON))),
+
+        "mean_illumination_fraction": (
+            val(round(ILLUM["mean_fraction"], 6), "", MEASURED, note=(
+                "The fraction of SAMPLED SUN STATES in which a point is lit, averaged over the "
+                "frame — a geometric visibility fraction, not a time-weighted duty cycle. "
+                + ILLUM["note"]))
+            if ILLUM["available"] else val(None, "", UNAVAILABLE, reason=(
+                "There is no illumination fraction in this build. " + ILLUM["note"]))),
+
+        "thermal_stability_k": (
+            val(110.0, "K", DERIVED, note=(
+                f"INFERRED FROM ILLUMINATION, NOT FROM MEASURED TEMPERATURE. No thermal product is "
+                f"on disk and no thermal model runs here. A surface lit in none of the sampled sun "
+                f"states has no direct solar input, and the water-ice stability limit over "
+                f"geological time is about 110 K; the {ILLUM['psr_km2']:,.1f} km² of PSR in this "
+                f"frame is therefore inferred to sit below it. The 110 K figure is an assumed "
+                f"threshold from the literature, not something measured here. If a Diviner product "
+                f"is ever ingested this becomes MEASURED and nothing else changes."))
+            if ILLUM["available"] else val(None, "K", UNAVAILABLE, reason=(
+                "No thermal product is on disk, and with no illumination computation there is not "
+                "even an inference to make. " + ILLUM["note"]))),
 
         # -- step 3 · DFSAR radar, masked native statistics ---------------------
         "cpr_mean": val(round(cpr_s["mean"], 6), "", MEASURED,
@@ -1172,8 +1361,11 @@ def build(crater_id: str = "faustini") -> dict:
     doc["steps"] = [
         {"n": 1, "key": "site", "title": "Target Selection", "status": "COMPLETE",
          "basis": "Crater catalogue plus the frame's own georeferencing."},
-        {"n": 2, "key": "psr", "title": "Shadow & PSR", "status": "UNAVAILABLE",
-         "basis": PSR_ABSENT_REASON},
+        ({"n": 2, "key": "psr", "title": "Shadow & PSR", "status": "COMPLETE",
+          "basis": ILLUM["note"]}
+         if ILLUM["available"] else
+         {"n": 2, "key": "psr", "title": "Shadow & PSR", "status": "UNAVAILABLE",
+          "basis": PSR_ABSENT_REASON}),
         {"n": 3, "key": "radar", "title": "DFSAR Radar", "status": "COMPLETE",
          "basis": "Masked native statistics from the calibrated L2 amplitude products."},
         {"n": 4, "key": "ice", "title": "Ice Criteria Screen", "status": "COMPLETE",
@@ -1216,10 +1408,27 @@ def build(crater_id: str = "faustini") -> dict:
                        "p90": float(np.percentile(haz, 90)), "p99": float(np.percentile(haz, 99))},
             "dem_min_m": float(dem.min()), "dem_max_m": float(dem.max()),
         },
-        "illumination_modelled": {
-            "psr_px": int(t["psr_mask"].sum()), "doubly_px": int(t["doubly"].sum()),
-            "psr_fraction": float(t["psr_mask"].mean()), "doubly_fraction": float(t["doubly"].mean()),
-        },
+        "illumination": ({
+            "psr_px": ILLUM["psr_px"],
+            "psr_area_km2": ILLUM["psr_km2"],
+            "psr_fraction_of_frame": ILLUM["psr_fraction_of_frame"],
+            "illumination_fraction": {
+                "mean": ILLUM["mean_fraction"],
+                "p25": float(np.nanpercentile(ILLUM["fraction"], 25)),
+                "p50": float(np.nanpercentile(ILLUM["fraction"], 50)),
+                "p75": float(np.nanpercentile(ILLUM["fraction"], 75)),
+                "p99": float(np.nanpercentile(ILLUM["fraction"], 99)),
+                "max": float(np.nanmax(ILLUM["fraction"])),
+            },
+            "sky_view_factor": {
+                "p50": float(np.nanpercentile(ILLUM["svf"], 50)),
+                "min": float(np.nanmin(ILLUM["svf"])),
+            },
+            "doubly_shadowed_px": (int(ILLUM["doubly"].sum())
+                                   if ILLUM["doubly"] is not None else None),
+            "pixels_without_horizon_coverage": ILLUM["n_nan"],
+            "effective_metres_per_pixel": ILLUM["effective_m"],
+        } if ILLUM["available"] else {"available": False, "reason": ILLUM["note"]}),
         "screening": {
             "measured_px": valid_n,
             "cpr_pass_px": int(cpr_pass.sum()), "cpr_pass_fraction_of_measured": cpr_pass_frac,

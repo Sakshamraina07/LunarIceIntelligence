@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-05T17:45:52.480Z",
+  "generated_utc": "2026-09-05T18:33:12.504Z",
   "url": "http://localhost:3000/#/mission",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewport": [
@@ -11,7 +11,7 @@
     "zoom": 3.5,
     "size": {
       "x": 1167,
-      "y": 703
+      "y": 698
     },
     "ringPts": 206,
     "homeUnits": [
@@ -29,15 +29,15 @@
   "opening": {
     "zoom": 3.5,
     "centre": [
-      45.0339,
+      44.9897,
       128.7376
     ],
     "units": {
-      "h": 62.137,
+      "h": 61.6951,
       "w": 103.1492
     },
     "km": {
-      "h": 40.16,
+      "h": 39.87,
       "w": 66.66
     },
     "home_km": {
@@ -89,7 +89,7 @@
           6618,
           2258
         ],
-        "transform": "matrix(1, 0, 0, 1, -873, -127)",
+        "transform": "matrix(1, 0, 0, 1, -873, -103)",
         "opacity": 1,
         "className": "leaflet-image-layer leaflet-zoom-animated mc-raster mc-raster--base",
         "pane": "mapPane",
@@ -173,11 +173,11 @@
         127.985
       ],
       "units": {
-        "h": 175.75,
+        "h": 172.75,
         "w": 291.75
       },
       "km": {
-        "h": 113.59,
+        "h": 111.65,
         "w": 188.55
       },
       "home_km": {
@@ -192,18 +192,18 @@
       "centred_on_ribbon": true
     },
     "arrived": {
-      "zoom": 3.5,
+      "zoom": 3,
       "centre": [
-        45.0631,
-        128.735
+        44.1875,
+        128.6875
       ],
       "units": {
-        "h": 62.137,
-        "w": 103.1492
+        "h": 86.375,
+        "w": 145.875
       },
       "km": {
-        "h": 40.16,
-        "w": 66.66
+        "h": 55.82,
+        "w": 94.28
       },
       "home_km": {
         "h": 40,
@@ -217,18 +217,18 @@
       "centred_on_ribbon": true
     },
     "fitted": {
-      "zoom": 3.5,
+      "zoom": 3,
       "centre": [
-        45.0631,
-        128.735
+        44.1875,
+        128.6875
       ],
       "units": {
-        "h": 62.137,
-        "w": 103.1492
+        "h": 86.375,
+        "w": 145.875
       },
       "km": {
-        "h": 40.16,
-        "w": 66.66
+        "h": 55.82,
+        "w": 94.28
       },
       "home_km": {
         "h": 40,
@@ -258,35 +258,32 @@
     "destMatchesHome": true
   },
   "overlays": {
-    "paths": 40,
+    "paths": 24,
     "markers": {
-      "n": 6,
-      "visible": 2,
-      "styled": 6,
+      "n": 0,
+      "visible": 0,
+      "styled": 0,
       "faint": 0,
-      "amber": 4,
-      "amberAndVisible": 1
+      "amber": 0,
+      "amberAndVisible": 0
     },
     "lines": {
-      "n": 34,
-      "visible": 23,
-      "styled": 33,
-      "faint": 1,
-      "amber": 5,
-      "amberAndVisible": 5
+      "n": 24,
+      "visible": 14,
+      "styled": 24,
+      "faint": 0,
+      "amber": 0,
+      "amberAndVisible": 0
     },
-    "faintPaths": [
-      {
-        "kind": "line",
-        "stroke": "#4fd1e6",
-        "w": 9.5,
-        "o": 0.15,
-        "box": [
-          0,
-          79
-        ]
-      }
-    ],
+    "glows": {
+      "n": 0,
+      "visible": 0,
+      "styled": 0,
+      "faint": 0,
+      "amber": 0,
+      "amberAndVisible": 0
+    },
+    "faintPaths": [],
     "sample": [
       {
         "kind": "line",
@@ -458,7 +455,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -474,7 +471,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -490,7 +487,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -506,7 +503,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -522,7 +519,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -538,7 +535,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -554,7 +551,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -570,7 +567,7 @@
         "dashed": true,
         "box": [
           0,
-          844
+          838
         ],
         "amber": false,
         "styled": true,
@@ -641,34 +638,34 @@
         "visible": false
       },
       {
-        "kind": "marker",
-        "stroke": "#4fd1e6",
-        "strokeWidth": 2.5,
-        "strokeOpacity": 1,
-        "fill": "#4fd1e6",
+        "kind": "line",
+        "stroke": "#8aa0b4",
+        "strokeWidth": 1,
+        "strokeOpacity": 0.55,
+        "fill": "none",
         "fillOpacity": 1,
         "dashed": false,
         "box": [
-          18,
-          18
+          1402,
+          678
         ],
         "amber": false,
         "styled": true,
         "visible": true
       },
       {
-        "kind": "marker",
-        "stroke": "#f2c14e",
-        "strokeWidth": 3,
-        "strokeOpacity": 1,
-        "fill": "#6b5620",
-        "fillOpacity": 0.9,
+        "kind": "line",
+        "stroke": "#4fd1e6",
+        "strokeWidth": 1.2,
+        "strokeOpacity": 0.75,
+        "fill": "none",
+        "fillOpacity": 1,
         "dashed": true,
         "box": [
-          20,
-          20
+          1402,
+          423
         ],
-        "amber": true,
+        "amber": false,
         "styled": true,
         "visible": true
       }
@@ -682,11 +679,11 @@
         128
       ],
       "units": {
-        "h": 175.75,
+        "h": 172.75,
         "w": 291.75
       },
       "km": {
-        "h": 113.59,
+        "h": 111.65,
         "w": 188.55
       },
       "home_km": {
@@ -711,25 +708,22 @@
         "amberAndVisible": 4
       },
       "lines": {
-        "n": 34,
+        "n": 33,
         "visible": 33,
         "styled": 33,
-        "faint": 1,
+        "faint": 0,
         "amber": 5,
         "amberAndVisible": 5
       },
-      "faintPaths": [
-        {
-          "kind": "line",
-          "stroke": "#4fd1e6",
-          "w": 9.5,
-          "o": 0.15,
-          "box": [
-            0,
-            28
-          ]
-        }
-      ],
+      "glows": {
+        "n": 1,
+        "visible": 0,
+        "styled": 0,
+        "faint": 1,
+        "amber": 0,
+        "amberAndVisible": 0
+      },
+      "faintPaths": [],
       "sample": [
         {
           "kind": "line",
@@ -1121,11 +1115,11 @@
   "consoleLines": [
     "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
     "info: [MissionMap] landing-site coverage — 5/5 outside the measured amplitude ribbon. Grid offsets are hardcoded in module_e_landing.py.",
-    "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":3,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_5\",\"rank\":4,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"},{\"site\":\"site_4\",\"rank\":5,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"}]",
+    "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_5\",\"rank\":3,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":4,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_4\",\"rank\":5,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"}]",
     "info: [MissionMap] rover waypoint coverage — all strategies terminate at target_coordinates (the hardcoded grid centre):",
     "table: [{\"strategy\":\"Shortest\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":true},{\"strategy\":\"Safest\",\"waypoints\":33,\"km\":\"39.4\",\"in_amplitude_ribbon\":\"12 (36.4%)\",\"pointed_no_return\":3,\"never_observed\":18,\"drawn\":true},{\"strategy\":\"Science-Aware\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":true}]",
     "info: [MissionMap] landing-site coverage — 5/5 outside the measured amplitude ribbon. Grid offsets are hardcoded in module_e_landing.py.",
-    "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":3,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_5\",\"rank\":4,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"},{\"site\":\"site_4\",\"rank\":5,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"}]",
+    "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_5\",\"rank\":3,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":4,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_4\",\"rank\":5,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"}]",
     "info: [MissionMap] rover waypoint coverage — all strategies terminate at target_coordinates (the hardcoded grid centre):",
     "table: [{\"strategy\":\"Shortest\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":true},{\"strategy\":\"Safest\",\"waypoints\":33,\"km\":\"39.4\",\"in_amplitude_ribbon\":\"12 (36.4%)\",\"pointed_no_return\":3,\"never_observed\":18,\"drawn\":true},{\"strategy\":\"Science-Aware\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":true}]",
     "info: [MissionMap] rover waypoint coverage — all strategies terminate at target_coordinates (the hardcoded grid centre):",
@@ -1150,21 +1144,21 @@
       "pass": true
     },
     "c_opening_is_home_window": {
-      "value": "66.66x40.16 km vs home 40x40",
+      "value": "66.66x39.87 km vs home 40x40",
       "pass": true
     },
     "d_reset_returns_home": {
-      "value": "dest==home true, arrived 66.66x40.16 km",
+      "value": "dest==home true, arrived 94.28x55.82 km",
       "pass": true,
       "measured_animated": true
     },
     "sites_visible": {
-      "value": "6/6 visible at full extent (2/6 in the 40 km window), faint 0",
+      "value": "6/6 visible at full extent (0/0 in the 40 km window), faint 0",
       "pass": true
     },
     "routes_visible": {
-      "value": "33/34 visible at full extent, faint 1",
-      "pass": false
+      "value": "33/33 route strokes visible at full extent, faint 0 (+1 emphasis underlay(s), faint by design)",
+      "pass": true
     },
     "no_page_errors": {
       "value": [],

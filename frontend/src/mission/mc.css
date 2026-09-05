@@ -713,3 +713,59 @@
    polygons in MissionMap.tsx. mix-blend-mode is still not used anywhere: M5
    established that blending destroys the CPR ribbon this app exists to show. */
 
+
+/* ─────────── PRD Phase 1: absent states, and the map's vector state ───────────
+ *
+ * These exist so that "no measurement" is a VISIBLE state rather than a blank
+ * one. A cell that renders nothing looks like a layout bug; a cell that renders
+ * an em dash, a NO DATA chip and a reason is a result.
+ */
+
+/* A metric whose value does not exist. Dimmed frame, dashed edge, and the
+   sub-line becomes the reason rather than a caption — so it wraps and is
+   allowed to be long. */
+.mc-metric--na {
+  border-style: dashed;
+  border-color: rgba(127,147,165,0.35);
+  background: rgba(9,16,26,0.28);
+}
+.mc-metric--na .mc-metric-sub {
+  margin-top: 0.35rem;
+  line-height: 1.5;
+  white-space: normal;
+}
+.mc-metric-v--na {
+  color: var(--mc-text-mute);
+  opacity: 0.55;
+  font-weight: 500;
+}
+/* The provenance chip sits inline after the metric's own label. */
+.mc-metric-k { display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+.mc-metric-k .mc-pv { margin-left: 0; }
+
+/* Step-level absence, and the manifest-driven legend hint, both need to read as
+   prose rather than as a truncated value. */
+.mc-details-k { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+
+/* 1D · the map paints without the backend, so it needs a state chip that says
+   what is drawn and what is not. Bottom-left, clear of the layer control
+   (top-left), the map tools (top-right) and the readout (bottom-right). */
+.mc-map-vectorstate {
+  left: 0.75rem;
+  bottom: 3.4rem;
+  max-width: 22rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  color: var(--mc-warn);
+  padding: 0.5rem 0.65rem;
+}
+.mc-map-vectorstate-sub {
+  margin-top: 0.35rem;
+  font-family: inherit;
+  font-size: 0.6rem;
+  letter-spacing: 0;
+  line-height: 1.5;
+  color: var(--mc-text-mute);
+  text-transform: none;
+}

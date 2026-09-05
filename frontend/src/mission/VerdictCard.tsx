@@ -46,7 +46,12 @@ function EvidenceRow({ e }: { e: AnalysisEvidence }) {
     : Math.abs(m) >= 1 || m === 0
       ? m.toFixed(2)
       : m.toPrecision(3);
-  const th = e.threshold === null || e.comparison === null
+  // A threshold clause is suppressed when there is no threshold, and ALSO when
+  // the threshold is 0: rows 3 and 4 used to print "0.00  vs > 0.00", which
+  // reads as a measurement that failed to beat zero rather than as a criterion
+  // that was never evaluated. Those two rows are UNAVAILABLE now, so this is a
+  // guard against the shape recurring, not a live fix.
+  const th = e.threshold === null || e.comparison === null || e.threshold === 0
     ? null
     : `${e.comparison} ${e.threshold.toFixed(2)}`;
 

@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-05T18:18:42.354717+00:00",
+  "generated_utc": "2026-09-05T18:35:25.756703+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -116,7 +116,9 @@
   "thresholds": {
     "cpr_threshold": 1.0,
     "dop_threshold": 0.13,
-    "source": "backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD)",
+    "max_traversable_slope_deg": 20.0,
+    "critical_landing_slope_deg": 12.0,
+    "source": "backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, MAX_TRAVERSABLE_SLOPE_DEG, CRITICAL_LANDING_SLOPE_DEG)",
     "unchanged": true,
     "note": "Not retuned. Lowering CPR_THRESHOLD until this scene passes would manufacture a detection out of an incomplete product."
   },

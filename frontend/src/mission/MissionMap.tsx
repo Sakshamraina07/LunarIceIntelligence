@@ -121,8 +121,21 @@ import { LAYER_MAP } from './config';
 const LAYERS_BASE = `${import.meta.env.BASE_URL}layers`;
 const MANIFEST_URL = `${LAYERS_BASE}/layers.json`;
 
-const KM_PER_DEG_LAT = 30.37;
-const MIN_COS_LAT = 0.05;
+/*
+ * KM_PER_DEG_LAT = 30.37 and MIN_COS_LAT USED TO LIVE HERE.
+ *
+ * They implemented a flat tangent-plane readout: a fixed 30.37 km per degree of
+ * latitude, and the same constant divided by cos(crater latitude) for
+ * longitude. At -87.7° that cos is 0.0402, and at -89.9° it is 0.00175, so the
+ * longitude figure was wrong by a factor of ~25 to ~570 depending on where the
+ * cursor was — beside a backend whose inverse projection is validated to 13.2 mm
+ * against ISRO's own 937,296-node geolocation grid.
+ *
+ * Replaced by `frameLatLon()` below: the same closed-form south polar
+ * stereographic inverse the backend uses (sar_geometry.SarFrame.xy_to_latlon),
+ * evaluated from the projection parameters layers.json already carries. There is
+ * no approximation left in it, so the "≈" in the readout is gone too.
+ */
 
 /* ─────────────────────── the manifest render_layers.py writes ───────────── */
 
@@ -163,6 +176,28 @@ export interface LayersManifest {
     bounds: [[number, number], [number, number]];
     metres_per_unit: number;
     native_zoom: number;
+  };
+  /**
+   * The product's own georeferencing, written straight from its GeoTIFF
+   * GeoKeys. Optional only because an older layers.json predates it; without it
+   * the map reports no coordinates rather than approximating them.
+   */
+  geodetic_frame?: {
+    crs: {
+      name: string;
+      body_radius_m: number;
+      latitude_of_origin_deg: number;
+      central_meridian_deg: number;
+      false_easting_m: number;
+      false_northing_m: number;
+    };
+    raster: {
+      lines: number;
+      samples: number;
+      pixel_size_m: { x: number; y: number };
+      raster_type: string;
+      tiepoint_xy_m: { easting: number; northing: number };
+    };
   };
   footprint: {
     valid_fraction: number;
@@ -238,6 +273,11 @@ interface MapGeometry {
   /** true while baseProvenance still says the base DEM is synthetic. */
   placeholderBase: boolean;
   byId: Record<string, LayerManifestEntry>;
+  /**
+   * The exact projection, or null when layers.json predates geodetic_frame.
+   * Null means the coordinate readout says so instead of approximating.
+   */
+  proj: FrameProjection | null;
   /** true when layers.json could not be read: vectors only, and the UI says so. */
   degraded: boolean;
 }
@@ -246,7 +286,13 @@ interface MapGeometry {
 
 let manifestPromise: Promise<LayersManifest | null> | null = null;
 
-function loadManifest(): Promise<LayersManifest | null> {
+/**
+ * The manifest, fetched once and shared. Exported so MissionControl can render
+ * each layer's description from layers.json instead of from a second copy in
+ * config.ts — which is how the hazard caption came to describe a 0.6/0.4 blend
+ * that render_layers.py had already stopped using.
+ */
+export function loadManifest(): Promise<LayersManifest | null> {
   if (!manifestPromise) {
     manifestPromise = fetch(MANIFEST_URL, { cache: 'force-cache' })
       .then((r) => (r.ok ? (r.json() as Promise<LayersManifest>) : Promise.reject(new Error(`HTTP ${r.status}`))))
@@ -319,7 +365,7 @@ function buildGeometry(mf: LayersManifest | null): MapGeometry {
       // Fail toward flagging: with no manifest the base cannot be shown to be
       // measured, so it is treated as placeholder.
       baseProvenance: 'unavailable', placeholderBase: true,
-      byId: {}, degraded: true,
+      byId: {}, proj: null, degraded: true,
     };
   }
   const boundH = mf.crs.height_units;
@@ -370,6 +416,7 @@ function buildGeometry(mf: LayersManifest | null): MapGeometry {
     baseProvenance: baseProv,
     placeholderBase: PLACEHOLDER_PROVENANCE.test(baseProv),
     byId: Object.fromEntries(mf.layers.map((l) => [l.id, l])),
+    proj: projectionFrom(mf),
     degraded: false,
   };
 }
@@ -498,24 +545,78 @@ const gridToPixel = (geom: MapGeometry, gx: number, gy: number): [number, number
 ];
 
 /**
- * Coarse tangent-plane lat/lon for the cursor readout, per axis because the two
- * axes have genuinely different spans (56.45 km across vs 165.45 km along).
- * This is display arithmetic, NOT science: at 89°S a degree of longitude is
- * ~300 m, so the lon figure is indicative only and is prefixed "≈" in the UI.
- * The exact inverse is SarFrame.xy_to_latlon in the backend.
+ * The frame's projection, lifted verbatim from layers.json.geodetic_frame.
+ *
+ * This is a port of `sar_geometry.SarFrame`, not a new derivation: the same
+ * closed form, the same PixelIsArea half-pixel convention, the same parameters.
+ * The backend validated that transform against ISRO's 937,296-node geolocation
+ * grid at a corner residual of 13.2 mm, so the residual of THIS function is
+ * that number plus IEEE-754 double rounding — there is no additional modelling
+ * error to state, because there is no additional model.
  */
-function approxLatLon(
-  geom: MapGeometry,
-  gx: number, gy: number,
-  crater: { latitude_deg: number; longitude_deg: number },
-): { lat: number; lon: number } {
-  const dLat = ((gy - 50) / 100) * (geom.acrossKm / KM_PER_DEG_LAT);
-  const cosLat = Math.max(Math.abs(Math.cos((crater.latitude_deg * Math.PI) / 180)), MIN_COS_LAT);
-  const dLon = ((gx - 50) / 100) * (geom.alongKm / (KM_PER_DEG_LAT * cosLat));
+interface FrameProjection {
+  radiusM: number;
+  lonOriginDeg: number;
+  falseEastingM: number;
+  falseNorthingM: number;
+  lines: number;
+  samples: number;
+  pixelXM: number;
+  pixelYM: number;
+  tiepointEM: number;
+  tiepointNM: number;
+  /** 0.5 for PixelIsArea — the tiepoint names the CORNER of pixel (0,0). */
+  centreOffset: number;
+}
+
+function projectionFrom(m: LayersManifest): FrameProjection | null {
+  const g = m.geodetic_frame;
+  if (!g) return null;
+  // Refuse anything but the south polar aspect, exactly as SarFrame._check_south
+  // does. Guessing at another projection would put every marker somewhere
+  // plausible and wrong.
+  if (Math.abs(g.crs.latitude_of_origin_deg + 90) > 1e-6) {
+    console.error(
+      `[MissionMap] layers.json declares latitude_of_origin ${g.crs.latitude_of_origin_deg}; ` +
+      'only the south polar aspect is implemented. Coordinates will be withheld.',
+    );
+    return null;
+  }
   return {
-    lat: Math.max(-90, Math.min(90, crater.latitude_deg + dLat)),
-    lon: ((crater.longitude_deg + dLon + 540) % 360) - 180,
+    radiusM: g.crs.body_radius_m,
+    lonOriginDeg: g.crs.central_meridian_deg,
+    falseEastingM: g.crs.false_easting_m,
+    falseNorthingM: g.crs.false_northing_m,
+    lines: g.raster.lines,
+    samples: g.raster.samples,
+    pixelXM: g.raster.pixel_size_m.x,
+    pixelYM: g.raster.pixel_size_m.y,
+    tiepointEM: g.raster.tiepoint_xy_m.easting,
+    tiepointNM: g.raster.tiepoint_xy_m.northing,
+    centreOffset: g.raster.raster_type === 'PixelIsArea' ? 0.5 : 0.0,
   };
+}
+
+/** Fractional raster (line, sample) -> selenodetic lat/lon. Exact. */
+function pixelToLatLon(p: FrameProjection, line: number, sample: number): { lat: number; lon: number } {
+  const x = p.tiepointEM + (sample + p.centreOffset) * p.pixelXM - p.falseEastingM;
+  const y = p.tiepointNM - (line + p.centreOffset) * p.pixelYM - p.falseNorthingM;
+  const rho = Math.hypot(x, y);
+  const lat = (2 * Math.atan(rho / (2 * p.radiusM)) - Math.PI / 2) * (180 / Math.PI);
+  const lonRaw = Math.atan2(x, y) * (180 / Math.PI) + p.lonOriginDeg;
+  return { lat, lon: ((lonRaw + 180) % 360 + 360) % 360 - 180 };
+}
+
+/**
+ * The 0-100 backend grid -> lat/lon, through the same mapping the backend's
+ * `SarFrame.grid_to_latlon` uses (gy/grid_max * (lines - 1)), so a site plotted
+ * here and the same site's lat/lon in the payload agree by construction rather
+ * than by coincidence.
+ */
+function frameLatLon(geom: MapGeometry, gx: number, gy: number): { lat: number; lon: number } | null {
+  const p = geom.proj;
+  if (!p) return null;
+  return pixelToLatLon(p, (gy / 100) * (p.lines - 1), (gx / 100) * (p.samples - 1));
 }
 
 export interface MissionMapHandle {
@@ -525,7 +626,14 @@ export interface MissionMapHandle {
 }
 
 interface Props {
-  mission: MissionState;
+  /**
+   * 1D · NULLABLE. The rasters, panes, graticule, scale bar, footprint rings
+   * and coordinate readout are all derived from layers.json and need no
+   * backend, so the map mounts and paints without this. Only the VECTORS —
+   * landing-site markers, rover routes, the target marker — need it, and each
+   * of those effects returns early when it is null. Nothing is substituted.
+   */
+  mission: MissionState | null;
   activeLayer: string;
   showLandingSites: boolean;
   activeRoverStrategies: string[];
@@ -550,7 +658,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
   const gridRef = useRef<L.LayerGroup | null>(null);
   const [ready, setReady] = useState(false);
 
-  const crater = mission.selected_crater;
+  const crater = mission?.selected_crater ?? null;
   // The map is built asynchronously now (it waits for layers.json), so the
   // mousemove handler reads the crater through a ref instead of closing over
   // whichever one happened to be current when the effect ran.
@@ -815,8 +923,12 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       const gx = Math.round((e.latlng.lng / geom.boundW) * 100);
       const gy = Math.round(((geom.boundH - e.latlng.lat) / geom.boundH) * 100);
       if (gx < 0 || gx > 100 || gy < 0 || gy > 100) return;
-      const { lat, lon } = approxLatLon(geom, gx, gy, craterRef.current);
-      onCoords(`GRID ${gx},${gy}  ·  ≈${lat.toFixed(3)}° ≈${lon.toFixed(3)}°`);
+      const ll = frameLatLon(geom, gx, gy);
+      onCoords(
+        ll
+          ? `GRID ${gx},${gy}  ·  ${ll.lat.toFixed(4)}° ${ll.lon.toFixed(4)}°`
+          : `GRID ${gx},${gy}  ·  coordinates unavailable (layers.json carries no geodetic_frame)`,
+      );
     });
 
     return () => {
@@ -864,14 +976,20 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       });
       return;
     }
-    const src = mission.raster_layers[activeLayer];
-    if (src) {
-      overlayRef.current = L.imageOverlay(src, geom.bounds, {
-        pane: 'mc-science', opacity, interactive: false,
-        className: 'mc-raster mc-raster--science',
-      }).addTo(map);
+    // NO BASE64 FALLBACK. This used to fall back to mission.raster_layers[id]
+    // — a PNG rendered by the on-demand backend on a square grid and stretched
+    // onto this frame's 2.93:1 bounds. Every layer offered in the control now
+    // has a manifest entry, so reaching this line means the manifest and
+    // config.ts disagree, which is a build error rather than something to paper
+    // over with a differently-projected image.
+    if (import.meta.env.DEV) {
+      console.warn(
+        `[MissionMap] layer "${activeLayer}" has no entry in layers.json. ` +
+        'Nothing is drawn: a backend-rendered raster would be on the wrong grid. ' +
+        'Run: python backend/scripts/render_layers.py',
+      );
     }
-  }, [activeLayer, mission, ready]);
+  }, [activeLayer, ready]);
 
   // ── smooth fly-to when the crater / target changes ─────────────
   //
@@ -887,9 +1005,10 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     if (!map || !geom) return;
     if (targetRef.current) { map.removeLayer(targetRef.current); targetRef.current = null; }
 
+    if (!mission || !crater) return;
     const t = mission.target_coordinates;
     const [py, px] = gridToPixel(geom, t.x, t.y);
-    const { lat, lon } = approxLatLon(geom, t.x, t.y, crater);
+    const ll = frameLatLon(geom, t.x, t.y);
     const cov = coverageAt(geom, py, px);
     const measured = cov === 'amplitude';
 
@@ -905,7 +1024,9 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
 
     const marker = L.circleMarker([py, px], style).addTo(map).bindPopup(
       `<div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:#4fd1e6;min-width:160px">
-        <strong>CANDIDATE ICE TARGET</strong><br/>Lat ≈${lat.toFixed(4)}°<br/>Lon ≈${lon.toFixed(4)}°<br/>
+        <strong>CANDIDATE ICE TARGET</strong><br/>${ll
+          ? `Lat ${ll.lat.toFixed(4)}°<br/>Lon ${ll.lon.toFixed(4)}°`
+          : 'Coordinates unavailable'}<br/>
         <span style="color:${measured ? '#7f93a5' : '#f2c14e'}">${measured
           ? 'Chandrayaan-2 DFSAR CPR peak'
           : `GRID ${t.x},${t.y} — hardcoded, ${cov === 'swath'
@@ -921,7 +1042,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     const dest: [number, number] = measured ? [py, px] : geom.ribbonCentre;
     map.flyTo(dest, Math.max(map.getZoom(), map.getBoundsZoom(geom.homeBounds)), { duration: 0.7 });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mission.selected_crater?.id, mission.target_coordinates?.x, mission.target_coordinates?.y, ready]);
+  }, [mission?.selected_crater?.id, mission?.target_coordinates?.x, mission?.target_coordinates?.y, ready]);
 
   // ── landing sites ──────────────────────────────────────────────
   //
@@ -935,6 +1056,9 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     const geom = geomRef.current;
     if (!group || !geom) return;
     group.clearLayers();
+    // No mission, no sites. The group is left EMPTY rather than filled with
+    // placeholder markers — an invented pin on a real map is worse than no pin.
+    if (!mission) return;
 
     // Classified before the showLandingSites early-return: the count describes
     // the mission state, not what happens to be toggled on.
@@ -1006,7 +1130,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
                   km: string; drawn: boolean }[] = [];
 
     Object.entries(ROUTE_STYLE).forEach(([strategy, s]) => {
-      const route = mission.rover_routes[strategy];
+      const route = mission?.rover_routes?.[strategy];
       if (!route?.path_found || !route.waypoints?.length) return;
       const pts = route.waypoints.map((wp) => gridToPixel(geom, wp.x, wp.y));
       const covs = pts.map(([py, px]) => coverageAt(geom, py, px));
@@ -1040,8 +1164,16 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
         // The Science-Aware halo is drawn only under measured runs. It is emphasis,
         // and there is nothing to emphasise about a line over unobserved ground.
         if (cov === 'amplitude' && strategy === 'Science-Aware') {
-          L.polyline(run, { color: s.color, weight: s.weight + 6, opacity: 0.15, lineJoin: 'round' })
-            .addTo(group);
+          // CLASSED, so the verifier can tell an emphasis underlay from a route.
+          // It is drawn at opacity 0.15 on purpose — that is what a glow is —
+          // and verify_v8_view.mjs's routes_visible check was reading it as an
+          // invisible route and failing the gate on it every run. A gate that
+          // cries wolf gets waved through, so the fix is to make the two
+          // distinguishable rather than to lower the opacity floor.
+          L.polyline(run, {
+            color: s.color, weight: s.weight + 6, opacity: 0.15, lineJoin: 'round',
+            className: 'mc-route-glow',
+          }).addTo(group);
         }
         const style: L.PolylineOptions = cov === 'amplitude'
           ? { color: s.color, weight: s.weight, opacity: 0.95, dashArray: s.dash }

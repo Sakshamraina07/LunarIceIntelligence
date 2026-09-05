@@ -3,7 +3,16 @@
  *
  *     node frontend/scripts/verify_v8_view.mjs
  *
- * verify_map.mjs cannot answer these: it asserts the mc-void pane and the
+ * THIS IS NOW THE ONLY VERIFIER. verify_map.mjs was deleted in PRD Phase 1F:
+ * it asserted the mc-void pane and the coverage panel that v8 deliberately
+ * removed, so it exited 3 before producing any evidence at all. A dead verifier
+ * in the tree is a trap for every gate that follows -- it reads as a second
+ * opinion and is in fact a guaranteed failure. Its hillshade-histogram pass is
+ * not lost: backend/scripts/hillshade_histogram.py runs standalone and Phase 6
+ * calls it directly.
+ *
+ * The original note follows, for the record:
+ * verify_map.mjs could not answer these: it asserted the mc-void pane and the
  * .mc-map-coverage key EXIST, and v8 deleted both. Running it now crashes on
  * getPane('mc-void').querySelector, which is a true negative reported as a tool
  * failure. This script asks the four questions v8 actually raises:
@@ -324,9 +333,19 @@ function harness() {
       const bb = p.getBBox ? p.getBBox() : { width: 0, height: 0 };
       const d = p.getAttribute('d') || '';
       const cmds = (d.match(/[MLAaCc]/g) || []).length;
+      // THREE kinds, not two. A Science-Aware route is drawn as an emphasis
+      // underlay (weight + 6, opacity 0.15, class mc-route-glow) beneath the
+      // route stroke proper. Counting that underlay as a "line" made
+      // routes_visible fail deterministically on a path that is SUPPOSED to be
+      // faint — the check was flagging a deliberate style as a regression.
+      // It is excluded from the route tally and reported on its own line, so it
+      // is distinguished rather than hidden.
+      const isGlow = p.classList.contains('mc-route-glow');
       rows.push({
-        kind: cs.fill && cs.fill !== 'none' && /a\s*[\d.]+\s*\)|^#|rgb/.test(cs.fill) && cmds <= 12
-          ? 'marker' : 'line',
+        kind: isGlow
+          ? 'glow'
+          : cs.fill && cs.fill !== 'none' && /a\s*[\d.]+\s*\)|^#|rgb/.test(cs.fill) && cmds <= 12
+            ? 'marker' : 'line',
         stroke: norm(cs.stroke),
         strokeWidth: +parseFloat(cs.strokeWidth || '0').toFixed(2),
         strokeOpacity: +parseFloat(cs.strokeOpacity || '1').toFixed(2),
@@ -349,13 +368,16 @@ function harness() {
     });
     const markers = rows.filter((r) => r.kind === 'marker');
     const lines = rows.filter((r) => r.kind === 'line');
+    const glows = rows.filter((r) => r.kind === 'glow');
     const tally = (a) => ({ n: a.length, visible: a.filter((r) => r.visible).length,
                             styled: a.filter((r) => r.styled).length,
                             faint: a.filter((r) => !r.styled).length,
                             amber: a.filter((r) => r.amber).length,
                             amberAndVisible: a.filter((r) => r.amber && r.visible).length });
     return { paths: rows.length, markers: tally(markers), lines: tally(lines),
-             faintPaths: rows.filter((r) => !r.styled)
+             glows: tally(glows),
+             // Only non-glow paths can be "faint": a glow is faint by design.
+             faintPaths: rows.filter((r) => !r.styled && r.kind !== 'glow')
                .map((r) => ({ kind: r.kind, stroke: r.stroke, w: r.strokeWidth,
                               o: r.strokeOpacity, box: r.box })).slice(0, 12),
              sample: rows.slice(0, 24) };
@@ -692,8 +714,12 @@ async function main() {
          && ofull.markers.faint === 0,
     },
     routes_visible: {
-      value: `${ofull.lines.visible}/${ofull.lines.n} visible at full extent,`
-           + ` faint ${ofull.lines.faint}`,
+      // Route STROKES only. The Science-Aware emphasis underlay is counted
+      // separately as `glows` and is expected to be faint; folding it in here
+      // made this gate fail on every run for a style that is correct.
+      value: `${ofull.lines.visible}/${ofull.lines.n} route strokes visible at full extent,`
+           + ` faint ${ofull.lines.faint}`
+           + ` (+${ofull.glows.n} emphasis underlay(s), faint by design)`,
       pass: ofull.lines.visible >= 3 && ofull.lines.faint === 0,
     },
     no_page_errors: { value: errors, pass: errors.length === 0 },

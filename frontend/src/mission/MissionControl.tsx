@@ -23,7 +23,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { fetchCraters, fetchMissionState, getReportPdfUrl } from '../services/api';
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
-import { MissionMap, type MissionMapHandle, groundResolutionLabel } from './MissionMap';
+import { MissionMap, type MissionMapHandle, groundResolutionLabel, loadManifest } from './MissionMap';
 import { VerdictCard } from './VerdictCard';
 import { StepPanel } from './StepPanel';
 import { STEPS, LAYERS, LAYER_MAP } from './config';
@@ -82,7 +82,18 @@ function contextCells(a: Analysis): CtxCell[] {
     { k: 'DOP (mean)', v: v.dop_mean, sub: dopP50 != null ? `median ${dopP50.toPrecision(3)}` : 'over measured px' },
     { k: 'PSR Area', v: v.psr_area_km2, sub: 'km² shadowed' },
     { k: 'Mean Slope', v: v.mean_slope_deg, sub: slopeMax != null ? `max ${slopeMax.toFixed(1)}°` : '', suffix: '°', digits: 2 },
-    { k: 'Peak P(ice)', v: v.p_ice_max, sub: 'model, not a measurement', digits: 2 },
+    // Was "Peak P(ice)" reading v.p_ice_max — a Random Forest output whose
+    // positive class lay outside this product's achievable CPR range. The cell
+    // now holds the 99th percentile of the MEASURED CPR field: the threshold
+    // above which the top 1 % of the swath sits. It is a ranking within this
+    // scene, and the label says so in as many words, because a percentile of a
+    // sub-threshold distribution is not a detection.
+    {
+      k: 'Top 1% CPR',
+      v: v.cpr_p99,
+      sub: 'ranking within this swath — not a detection',
+      digits: 4,
+    },
     { k: 'Candidate Area', v: v.candidate_area_km2, sub: 'km² passing both criteria', digits: 2 },
     { k: 'Ice Volume', v: v.expected_volume_m3, sub: 'm³ from candidate area' },
     { k: 'Rover', v: v.rover_traverse_km, sub: 'science-aware' },
@@ -121,6 +132,17 @@ export default function MissionControl() {
   const [iceDepth, setIceDepth] = useState(5.0);
   const [iceFrac, setIceFrac] = useState(0.15);
   const [roverAlgo, setRoverAlgo] = useState('A*');
+
+  // Layer descriptions, read from layers.json so the legend and the pixels
+  // cannot describe different formulas. Empty until the manifest lands; the
+  // legend simply omits the hint until then rather than showing a stale one.
+  const [layerCopy, setLayerCopy] = useState<Record<string, string>>({});
+  useEffect(() => {
+    loadManifest().then((m) => {
+      if (!m) return;
+      setLayerCopy(Object.fromEntries(m.layers.map((l) => [l.id, l.description])));
+    });
+  }, []);
 
   const mapRef = useRef<MissionMapHandle>(null);
   useEffect(() => {
@@ -217,19 +239,25 @@ export default function MissionControl() {
       {/* ── workspace ── */}
       <div className="mc-workspace">
         <div className="mc-mapwrap">
-          {mission && (
-            <MissionMap
-              ref={mapRef}
-              mission={mission}
-              activeLayer={activeLayer}
-              showLandingSites={showLandingSites}
-              activeRoverStrategies={activeRoutes}
-              selectedLandingSite={selectedSite}
-              onSelectLandingSite={setSelectedSite}
-              onCoords={setCoords}
-              onZoom={setZoom}
-            />
-          )}
+          {/* 1D · UNCONDITIONAL. This was `{mission && <MissionMap .../>}`, so a
+              backend that was down — or merely cold-starting for 30-50 s on
+              Render — left the user staring at an empty panel while every pixel
+              of the map was already sitting on the CDN and returns in tens of
+              milliseconds. The raster layers, panes, graticule, scale bar,
+              footprint rings and coordinate readout need no backend at all. Only
+              the vectors do, and MissionMap draws those when `mission` is
+              non-null and skips them otherwise. It does NOT draw placeholders. */}
+          <MissionMap
+            ref={mapRef}
+            mission={mission}
+            activeLayer={activeLayer}
+            showLandingSites={showLandingSites}
+            activeRoverStrategies={activeRoutes}
+            selectedLandingSite={selectedSite}
+            onSelectLandingSite={setSelectedSite}
+            onCoords={setCoords}
+            onZoom={setZoom}
+          />
 
           {/* layer control */}
           <div className="mc-map-overlay mc-map-panel mc-layerctl">
@@ -269,7 +297,10 @@ export default function MissionControl() {
               </div>
               <div className="mc-legend-bar" style={{ background: legend.gradient }} />
               <div className="mc-legend-ends"><span>{legend.low}</span><span>{legend.high}</span></div>
-              {legend.description && <div className="mc-legend-hint">{legend.description}</div>}
+              {/* From layers.json, not from config.ts. The manifest is written by
+                  the same script that renders the pixels, so this caption cannot
+                  describe a different formula than the image it sits under. */}
+              {layerCopy[activeLayer] && <div className="mc-legend-hint">{layerCopy[activeLayer]}</div>}
             </div>
           )}
 
@@ -284,8 +315,18 @@ export default function MissionControl() {
             </div>
           </div>
 
-          {loading && (
-            <div className="mc-loading"><div className="mc-ring" /><div>Executing computational pipeline…</div></div>
+          {/* The terrain and the analysis are different states and must look
+              different. The map painting while the vectors are absent is not a
+              failure, and it must not be dressed as a spinner over a blank panel. */}
+          {!mission && (
+            <div className="mc-map-overlay mc-map-panel mc-map-vectorstate">
+              TERRAIN LOADED · {error ? 'ANALYSIS UNAVAILABLE' : loading ? 'ANALYSIS PENDING' : 'NO ANALYSIS'}
+              <div className="mc-map-vectorstate-sub">
+                {error
+                  ? 'Landing sites and rover routes need the on-demand backend, which is not reachable. Every raster above is a static asset and is unaffected.'
+                  : 'Rasters are served from the CDN and are already drawn. Landing-site and route vectors follow when the backend responds.'}
+              </div>
+            </div>
           )}
           {error && <div className="mc-error">{error}</div>}
         </div>
@@ -303,10 +344,11 @@ export default function MissionControl() {
             </div>
           )}
 
-          {mission && (
-            <StepPanel
+          <StepPanel
               step={step}
+              analysis={analysis}
               mission={mission}
+              craterId={craterId}
               craters={craters}
               onSelectCrater={setCraterId}
               selectedLandingSite={selectedSite}
@@ -320,8 +362,7 @@ export default function MissionControl() {
                 if (p.iceDepthM !== undefined) setIceDepth(p.iceDepthM);
                 if (p.iceFraction !== undefined) setIceFrac(p.iceFraction);
               }}
-            />
-          )}
+          />
         </div>
       </div>
       {/* ── bottom context bar ──

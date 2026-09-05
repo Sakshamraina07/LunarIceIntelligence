@@ -926,7 +926,14 @@ def build(crater_id: str = "faustini") -> dict:
         "source_rasters": r["paths"],
         "thresholds": {
             "cpr_threshold": cpr_th, "dop_threshold": dop_th,
-            "source": "backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD)",
+            # Carried so the UI reads its slope limits from config too. These
+            # were typed into StepPanel as literals -- "Slope <= 12 deg" printed
+            # beside a 20 deg traversability cutoff, two different numbers for
+            # two different purposes rendered as if they were one.
+            "max_traversable_slope_deg": float(cfg.MAX_TRAVERSABLE_SLOPE_DEG),
+            "critical_landing_slope_deg": float(cfg.CRITICAL_LANDING_SLOPE_DEG),
+            "source": ("backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, "
+                       "MAX_TRAVERSABLE_SLOPE_DEG, CRITICAL_LANDING_SLOPE_DEG)"),
             "unchanged": True,
             "note": ("Not retuned. Lowering CPR_THRESHOLD until this scene passes would manufacture a "
                      "detection out of an incomplete product."),

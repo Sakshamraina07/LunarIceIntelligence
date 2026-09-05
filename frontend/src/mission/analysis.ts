@@ -60,6 +60,77 @@ export interface AnalysisMask {
   meaning: string;
 }
 
+/** One tier of the volume estimate, carrying its assumptions AS DATA. */
+export interface VolumeTier {
+  tier: string;
+  assumed_depth_m: number;
+  assumed_pore_fraction: number;
+  volume_m3: number;
+  volume_m3_per_km2: number;
+  provenance: Provenance;
+  source: string;
+  note: string;
+}
+
+/** One row of a real sweep: a pixel count re-thresholded off the native arrays. */
+export interface SweepRow {
+  threshold: number;
+  is_configured_value: boolean;
+  candidate_px?: number;
+  candidate_area_km2: number;
+  candidate_area_provenance: Provenance;
+  volume_m3: number;
+  volume_m3_per_km2?: number;
+  volume_provenance: Provenance;
+}
+
+export interface SweepAxis {
+  parameter: string;
+  unit: string;
+  baseline: number;
+  grid_source: string;
+  held_constant: Record<string, number>;
+  rows: SweepRow[];
+}
+
+export interface Sensitivity {
+  cpr_threshold: SweepAxis;
+  dop_threshold: SweepAxis;
+  assumed_depth_m: SweepAxis;
+  ice_fraction: SweepAxis;
+  provenance: Provenance;
+  computed_by: string;
+  withheld_columns: Record<string, string>;
+  note: string;
+}
+
+/**
+ * What each of the twelve steps can honestly show. The UI reads this to decide
+ * whether a step renders figures or renders its own absence — it must never
+ * infer that from whether a value happens to be null, because a null with no
+ * stated reason is indistinguishable from a bug.
+ */
+export interface StepStatus {
+  n: number;
+  key: string;
+  title: string;
+  status: 'COMPLETE' | 'UNAVAILABLE';
+  basis: string;
+}
+
+export interface HazardModel {
+  components: string[];
+  weights_applied: Record<string, number>;
+  weights_in_config: Record<string, number>;
+  denominator: number;
+  renormalised: boolean;
+  slope_risk_reference_deg: number;
+  roughness_risk_reference_m: number;
+  boulder: { provenance: Provenance; value: number | null; reason: string };
+  provenance: Provenance;
+  note: string;
+}
+
 export interface Analysis {
   schema: string;
   crater_id: string;
@@ -91,6 +162,8 @@ export interface Analysis {
   thresholds: {
     cpr_threshold: number;
     dop_threshold: number;
+    max_traversable_slope_deg: number;
+    critical_landing_slope_deg: number;
     source: string;
     unchanged: boolean;
     note: string;
@@ -100,6 +173,10 @@ export interface Analysis {
     screening_status: 'PASS' | 'FAIL';
     criteria_passed: number;
     criteria_total: number;
+    /** How many criteria could be evaluated at all. The rest are WITHHELD. */
+    criteria_evaluable: number;
+    criteria_withheld: number;
+    criteria_note: string;
     label: string;
     sublabel: string;
     confidence: string;
@@ -108,6 +185,12 @@ export interface Analysis {
   };
   values: Record<string, AnalysisValue>;
   evidence: AnalysisEvidence[];
+  volume_tiers: VolumeTier[];
+  sensitivity: Sensitivity;
+  steps: StepStatus[];
+  hazard_model: HazardModel;
+  elevation: Record<string, unknown>;
+  illumination_model: Record<string, unknown>;
   measured_statistics: Record<string, unknown>;
   notes: string[];
 }
@@ -168,4 +251,32 @@ export function showValue(v: AnalysisValue | undefined, digits?: number): string
 /** True when the UI must degrade the cell instead of printing a figure. */
 export function isMissing(v: AnalysisValue | undefined): boolean {
   return !v || v.value === null || v.value === undefined;
+}
+
+/**
+ * The reason a value is absent, for rendering in the place the number would
+ * have been. Never returns an empty string: a dash with no explanation is the
+ * failure mode this whole module exists to prevent.
+ */
+export function absenceReason(v: AnalysisValue | undefined, fallback: string): string {
+  return v?.reason ?? v?.note ?? fallback;
+}
+
+/** A step's declared status, or a conservative UNAVAILABLE when it is absent. */
+export function stepStatus(a: Analysis | null, n: number): StepStatus | null {
+  return a?.steps?.find((s) => s.n === n) ?? null;
+}
+
+/**
+ * Format a fraction in [0,1] as a percentage string, or an em dash.
+ * Small fractions keep enough digits to stay distinguishable from zero — the
+ * screening pass fraction here is 0, but the CPR pass fraction is not, and
+ * "0.0 %" for both would hide a real difference.
+ */
+export function showPercent(v: AnalysisValue | undefined, digits = 2): string {
+  if (isMissing(v)) return '—';
+  const pct = (v!.value as number) * 100;
+  if (pct === 0) return '0';
+  if (pct < 0.01) return pct.toExponential(1);
+  return pct.toFixed(digits);
 }

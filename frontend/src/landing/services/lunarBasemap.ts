@@ -1,39 +1,52 @@
 /**
  * lunarBasemap.ts
- * Adapter/service layer for lunar surface imagery used by the 3D Moon.
+ * Surface texture provider for the 3D Moon on the landing page.
  *
  * ─────────────────────────────────────────────────────────────────────────────
- * CHANDRAYAAN-2 / ISRO DATA INTEGRATION — INVESTIGATION SUMMARY (2026-08-30)
+ * WHAT THIS FILE IS ALLOWED TO CLAIM (PRD Phase 1C, §1.2b items 26 and 27)
  * ─────────────────────────────────────────────────────────────────────────────
- * The landing page was required to attempt LIVE use of official ISRO /
- * Chandrayaan-2 lunar map data rather than fabricating a texture. Findings:
+ * This is decoration. It textures a spinning sphere on a marketing page; no
+ * number anywhere in the product is derived from it. It therefore has exactly
+ * one obligation: not to describe itself as measured data.
  *
- * 1. ISRO PRADAN (https://pradan.issdc.gov.in) is the official Chandrayaan-2
- *    archive (DFSAR radar, OHRC imagery, TMC-2 DEM). It requires account
- *    registration/login and serves PDS4 *bundle downloads*. It exposes NO
- *    public, CORS-enabled, real-time tile / WMS / WMTS API that a browser can
- *    call directly. => A live in-browser Chandrayaan-2 feed from ISRO is NOT
- *    currently possible without a server-side proxy + credentials.
+ * TWO THINGS WERE REMOVED HERE.
  *
- * 2. This repository already INGESTED real Chandrayaan-2 DFSAR data (observation
- *    2020-08-08, Faustini region, product ch2_sar_ncxl_20200808...) into
- *    data/pradan/ and pre-processed it into XYZ tile pyramids served by the
- *    FastAPI backend at  {backend}/tiles/{crater}/{layer}/{z}/{x}/{y}.png.
- *    Those tiles are REAL (offline-processed) Chandrayaan-2-derived layers.
+ * 1. `backendChandrayaanTiles()` and `ALL_PROVIDERS`. They built URLs against
+ *    `{backend}/tiles/{crater}/{layer}/{z}/{x}/{y}.png` — an endpoint deleted in
+ *    PRD Phase 0 along with the 510-tile pyramid it served. Nothing called them;
+ *    they were a dead reference to a 404 that still read, to anyone opening the
+ *    file, as a live Chandrayaan-2 integration.
  *
- * 3. Public, CORS-enabled LIVE lunar basemaps that DO work in-browser (verified
- *    with an Origin header): NASA Moon Trek (LRO WAC global mosaic) and USGS
- *    planetarymaps WMS. These are LRO products (not Chandrayaan-2) but provide
- *    a scientifically real global context layer.
+ * 2. The provenance claim on `/lunar-dem.png`. `STATIC_DEM` described the same
+ *    file as a "Real elevation raster" in `notes` and a "bundled demo asset" in
+ *    `attribution`, in the same object, and named no body, mission, instrument
+ *    or resolution. The claim was tested rather than repeated, and it does not
+ *    survive:
  *
- * DECISION: the 3D hero renders from a REAL local lunar DEM (public/lunar-dem.png)
- * for credible crater relief, and this service exposes swappable providers so the
- * NASA Moon Trek live imagery or the backend Chandrayaan-2 tiles can be dropped
- * in without touching the scene code. Nothing here fakes a real-time ISRO link.
+ *      · 1024 x 1024, aspect 1:1. A global equirectangular lunar map is 2:1
+ *        (360° x 180°). This cannot be the global product it was mounted as.
+ *      · RGB, not single-channel, with max|R-G| = 100 DN and max|G-B| = 52 DN.
+ *        An elevation model is a single-valued height field; a three-channel
+ *        image with that much channel separation is not one.
+ *      · No embedded metadata of any kind (PNG carries only a 72 dpi tag), no
+ *        source note, no product id, and no history before the repository's
+ *        first commit.
+ *
+ *    So it is relabelled as what it demonstrably is: an untraced decorative
+ *    texture. NO SOURCE IS GUESSED. If its origin is later established it can be
+ *    named here; until then the honest statement is that we do not know.
+ *
+ * NASA_MOON_TREK_WAC is kept because it is a real, verifiable, live public
+ * endpoint, and because it is the obvious upgrade path for this sphere. It is
+ * not currently rendered.
+ *
+ * (Noted for later, out of scope here: this project already holds LOLA
+ * LDEM_80S_80M V2.0 on disk. Texturing the hero sphere from that product would
+ * make the landing page's Moon measured instead of decorative. See docs/.)
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-export type BasemapKind = 'live-wmts' | 'backend-xyz' | 'static-dem';
+export type BasemapKind = 'live-wmts' | 'static-texture';
 
 export interface LunarBasemapProvider {
   id: string;
@@ -41,25 +54,35 @@ export interface LunarBasemapProvider {
   kind: BasemapKind;
   /** Whether this source is confirmed usable directly from the browser. */
   browserUsable: boolean;
-  /** True = genuine live/public data. False = local demo/fallback asset. */
+  /** True = genuine live/public data. False = a local asset. */
   live: boolean;
-  attribution: string;
   /**
-   * Tile URL template for XYZ/WMTS providers. `{z}/{x}/{y}` placeholders.
-   * Null for single-image (equirectangular) providers.
+   * What this imagery IS, as far as it can be established. `null` means the
+   * provenance is unknown — which is a statement, not a gap to be filled with a
+   * plausible one.
    */
+  attribution: string | null;
+  /**
+   * True when this asset makes NO claim to be measured data. The scene may use
+   * it freely; nothing scientific may be derived from it.
+   */
+  decorativeOnly: boolean;
+  /** Tile URL template for WMTS providers. `{z}/{x}/{y}` placeholders. */
   tileUrlTemplate: string | null;
   /** Single equirectangular texture URL for the 3D sphere, if applicable. */
   equirectUrl: string | null;
   notes: string;
 }
 
-const BACKEND_BASE = (import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
-
 /**
- * NASA Moon Trek — LRO WAC global mosaic. Verified live + `Access-Control-
- * Allow-Origin: *`. WMTS tile order is {z}/{y}/{x}. Real lunar imagery, usable
- * as a live global context layer / future sphere texture.
+ * NASA Moon Trek — LRO WAC global mosaic. Verified live, with
+ * `Access-Control-Allow-Origin: *`. WMTS tile order is {z}/{y}/{x}. Real lunar
+ * imagery from LRO (not Chandrayaan-2), and the honest upgrade path for the
+ * hero sphere.
+ *
+ * NOTE: this is the EQUIRECTANGULAR (EQ) endpoint, which is the one that
+ * responds. The polar (SP) endpoints under the same host were investigated for
+ * the mission map and 404 on every path tried; see PRD §5.
  */
 export const NASA_MOON_TREK_WAC: LunarBasemapProvider = {
   id: 'nasa-trek-wac',
@@ -68,61 +91,41 @@ export const NASA_MOON_TREK_WAC: LunarBasemapProvider = {
   browserUsable: true,
   live: true,
   attribution: 'NASA / ASU / LRO WAC · trek.nasa.gov',
+  decorativeOnly: false,
   tileUrlTemplate:
     'https://trek.nasa.gov/tiles/Moon/EQ/LRO_WAC_Mosaic_Global_303ppd_v02/1.0.0/default/default028mm/{z}/{y}/{x}.jpg',
   equirectUrl: null,
   notes:
-    'Confirmed HTTP 200 + CORS "*". LRO (not Chandrayaan-2) but real, public and live.',
+    'Confirmed HTTP 200 with CORS "*". LRO rather than Chandrayaan-2, but real, public and live.',
 };
 
 /**
- * Backend Chandrayaan-2 derived tiles. REAL DFSAR data, offline-processed into
- * an XYZ pyramid and served by the local FastAPI backend. Not a live ISRO feed.
+ * The bundled sphere texture. Provenance UNKNOWN — see the header for the
+ * measurements that withdrew the previous "Real elevation raster" claim.
  */
-export function backendChandrayaanTiles(
-  crater = 'faustini',
-  layer = 'hillshade'
-): LunarBasemapProvider {
-  return {
-    id: `backend-${crater}-${layer}`,
-    label: `Chandrayaan-2 ${layer} · ${crater} (local backend)`,
-    kind: 'backend-xyz',
-    browserUsable: true,
-    live: false, // real data, but served offline — NOT a live ISRO connection
-    attribution: 'ISRO Chandrayaan-2 DFSAR (offline-processed) · local backend',
-    tileUrlTemplate: `${BACKEND_BASE}/tiles/${crater}/${layer}/{z}/{x}/{y}.png`,
-    equirectUrl: null,
-    notes:
-      'Real Chandrayaan-2-derived radar/terrain tiles. Requires the FastAPI backend running on :8000.',
-  };
-}
-
-/**
- * Local static lunar DEM. A real 1024x1024 lunar elevation raster shipped with
- * the repo (public/lunar-dem.png). Used as the DEFAULT hero surface: reliable,
- * offline, and gives genuine crater relief via displacement/bump mapping.
- */
-export const STATIC_DEM: LunarBasemapProvider = {
-  id: 'static-dem',
-  label: 'Lunar DEM (bundled, offline)',
-  kind: 'static-dem',
+export const DECORATIVE_SURFACE: LunarBasemapProvider = {
+  id: 'decorative-surface',
+  label: 'Bundled surface texture (provenance unknown)',
+  kind: 'static-texture',
   browserUsable: true,
   live: false,
-  attribution: 'Lunar digital elevation model (bundled demo asset)',
+  // null, not a plausible-sounding string. We do not know where this came from.
+  attribution: null,
+  decorativeOnly: true,
   tileUrlTemplate: null,
   equirectUrl: '/lunar-dem.png',
-  notes: 'Real elevation raster used for displacement + bump on the 3D sphere.',
+  notes:
+    'UNTRACED DECORATIVE TEXTURE. 1024x1024 RGB PNG with no metadata. It is not an ' +
+    'elevation model: a DEM is single-valued, and this carries up to 100 DN of ' +
+    'separation between its colour channels. Its 1:1 aspect also rules out the ' +
+    'global equirectangular product its filename suggests. Used for displacement ' +
+    'and bump on the landing-page sphere purely for visual relief; no measurement ' +
+    'anywhere in this project derives from it.',
 };
 
 /**
- * The provider the scene renders by default. Swap this (or make it env-driven)
- * to promote the live NASA Moon Trek layer or backend Chandrayaan-2 tiles once
- * a sphere-tiling / proxy strategy is in place.
+ * The provider the scene renders. Swap to NASA_MOON_TREK_WAC once a sphere
+ * tiling strategy exists, or to a texture rendered from the LOLA product this
+ * repository already holds.
  */
-export const DEFAULT_SURFACE_PROVIDER = STATIC_DEM;
-
-export const ALL_PROVIDERS: LunarBasemapProvider[] = [
-  STATIC_DEM,
-  NASA_MOON_TREK_WAC,
-  backendChandrayaanTiles(),
-];
+export const DEFAULT_SURFACE_PROVIDER = DECORATIVE_SURFACE;

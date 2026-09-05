@@ -9,7 +9,6 @@ from app.core.config import settings
 from app.demo.lunar_generator import demo_generator_enabled
 from app.services.mission_service import mission_orchestrator
 from app.modules.module_g_volume import run_sensitivity_sweep
-from app.modules.experiments_runner import run_all_research_experiments
 from app.services.pdf_generator import generate_mission_pdf_report
 
 router = APIRouter()
@@ -67,11 +66,6 @@ def get_sensitivity_analysis(
     if parameter_name not in valid_params:
         raise HTTPException(status_code=400, detail=f"Parameter must be one of: {valid_params}")
     return run_sensitivity_sweep(parameter_name, base_candidate_area_km2=base_area_km2)
-
-
-@router.get("/experiments")
-def get_research_experiments(crater_id: str = "shackleton"):
-    return run_all_research_experiments(crater_id=crater_id)
 
 
 @router.get("/report/pdf/{crater_id}")

@@ -5,7 +5,6 @@ Tests full pipeline on Shackleton, Shoemaker, and Faustini craters.
 
 import pytest
 from app.services.mission_service import mission_orchestrator
-from app.modules.experiments_runner import run_all_research_experiments
 
 
 def test_full_mission_pipeline_execution():
@@ -47,10 +46,3 @@ def test_full_mission_pipeline_execution():
             assert layer_name in layers
             assert layers[layer_name].startswith("data:image/png;base64,")
 
-
-def test_experiments_suite_execution():
-    results = run_all_research_experiments(crater_id="shackleton")
-    assert "experiments" in results
-    assert "ablation_study" in results
-    assert len(results["experiments"]) == 4
-    assert len(results["ablation_study"]) == 6

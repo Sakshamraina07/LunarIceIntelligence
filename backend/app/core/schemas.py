@@ -175,26 +175,6 @@ class SensitivityAnalysisResult(BaseModel):
     sensitivity_summary: str
 
 
-class ExperimentResult(BaseModel):
-    experiment_id: str
-    title: str
-    objective: str
-    metrics: Dict[str, Any]
-    qualitative_observations: List[str]
-    scientific_conclusion: str
-    is_synthetic_evaluation: bool
-
-
-class AblationStepResult(BaseModel):
-    step_name: str
-    factors_included: List[str]
-    path_distance_km: float
-    mean_hazard: float
-    energy_wh: float
-    science_collected: float
-    path_deviation_description: str
-
-
 class MissionState(BaseModel):
     selected_crater: CraterInfo
     data_mode: str

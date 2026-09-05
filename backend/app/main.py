@@ -24,19 +24,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-from fastapi.staticfiles import StaticFiles
-from pathlib import Path
-
 # Exception handlers
 app.add_exception_handler(LunarScienceException, lunar_exception_handler)
 
 # Include API routes
 app.include_router(router, prefix=settings.API_V1_STR)
-
-# Serve Tile Pyramids for Leaflet GIS Map Viewer
-tiles_dir = Path(__file__).resolve().parent.parent / "tiles"
-tiles_dir.mkdir(parents=True, exist_ok=True)
-app.mount("/tiles", StaticFiles(directory=str(tiles_dir)), name="tiles")
 
 
 @app.get("/")

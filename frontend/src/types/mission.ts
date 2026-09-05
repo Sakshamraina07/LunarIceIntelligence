@@ -158,26 +158,6 @@ export interface SensitivityAnalysisResult {
   sensitivity_summary: string;
 }
 
-export interface ExperimentResult {
-  experiment_id: string;
-  title: string;
-  objective: string;
-  metrics: Record<string, any>;
-  qualitative_observations: string[];
-  scientific_conclusion: string;
-  is_synthetic_evaluation: boolean;
-}
-
-export interface AblationStepResult {
-  step_name: string;
-  factors_included: string[];
-  path_distance_km: number;
-  mean_hazard: number;
-  energy_wh: number;
-  science_collected: number;
-  path_deviation_description: string;
-}
-
 export interface MissionState {
   selected_crater: CraterInfo;
   data_mode: 'DEMO' | 'REAL';

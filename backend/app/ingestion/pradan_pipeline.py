@@ -19,7 +19,12 @@ from app.modules.module_a_psr import compute_hillshade
 from app.modules.module_d_terrain import compute_terrain_metrics, compute_hazard_score
 
 
-PRADAN_DATA_DIR = Path("d:/FYP/data/pradan")
+# Repository root, derived from this file's own location rather than a
+# hardcoded drive letter. backend/app/ingestion/ -> parents[3] is the root.
+# A Windows absolute here is why every crater reported NOT_INGESTED on the
+# Linux deploy host: the path could not resolve, so no raster was ever found.
+BASE_DIR = Path(__file__).resolve().parents[3]
+PRADAN_DATA_DIR = BASE_DIR / "data" / "pradan"
 
 
 def ensure_pradan_directories():
@@ -207,7 +212,7 @@ def process_real_dem(
 
 def create_sample_georeferenced_pradan_data(crater_id: str = "shackleton") -> Dict[str, Optional[str]]:
     """
-    Writes seeded rasters into d:/FYP/data/pradan/ under the same names a real
+    Writes seeded rasters into data/pradan/ under the same names a real
     ingested product would use. PYTEST / LOCAL DEVELOPMENT ONLY.
 
     This function is how the ambiguity got onto disk. It names its output

@@ -50,12 +50,6 @@ export async function fetchSensitivity(parameterName: string, baseAreaKm2: numbe
   return res.json();
 }
 
-export async function fetchExperiments(craterId: string = 'shackleton') {
-  const res = await fetch(`${API_BASE_URL}/experiments?crater_id=${craterId}`);
-  if (!res.ok) throw new Error('Failed to load experiments');
-  return res.json();
-}
-
 export function getReportPdfUrl(craterId: string): string {
   return `${API_BASE_URL}/report/pdf/${craterId}`;
 }

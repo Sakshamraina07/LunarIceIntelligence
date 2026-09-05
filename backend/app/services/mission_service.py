@@ -41,6 +41,7 @@ from app.core.config import settings
 from app.core.schemas import MissionState, CraterInfo
 from app.demo.lunar_generator import CRATER_CATALOG, demo_generator_enabled
 from app.ingestion.real_data_gate import (
+    PRADAN_ROOT,
     RealDataStatus,
     assert_no_shared_real_rasters,
     real_data_status,
@@ -185,9 +186,9 @@ class MissionPipelineService:
         else:
             dem_pradan_path = cpr_real_path = dop_real_path = None
 
-        dfsar_s0_path = Path(f"d:/FYP/data/pradan/dfsar/{crater_id}_dfsar_s0.tif")
-        dfsar_s3_path = Path(f"d:/FYP/data/pradan/dfsar/{crater_id}_dfsar_s3.tif")
-        ohrc_path = Path(f"d:/FYP/data/pradan/ohrc/{crater_id}_ohrc_pan.tif")
+        dfsar_s0_path = PRADAN_ROOT / "dfsar" / f"{crater_id}_dfsar_s0.tif"
+        dfsar_s3_path = PRADAN_ROOT / "dfsar" / f"{crater_id}_dfsar_s3.tif"
+        ohrc_path = PRADAN_ROOT / "ohrc" / f"{crater_id}_ohrc_pan.tif"
 
         if is_real:
             from app.ingestion.pradan_pipeline import (
@@ -225,7 +226,7 @@ class MissionPipelineService:
                     frame = read_geotiff_frame(str(dem_pradan_path))
                     frame_source = f"geotiff-tags:{dem_pradan_path.name}"
                 except Exception:
-                    meta_path = Path("d:/FYP/data/pradan/dfsar/metadata_real.json")
+                    meta_path = PRADAN_ROOT / "dfsar" / "metadata_real.json"
                     if meta_path.exists():
                         frame = frame_from_geodetic_metadata(meta_path)
                         frame_source = "metadata_real.json:geodetic_frame"

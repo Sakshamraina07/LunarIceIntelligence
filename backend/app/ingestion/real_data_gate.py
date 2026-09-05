@@ -39,7 +39,9 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, List, Optional
 
-PRADAN_ROOT = Path("d:/FYP/data/pradan")
+# backend/app/ingestion/ -> parents[3] is the repository root.
+BASE_DIR = Path(__file__).resolve().parents[3]
+PRADAN_ROOT = BASE_DIR / "data" / "pradan"
 
 #: Roles a crater needs before any REAL number can be computed for it.
 DEM_ROLE = "dem"

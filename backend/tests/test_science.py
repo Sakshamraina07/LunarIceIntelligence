@@ -55,7 +55,10 @@ def test_hazard_score_bounds():
 
 def test_ice_volume_estimation_tiers():
     area_km2 = 10.0
-    res = estimate_ice_volume(area_km2, crater_id="shackleton")
+    # `data_mode` is required with no default: it is a provenance label, so a
+    # caller who forgets one must not silently inherit the strongest claim.
+    # This test feeds an invented 10 km2 area, so the honest label is DEMO.
+    res = estimate_ice_volume(area_km2, crater_id="shackleton", data_mode="DEMO")
 
     # Volume: Area * Depth * Fraction
     # Conservative: 10e6 * 2m * 0.05 = 1,000,000 m3

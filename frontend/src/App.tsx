@@ -28,7 +28,9 @@ export const App: React.FC = () => {
 
   // Workflow & View States
   const [currentStep, setCurrentStep] = useState<number>(1);
-  const [activeLayer, setActiveLayer] = useState<string>('cpr_heatmap');
+  // Topography first — same reasoning as MissionControl. The step-3 effect
+  // below still switches this to cpr_heatmap when the user reaches radar.
+  const [activeLayer, setActiveLayer] = useState<string>('hillshade');
   const [showLandingSites, setShowLandingSites] = useState<boolean>(true);
   const [activeRoverStrategies, setActiveRoverStrategies] = useState<string[]>([
     'Shortest',

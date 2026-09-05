@@ -26,7 +26,8 @@ def estimate_ice_volume(
     fraction_conservative: Optional[float] = None,
     fraction_expected: Optional[float] = None,
     fraction_upper: Optional[float] = None,
-    data_mode: str = "DEMO"
+    *,
+    data_mode: str,
 ) -> IceVolumeEstimateResult:
     """
     Computes volumetric and mass estimates for candidate subsurface volatile ice deposits.

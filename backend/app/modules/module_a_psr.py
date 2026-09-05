@@ -14,14 +14,22 @@ from app.core.provenance import create_provenance
 
 def compute_hillshade(
     dem: np.ndarray,
-    pixel_scale_m: float = 250.0,
+    spacing_m: Tuple[float, float],
     azimuth_deg: float = 315.0,
     altitude_deg: float = 45.0
 ) -> np.ndarray:
     """
     Standard analytical hillshade model based on Horn (1981) surface gradients.
+
+    `spacing_m` is (metres_per_line, metres_per_sample) — the ground spacing of
+    axis 0 and axis 1 of `dem`, in that order, because that is the order
+    np.gradient consumes. There is deliberately no default: the old scalar
+    `pixel_scale_m=250.0` was applied to both axes at once, which silently
+    rescaled the gradient on any anisotropic grid (the live 100x100 mission grid
+    is 564.5 m per line by 1654.5 m per sample — a factor of ~2.9 apart).
     """
-    grad_y, grad_x = np.gradient(dem, pixel_scale_m)
+    sy, sx = spacing_m
+    grad_y, grad_x = np.gradient(dem, sy, sx)
     slope_rad = np.arctan(np.sqrt(grad_x**2 + grad_y**2))
     aspect_rad = np.arctan2(-grad_x, grad_y)
 
@@ -41,13 +49,18 @@ def analyze_psr(
     illumination: np.ndarray,
     psr_mask: np.ndarray,
     doubly_shadowed_mask: np.ndarray,
-    pixel_scale_m: float = 250.0,
-    data_mode: str = "DEMO"
+    spacing_m: Tuple[float, float],
+    *,
+    data_mode: str,
 ) -> Tuple[PSRAnalysisResult, Dict[str, np.ndarray]]:
     """
     Performs illumination & shadow analysis, separating PSR from doubly-shadowed zones.
+
+    `spacing_m` is (metres_per_line, metres_per_sample); see compute_hillshade.
+    Cell area is the product of the two, not the square of one of them.
     """
-    cell_area_km2 = (pixel_scale_m / 1000.0) ** 2
+    sy, sx = spacing_m
+    cell_area_km2 = (sy / 1000.0) * (sx / 1000.0)
     total_cells = dem.size
     total_area_km2 = total_cells * cell_area_km2
 
@@ -63,15 +76,19 @@ def analyze_psr(
     # Shadow depth estimate: Height difference between surrounding rim crest and deepest shadow floor
     shadow_depth_estimate_m = float(np.max(dem) - np.min(dem[psr_mask])) if psr_cells > 0 else 0.0
 
-    hillshade = compute_hillshade(dem, pixel_scale_m=pixel_scale_m)
+    hillshade = compute_hillshade(dem, spacing_m)
 
     provenance = create_provenance(
         dataset_name=f"{crater_id.upper()}_DEM_LOLA",
         algorithm="Analytical Ray-Tracing & Horn Hillshade with Cold-Trap Partitioning",
         parameters={
-            "pixel_scale_m": pixel_scale_m,
-            "sun_elevation_deg": 1.5,
-            "sun_azimuth_deg": 45.0
+            # Report the spacing actually used on each axis, and the hillshade
+            # geometry actually used. The previous dict claimed sun_elevation 1.5
+            # deg / azimuth 45 deg while compute_hillshade ran at altitude 45 /
+            # azimuth 315 — the provenance described a run that never happened.
+            "spacing_m": [float(sy), float(sx)],
+            "hillshade_altitude_deg": 45.0,
+            "hillshade_azimuth_deg": 315.0
         },
         data_mode=data_mode
     )

@@ -89,7 +89,22 @@ class HenryAICopilot:
     def _summarize_context(self, ctx: Optional[Dict[str, Any]]) -> str:
         if not ctx:
             return "No crater context selected."
-        
+
+        # An un-ingested crater has no numeric sections, and every lookup below
+        # ends in `, 0)`. Summarising it would hand the model "Candidate Ice
+        # Area: 0.00 km2, Expected Ice Volume: 0.00 Million m3" — a measurement
+        # claim about a crater nobody measured, which the model would then
+        # explain in fluent prose. State the absence instead.
+        if ctx.get("status") not in (None, "OK"):
+            gate = ctx.get("gate") or {}
+            return (
+                f"- Target Crater: {ctx.get('crater_id', 'unknown')}\n"
+                f"- Status: NOT_INGESTED. No Chandrayaan-2 DFSAR product is ingested for this crater.\n"
+                f"- Reason: {gate.get('reason', 'no product registered')}\n"
+                "- There are NO measured values for this crater: no candidate ice area, no volume, "
+                "no landing site, no route. Do not estimate them, and do not treat their absence as zero.\n"
+            )
+
         crater_name = ctx.get("selected_crater", {}).get("name", "Unknown")
         lat = ctx.get("selected_crater", {}).get("latitude_deg", 0)
         lon = ctx.get("selected_crater", {}).get("longitude_deg", 0)

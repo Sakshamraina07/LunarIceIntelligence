@@ -102,17 +102,21 @@ def evaluate_ice_intelligence(
     illumination: np.ndarray,
     psr_mask: np.ndarray,
     doubly_shadowed_mask: np.ndarray,
-    pixel_scale_m: float = 250.0,
+    spacing_m: Tuple[float, float],
     cpr_threshold: Optional[float] = None,
     dop_threshold: Optional[float] = None,
-    data_mode: str = "DEMO"
+    *,
+    data_mode: str,
 ) -> Tuple[IceIntelligenceResult, Dict[str, np.ndarray]]:
     """
     Computes both scientific baseline screening and explainable ML ice likelihood.
+
+    `spacing_m` is (metres_per_line, metres_per_sample) for the grid the rasters
+    are on; every km² below is cells x sy x sx.
     """
     cpr_th = cpr_threshold if cpr_threshold is not None else settings.CPR_THRESHOLD
     dop_th = dop_threshold if dop_threshold is not None else settings.DOP_THRESHOLD
-    cell_area_km2 = (pixel_scale_m / 1000.0) ** 2
+    cell_area_km2 = (spacing_m[0] / 1000.0) * (spacing_m[1] / 1000.0)
 
     # Scientific Baseline Screening Mask
     # CPR > threshold AND DOP < threshold AND within Shadow/PSR

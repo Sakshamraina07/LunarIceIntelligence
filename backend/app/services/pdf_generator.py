@@ -3,6 +3,15 @@ Mission Report Generator for Lunar Ice Intelligence.
 PRD Compliance (Section 47 & 48): Produces professional PDF mission reports using ReportLab,
 detailing targets, radar polarimetry, safety rankings, traverse waypoints, volume estimates,
 explicit assumptions, and scientific limitations.
+
+A PDF is the most quotable artefact this system emits — it leaves the browser,
+gets attached to an email and read without the badge that said DEMO. So it is
+the one output that refuses rather than degrades: `generate_mission_pdf_report`
+raises unless `data_mode == "REAL"`, and every figure it prints is read with
+`mission_data[...]`, not `.get(key, plausible_number)`. The previous defaults
+(8.75 km2 candidate area, 6,562,500 m3 volume, "Alpha Ridge (Site 1)", 12.1 km,
+141.2 Wh, plus two entirely invented landing-site rows) would render a complete,
+confident report from an empty dict.
 """
 
 import os
@@ -23,10 +32,27 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
 
 
+class MissionNotIngestedError(RuntimeError):
+    """Raised when a report is requested for a crater with no ingested product."""
+
+
 def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
     """
     Builds a formatted multi-page PDF document summarizing the complete lunar exploration mission.
+
+    Refuses unless the run was REAL. `data_mode` must be present and equal to
+    "REAL"; a missing key is a refusal too, because the absent case is exactly
+    the one a default would paper over.
     """
+    data_mode = mission_data.get("data_mode")
+    if data_mode != "REAL":
+        raise MissionNotIngestedError(
+            f"Refusing to generate a mission report: data_mode is {data_mode!r}, not 'REAL'. "
+            "A PDF outlives the page that produced it and carries no provenance badge, "
+            "so it is only issued for a crater with an ingested Chandrayaan-2 DFSAR product "
+            "(see app/ingestion/real_data_gate.real_data_status)."
+        )
+
     buffer = BytesIO()
     doc = SimpleDocTemplate(
         buffer,
@@ -87,9 +113,11 @@ def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
 
     story = []
 
-    # Title & Header
-    crater_name = mission_data.get("crater_name", "Shackleton Crater")
-    data_mode = mission_data.get("data_mode", "DEMO")
+    # Title & Header. No `.get(key, default)` from here down: a REAL payload
+    # carries every one of these fields (see api_router.download_mission_report_pdf),
+    # so a KeyError means the caller changed and the report must not be issued —
+    # not that a stand-in number should be printed.
+    crater_name = mission_data["crater_name"]
 
     story.append(Paragraph("LUNAR ICE INTELLIGENCE & MISSION REPORT", title_style))
     story.append(Paragraph(
@@ -110,11 +138,11 @@ def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
     story.append(Spacer(1, 8))
 
     # Key Metrics Table
-    radar_area = mission_data.get("candidate_area_km2", 8.75)
-    exp_vol = mission_data.get("expected_volume_m3", 6562500.0)
-    best_site = mission_data.get("recommended_site", "Alpha Ridge (Site 1)")
-    rover_dist = mission_data.get("rover_distance_km", 12.1)
-    rover_energy = mission_data.get("rover_energy_wh", 141.2)
+    radar_area = mission_data["candidate_area_km2"]
+    exp_vol = mission_data["expected_volume_m3"]
+    best_site = mission_data["recommended_site"]
+    rover_dist = mission_data["rover_distance_km"]
+    rover_energy = mission_data["rover_energy_wh"]
 
     table_data = [
         ["Metric", "Value", "Operational Significance"],
@@ -155,19 +183,21 @@ def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
     story.append(Paragraph("3. LANDING SITE SELECTION (MULTI-CRITERIA RANKING)", section_heading))
     landing_headers = ["Rank", "Site Name", "Slope", "Hazard", "Illumination", "Score", "Recommendation"]
     landing_rows = [landing_headers]
-    for site in mission_data.get("landing_sites", []):
+    for site in mission_data["landing_sites"]:
         landing_rows.append([
-            f"#{site.get('rank', 1)}",
-            site.get('name', 'Site'),
-            f"{site.get('slope_deg', 5.0):.1f}°",
-            f"{site.get('hazard_score', 0.2):.2f}",
-            f"{site.get('illumination_fraction', 0.8):.2f}",
-            f"{site.get('composite_landing_score', 85.0):.1f}",
+            f"#{site['rank']}",
+            site['name'],
+            f"{site['slope_deg']:.1f}°",
+            f"{site['hazard_score']:.2f}",
+            f"{site['illumination_fraction']:.2f}",
+            f"{site['composite_landing_score']:.1f}",
             "RECOMMENDED" if site.get('is_recommended') else "Alternative"
         ])
     if len(landing_rows) == 1:
-        landing_rows.append(["#1", "Alpha Ridge (North)", "4.8°", "0.18", "0.78", "88.4", "RECOMMENDED"])
-        landing_rows.append(["#2", "Gamma Bench (South-West)", "6.2°", "0.24", "0.65", "81.2", "Alternative"])
+        # Module E returned no ranked site. Say so; the two rows that used to be
+        # invented here ("Alpha Ridge (North)", "Gamma Bench (South-West)") were
+        # the only landing sites in the report whenever the search found none.
+        landing_rows.append(["—", "No site met the ranking criteria", "—", "—", "—", "—", "NO DATA"])
 
     lt = Table(landing_rows, colWidths=[0.6 * inch, 2.2 * inch, 0.8 * inch, 0.8 * inch, 0.9 * inch, 0.8 * inch, 1.1 * inch])
     lt.setStyle(TableStyle([
@@ -226,7 +256,9 @@ def generate_mission_pdf_report(mission_data: Dict[str, Any]) -> bytes:
             "assumed regolith stratigraphy (2m - 10m depth, 5% - 30% pore ice fraction).<br/>"
             "4. <b>Rover Energy:</b> Power calculations represent a simplified engineering estimate for a 30kg micro-rover "
             "and do not substitute for certified NASA/ISRO flight dynamic models.<br/>"
-            "5. <b>Reproducibility:</b> Deterministic demo executions use fixed pseudo-random seed 42 to guarantee verifiable identical results.",
+            "5. <b>Reproducibility:</b> Every figure above is computed from the Chandrayaan-2 DFSAR product named on page 1; "
+            "re-running the pipeline on that product reproduces them exactly. No pseudo-random seed is involved, because "
+            "no quantity in this report is generated.",
             limitation_style
         ),
         Spacer(1, 8),

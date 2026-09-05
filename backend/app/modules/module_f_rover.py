@@ -72,24 +72,39 @@ def compute_step_energy_wh(
 def plan_rover_path(
     dem: np.ndarray,
     slope_deg: np.ndarray,
+    roughness: np.ndarray,
     hazard: np.ndarray,
     illumination: np.ndarray,
     scientific_mask: np.ndarray,
     ml_likelihood: np.ndarray,
     start_xy: Tuple[int, int],
     target_xy: Tuple[int, int],
+    spacing_m: Tuple[float, float],
     strategy: str = "Science-Aware",
     algorithm: str = "A*",
-    pixel_scale_m: float = 250.0,
     max_slope_limit_deg: float = 22.0
 ) -> RoverRouteResult:
     """
     Plans traversal path between landing site and candidate ice deposit.
     Supports 8-connectivity grid graph with multi-objective edge weighting.
+
+    `spacing_m` is (metres_per_line, metres_per_sample) — the ground spacing of
+    axis 0 (y) and axis 1 (x). There is no default: the old
+    `pixel_scale_m=250.0` was neither of the real spacings on any grid in this
+    project, and it multiplied both axes alike, so on the live 100x100 mission
+    grid (564.5 m per line, 1654.5 m per sample) an eastward step was costed as
+    though it were 250 m when it is 1654.5 m.
+
+    `roughness` is now a required raster and is the SAME array the terrain module
+    produced. Previously the search fed `dem[ny,nx] - dem[cy,cx]` (a signed
+    elevation delta, not a roughness) into the energy model while the telemetry
+    pass fed a hardcoded 5.0 — the route was chosen under one model and reported
+    under a different one.
     """
     height, width = dem.shape
     start = (start_xy[0], start_xy[1])
     target = (target_xy[0], target_xy[1])
+    sy, sx = spacing_m
 
     # Validate boundaries
     if not (0 <= start[0] < width and 0 <= start[1] < height):
@@ -135,11 +150,16 @@ def plan_rover_path(
     came_from: Dict[Tuple[int, int], Optional[Tuple[int, int]]] = {start: None}
     cost_so_far: Dict[Tuple[int, int], float] = {start: 0.0}
 
-    # 8-connected neighbors (dx, dy, step_length_multiplier)
+    # 8-connected neighbors (dx, dy)
     neighbors = [
-        (1, 0, 1.0), (-1, 0, 1.0), (0, 1, 1.0), (0, -1, 1.0),
-        (1, 1, 1.414), (-1, 1, 1.414), (1, -1, 1.414), (-1, -1, 1.414)
+        (1, 0), (-1, 0), (0, 1), (0, -1),
+        (1, 1), (-1, 1), (1, -1), (-1, -1)
     ]
+
+    # Cheapest possible step in metres, used to normalise distance cost so that
+    # the shortest step still costs 1.0 and the A* cell-distance heuristic stays
+    # admissible while the cost itself is measured in real metres.
+    min_spacing_m = float(min(sy, sx))
 
     target_reached = False
 
@@ -152,7 +172,7 @@ def plan_rover_path(
 
         cx, cy = current
 
-        for dx, dy, step_mult in neighbors:
+        for dx, dy in neighbors:
             nx, ny = cx + dx, cy + dy
 
             if not (0 <= nx < width and 0 <= ny < height):
@@ -160,7 +180,7 @@ def plan_rover_path(
             if impassable[ny, nx]:
                 continue
 
-            step_dist_m = pixel_scale_m * step_mult
+            step_dist_m = float(np.hypot(dx * sx, dy * sy))
             step_slope = float(slope_deg[ny, nx])
             step_hazard = float(hazard[ny, nx])
             step_illum = float(illumination[ny, nx])
@@ -170,12 +190,12 @@ def plan_rover_path(
             step_energy_wh = compute_step_energy_wh(
                 dist_m=step_dist_m,
                 slope_deg=step_slope,
-                roughness=float(dem[ny, nx] - dem[cy, cx]),
+                roughness=float(roughness[ny, nx]),
                 illumination=step_illum
             )
 
             # Normalized costs for composite weighting
-            dist_cost = step_mult
+            dist_cost = step_dist_m / min_spacing_m
             hazard_cost = step_hazard * 15.0
             energy_cost = (step_energy_wh / 0.5) * 5.0
             # Science value serves as an incentive (cost reduction)
@@ -243,10 +263,15 @@ def plan_rover_path(
 
         if i > 0:
             prev_px, prev_py = path_nodes[i - 1]
-            diag = np.sqrt((px - prev_px)**2 + (py - prev_py)**2)
-            step_m = diag * pixel_scale_m
+            step_m = float(np.hypot((px - prev_px) * sx, (py - prev_py) * sy))
             cum_dist_km += step_m / 1000.0
-            cum_energy_wh += compute_step_energy_wh(step_m, s_deg, 5.0, illum)
+            # Same energy model, same roughness raster, same spacing as the search
+            cum_energy_wh += compute_step_energy_wh(
+                dist_m=step_m,
+                slope_deg=s_deg,
+                roughness=float(roughness[py, px]),
+                illumination=illum
+            )
 
         hazards.append(h_score)
         slopes.append(s_deg)

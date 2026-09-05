@@ -16,7 +16,6 @@ from PIL import Image
 from app.core.config import settings
 from app.modules.module_b_radar import compute_cpr_from_stokes, compute_dop_from_stokes, classify_radar_polarimetry
 from app.modules.module_a_psr import compute_hillshade
-from app.demo.lunar_generator import demo_generator
 from app.modules.module_d_terrain import compute_terrain_metrics, compute_hazard_score
 
 
@@ -154,23 +153,32 @@ def extract_boulders_from_ohrc(
 
 def simulate_grazing_illumination(
     dem: np.ndarray,
-    pixel_scale_m: float = 250.0,
+    spacing_m: Tuple[float, float],
     sun_altitude_deg: float = 1.5
 ) -> np.ndarray:
-    """Computes grazing solar illumination based on Horn gradient and elevation."""
-    hill = compute_hillshade(dem, pixel_scale_m=pixel_scale_m, altitude_deg=sun_altitude_deg)
+    """
+    Computes grazing solar illumination based on Horn gradient and elevation.
+
+    `spacing_m` is (metres_per_line, metres_per_sample) for `dem`.
+    """
+    hill = compute_hillshade(dem, spacing_m, altitude_deg=sun_altitude_deg)
     elev_norm = (dem - np.min(dem)) / (np.ptp(dem) + 1e-6)
     return np.clip(hill * (elev_norm ** 1.3), 0.0, 1.0).astype(np.float32)
 
 
 def process_real_dem(
     dem_path: str,
-    pixel_scale_m: float = 250.0,
+    spacing_m: Tuple[float, float],
     target_shape: Tuple[int, int] = (100, 100)
 ) -> Dict[str, np.ndarray]:
     """
     Processes real LOLA / TMC-2 DEM:
     Computes georeferenced elevation, Horn hillshade, slope, aspect, and roughness.
+
+    `spacing_m` is (metres_per_line, metres_per_sample) of the OUTPUT grid — the
+    resampled `target_shape` grid, not the file on disk. The caller knows the
+    frame extent and the target shape, so the caller derives it; the returned
+    dict echoes it back under "spacing_m" so downstream code cannot re-guess.
     """
     dem_raw = read_raster_file(dem_path)
     if dem_raw.shape != target_shape:
@@ -178,11 +186,11 @@ def process_real_dem(
     else:
         dem = dem_raw.copy()
 
-    hillshade = compute_hillshade(dem, pixel_scale_m=pixel_scale_m)
-    illumination = simulate_grazing_illumination(dem, pixel_scale_m=pixel_scale_m, sun_altitude_deg=1.5)
+    hillshade = compute_hillshade(dem, spacing_m)
+    illumination = simulate_grazing_illumination(dem, spacing_m, sun_altitude_deg=1.5)
     psr_mask = (illumination < 0.05)
     doubly_shadowed = psr_mask & (dem < np.percentile(dem, 20))
-    slope_deg, aspect_deg, roughness = compute_terrain_metrics(dem, pixel_scale_m=pixel_scale_m)
+    slope_deg, aspect_deg, roughness = compute_terrain_metrics(dem, spacing_m)
 
     return {
         "dem": dem,
@@ -192,15 +200,37 @@ def process_real_dem(
         "illumination": illumination,
         "slope_deg": slope_deg,
         "aspect_deg": aspect_deg,
-        "roughness": roughness
+        "roughness": roughness,
+        "spacing_m": spacing_m
     }
 
 
-def create_sample_georeferenced_pradan_data(crater_id: str = "shackleton") -> Dict[str, str]:
+def create_sample_georeferenced_pradan_data(crater_id: str = "shackleton") -> Dict[str, Optional[str]]:
     """
-    Generates standardized, georeferenced Chandrayaan-2 sample GeoTIFF/TIFF files
-    in d:/FYP/data/pradan/ so the ingestion pipeline can be demonstrated with real disk files.
+    Writes seeded rasters into d:/FYP/data/pradan/ under the same names a real
+    ingested product would use. PYTEST / LOCAL DEVELOPMENT ONLY.
+
+    This function is how the ambiguity got onto disk. It names its output
+    `{crater_id}_lola_dem.tif`, indistinguishable by filename from an ingested
+    LOLA crop, and `shoemaker_lola_dem.tif` (40,176 bytes) is its work. The old
+    eligibility test was `Path(f".../{crater_id}_lola_dem.tif").exists()`, so
+    every file this wrote promoted a crater to REAL.
+
+    The gate no longer reads the filesystem for provenance
+    (app/ingestion/real_data_gate.real_data_status), so these files can no longer
+    promote anything. It is still gated: a served host has no business
+    manufacturing files that look like products.
     """
+    from app.demo.lunar_generator import demo_generator, demo_generator_enabled
+
+    if not demo_generator_enabled():
+        raise RuntimeError(
+            "Refusing to write sample rasters: this writes seeded data into the "
+            "PRADAN data directory under real product filenames. It is a "
+            "development fixture only (set LUNAR_ICE_ALLOW_DEMO_GENERATOR=1). "
+            "Ingest an actual Chandrayaan-2 DFSAR product instead."
+        )
+
     ensure_pradan_directories()
     env = demo_generator.generate_crater_environment(crater_id)
 
@@ -218,15 +248,26 @@ def create_sample_georeferenced_pradan_data(crater_id: str = "shackleton") -> Di
     cv2.imwrite(str(s0_file), s0)
     cv2.imwrite(str(s3_file), s3)
 
-    # Save OHRC Imagery
-    ohrc_file = PRADAN_DATA_DIR / "ohrc" / f"{crater_id}_ohrc_pan.tif"
-    hill = compute_hillshade(env["dem"])
-    ohrc_img = (hill * 255.0).astype(np.uint8)
-    cv2.imwrite(str(ohrc_file), ohrc_img)
+    # NO OHRC PRODUCT IS WRITTEN.
+    #
+    # This used to write {crater_id}_ohrc_pan.tif as a hillshade of the DEM, then
+    # mission_service.py read it back and ran boulder detection over it. That
+    # closed a loop with no observation in it: every "boulder" was a shading
+    # artefact of the elevation model that produced it, reported as if OHRC had
+    # imaged a rock. A hillshade of a DEM is not an optical product.
+    #
+    # There is no OHRC data for this frame, so the honest output is nothing at
+    # all. mission_service.py is .exists()-guarded and now reports boulder risk
+    # as ABSENT rather than as zero — those are different facts.
 
     return {
         "dem": str(dem_file),
         "s0": str(s0_file),
         "s3": str(s3_file),
-        "ohrc": str(ohrc_file)
+        "ohrc": None,
+        "ohrc_absent_reason": (
+            "No OHRC product exists for this frame. The previous build "
+            "substituted a hillshade of the DEM here, which made boulder "
+            "detection circular; it was removed rather than replaced."
+        ),
     }

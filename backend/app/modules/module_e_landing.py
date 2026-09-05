@@ -6,9 +6,15 @@ Ranks sites algorithmically from 0 to 100 with clear explainability.
 """
 
 import numpy as np
-from typing import List, Dict, Any, Tuple, Optional
+from typing import List, Dict, Any, Tuple, Optional, TYPE_CHECKING
 from app.core.config import settings
 from app.core.schemas import CandidateLandingSite, CraterInfo
+
+if TYPE_CHECKING:  # import only for type checkers — keeps app.modules free of an ingestion import at runtime
+    from app.ingestion.sar_geometry import SarFrame
+
+# Mean lunar radius (m), IAU. One degree of latitude on a sphere of this radius.
+_M_PER_DEG_LAT = np.pi * 1737400.0 / 180.0
 
 
 def select_landing_candidates(
@@ -19,7 +25,9 @@ def select_landing_candidates(
     hazard: np.ndarray,
     illumination: np.ndarray,
     scientific_mask: np.ndarray,
-    pixel_scale_m: float = 250.0,
+    spacing_m: Tuple[float, float],
+    frame: Optional["SarFrame"] = None,
+    grid_max: float = 100.0,
     w_safety: Optional[float] = None,
     w_illum: Optional[float] = None,
     w_sci: Optional[float] = None,
@@ -27,11 +35,25 @@ def select_landing_candidates(
 ) -> Tuple[List[CandidateLandingSite], CandidateLandingSite]:
     """
     Identifies and ranks candidate landing sites outside dangerous inner slopes.
+
+    `spacing_m` is (metres_per_line, metres_per_sample) for this grid, so a
+    distance in cells becomes a distance in metres per axis rather than through
+    one shared scalar.
+
+    `frame`, when supplied, is the SarFrame the grid was resampled from; site
+    lat/lon then comes from `frame.grid_to_latlon` (the real south-polar
+    stereographic inverse). Without a frame the fallback is an explicit
+    spherical approximation about the crater centre — still per-axis, with the
+    longitude degree shrunk by cos(lat). The code this replaces divided both
+    axes by the same 30370.0 m/deg, which is only correct for latitude and, at
+    -89 deg, understated the longitude offset by a factor of about 57.
     """
     ws = w_safety if w_safety is not None else settings.WEIGHT_LANDING_SAFETY
     wi = w_illum if w_illum is not None else settings.WEIGHT_LANDING_ILLUM
     wsc = w_sci if w_sci is not None else settings.WEIGHT_LANDING_SCIENCE
     wd = w_dist if w_dist is not None else settings.WEIGHT_LANDING_DISTANCE
+
+    sy, sx = spacing_m
 
     # Locate centroid of primary ice candidate deposit
     candidate_y, candidate_x = np.where(scientific_mask)
@@ -55,8 +77,8 @@ def select_landing_candidates(
 
     candidates: List[CandidateLandingSite] = []
 
-    # Maximum possible distance across grid in km
-    max_diag_km = (np.sqrt(dem.shape[0]**2 + dem.shape[1]**2) * pixel_scale_m) / 1000.0
+    # Maximum possible distance across grid in km, measured per axis
+    max_diag_km = float(np.hypot(dem.shape[0] * sy, dem.shape[1] * sx) / 1000.0)
 
     for idx, (name, gy, gx) in enumerate(candidate_offsets):
         # 3x3 local sampling window
@@ -68,13 +90,15 @@ def select_landing_candidates(
         local_hazard = float(np.mean(hazard[y_min:y_max, x_min:x_max]))
         local_illum = float(np.mean(illumination[y_min:y_max, x_min:x_max]))
 
-        dist_cells = np.sqrt((gx - target_x)**2 + (gy - target_y)**2)
-        dist_km = float((dist_cells * pixel_scale_m) / 1000.0)
+        dist_km = float(np.hypot((gx - target_x) * sx, (gy - target_y) * sy) / 1000.0)
 
         # Distance penalty normalized (0 to 1)
         dist_penalty = min(1.0, dist_km / max_diag_km)
 
-        # Scientific relevance: Proximity to ice target and elevation vantage
+        # "Scientific value" here is a PROXIMITY PROXY, not an independent
+        # science score: it is purely a decreasing function of the distance to
+        # the CPR/DOP-anomaly centroid. It is surfaced in the rationale as such
+        # so the ranking cannot be read as measured science content.
         sci_value = float(max(0.1, 1.0 - (dist_km / (max_diag_km * 0.7))))
 
         # Landing Safety (inversely proportional to hazard and slope)
@@ -91,11 +115,22 @@ def select_landing_candidates(
         total_weight = ws + wi + wsc + wd
         composite_score = float(np.clip((raw_score / total_weight) * 100.0, 0.0, 100.0))
 
-        # Approximate Lunar lat/lon for site based on crater center
-        delta_lat = (gy - dem.shape[0] // 2) * (pixel_scale_m / 30370.0)  # ~30.37 km per degree on Moon
-        delta_lon = (gx - dem.shape[1] // 2) * (pixel_scale_m / 30370.0)
-        site_lat = crater_info.latitude_deg + delta_lat
-        site_lon = crater_info.longitude_deg + delta_lon
+        # Site lat/lon. Exact when the SAR frame is available (inverse polar
+        # stereographic); otherwise a per-axis spherical offset from the crater
+        # centre, with the longitude degree shrunk by cos(lat).
+        if frame is not None:
+            site_lat, site_lon = frame.grid_to_latlon(float(gx), float(gy), grid_max=grid_max)
+            site_lat = float(site_lat)
+            site_lon = float(site_lon)
+        else:
+            north_m = (gy - dem.shape[0] // 2) * sy
+            east_m = (gx - dem.shape[1] // 2) * sx
+            delta_lat = north_m / _M_PER_DEG_LAT
+            site_lat = crater_info.latitude_deg + delta_lat
+            cos_lat = max(np.cos(np.radians(site_lat)), 1e-6)
+            site_lon = crater_info.longitude_deg + east_m / (_M_PER_DEG_LAT * cos_lat)
+            site_lat = float(site_lat)
+            site_lon = float(((site_lon + 180.0) % 360.0) - 180.0)
 
         rationale = []
         if local_slope < 8.0:
@@ -112,6 +147,11 @@ def select_landing_candidates(
             rationale.append(f"Direct proximity ({dist_km:.1f} km) to target cold-trap deposit")
         else:
             rationale.append(f"Extended traverse distance ({dist_km:.1f} km) to target")
+
+        rationale.append(
+            f"Science score {sci_value:.2f} is a proximity proxy to the radar-anomaly "
+            "centroid, not an independent measurement of science content"
+        )
 
         candidates.append(CandidateLandingSite(
             site_id=f"site_{idx + 1}",

@@ -14,7 +14,7 @@ import { useFrame } from '@react-three/fiber';
 import { Billboard, Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { latLonToVector3 } from '../data/latlon';
-import { EVIDENCE_COLORS, type LunarTarget } from '../data/targets';
+import { NOT_INGESTED_LABEL, targetColor, type LunarTarget } from '../data/targets';
 import { MOON_RADIUS } from './Moon';
 
 function smoothstep(edge0: number, edge1: number, x: number) {
@@ -33,7 +33,10 @@ function TargetMarker({ target, progress, selected, onSelect }: MarkerProps) {
   const group = useRef<THREE.Group>(null);
   const core = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
-  const color = EVIDENCE_COLORS[target.evidence];
+  // Neutral grey unless a REAL backend run produced a tier. The evidence ramp
+  // is cyan-forward and reads as a verdict at a glance, so an unscreened
+  // marker must not be allowed to borrow it.
+  const color = targetColor(target);
 
   const pos = useMemo(
     () => latLonToVector3(target.lat, target.lon, MOON_RADIUS + 0.07),
@@ -122,7 +125,7 @@ function TargetMarker({ target, progress, selected, onSelect }: MarkerProps) {
           {active && (
             <Text
               position={[0, -0.02, 0]}
-              fontSize={0.045}
+              fontSize={target.label ? 0.045 : 0.032}
               color={color}
               anchorX="center"
               anchorY="top"
@@ -130,7 +133,8 @@ function TargetMarker({ target, progress, selected, onSelect }: MarkerProps) {
               outlineWidth={0.003}
               outlineColor="#04121c"
             >
-              {target.label}
+              {/* A verdict if one was measured, the absence stated plainly if not. */}
+              {target.label ?? NOT_INGESTED_LABEL}
             </Text>
           )}
         </Billboard>

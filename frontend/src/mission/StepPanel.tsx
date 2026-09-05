@@ -390,12 +390,15 @@ export function StepPanel(props: Props) {
     return (
       <div className="mc-card mc-fadein">
         <Head eyebrow="Stage 12 · Report" title="Mission Decision Report"
-          desc="Publication-ready PDF/JSON with full provenance, parameters and reproducible seed." />
+          desc="Publication-ready PDF/JSON with full provenance and the source product id." />
         <div className="mc-details">
           <div className="mc-kv-grid">
             <div><div className="mc-kv-k">Crater</div><div className="mc-kv-v">{mission.selected_crater.name}</div></div>
             <div><div className="mc-kv-k">Mode</div><div className="mc-kv-v">{mission.data_mode}</div></div>
-            <div><div className="mc-kv-k">Seed</div><div className="mc-kv-v">{mission.psr.provenance.random_seed ?? '—'}</div></div>
+            {/* Was `Seed`, reading psr.provenance.random_seed — a demo-generator
+                field that is null on a REAL run. The product id is what makes
+                this report reproducible. */}
+            <div><div className="mc-kv-k">Product</div><div className="mc-kv-v" style={{ fontSize: '0.62rem', wordBreak: 'break-all' }}>{mission.selected_crater.product_id ?? 'NO DATA'}</div></div>
             <div><div className="mc-kv-k">Generated</div><div className="mc-kv-v" style={{ fontSize: '0.7rem' }}>{new Date(mission.generated_at).toLocaleString()}</div></div>
           </div>
         </div>

@@ -77,18 +77,25 @@ def analyze_dfsar_radar(
     crater_id: str,
     cpr: np.ndarray,
     dop: np.ndarray,
-    pixel_scale_m: float = 250.0,
+    spacing_m: Tuple[float, float],
     cpr_threshold: Optional[float] = None,
     dop_threshold: Optional[float] = None,
-    data_mode: str = "DEMO"
+    *,
+    data_mode: str,
 ) -> Tuple[RadarAnalysisResult, Dict[str, np.ndarray]]:
     """
     Executes polarimetric screening according to configurable thresholds.
+
+    `spacing_m` is (metres_per_line, metres_per_sample) for the grid `cpr`/`dop`
+    are on. Every area in km² below is cells x sy x sx; the old scalar
+    `pixel_scale_m=250.0` squared one number and so reported the anomalous area
+    of a square grid that does not exist.
     """
     cpr_th = cpr_threshold if cpr_threshold is not None else settings.CPR_THRESHOLD
     dop_th = dop_threshold if dop_threshold is not None else settings.DOP_THRESHOLD
 
-    cell_area_km2 = (pixel_scale_m / 1000.0) ** 2
+    sy, sx = spacing_m
+    cell_area_km2 = (sy / 1000.0) * (sx / 1000.0)
     total_cells = cpr.size
 
     # Scientific Radar Anomaly Mask: High CPR (> 1.0) and Low DOP (< 0.13)
@@ -105,7 +112,7 @@ def analyze_dfsar_radar(
         parameters={
             "cpr_threshold": cpr_th,
             "dop_threshold": dop_th,
-            "pixel_scale_m": pixel_scale_m
+            "spacing_m": [float(sy), float(sx)]
         },
         data_mode=data_mode
     )

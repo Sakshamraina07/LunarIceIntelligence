@@ -1,0 +1,553 @@
+{
+  "generated_utc": "2026-09-02T19:30:15.052Z",
+  "url": "http://localhost:3000/#/mission",
+  "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
+  "viewport": [
+    1600,
+    900
+  ],
+  "view": {
+    "zoom": 4,
+    "centre": [
+      45.063095292111406,
+      128.73496854368935
+    ]
+  },
+  "sampling_step_px": 3,
+  "mode": {
+    "chips": [
+      "RADAR COVERAGE · MEASURED FROM THE PRODUCT",
+      "PLACEHOLDER TERRAIN — NO RADAR COVERAGE",
+      "PLACEHOLDER SITES · 5 OF 5 OUTSIDE RADAR COVERAGE"
+    ],
+    "missionUrl": "https://lunariceintelligence.onrender.com/api/mission/faustini?data_mode=REAL&cpr_threshold=1&dop_threshold=0.13&ice_depth_m=5&ice_fraction=0.15&algorithm=A*",
+    "dataMode": "DEMO",
+    "apiOrigin": "https://lunariceintelligence.onrender.com"
+  },
+  "init": {
+    "ok": true,
+    "zoom": 4.5,
+    "size": {
+      "x": 1167,
+      "y": 703
+    },
+    "ring": 206,
+    "swath": 206,
+    "fullWidth": 6618,
+    "baseProvenance": "synthetic-terrain-derived"
+  },
+  "passes": {
+    "before_hillshade": {
+      "state": "before",
+      "layer": "Surface Relief",
+      "id": "hillshade",
+      "file": "map_before_relief.png",
+      "view": {
+        "zoom": 4,
+        "centre": [
+          45.063095292111406,
+          128.73496854368935
+        ],
+        "size": [
+          1167,
+          703
+        ]
+      },
+      "waited": {
+        "base": {
+          "src": "hillshade.webp",
+          "naturalWidth": 6618,
+          "waited_ms": 0
+        }
+      },
+      "baseFilter": "contrast(1.14) brightness(1.16) saturate(0.92)",
+      "voidPaints": [
+        "rgb(3, 6, 12) @ 0.82 [mc-void-scrim]",
+        "none @ 0 [mc-void-hatch]",
+        "rgb(3, 6, 12) @ 0.5 [mc-void-scrim mc-void-scrim--swath]"
+      ],
+      "tiers": {
+        "amplitude": {
+          "samples": 27413,
+          "pct_of_frame_in_view": 29.99,
+          "base_rgb": [
+            171,
+            171,
+            171
+          ],
+          "composite_rgb": [
+            170.8,
+            170.8,
+            170.8
+          ],
+          "base_relLum": 0.5232,
+          "composite_relLum": 0.5219,
+          "fraction_of_base": 0.9975
+        },
+        "swath": {
+          "samples": 34825,
+          "pct_of_frame_in_view": 38.1,
+          "base_rgb": [
+            182.9,
+            182.9,
+            182.9
+          ],
+          "composite_rgb": [
+            93.3,
+            94.3,
+            97.3
+          ],
+          "base_relLum": 0.5123,
+          "composite_relLum": 0.1207,
+          "fraction_of_base": 0.2356
+        },
+        "outside": {
+          "samples": 29177,
+          "pct_of_frame_in_view": 31.92,
+          "base_rgb": [
+            171.4,
+            171.4,
+            171.4
+          ],
+          "composite_rgb": [
+            33.1,
+            36.1,
+            41.1
+          ],
+          "base_relLum": 0.451,
+          "composite_relLum": 0.0185,
+          "fraction_of_base": 0.041
+        }
+      },
+      "patternsInDefs": 1
+    },
+    "before_cpr_heatmap": {
+      "state": "before",
+      "layer": "Radar Signals (CPR)",
+      "id": "cpr_heatmap",
+      "file": "map_before_cpr.png",
+      "view": {
+        "zoom": 4,
+        "centre": [
+          45.09375,
+          128.71875
+        ],
+        "size": [
+          1167,
+          703
+        ]
+      },
+      "waited": {
+        "base": {
+          "src": "hillshade.webp",
+          "naturalWidth": 6618,
+          "waited_ms": 0
+        },
+        "science": {
+          "src": "cpr_heatmap.webp",
+          "naturalWidth": 6618,
+          "waited_ms": 0
+        }
+      },
+      "baseFilter": "contrast(1.14) brightness(1.16) saturate(0.92)",
+      "voidPaints": [
+        "rgb(3, 6, 12) @ 0.82 [mc-void-scrim]",
+        "none @ 0 [mc-void-hatch]",
+        "rgb(3, 6, 12) @ 0.5 [mc-void-scrim mc-void-scrim--swath]"
+      ],
+      "tiers": {
+        "amplitude": {
+          "samples": 27413,
+          "pct_of_frame_in_view": 29.99,
+          "base_rgb": [
+            171,
+            171,
+            171
+          ],
+          "composite_rgb": [
+            170.6,
+            170.6,
+            170.6
+          ],
+          "base_relLum": 0.5232,
+          "composite_relLum": 0.5213,
+          "fraction_of_base": 0.9963
+        },
+        "swath": {
+          "samples": 34825,
+          "pct_of_frame_in_view": 38.1,
+          "base_rgb": [
+            182.9,
+            182.9,
+            182.9
+          ],
+          "composite_rgb": [
+            93.3,
+            94.3,
+            97.3
+          ],
+          "base_relLum": 0.5123,
+          "composite_relLum": 0.1209,
+          "fraction_of_base": 0.236
+        },
+        "outside": {
+          "samples": 29177,
+          "pct_of_frame_in_view": 31.92,
+          "base_rgb": [
+            171.4,
+            171.4,
+            171.4
+          ],
+          "composite_rgb": [
+            33.2,
+            36.2,
+            41.1
+          ],
+          "base_relLum": 0.451,
+          "composite_relLum": 0.0185,
+          "fraction_of_base": 0.0411
+        }
+      },
+      "patternsInDefs": 1
+    },
+    "after_cpr_heatmap": {
+      "state": "after",
+      "layer": "Radar Signals (CPR)",
+      "id": "cpr_heatmap",
+      "file": "map_after_cpr.png",
+      "view": {
+        "zoom": 4,
+        "centre": [
+          45.09375,
+          128.71875
+        ],
+        "size": [
+          1167,
+          703
+        ]
+      },
+      "waited": {
+        "base": {
+          "src": "hillshade.webp",
+          "naturalWidth": 6618,
+          "waited_ms": 0
+        },
+        "science": {
+          "src": "cpr_heatmap.webp",
+          "naturalWidth": 6618,
+          "waited_ms": 0
+        }
+      },
+      "baseFilter": "contrast(1.04) brightness(1.02)",
+      "voidPaints": [
+        "rgb(10, 20, 32) @ 0.14 [mc-void-scrim]",
+        "url(\"#mc-hatch-void\") @ 1 [mc-void-hatch]",
+        "rgb(10, 20, 32) @ 0.045 [mc-void-scrim mc-void-scrim--swath]"
+      ],
+      "tiers": {
+        "amplitude": {
+          "samples": 27413,
+          "pct_of_frame_in_view": 29.99,
+          "base_rgb": [
+            153.6,
+            153.6,
+            153.6
+          ],
+          "composite_rgb": [
+            153.6,
+            153.6,
+            153.6
+          ],
+          "base_relLum": 0.417,
+          "composite_relLum": 0.4168,
+          "fraction_of_base": 0.9996
+        },
+        "swath": {
+          "samples": 34825,
+          "pct_of_frame_in_view": 38.1,
+          "base_rgb": [
+            158.1,
+            158.1,
+            158.1
+          ],
+          "composite_rgb": [
+            150.7,
+            151.7,
+            151.7
+          ],
+          "base_relLum": 0.3667,
+          "composite_relLum": 0.3338,
+          "fraction_of_base": 0.9102
+        },
+        "outside": {
+          "samples": 29177,
+          "pct_of_frame_in_view": 31.92,
+          "base_rgb": [
+            148.7,
+            148.7,
+            148.7
+          ],
+          "composite_rgb": [
+            128.5,
+            131,
+            133.5
+          ],
+          "base_relLum": 0.3249,
+          "composite_relLum": 0.2427,
+          "fraction_of_base": 0.7472
+        }
+      },
+      "patternsInDefs": 1
+    },
+    "after_hillshade": {
+      "state": "after",
+      "layer": "Surface Relief",
+      "id": "hillshade",
+      "file": "map_after_relief.png",
+      "view": {
+        "zoom": 4,
+        "centre": [
+          45.09375,
+          128.71875
+        ],
+        "size": [
+          1167,
+          703
+        ]
+      },
+      "waited": {
+        "base": {
+          "src": "hillshade.webp",
+          "naturalWidth": 6618,
+          "waited_ms": 0
+        }
+      },
+      "baseFilter": "contrast(1.04) brightness(1.02)",
+      "voidPaints": [
+        "rgb(10, 20, 32) @ 0.14 [mc-void-scrim]",
+        "url(\"#mc-hatch-void\") @ 1 [mc-void-hatch]",
+        "rgb(10, 20, 32) @ 0.045 [mc-void-scrim mc-void-scrim--swath]"
+      ],
+      "tiers": {
+        "amplitude": {
+          "samples": 27413,
+          "pct_of_frame_in_view": 29.99,
+          "base_rgb": [
+            153.6,
+            153.6,
+            153.6
+          ],
+          "composite_rgb": [
+            153.6,
+            153.6,
+            153.6
+          ],
+          "base_relLum": 0.417,
+          "composite_relLum": 0.4168,
+          "fraction_of_base": 0.9996
+        },
+        "swath": {
+          "samples": 34825,
+          "pct_of_frame_in_view": 38.1,
+          "base_rgb": [
+            158.1,
+            158.1,
+            158.1
+          ],
+          "composite_rgb": [
+            150.7,
+            151.7,
+            151.7
+          ],
+          "base_relLum": 0.3667,
+          "composite_relLum": 0.3338,
+          "fraction_of_base": 0.9102
+        },
+        "outside": {
+          "samples": 29177,
+          "pct_of_frame_in_view": 31.92,
+          "base_rgb": [
+            148.7,
+            148.7,
+            148.7
+          ],
+          "composite_rgb": [
+            128.5,
+            131,
+            133.5
+          ],
+          "base_relLum": 0.3249,
+          "composite_relLum": 0.2427,
+          "fraction_of_base": 0.7472
+        }
+      },
+      "patternsInDefs": 1
+    }
+  },
+  "gate": {
+    "never_observed_at_least_0_60": {
+      "value": 0.7472,
+      "pass": true
+    },
+    "never_observed_target_0_70": {
+      "value": 0.7472,
+      "pass": true
+    },
+    "pointed_target_0_90": {
+      "value": 0.9102,
+      "pass": true
+    },
+    "ribbon_untouched": {
+      "value": 0.9996,
+      "pass": true
+    },
+    "tiers_separable": {
+      "gaps": [
+        0.0894,
+        0.163
+      ],
+      "pass": true
+    },
+    "hatch_rendered": {
+      "patternInDefs": true,
+      "computedFill": "url(\"#mc-hatch-void\")",
+      "fellBackToFlat": false,
+      "delta_sd_outside": 6.31,
+      "delta_sd_swath": 1.78,
+      "pass": true
+    },
+    "geometry_agrees": {
+      "value": 99.65,
+      "pass": true
+    },
+    "no_page_errors": {
+      "value": [],
+      "pass": true
+    }
+  },
+  "hatchProof": {
+    "svgRootExists": true,
+    "patternInDefs": true,
+    "patternCount": 1,
+    "hatchPathExists": true,
+    "computedFill": "url(\"#mc-hatch-void\")",
+    "computedFillOpacity": "1",
+    "fellBackToFlat": false
+  },
+  "delta": {
+    "amplitude": {
+      "n": 61690,
+      "mean": 0.03,
+      "sd": 0.43,
+      "modes": [
+        {
+          "d": 0,
+          "pct": 99.5
+        },
+        {
+          "d": 1,
+          "pct": 0.1
+        },
+        {
+          "d": 2,
+          "pct": 0.1
+        },
+        {
+          "d": 3,
+          "pct": 0.1
+        },
+        {
+          "d": 5,
+          "pct": 0.1
+        }
+      ]
+    },
+    "swath": {
+      "n": 78325,
+      "mean": 6.34,
+      "sd": 1.78,
+      "modes": [
+        {
+          "d": 8,
+          "pct": 31.3
+        },
+        {
+          "d": 7,
+          "pct": 25.2
+        },
+        {
+          "d": 4,
+          "pct": 14.3
+        },
+        {
+          "d": 6,
+          "pct": 12
+        },
+        {
+          "d": 5,
+          "pct": 10.8
+        }
+      ]
+    },
+    "outside": {
+      "n": 65553,
+      "mean": 17.77,
+      "sd": 6.31,
+      "modes": [
+        {
+          "d": 24,
+          "pct": 18.8
+        },
+        {
+          "d": 23,
+          "pct": 14.5
+        },
+        {
+          "d": 11,
+          "pct": 11.4
+        },
+        {
+          "d": 22,
+          "pct": 7.9
+        },
+        {
+          "d": 12,
+          "pct": 5.3
+        }
+      ]
+    }
+  },
+  "confusion": {
+    "conf": {
+      "swath -> swathTint": 19533,
+      "outside -> outerVoid": 16343,
+      "swath -> outerVoid": 20,
+      "outside -> swathTint": 48,
+      "outside -> mixed/AA": 6,
+      "amplitude -> unpainted": 15334,
+      "amplitude -> swathTint": 85,
+      "swath -> unpainted": 18,
+      "swath -> mixed/AA": 5
+    },
+    "onDiagonalPct": 99.65,
+    "samples": 51392
+  },
+  "coverage": {
+    "panel": true,
+    "rows": [
+      "DFSAR AMPLITUDE · 15.6% · 8.8 kmCPR / DOP drawn here only",
+      "BEAM POINTED, NO RETURN · 20.0%observed and empty — not dry",
+      "PLACEHOLDER TERRAIN — NO RADAR COVERAGE · 64.4%relief is analytic, not measured — synthetic-terrain-derived"
+    ],
+    "sites": "PLACEHOLDER SITES · 5 OF 5 OUTSIDE RADAR COVERAGE",
+    "target": "TARGET 58,46 · INSIDE AMPLITUDE RIBBON",
+    "routes": [
+      "SHORTEST · 5% OF 37 WAYPOINTS IN RIBBON",
+      "SAFEST · 5% OF 37 WAYPOINTS IN RIBBON",
+      "SCIENCE-AWARE · 5% OF 37 WAYPOINTS IN RIBBON"
+    ]
+  },
+  "pageErrors": [],
+  "histogram_old": "file      D:\\FYP\\frontend\\public\\layers\\hillshade.webp\r\nmode      RGB   size 6618 x 2258 = 14,943,444 px\r\nalpha     opaque 100.000 %   transparent 0.000 %\r\nneutral   max |R-B| = 0  (neutral grey)\r\n\r\n8-bit luminance histogram — hillshade.webp, all 14,943,444 px\r\n  SOURCE (no filter)     mean  149.68   median  156.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.006 %   clip@255  2.010 %\r\n\r\nafter  filter: contrast(1.14) brightness(1.16) saturate(0.92)\r\n  POST-FILTER            mean  176.06   median  186.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  3.555 %\r\n\r\nrule check   post-filter median <= 190 : PASS  (186.0)\r\n             clip@255       <= 1 %  : FAIL  (3.555 %)\r\n\r\nwalking brightness back (contrast held at 1.14) until both hold:\r\n  brightness(1.16)       mean  176.06   median  186.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  3.555 %\r\n  brightness(1.14)       mean  173.16   median  182.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  3.235 %\r\n  brightness(1.12)       mean  170.29   median  179.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  3.085 %\r\n  brightness(1.10)       mean  167.38   median  176.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  2.945 %\r\n  brightness(1.08)       mean  164.45   median  173.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  2.813 %\r\n  brightness(1.06)       mean  161.56   median  170.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  2.691 %\r\n  brightness(1.04)       mean  158.64   median  166.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  2.575 %\r\n  brightness(1.02)       mean  155.70   median  163.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  2.466 %\r\n  brightness(1.00)       mean  152.78   median  160.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.224 %   clip@255  2.364 %\r\n  brightness(0.98)       mean  149.71   median  157.0   p2    0.0   p98  250.0   min   0  max 250   clip@0  2.224 %   clip@255  0.000 %\r\n\r\n  -> lowest failing rule cleared at brightness(0.98)\r\n\r\nreference   a mid-grey v=140 maps to 164\r\n",
+  "histogram_new": "file      D:\\FYP\\frontend\\public\\layers\\hillshade.webp\r\nmode      RGB   size 6618 x 2258 = 14,943,444 px\r\nalpha     opaque 100.000 %   transparent 0.000 %\r\nneutral   max |R-B| = 0  (neutral grey)\r\n\r\n8-bit luminance histogram — hillshade.webp, all 14,943,444 px\r\n  SOURCE (no filter)     mean  149.68   median  156.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.006 %   clip@255  2.010 %\r\n\r\nafter  filter: contrast(1.04) brightness(1.02) saturate(0.92)\r\n  POST-FILTER            mean  153.45   median  160.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.069 %   clip@255  2.223 %\r\n\r\nrule check   post-filter median <= 190 : PASS  (160.0)\r\n             clip@255       <= 1 %  : FAIL  (2.223 %)\r\n\r\nwalking brightness back (contrast held at 1.04) until both hold:\r\n  brightness(1.02)       mean  153.45   median  160.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.069 %   clip@255  2.223 %\r\n  brightness(1.00)       mean  150.56   median  157.0   p2    0.0   p98  255.0   min   0  max 255   clip@0  2.069 %   clip@255  2.113 %\r\n  brightness(0.98)       mean  147.51   median  154.0   p2    0.0   p98  250.0   min   0  max 250   clip@0  2.069 %   clip@255  0.000 %\r\n\r\n  -> lowest failing rule cleared at brightness(0.98)\r\n\r\nreference   a mid-grey v=140 maps to 143\r\n"
+}

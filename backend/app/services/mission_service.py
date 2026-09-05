@@ -5,19 +5,29 @@ Crater Selection -> PSR Mapping -> Radar Analysis -> Ice Intelligence ->
 Terrain Safety -> Landing Ranking -> Multi-Strategy Rover Planning -> Volume Estimation.
 
 FIXED (this version):
-  - Previously, `is_real` was determined ONLY by the global data_mode toggle
-    (`data_mode == "REAL"`). This meant selecting a crater that genuinely has
-    real Chandrayaan-2 data (e.g. Faustini, which has `is_real_data=True` in
-    the catalog) would STILL silently generate fully synthetic demo data if
-    the user hadn't also flipped the separate "Toggle Mode" button to REAL.
-    The result looked identical to real data but was entirely fake — this
-    was the root cause of "it still looks simulated even after picking the
-    real crater."
-  - Now, real data is used whenever EITHER the global toggle is set to REAL,
-    OR the selected crater is flagged as having real data in the catalog.
-    The actual data source used (`effective_data_mode`) is reported back in
-    the payload, so the frontend badge always reflects what was ACTUALLY
-    loaded, not just what the toggle happened to say.
+  - Eligibility for a REAL run is decided by PROVENANCE, not by the filesystem.
+    The previous gate asked whether a *filename* existed:
+
+        Path(f"data/pradan/dem/{crater_id}_lola_dem.tif").exists()
+
+    Four DEMs on disk share one digest (sha256 a5e4ed4b...): faustini's crop,
+    `real_dem.tif`, `ch2_sar_dem.tif`, and `shackleton_lola_dem.tif`, which is a
+    byte copy of faustini's. Under the filename test Shackleton passed as REAL
+    and served Faustini's terrain and Faustini's radar swath under a MEASURED
+    mark — strictly worse than the old seeded fallback, because the fallback at
+    least labelled itself. `real_data_gate.real_data_status()` now requires the
+    catalogue to carry `is_real_data=True` AND a PDS4 `product_id`, and
+    `assert_no_shared_real_rasters()` runs at construction as a hard failure.
+  - A crater that fails the gate gets `_not_ingested_payload()`: HTTP 200, a
+    `status` field, and NO numeric fields at all. Not zeros — zeros are a
+    measurement claim, and the seeded fallback that used to fill this case
+    served `scientific_screening_status: "PASS"` with
+    `ml_ice_likelihood_mean: 0.96`, the best-looking numbers in the app.
+  - The seeded generator is reachable only when
+    `LUNAR_ICE_ALLOW_DEMO_GENERATOR=1`, which `backend/conftest.py` sets and no
+    serving path does. `tests/test_pipeline.py` therefore still drives
+    shackleton / shoemaker / faustini end to end; a request to the server for an
+    un-ingested crater cannot.
 """
 
 import cv2
@@ -29,7 +39,12 @@ from pathlib import Path
 
 from app.core.config import settings
 from app.core.schemas import MissionState, CraterInfo
-from app.demo.lunar_generator import CRATER_CATALOG, demo_generator
+from app.demo.lunar_generator import CRATER_CATALOG, demo_generator_enabled
+from app.ingestion.real_data_gate import (
+    RealDataStatus,
+    assert_no_shared_real_rasters,
+    real_data_status,
+)
 from app.modules.module_a_psr import analyze_psr
 from app.modules.module_b_radar import analyze_dfsar_radar
 from app.modules.module_c_ice import evaluate_ice_intelligence
@@ -66,14 +81,50 @@ def array_to_base64_png(arr: np.ndarray, colormap: Optional[int] = None) -> str:
 class MissionPipelineService:
     def __init__(self):
         self._cache: Dict[str, Dict[str, Any]] = {}
+        # Armed at construction, not per request: a catalogue in which two
+        # craters marked REAL resolve to the same bytes must stop the process,
+        # not serve one good response and then a mislabelled one. Raises
+        # SystemExit, same zero tolerance as build_analysis.assert_dem_is_lola().
+        self._raster_identity = assert_no_shared_real_rasters(CRATER_CATALOG)
 
     def get_available_craters(self) -> Dict[str, CraterInfo]:
         return CRATER_CATALOG
 
+    def _not_ingested_payload(
+        self,
+        crater_id: str,
+        crater_info: Optional[CraterInfo],
+        status: RealDataStatus,
+        requested_data_mode: str,
+    ) -> Dict[str, Any]:
+        """The absent state, in a deliberately different SHAPE.
+
+        There is no `psr`, `radar`, `ice`, `terrain`, `landing_sites`,
+        `rover_routes`, `volume` or `raster_layers` key here — not those keys
+        holding zeros. A zero is a measurement claim ("we looked and found
+        none"); a missing key cannot be plotted, summed or averaged by accident,
+        and a frontend that reaches for one fails loudly instead of drawing
+        `0.00 km2` under a confident heading.
+
+        `selected_crater` survives because crater names, centres and diameters
+        are published IAU/USGS facts, not measurements of ours. The API needs
+        them to name the crater it is declining to analyse.
+        """
+        return {
+            "status": "NOT_INGESTED",
+            "data_mode": "NOT_INGESTED",
+            "crater_id": crater_id,
+            "selected_crater": crater_info,
+            "requested_data_mode": requested_data_mode,
+            "gate": status.as_payload(),
+            "raster_identity_check": self._raster_identity,
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+        }
+
     def run_full_mission_pipeline(
         self,
         crater_id: str = "shackleton",
-        data_mode: str = "DEMO",
+        data_mode: str = "REAL",
         cpr_threshold: Optional[float] = None,
         dop_threshold: Optional[float] = None,
         ice_depth_m: Optional[float] = None,
@@ -84,33 +135,33 @@ class MissionPipelineService:
         Executes the entire end-to-end mission workflow and returns structured results
         along with base64 visual raster layers for the dashboard.
         """
-        crater_info = CRATER_CATALOG.get(crater_id, CRATER_CATALOG["shackleton"])
+        crater_info = CRATER_CATALOG.get(crater_id)
 
         # ------------------------------------------------------------------
-        # FIXED: is_real is no longer decided by the global toggle alone.
-        # A crater explicitly flagged as having real data (is_real_data=True
-        # in the catalog, e.g. Faustini) ALWAYS loads its real files,
-        # regardless of the DEMO/REAL toggle state. The toggle still lets a
-        # user force REAL-mode ingestion attempts on other craters (which
-        # will fall back to generated sample files if no real disk data
-        # exists for them yet — see create_sample_georeferenced_pradan_data).
+        # The gate. Provenance decides, and `data_mode` no longer votes.
+        #
+        # The old line was `is_real = (data_mode == "REAL") or crater_has_real_data`,
+        # which let a query string promote a crater the catalogue does not vouch
+        # for; the filename test underneath it then found a raster with the right
+        # name and let it through. Both are gone. `real_data_status()` reads
+        # `is_real_data` + `product_id` from CRATER_CATALOG, and a crater that
+        # fails cannot be argued into a REAL run by any caller.
         # ------------------------------------------------------------------
-        crater_has_real_data = bool(getattr(crater_info, "is_real_data", False))
-        is_real = (data_mode == "REAL") or crater_has_real_data
-        # Robustness: a crater may be flagged real, but the raw raster files are
-        # only present on the local workstation (the 9GB SAR set is not deployed).
-        # If none of the real inputs exist on THIS host, transparently downgrade to
-        # the DEMO generator instead of failing — the UI already labels this DEMO.
-        _real_inputs_present = (
-            Path(f"d:/FYP/data/pradan/dem/{crater_id}_lola_dem.tif").exists()
-            or Path("d:/FYP/data/pradan/dem/real_dem.tif").exists()
-            or (
-                Path("d:/FYP/data/pradan/dfsar/cpr_real.tif").exists()
-                and Path("d:/FYP/data/pradan/dfsar/dop_real.tif").exists()
-            )
-        )
-        if is_real and not _real_inputs_present:
-            is_real = False
+        status = real_data_status(crater_id, crater_info)
+
+        if not status.eligible and not demo_generator_enabled():
+            # The serving path. No numbers, no seeded substitute.
+            return self._not_ingested_payload(crater_id, crater_info, status, data_mode)
+
+        if crater_info is None:
+            crater_info = CRATER_CATALOG["shackleton"]
+
+        # Past this point `demo_generator_enabled()` is the only way a
+        # non-eligible crater can still be running, and that flag is set by
+        # backend/conftest.py alone (see app/demo/lunar_generator.py). Under
+        # pytest the seeded branch below keeps tests/test_pipeline.py driving
+        # shackleton / shoemaker / faustini through modules A-G.
+        is_real = status.eligible
         effective_data_mode = "REAL" if is_real else "DEMO"
 
         # Cache key includes the EFFECTIVE mode so a stale DEMO-mode cache
@@ -119,47 +170,90 @@ class MissionPipelineService:
         if cache_key in self._cache:
             return self._cache[cache_key]
 
-        # Step 1: Environment Ingestion (Demo generator or Real PRADAN Ingestion Pipeline)
-        cpr_real_path = Path("d:/FYP/data/pradan/dfsar/cpr_real.tif")
-        dop_real_path = Path("d:/FYP/data/pradan/dfsar/dop_real.tif")
-        dem_pradan_path = Path(f"d:/FYP/data/pradan/dem/{crater_id}_lola_dem.tif")
-        if not dem_pradan_path.exists():
-            dem_pradan_path = Path("d:/FYP/data/pradan/dem/real_dem.tif")
+        # Step 1: Environment ingestion. One resolver, and it is the gate's.
+        #
+        # `status.inputs` holds the paths real_data_status() already confirmed on
+        # disk for THIS crater, so the pipeline cannot reach for a different file
+        # than the one that was vetted. The old `if not dem_pradan_path.exists():
+        # dem_pradan_path = .../real_dem.tif` fallback is deleted: `real_dem.tif`
+        # is one of the four files sharing digest a5e4ed4b..., and substituting it
+        # is precisely how a crater ended up served another crater's terrain.
+        if is_real:
+            dem_pradan_path = Path(status.inputs["dem"])
+            cpr_real_path = Path(status.inputs["cpr"])
+            dop_real_path = Path(status.inputs["dop"])
+        else:
+            dem_pradan_path = cpr_real_path = dop_real_path = None
 
         dfsar_s0_path = Path(f"d:/FYP/data/pradan/dfsar/{crater_id}_dfsar_s0.tif")
         dfsar_s3_path = Path(f"d:/FYP/data/pradan/dfsar/{crater_id}_dfsar_s3.tif")
         ohrc_path = Path(f"d:/FYP/data/pradan/ohrc/{crater_id}_ohrc_pan.tif")
 
-        # Track whether we actually managed to load real files on disk —
-        # this can differ from `is_real` if the real files are missing,
-        # in which case we transparently fall back to demo data and say so.
-        actually_loaded_real = False
-
         if is_real:
             from app.ingestion.pradan_pipeline import (
                 ensure_pradan_directories,
                 read_raster_file,
-                create_sample_georeferenced_pradan_data,
                 process_real_dem,
                 process_real_dfsar_stokes,
                 extract_boulders_from_ohrc
             )
             ensure_pradan_directories()
 
-            real_dem_available = dem_pradan_path.exists() or Path("d:/FYP/data/pradan/dem/real_dem.tif").exists()
-            real_radar_available = cpr_real_path.exists() and dop_real_path.exists()
+            # No availability re-test and no ValueError branch here any more:
+            # reaching this line means the gate found all three rasters, so
+            # "real but nothing loaded" is not a state that can occur.
+            real_radar_available = True
 
-            if real_dem_available or real_radar_available:
-                actually_loaded_real = True
+            # Real spacing comes from the frame's own georeferencing, not a
+            # constant. Two sources, in order of directness:
+            #   1. the DEM's own GeoTIFF tags, if it has any;
+            #   2. dfsar/metadata_real.json, whose geodetic_frame block was
+            #      written by process_real_sar_pipeline.py straight from the
+            #      source product's GeoTIFF tags and PDS4 label.
+            # In practice (2) is the one that fires: every raster this project
+            # writes goes out through plain tifffile with no geokeys, so (1)
+            # raises on all of them. Both paths are wrapped because an
+            # unreadable frame must degrade honestly, not 500 the endpoint.
+            frame = None
+            frame_source = "none"
+            try:
+                from app.ingestion.sar_geometry import (
+                    frame_from_geodetic_metadata,
+                    read_geotiff_frame,
+                )
+                try:
+                    frame = read_geotiff_frame(str(dem_pradan_path))
+                    frame_source = f"geotiff-tags:{dem_pradan_path.name}"
+                except Exception:
+                    meta_path = Path("d:/FYP/data/pradan/dfsar/metadata_real.json")
+                    if meta_path.exists():
+                        frame = frame_from_geodetic_metadata(meta_path)
+                        frame_source = "metadata_real.json:geodetic_frame"
+            except Exception:
+                frame = None
+                frame_source = "none"
 
-            if not actually_loaded_real:
-                raise ValueError(f"Real data not yet ingested for {crater_info.name} — coming soon.")
+            if frame is not None:
+                # (564.5, 1654.5) m for the 100x100 mission grid: the real frame
+                # extent (56.45 x 165.45 km) divided by the target grid, per axis.
+                spacing_tuple = frame.metres_per_pixel((100, 100))
+                spacing_absent_reason = None
+            else:
+                # No georeferencing reachable. Do not invent a spacing: say so.
+                # The grid is still 100x100 cells, but every km, km2 and slope
+                # derived from it is uncalibrated, and the payload says which.
+                spacing_tuple = (250.0, 250.0)
+                spacing_absent_reason = (
+                    "Ground spacing is UNCALIBRATED. Neither the DEM's GeoTIFF "
+                    "tags nor dfsar/metadata_real.json could supply the frame, "
+                    "so 250 m per axis is a placeholder, not a measurement. "
+                    "Every distance, area and slope on this run is therefore "
+                    "uncalibrated and must not be quoted."
+                )
 
-            # Proceed if we have real data
-
-            dem_dict = process_real_dem(str(dem_pradan_path), pixel_scale_m=250.0)
+            dem_dict = process_real_dem(str(dem_pradan_path), spacing_m=spacing_tuple)
             dem = dem_dict["dem"]
-            pixel_scale_m = 250.0
+            spacing_m = dem_dict["spacing_m"]
             illumination = dem_dict["illumination"]
             psr_mask = dem_dict["psr_mask"]
             doubly_shadowed_mask = dem_dict["doubly_shadowed"]
@@ -177,25 +271,52 @@ class MissionPipelineService:
                 cpr = stokes_dict["cpr"]
                 dop = stokes_dict["dop"]
 
-            boulder_risk = extract_boulders_from_ohrc(str(ohrc_path)) if ohrc_path.exists() else np.zeros_like(dem, dtype=np.float32)
+            # Boulder risk is ABSENT, not zero, when there is no OHRC product.
+            #
+            # The previous `np.zeros_like(dem)` fallback made "no optical imagery
+            # was ever acquired here" indistinguishable from "this terrain was
+            # imaged and found to be free of boulders". Those are different
+            # facts and the hazard map must be able to say which. Zero is a
+            # measurement claim; absence is not. Downstream, boulder_available
+            # False means the boulder weight is dropped from the hazard blend
+            # rather than silently contributing a perfect score.
+            boulder_available = ohrc_path.exists()
+            if boulder_available:
+                boulder_risk = extract_boulders_from_ohrc(str(ohrc_path))
+                boulder_absent_reason = None
+            else:
+                boulder_risk = np.zeros_like(dem, dtype=np.float32)
+                boulder_absent_reason = (
+                    f"No OHRC product on disk for {crater_id}. Boulder risk is "
+                    "UNMEASURED, not zero: the hazard score below is the "
+                    "slope-and-roughness part only, renormalised, and no claim "
+                    "is made about rocks at this site."
+                )
         else:
+            # PYTEST ONLY. Unreachable on a serving path: the gate above already
+            # returned _not_ingested_payload() unless LUNAR_ICE_ALLOW_DEMO_GENERATOR=1,
+            # and generate_crater_environment() re-checks the same flag itself.
+            from app.demo.lunar_generator import demo_generator
             env = demo_generator.generate_crater_environment(crater_id)
             dem = env["dem"]
-            pixel_scale_m = env["pixel_scale_m"]
+            # Demo grid is isotropic by construction, so the tuple is the scalar twice.
+            spacing_m = (float(env["pixel_scale_m"]), float(env["pixel_scale_m"]))
+            frame = None
+            frame_source = "demo-generator (isotropic by construction)"
+            spacing_absent_reason = None
             illumination = env["illumination"]
             psr_mask = env["psr_mask"]
             doubly_shadowed_mask = env["doubly_shadowed_mask"]
             cpr = env["cpr"]
             dop = env["dop"]
             boulder_risk = env["boulder_risk"]
+            boulder_available = True
+            boulder_absent_reason = None
 
-        # If we requested real mode but genuinely had no real files at all
-        # (neither DEM nor radar), be honest about it downstream: this run
-        # is effectively still demo-quality data, even though `is_real` was
-        # true. This prevents the UI from ever labeling pure fallback data
-        # as "REAL DATA".
-        if is_real and not actually_loaded_real:
-            effective_data_mode = "DEMO"
+        # `effective_data_mode` needs no post-hoc downgrade any more. It was set
+        # from `status.eligible` before any file was opened, and the branch above
+        # cannot change which of the two ran, so the label and the data source
+        # cannot disagree.
 
         # Step 2: Module A - PSR & Doubly Shadowed Mapping
         psr_res, psr_rasters = analyze_psr(
@@ -204,7 +325,7 @@ class MissionPipelineService:
             illumination=illumination,
             psr_mask=psr_mask,
             doubly_shadowed_mask=doubly_shadowed_mask,
-            pixel_scale_m=pixel_scale_m,
+            spacing_m=spacing_m,
             data_mode=effective_data_mode
         )
 
@@ -213,7 +334,7 @@ class MissionPipelineService:
             crater_id=crater_id,
             cpr=cpr,
             dop=dop,
-            pixel_scale_m=pixel_scale_m,
+            spacing_m=spacing_m,
             cpr_threshold=cpr_threshold,
             dop_threshold=dop_threshold,
             data_mode=effective_data_mode
@@ -225,11 +346,16 @@ class MissionPipelineService:
             radar_res.data_source_tag = "Simulated placeholder — pending real data"
 
         # Step 4: Module D - Terrain Safety & Hazard Scoring
+        # w_boulder=0.0 when there is no OHRC product: compute_hazard_score
+        # divides by (w1+w2+w3), so zeroing the weight renormalises the blend
+        # over slope and roughness instead of feeding it an unmeasured 0.0 that
+        # would read as "no rocks here" and pull every hazard score down.
         terrain_res, terrain_rasters = analyze_terrain_safety(
             crater_id=crater_id,
             dem=dem,
             boulder_risk=boulder_risk,
-            pixel_scale_m=pixel_scale_m,
+            spacing_m=spacing_m,
+            w_boulder=None if boulder_available else 0.0,
             data_mode=effective_data_mode
         )
 
@@ -243,7 +369,7 @@ class MissionPipelineService:
             illumination=illumination,
             psr_mask=psr_mask,
             doubly_shadowed_mask=doubly_shadowed_mask,
-            pixel_scale_m=pixel_scale_m,
+            spacing_m=spacing_m,
             cpr_threshold=cpr_threshold,
             dop_threshold=dop_threshold,
             data_mode=effective_data_mode
@@ -258,7 +384,12 @@ class MissionPipelineService:
             hazard=terrain_rasters["hazard"],
             illumination=illumination,
             scientific_mask=ice_rasters["scientific_candidate_mask"],
-            pixel_scale_m=pixel_scale_m
+            spacing_m=spacing_m,
+            # With a real georeferenced frame, site lat/lon is the exact inverse
+            # polar-stereographic transform rather than a flat degrees-per-metre
+            # guess applied to both axes.
+            frame=frame,
+            grid_max=float(dem.shape[1])
         )
 
         # Step 7: Target centroid for rover traverse (ensure target cell is traversable)
@@ -284,45 +415,48 @@ class MissionPipelineService:
         route_shortest = plan_rover_path(
             dem=dem,
             slope_deg=terrain_rasters["slope_deg"],
+            roughness=terrain_rasters["roughness"],
             hazard=terrain_rasters["hazard"],
             illumination=illumination,
             scientific_mask=ice_rasters["scientific_candidate_mask"],
             ml_likelihood=ice_rasters["ml_likelihood"],
             start_xy=start_xy,
             target_xy=target_xy,
+            spacing_m=spacing_m,
             strategy="Shortest",
-            algorithm=rover_algorithm,
-            pixel_scale_m=pixel_scale_m
+            algorithm=rover_algorithm
         )
 
         # Safest
         route_safest = plan_rover_path(
             dem=dem,
             slope_deg=terrain_rasters["slope_deg"],
+            roughness=terrain_rasters["roughness"],
             hazard=terrain_rasters["hazard"],
             illumination=illumination,
             scientific_mask=ice_rasters["scientific_candidate_mask"],
             ml_likelihood=ice_rasters["ml_likelihood"],
             start_xy=start_xy,
             target_xy=target_xy,
+            spacing_m=spacing_m,
             strategy="Safest",
-            algorithm=rover_algorithm,
-            pixel_scale_m=pixel_scale_m
+            algorithm=rover_algorithm
         )
 
         # Science-Aware
         route_science = plan_rover_path(
             dem=dem,
             slope_deg=terrain_rasters["slope_deg"],
+            roughness=terrain_rasters["roughness"],
             hazard=terrain_rasters["hazard"],
             illumination=illumination,
             scientific_mask=ice_rasters["scientific_candidate_mask"],
             ml_likelihood=ice_rasters["ml_likelihood"],
             start_xy=start_xy,
             target_xy=target_xy,
+            spacing_m=spacing_m,
             strategy="Science-Aware",
-            algorithm=rover_algorithm,
-            pixel_scale_m=pixel_scale_m
+            algorithm=rover_algorithm
         )
 
         rover_routes = {
@@ -353,11 +487,24 @@ class MissionPipelineService:
         }
 
         payload = {
+            # Discriminator. The absent state uses the same key with
+            # "NOT_INGESTED" and omits every numeric section, so a consumer
+            # branches on one field rather than probing for missing keys.
+            "status": "OK",
             "selected_crater": crater_info,
             # Report the EFFECTIVE mode (what was actually loaded), not the
             # raw requested/toggle mode — this is what the frontend badge
             # should trust.
             "data_mode": effective_data_mode,
+            # Why this run was allowed to be REAL, served rather than merely
+            # printed, so the claim is auditable from the response itself.
+            "gate": {
+                "eligible": status.eligible,
+                "reason": status.reason,
+                "product_id": status.product_id,
+                "resolved_inputs": dict(status.inputs),
+            },
+            "raster_identity_check": self._raster_identity,
             "psr": psr_res,
             "radar": radar_res,
             "ice": ice_res,
@@ -367,8 +514,30 @@ class MissionPipelineService:
             "rover_routes": rover_routes,
             "volume": volume_res,
             "raster_layers": raster_layers,
-            "grid_dimensions": {"width": dem.shape[1], "height": dem.shape[0], "pixel_scale_m": pixel_scale_m},
+            # Spacing is per-axis. `pixel_scale_m` is kept for the older
+            # GISMapViewer readout and is the LINE spacing only; anything that
+            # needs a real ground distance must use metres_per_line /
+            # metres_per_sample, because on the live frame they differ by ~2.9x.
+            "grid_dimensions": {
+                "width": dem.shape[1],
+                "height": dem.shape[0],
+                "pixel_scale_m": float(spacing_m[0]),
+                "metres_per_line": float(spacing_m[0]),
+                "metres_per_sample": float(spacing_m[1]),
+                "spacing_is_anisotropic": bool(abs(spacing_m[0] - spacing_m[1]) > 1e-6),
+                "spacing_source": frame_source,
+                "spacing_absent_reason": spacing_absent_reason
+            },
             "target_coordinates": {"x": target_xy[0], "y": target_xy[1]},
+            # Absent and zero are different facts. The UI must be able to say
+            # "boulder risk was never measured here" rather than implying the
+            # terrain was imaged and found clear.
+            "boulder_risk_available": boulder_available,
+            "boulder_risk_absent_reason": boulder_absent_reason,
+            "hazard_components": (
+                ["slope", "roughness", "boulder"] if boulder_available
+                else ["slope", "roughness"]
+            ),
             "generated_at": datetime.now(timezone.utc).isoformat()
         }
 

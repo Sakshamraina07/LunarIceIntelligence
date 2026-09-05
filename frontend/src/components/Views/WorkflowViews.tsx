@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import type {
   MissionState,
   CraterInfo,
@@ -551,7 +551,7 @@ export const WorkflowViews: React.FC<WorkflowViewsProps> = ({
         </div>
 
         <div className="bg-slate-800/40 p-3 rounded-lg border border-slate-700 text-xs text-slate-300">
-          <span className="font-semibold text-cyan-300">Scientific Value Trade-off:</span> The Science-Aware strategy yields +193% scientific volatile sampling return compared to Shortest path with only a modest +16% distance overhead, deliberately collecting data inside secondary cold traps.
+          <span className="font-semibold text-cyan-300">Scientific Value Trade-off:</span> Science-Aware and Shortest are compared on distance, mean hazard and maximum slope above — all three read from this run. The scientific-yield comparison is <span className="font-mono text-slate-400">NO DATA</span>: no science-value raster is ingested, so the routes cannot be ranked on what they would sample.
         </div>
       </div>
     );
@@ -776,17 +776,12 @@ export const WorkflowViews: React.FC<WorkflowViewsProps> = ({
         <div className="border-b border-slate-800 pb-3 flex justify-between items-center">
           <div>
             <h3 className="text-base font-bold text-slate-100">Step 10: Research Experiments &amp; Ablation Studies</h3>
-            <p className="text-xs text-slate-400">Verifiable experimental evaluations adhering to PRD Section 21 (No fabricated accuracy claims).</p>
+            <p className="text-xs text-slate-400">Route strategy trade-offs, read from this run.</p>
           </div>
           <span className="bg-purple-500/20 text-purple-300 text-xs px-2.5 py-1 rounded font-mono border border-purple-500/40">
-            EXPERIMENTS 1–5
+            EXPERIMENT 4
           </span>
         </div>
-
-        <ContextBanner
-          objective="Peer-Review Research Verification"
-          text="Adheres to strict scientific honesty standards by measuring trade-offs across distance, hazard, and science yield without fabricated accuracy claims."
-        />
 
         <div className="space-y-3">
           <div className="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
@@ -794,56 +789,51 @@ export const WorkflowViews: React.FC<WorkflowViewsProps> = ({
             <div className="grid grid-cols-4 gap-2 text-xs font-mono mt-2">
               <div className="text-slate-400 font-semibold">Strategy</div>
               <div className="text-slate-400 font-semibold">Distance</div>
-              <div className="text-slate-400 font-semibold">Hazard</div>
-              <div className="text-slate-400 font-semibold">Science Yield</div>
+              <div className="text-slate-400 font-semibold">Mean hazard</div>
+              <div className="text-slate-400 font-semibold">Max slope</div>
 
-              <div className="text-amber-400">Shortest</div>
-              <div>10.40 km</div>
-              <div>0.58 (High)</div>
-              <div>3.2</div>
-
-              <div className="text-emerald-400">Safest</div>
-              <div>14.80 km</div>
-              <div>0.19 (Low)</div>
-              <div>2.1</div>
-
-              <div className="text-cyan-400 font-bold">Science-Aware</div>
-              <div className="font-bold">12.10 km</div>
-              <div className="font-bold">0.28 (Balanced)</div>
-              <div className="font-bold text-cyan-400">9.4 (+193%)</div>
+              {(['Shortest', 'Safest', 'Science-Aware'] as const).map((name) => {
+                const r = mission.rover_routes[name];
+                const tone =
+                  name === 'Shortest' ? 'text-amber-400'
+                  : name === 'Safest' ? 'text-emerald-400'
+                  : 'text-cyan-400 font-bold';
+                if (!r || !r.path_found) {
+                  return (
+                    <Fragment key={name}>
+                      <div className={tone}>{name}</div>
+                      <div className="text-slate-500">NO ROUTE</div>
+                      <div className="text-slate-500">NO ROUTE</div>
+                      <div className="text-slate-500">NO ROUTE</div>
+                    </Fragment>
+                  );
+                }
+                return (
+                  <Fragment key={name}>
+                    <div className={tone}>{name}</div>
+                    <div>{r.total_distance_km.toFixed(2)} km</div>
+                    <div>{r.mean_hazard_encountered.toFixed(3)}</div>
+                    <div>{r.max_slope_encountered_deg.toFixed(1)}°</div>
+                  </Fragment>
+                );
+              })}
             </div>
+            <p className="text-[11px] text-slate-400 mt-2">
+              Every cell is read from <span className="font-mono">mission.rover_routes</span> for the
+              crater and algorithm currently selected. The Science Yield column is gone: it needs a
+              science-value raster, and there is none — <span className="font-mono">NO DATA</span>.
+            </p>
           </div>
+        </div>
 
-          <div className="bg-slate-800/60 p-3 rounded-lg border border-slate-700">
-            <h4 className="font-bold text-xs text-cyan-300 mb-1">Experiment 5: Step-by-Step Path Planning Ablation Study</h4>
-            <p className="text-[11px] text-slate-400 mb-2">Demonstrates the physical effect of incrementally introducing each planning factor.</p>
-            <div className="space-y-1.5 text-xs">
-              <div className="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
-                <span><b>Step 1: Distance Only:</b> Straight-line traverse slicing cliff walls</span>
-                <span className="font-mono text-slate-400">10.4 km | H: 0.58</span>
-              </div>
-              <div className="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
-                <span><b>Step 2: + Slope:</b> Contours around gradients &gt; 15°</span>
-                <span className="font-mono text-slate-400">11.6 km | H: 0.45</span>
-              </div>
-              <div className="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
-                <span><b>Step 3: + Roughness:</b> Skirts hummocky ejecta clusters</span>
-                <span className="font-mono text-slate-400">12.2 km | H: 0.38</span>
-              </div>
-              <div className="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
-                <span><b>Step 4: + Boulder Hazard:</b> Adopts ridge crest to avoid rocky avalanche tongues</span>
-                <span className="font-mono text-slate-400">12.8 km | H: 0.25</span>
-              </div>
-              <div className="p-2 rounded bg-slate-900/60 border border-slate-800 flex justify-between">
-                <span><b>Step 5: + Solar Energy:</b> Recharges batteries in illuminated rim sectors</span>
-                <span className="font-mono text-slate-400">12.5 km | E: 135 Wh</span>
-              </div>
-              <div className="p-2 rounded bg-cyan-950/30 border border-cyan-500/40 flex justify-between text-cyan-200 font-semibold">
-                <span><b>Step 6: + Scientific Volatiles:</b> Intercepts 3 candidate ice depots</span>
-                <span className="font-mono text-cyan-400">12.1 km | Sci: 9.4</span>
-              </div>
-            </div>
-          </div>
+        <div className="bg-slate-800/40 p-3 rounded-lg border border-slate-700 text-xs text-slate-400">
+          <span className="font-semibold text-slate-300">Experiment 5 (step-by-step planning ablation): NOT RUN.</span>{' '}
+          It previously listed six increments — distance, slope, roughness, boulder hazard, solar
+          energy, volatiles — each with a distance and hazard figure. None was computed; they were
+          written into the page. The fourth was <span className="font-mono">+ Boulder Hazard</span>,
+          which cannot move any number at all: <span className="font-mono">WEIGHT_BOULDER = 0</span>,
+          because no boulder raster exists. A real ablation means re-planning the route once per
+          factor and reporting the measured deltas, and it is scheduled after the traverse rebuild.
         </div>
       </div>
     );
@@ -928,7 +918,13 @@ export const WorkflowViews: React.FC<WorkflowViewsProps> = ({
               Includes executive summary, DFSAR radar analysis, landing site ranking table, rover route waypoints, volume uncertainty tiers, and explicit scientific limitations.
             </p>
             <div className="font-mono text-[10px] text-slate-500 mt-2">
-              Generated: {mission.generated_at} | Mode: {mission.data_mode} | Seed: {mission.psr.provenance.random_seed}
+              {/* No `Seed:` here. It printed `mission.psr.provenance.random_seed`,
+                  which is populated only by the retired demo generator, so on a
+                  REAL run it rendered `Seed: None` — and on any other run it
+                  advertised that the report's numbers came from a seed. The
+                  product id is the reproducibility handle now. */}
+              Generated: {mission.generated_at} | Mode: {mission.data_mode}
+              {mission.selected_crater.product_id ? ` | Product: ${mission.selected_crater.product_id}` : ''}
             </div>
           </div>
 

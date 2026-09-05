@@ -14,12 +14,22 @@ from app.core.provenance import create_provenance
 
 def compute_terrain_metrics(
     dem: np.ndarray,
-    pixel_scale_m: float = 250.0
+    spacing_m: Tuple[float, float]
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Computes slope (degrees), aspect (degrees), and terrain roughness.
+
+    `spacing_m` is (metres_per_line, metres_per_sample): the ground spacing of
+    axis 0 (rows/lines) and axis 1 (columns/samples) of `dem`. There is NO
+    default on purpose. The old `pixel_scale_m=250.0` was a single scalar handed
+    to np.gradient for both axes; on this frame the true posts are (25, 25) on
+    the native grid and (564.5, 1654.5) on the live 100x100 grid, so a scalar was
+    wrong on at least one axis and silently rescaled every slope. Forcing the
+    caller to pass the tuple its own array implies is the fix. np.gradient takes
+    the axis-0 spacing first, which is why the order is (sy, sx).
     """
-    grad_y, grad_x = np.gradient(dem, pixel_scale_m)
+    sy, sx = spacing_m
+    grad_y, grad_x = np.gradient(dem, sy, sx)
     slope_rad = np.arctan(np.sqrt(grad_x**2 + grad_y**2))
     slope_deg = np.degrees(slope_rad).astype(np.float32)
 
@@ -67,19 +77,25 @@ def analyze_terrain_safety(
     crater_id: str,
     dem: np.ndarray,
     boulder_risk: np.ndarray,
-    pixel_scale_m: float = 250.0,
+    spacing_m: Tuple[float, float],
     w_slope: Optional[float] = None,
     w_roughness: Optional[float] = None,
     w_boulder: Optional[float] = None,
-    data_mode: str = "DEMO"
+    *,
+    data_mode: str,
 ) -> Tuple[TerrainAnalysisResult, Dict[str, np.ndarray]]:
     """
     Performs terrain safety analysis, classifying safe vs critical hazard zones.
+
+    `spacing_m` is (metres_per_line, metres_per_sample); see compute_terrain_metrics.
+    This module is the single source of the hazard definition — render_layers.py
+    and build_analysis.py both use compute_hazard_score so the rendered picture
+    and the reported number cannot drift apart.
     """
-    slope_deg, aspect_deg, roughness = compute_terrain_metrics(dem, pixel_scale_m)
+    slope_deg, aspect_deg, roughness = compute_terrain_metrics(dem, spacing_m)
     hazard = compute_hazard_score(slope_deg, roughness, boulder_risk, w_slope, w_roughness, w_boulder)
 
-    cell_area_km2 = (pixel_scale_m / 1000.0) ** 2
+    cell_area_km2 = (spacing_m[0] / 1000.0) * (spacing_m[1] / 1000.0)
     total_cells = dem.size
 
     safe_slope_mask = slope_deg <= settings.CRITICAL_LANDING_SLOPE_DEG

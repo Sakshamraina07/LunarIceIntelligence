@@ -23,6 +23,7 @@ def test_rover_path_reachability():
     size = 20
     dem = np.zeros((size, size))
     slope = np.full((size, size), 5.0)
+    roughness = np.full((size, size), 2.0)
     hazard = np.full((size, size), 0.1)
     illumination = np.ones((size, size))
     scientific_mask = np.zeros((size, size), dtype=bool)
@@ -37,6 +38,7 @@ def test_rover_path_reachability():
     res_astar = plan_rover_path(
         dem=dem,
         slope_deg=slope,
+        roughness=roughness,
         hazard=hazard,
         illumination=illumination,
         scientific_mask=scientific_mask,
@@ -45,7 +47,7 @@ def test_rover_path_reachability():
         target_xy=target_xy,
         strategy="Science-Aware",
         algorithm="A*",
-        pixel_scale_m=100.0
+        spacing_m=(100.0, 100.0)
     )
 
     assert res_astar.path_found is True
@@ -54,12 +56,43 @@ def test_rover_path_reachability():
     assert res_astar.waypoints[-1].x == target_xy[0] and res_astar.waypoints[-1].y == target_xy[1]
 
 
+def test_anisotropic_spacing_changes_reported_distance():
+    """A step across samples must cost its own spacing, not the line spacing.
+
+    On a grid whose samples are 4x wider than its lines, a purely horizontal
+    traverse has to report 4x the distance of the same traverse run vertically.
+    The old scalar pixel_scale_m made both report the same number.
+    """
+    size = 12
+    flat = dict(
+        dem=np.zeros((size, size)),
+        slope_deg=np.zeros((size, size)),
+        roughness=np.zeros((size, size)),
+        hazard=np.zeros((size, size)),
+        illumination=np.ones((size, size)),
+        scientific_mask=np.zeros((size, size), dtype=bool),
+        ml_likelihood=np.zeros((size, size)),
+        strategy="Shortest",
+        algorithm="A*",
+        spacing_m=(100.0, 400.0),
+    )
+
+    horizontal = plan_rover_path(start_xy=(1, 5), target_xy=(9, 5), **flat)
+    vertical = plan_rover_path(start_xy=(5, 1), target_xy=(5, 9), **flat)
+
+    assert horizontal.path_found and vertical.path_found
+    # 8 samples * 400 m = 3.2 km across; 8 lines * 100 m = 0.8 km down
+    assert horizontal.total_distance_km == pytest.approx(3.2, abs=0.01)
+    assert vertical.total_distance_km == pytest.approx(0.8, abs=0.01)
+
+
 def test_impassable_cliff_barrier_failure():
     size = 20
     dem = np.zeros((size, size))
     # Vertical impassable barrier at column x=10 with slope 30 deg (> 22 deg limit)
     slope = np.zeros((size, size))
     slope[:, 10] = 30.0
+    roughness = np.zeros((size, size))
     hazard = np.zeros((size, size))
     illumination = np.ones((size, size))
     scientific_mask = np.zeros((size, size), dtype=bool)
@@ -71,6 +104,7 @@ def test_impassable_cliff_barrier_failure():
     res = plan_rover_path(
         dem=dem,
         slope_deg=slope,
+        roughness=roughness,
         hazard=hazard,
         illumination=illumination,
         scientific_mask=scientific_mask,
@@ -79,7 +113,7 @@ def test_impassable_cliff_barrier_failure():
         target_xy=target_xy,
         strategy="Shortest",
         algorithm="A*",
-        pixel_scale_m=100.0
+        spacing_m=(100.0, 100.0)
     )
 
     # PRD Rule: Never fabricate a path when terrain is impassable!

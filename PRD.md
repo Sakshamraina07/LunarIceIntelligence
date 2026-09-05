@@ -1,0 +1,782 @@
+# PRD — Lunar Ice Intelligence & Traverse Planning System
+
+**Status:** active. This document **supersedes and replaces** `CLAUDE_CODE_HANDOFF.md`,
+`_V3`, `_V4`, `_V5`, `_V6`, `_V7`, `_V9_LOLA`, `_V10_DELIVERABLE` and
+`CLAUDE_CODE_WORKING_RULES.md`. Those nine files are a conversation log, not a
+specification: they contradict each other (V5 §1 was withdrawn in V6 §0; V10 §1c
+appears three times with different wording; V10.2 overrides V10 which overrides
+V9). **Move them to `docs/handoffs/` and read only this file.**
+
+**Audience:** Claude Code, launched from inside `D:\FYP`. Assume zero memory of
+previous sessions. Everything needed is in this file or in the repo.
+
+**Last verified against the working tree:** 2026-09-05.
+
+---
+
+## 0 · What this project is, in one paragraph
+
+A mission-planning web app that screens Chandrayaan-2 DFSAR L-band radar over the
+Moon's south pole for possible water ice, scores landing sites on real LOLA
+topography, and plans a rover traverse. Its value is **one end-to-end, fully
+provenance-marked go/no-go pipeline** — not a discovery. **A measured null result
+is a valid and defensible outcome.** The thing being graded is whether every
+number on screen can be traced to a measurement or is honestly marked as absent.
+
+---
+
+## 1 · Ground truth — verified state of the repo
+
+Read this before believing anything in the old handoffs.
+
+### 1.1 What is REAL and measured today
+
+| Quantity | Source | Evidence |
+|---|---|---|
+| Radar amplitude LH/LV | `ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_{lh,lv}_d18.tif` — L2-SELENOREF, 2258 × 6618 @ 25.0 × 25.0 m | `data/pradan/raw/data/calibrated/20200808/` |
+| Georeferencing | Product's own GeoTIFF GeoKeys, validated against ISRO's 937,296-node geolocation grid | sample rms 0.2846 px, line rms 0.4550 px; corner residual **13.2 mm** (`ldem_frame_25m.provenance.json`) |
+| Amplitude mask | `native/valid_native.tif` | valid fraction **0.156395**, area **1460.68 km²** |
+| ISRO pointed swath | `sri_ma` product | fraction **0.356313**, area **3327.84 km²**; amplitude/swath = **0.438927** |
+| Elevation | **LOLA LDEM_80S_80M V2.0**, 80 m/px native → bilinear to the 25 m DFSAR grid | label range check PASS (residual 0.0, tol 0.5); CRS selftest worst corner error 4.34e-07°; `assert_dem_is_lola()` enforces **bit-identity, tolerance 0.0 m** every run |
+| Slope / roughness / hillshade / hazard | Derived from that DEM with per-axis spacing `(25.0, 25.0)` read from GeoKeys | `layers.json.m2_gradient_spacing` |
+| CPR / DOP (amplitude-only) | `((√lh − √lv)/(√lh + √lv))²` and `|lh−lv|/(lh+lv)` | native p50 **0.000565**, max **0.053411** |
+
+The whole imagery path is genuinely clean: six lossless WebP layers at full
+native 6618 × 2258, one global stretch per layer, served from Vercel's CDN, map
+paints with the backend stopped.
+
+### 1.2 What is NOT real and still reaches a screen
+
+Ranked by how badly it damages the project under questioning.
+`L` = renders in the **live** app; `R` = present in the **repo** only (dead code,
+but an examiner reading the source will find it).
+
+| # | Defect | Location | L/R |
+|---|---|---|---|
+| 1 | Random Forest trained on `np.random.uniform` labels, seed 42. Class 1 is *defined* as CPR 1.05–2.5, a range this frame (max 0.053) can never reach. Every P(ice) pixel is an extrapolation from fabricated examples. Feeds modules **E, F and G**. | `module_c_ice.py:33-66`, wired at `mission_service.py:50,363` | **L** |
+| 2 | Sensitivity sweep computes nothing. `scale = max(0.2, 1.0-(val-1.0)*0.8)`, `best_landing_site_id="site_1"` constant, `rover_distance_km = 11.2 + val*0.1`, `rover_energy_wh = 145.0 + val*2.5`. Served at `/api/sensitivity/*` with default `base_area_km2=8.75`. **Rendered in Step 9.** | `module_g_volume.py:100-158`, `api_router.py:61-69`, `StepPanel.tsx:55,307-312` | **L** |
+| 3 | Five landing sites are hardcoded grid offsets, scored after the fact. No search exists anywhere in `backend/`. 20 % of the "composite score" (`scientific_value`) is a restatement of the distance term already subtracted. | `module_e_landing.py:70-76, 102, 112-113` | **L** |
+| 4 | Ice interpretation string is unconditional: *"Detected 0.00 km² … Radar signature consistent with potential ice-bearing volume scattering."* | `module_b_radar.py:120-123` | **L** |
+| 5 | `anomaly_classification` pairs the **frame max CPR** with the **frame min DOP** — almost certainly different pixels. | `module_b_radar.py:131` | **L** |
+| 6 | Two contradicting values for the same quantity on one screen: verdict card shows `PSR AREA —  NO DATA` and `ROVER — NO DATA`, while StepPanel Steps 2 and 7 print confident km² and km from the backend. | `VerdictCard.tsx` vs `StepPanel.tsx:98-101, 231-234` | **L** |
+| 7 | StepPanel renders **no provenance marks at all** and has no null handling — a null renders as `undefined`/`NaN`. | `StepPanel.tsx:39-47` and every `Metric` | **L** |
+| 8 | Unmarked physics claims in StepPanel: `"remain below 40 K"` (there is no thermal model), `"RandomForest n=50"`, `"Gating Rule: CPR > 1.0"` as a literal beside the live threshold, `Slope ≤ 12°` next to `cutoff is 20°`. | `StepPanel.tsx:96,104,121,137,164,167,169,171,180` | **L** |
+| 9 | `(250.0, 250.0)` placeholder spacing still lets the pipeline publish areas, volumes and traverse km; only a string in `grid_dimensions` says so. | `mission_service.py:245-252` | **L** |
+| 10 | `np.zeros_like` as an absent state. Worst case: `pradan_pipeline.py:98-100` sets S1=S2=S3=0, which makes `compute_cpr_from_stokes` return **1.0 everywhere** and DOP **0.0 everywhere** — i.e. a frame that half-passes the ice screen. | `mission_service.py:288`, `pradan_pipeline.py:98-100` | **L** (reachable by any direct caller) |
+| 11 | PDF: rover table `.get()` defaults `12.0 km / 0.25 / 140.0 Wh / 8.0`; three fully invented rover rows on the empty case; and the limitations text asserts *"No pseudo-random seed is involved"* — contradicted by item 1 and by its own paragraph 2. | `pdf_generator.py:220-232, 259-261` | **L** |
+| 12 | `schemas.py` gives four radar fields plausible **defaults**, one of them ice-positive: `anomaly_classification = "Candidate signature consistent with potential ice"`. | `schemas.py:63-66` | **L** |
+| 13 | `CandidateLandingSite`, `RoverRouteResult`, `SensitivityPoint/Result`, `ExperimentResult` carry **no `provenance` and no `data_mode` field**. Fabricated numbers there are structurally impossible to label. | `schemas.py:94-195` | **L** |
+| 14 | `experiments_runner.py` — 178 lines, **zero computation**, publicly served at `/api/experiments`, and three of its four experiments are stamped `is_synthetic_evaluation=False`. | whole file, `api_router.py:72-74` | **L** endpoint, no caller |
+| 15 | `module_f_rover`: canned `avoidance_explanations` printed for every route regardless of geometry; A\* heuristic in **cells** against costs floored at 0.1 → inadmissible; `max_slope_limit_deg=22.0` contradicts `config.MAX_TRAVERSABLE_SLOPE_DEG=20.0`; cost scalers 15.0 / 5.0 / 8.0 cited nowhere. | `module_f_rover.py:85,199-211,220,294-302` | **L** |
+| 16 | Windows absolute paths `d:/FYP/data/pradan` in three files. On Render every crater is NOT_INGESTED — this is the real cause of the deployed DEMO payload, not memory. | `mission_service.py:188-190,228`, `real_data_gate.py:42`, `pradan_pipeline.py:22` | **L** |
+| 17 | Illumination is an invented brightness proxy **in two mutually inconsistent forms**: `render_layers` uses `hillshade(alt 30°) · elev_norm^1.2`; `build_analysis` uses `hillshade(alt 1.5°) · elev_norm^1.3`. The picture and the 77.18 % number come from different expressions. `doubly_shadowed` = PSR ∧ lowest elevation quintile — an elevation percentile, not a second shadowing event. | `render_layers.py:768-770`, `build_analysis.py:356-371` | **L** |
+| 18 | `ml_likelihood` is in the LAYERS panel but absent from `layers.json`, so it silently falls back to the backend base64 path and is squashed from a square 2048² grid onto the 2.93 : 1 bounds. | `config.ts:128`, `MissionMap.tsx:867-873` | **L** |
+| 19 | Cursor lat/lon readout uses a flat `KM_PER_DEG_LAT = 30.37` for both axes — wrong by ~57× in longitude at 88° S — while `sar_geometry` has an inverse validated to 13.2 mm. | `MissionMap.tsx:124,512-514` | **L** |
+| 20 | Unknown crater id silently becomes Shackleton. | `mission_service.py:156-157` | **L** |
+| 21 | `module_a_psr.py:104` has no `"Low"` branch — confidence can never be reported low; `:90-91` hardcodes the hillshade geometry into provenance as literals instead of recording the arguments. | `module_a_psr.py` | **L** |
+| 22 | **Step 11 "Explainability Dossier"** — 14 literal bullets: `Slope below 8°`, `78% solar illumination`, `88.4 / 100`, `22° cliffs`, `0.0% solar radiance`, `P > 0.80`. Every one has a live prop equivalent that is ignored, including `selection_rationale`, which Step 6 renders correctly. | `WorkflowViews.tsx:858-890` | **R** |
+| 23 | Tile URL hardcodes `http://127.0.0.1:8000` **and** `faustini`; `||` fallbacks print a specific `product_id` and observation date as provenance for a mission that supplied neither. | `GISMapViewer.tsx:114, 588-591` | **R** |
+| 24 | `MODE: REAL` printed unconditionally; loading strings claim "L2 calibrated Stokes vectors" and "Random Forest ice probability inference". | `App.tsx:207, 43-50` | **R** |
+
+### 1.3 The finding that changes the plan — half the frontend is dead code
+
+`main.tsx` → `Root.tsx` → `LandingPage` (default route) or `MissionControl`
+(`#mission`). **`App.tsx` is imported by nothing.** Its own docstring in
+`Root.tsx` still claims `#mission → App.tsx`; the code below it imports
+`MissionControl`. Verified by import graph.
+
+Therefore these files are **in the repo but never rendered**:
+
+```
+frontend/src/App.tsx                                16.6 KB
+frontend/src/App.css
+frontend/src/components/Views/WorkflowViews.tsx     49.1 KB   <- items 22
+frontend/src/components/Map/GISMapViewer.tsx        31.4 KB   <- item 23, only /tiles/ consumer
+frontend/src/components/Workflow/MissionStepper.tsx  7.5 KB
+frontend/src/components/Copilot/HenryAICopilotDrawer.tsx 10.1 KB
+frontend/src/landing/services/lunarBasemap.ts        5.9 KB   (no importer)
+frontend/src/utils/lunarCRS.ts                       1.8 KB   (killed in v2, never rewired)
+```
+
+Two consequences that shrink the remaining work substantially:
+
+1. **The tile pyramid has zero live consumers.** V10 Step 6 asked for rewiring two
+   of them before deleting. There is nothing to rewire — `backend/tiles/faustini`
+   (510 PNGs rendered from the deleted synthetic DEM) can simply go.
+2. **~122 KB of the most quotable fabrication is deletable, not fixable.** Item 22
+   does not need rewriting to read from props; the file it lives in needs to leave
+   the tree.
+
+**Verify this yourself before deleting** — run the import trace in Phase 0 and
+report it. Do not delete on the strength of this document alone.
+
+---
+
+## 2 · Non-negotiable rules
+
+These never relax. They are the working rules from the old
+`CLAUDE_CODE_WORKING_RULES.md`, plus what the last ten sessions established.
+
+**Data honesty**
+
+1. **Never invent a number.** If it cannot be computed from real data, emit an
+   explicit absent state and let the UI render it. `np.zeros_like` is not an
+   absent state. A plausible placeholder in the slot where a measurement belongs
+   is the worst outcome available.
+2. **Every number reaching the UI carries a provenance mark**: `MEASURED`,
+   `DERIVED`, `MODELLED`, or `NO DATA`. A number with no defensible mark does not
+   ship.
+3. **A provenance field never gets a default.** Same treatment as `spacing_m`:
+   required, keyword-only, no default. A caller who forgets must fail, not
+   inherit the strongest possible claim.
+4. **Do not retune a threshold to make a number look better.** If a threshold is
+   mis-set, print the distribution and say so.
+5. A **measured zero is a result** and must be presented as one. A zero produced
+   by an unfinished code path is not, and the report must distinguish them.
+
+**Engineering**
+
+6. No `rasterio`, no GDAL, no `gdalinfo`. Local Python has numpy, cv2, PIL, scipy,
+   scikit-learn, tifffile. **Nothing new in `requirements.txt`** — Render cannot
+   build scipy from source.
+7. Never `imread` a multi-gigabyte raster whole. `np.memmap` and windowed reads.
+8. Parse PDS labels as plain text and **parse units out of the angle brackets**.
+   `MAP_SCALE = 0.020 <KM/PIXEL>` vs `80 <m/pix>` is a 1000× trap that produces
+   plausible floats. Raise when the unit is absent.
+9. Return every touched file **complete**, not as a diff or a snippet. Exception:
+   a brand-new file over ~800 lines with no prior version may be reported by its
+   changed parts plus any function a reviewer must check.
+10. `MissionMapHandle` stays byte-identical: `zoomIn` / `zoomOut` / `reset`.
+    Prop changes are additive only unless a phase says otherwise.
+11. **No destructive git operation or file delete without explicit confirmation
+    in the session.**
+
+**Process**
+
+12. **Build the whole phase before opening a browser.** The only gate before
+    verification is `npx tsc --noEmit -p tsconfig.app.json`, exit 0.
+13. **Two browser sessions per phase, maximum.** Pass A = the "before" capture in
+    one go, only if the phase asks for it. Pass B = full verification after every
+    file is written. Pass C only if B fails the gate — then fix **every** finding
+    in one batch and re-verify once. The change→look→change→look loop is what
+    eats the time.
+14. Verification is a **script**, not a poking session:
+    `node frontend/scripts/verify_map.mjs`. Two facts that make a single pass
+    survive, both already measured in this project: `document.hidden === true`
+    under automation so `requestAnimationFrame` never fires and every animated
+    Leaflet move silently stalls — use `setZoom(z, {animate:false})` and
+    `setView(c, z, {animate:false})`, never `flyTo`/`flyToBounds`; and wait on the
+    image `load` event, never a timer, or you will screenshot the 640 px preview.
+15. **Prefer numbers over pictures.** Percentile tables, histograms, counts,
+    residuals, byte sizes, request counts. Screenshots only for what the gate asks.
+16. **If a number and a screenshot disagree, say so in the report** instead of
+    picking one. That contradiction going unflagged is how a fabricated verdict
+    shipped once already.
+17. **One report at the end of each phase**, not a running commentary:
+    (a) files touched with line counts, (b) typecheck result, (c) the evidence the
+    gate asked for in the order it asked, (d) **anything that disagreed with this
+    PRD, with the measurement that shows it**, (e) what is still open and what you
+    chose not to touch. Section (d) is the most valuable part — this document has
+    been wrong before and saying so has been right every time.
+
+---
+
+## 3 · The one architectural decision
+
+**There must be exactly one source of truth for every number on screen.**
+
+Today there are two, and they contradict each other on the same screen:
+
+- `frontend/public/analysis/faustini.json` — precomputed offline by
+  `backend/scripts/build_analysis.py`, native-grid, provenance-marked, honest.
+  Feeds the verdict card and the context bar.
+- `GET /api/mission/{crater}` — recomputes at request time on a **100 × 100**
+  bilinear resample of the padded frame, unmarked. Feeds all twelve StepPanel
+  steps.
+
+The resample alone destroys the statistics — measured on this frame:
+
+| quantity | native, masked | 100² bilinear | error |
+|---|---|---|---|
+| CPR mean | 0.001312 | 0.000238 | 5.5× low |
+| CPR max | 0.053411 | 0.043846 | 18 % low |
+| DOP mean | 0.057053 | 0.009463 | 6.0× low |
+| DOP p50 | 0.047532 | 0.000000 | destroyed |
+
+**Decision: `build_analysis.py` becomes the single producer.** Extend the analysis
+JSON to carry everything the twelve steps need, and rewrite `StepPanel.tsx` to
+read it through `analysis.ts` with the same `AnalysisValue` / provenance-mark
+discipline the verdict card already uses.
+
+The backend keeps only what genuinely needs on-demand computation:
+
+- `GET /api/craters` — catalogue.
+- `GET /api/sensitivity/{param}` — **only after Phase 1 makes it real.**
+- `GET /api/report/pdf/{crater}` — refuses unless the run is REAL.
+- `GET /api/health`, `GET /api/ingest/status` — diagnostics.
+
+Everything else on the mission screen is static, on the CDN, and cannot be
+overwritten by a cold-start fallback.
+
+**Regenerating the analysis and the layers must be one command**, so the imagery
+and the numbers can never again describe different data:
+
+```
+python backend/scripts/rebuild_all.py     # new: runs ingest → sar pipeline → build_analysis → render_layers
+```
+
+---
+
+## 4 · Phases
+
+Each phase is self-contained, ends at a gate, and is one Claude Code session
+unless stated. **Do not start a phase before its gate predecessor passes.**
+
+---
+
+### PHASE 0 — Cut the clutter (½ session)
+
+Nothing here changes a number. It removes ~122 KB of unreachable fabricated code
+and nine contradictory specification files, so every later phase is read against
+one document and one live code path.
+
+**0.1** Move the nine superseded handoffs into `docs/handoffs/` (git mv, not
+delete). Keep this PRD at the repo root.
+
+**0.2** Prove the dead-code claim in §1.3 before acting on it. Print, for each
+file listed there, every importer found by a full-tree grep. Report the table.
+If any file has a live importer, **stop and say which** — do not delete it.
+
+**0.3** With confirmation, remove the dead shell in **one commit**, message body
+carrying the import trace:
+
+```
+git rm frontend/src/App.tsx frontend/src/App.css \
+       frontend/src/components/Views/WorkflowViews.tsx \
+       frontend/src/components/Map/GISMapViewer.tsx \
+       frontend/src/components/Workflow/MissionStepper.tsx \
+       frontend/src/components/Copilot/HenryAICopilotDrawer.tsx \
+       frontend/src/landing/services/lunarBasemap.ts \
+       frontend/src/utils/lunarCRS.ts
+```
+
+Fix the stale docstring in `Root.tsx` that still says `#mission → App.tsx`.
+
+**0.4** The tile pyramid now has no consumer. Park the authored work first so
+nothing is lost, then remove:
+
+```
+git checkout -b parked/tile-pyramid
+# commit the uncommitted work in backend/scripts/generate_tiles.py and compare_tiles_vs_single.py
+git checkout <working-branch>
+git rm -r backend/tiles/faustini backend/scripts/generate_tiles.py backend/scripts/compare_tiles_vs_single.py
+```
+
+Report the branch name, the SHA, and the file count actually removed. Keep
+`docs/map_before_*.png` / `map_after_*.png` — they are viva evidence.
+
+**0.5** Delete `backend/app/modules/experiments_runner.py` and the
+`GET /api/experiments` route. It has no caller (`fetchExperiments` in `api.ts` is
+unreferenced), computes nothing, and marks three of four fabricated experiments
+`is_synthetic_evaluation=False`. Also delete `fetchExperiments`,
+`ExperimentResult` and `AblationStepResult` from the frontend. A **real** ablation
+returns in Phase 4.
+
+**0.6** Replace the three `d:/FYP/...` Windows absolutes with paths derived from
+`Path(__file__).resolve().parents[N]`, in `mission_service.py`,
+`real_data_gate.py`, `pradan_pipeline.py`.
+
+**0.7** Start the LOLA 20 m download **now**, in the background, so Phase 6 is not
+waiting on it. `LDEM_80S_20M.IMG` + `.LBL` (~1.9 GB) from
+`https://imbrium.mit.edu/DATA/LOLA_GDR/POLAR/IMG/` into `data/pradan/lola/`. Take
+the `.IMG`, **not** the `.JP2` — the JP2s are lossy and no reader exists in the
+allowed dependency set. `LDEM_875S_20M` does **not** cover this frame (it reaches
+84.83° S at one corner); 80S does, with 147 km to spare.
+
+**Gate 0** — `npx tsc --noEmit -p tsconfig.app.json` exit 0; `pytest` green;
+`npm run build` succeeds; `#mission` and the landing page both render; the import
+trace table is in the report; the parked branch SHA is reported.
+
+---
+
+### PHASE 1 — One truth surface, zero fabricated numbers (2–3 sessions)
+
+This is the phase that decides whether the project survives questioning. It has
+three parts; do them in order.
+
+#### 1A · Make the producer complete
+
+Extend `build_analysis.py` so `frontend/public/analysis/faustini.json` carries,
+for every one of the twelve steps, an `AnalysisValue` per number: `{value, unit,
+provenance, reason?, threshold?, comparison?, source?}`. Nothing is added to the
+JSON that is not either computed from a raster or explicitly absent.
+
+Specifically add:
+
+- **Step 2 (PSR):** absent for now — `psr_area_km2`, `doubly_shadowed_area_km2`,
+  `mean_illumination_fraction` all `UNAVAILABLE` with the reason already written
+  in `ILLUM_MODEL`. They become real in Phase 2. **Do not carry the 77.18 %
+  proxy forward as if it were a shadow fraction.**
+- **Step 3 (radar):** masked native statistics only. `screening_pass_fraction`
+  over the amplitude mask, not the frame.
+- **Step 4 (ice):** the criteria screen, not a probability. Five named criteria,
+  each with measured value, threshold, comparison and pass/fail.
+- **Step 5 (terrain):** slope, roughness, hazard percentiles **and** the weights
+  actually used, read from `config.py`, not restated in prose.
+- **Step 8 (volume):** three tiers, each `DERIVED`, each carrying its assumed
+  depth and fraction **as data**, so the UI never hardcodes "2m / 5%".
+- **Step 9 (sensitivity):** see 1B.
+- Steps 6, 7, 10 remain `UNAVAILABLE` until Phases 3 and 4.
+
+#### 1B · Make the sensitivity studio real or remove it
+
+The sweep over CPR and DOP thresholds is **trivially computable** from the
+precomputed native arrays — re-threshold, count, multiply by cell area — and
+completely fabricated today. Compute it offline in `build_analysis.py` over a
+stated grid of thresholds and ship it in the JSON:
+
+```
+for th in cpr_grid:
+    n = ((cpr > th) & (dop < dop_th) & valid).sum()
+    area_km2 = n * cell_area_km2          # MEASURED
+    volume_m3 = area_km2 * 1e6 * depth * fraction   # DERIVED
+```
+
+Drop the `rover_distance_km` and `rover_energy_wh` columns entirely until Phase 4
+makes replanning possible; drop `best_landing_site_id` until Phase 3. **Delete
+`run_sensitivity_sweep` from `module_g_volume.py`.** If the endpoint is kept, it
+serves the precomputed table, not an invented curve.
+
+#### 1C · Purge the live surfaces
+
+Backend:
+
+- `module_b_radar.py:120-123` — make the interpretation conditional on
+  `anomalous_cells > 0`. At zero it must read as a measured null result.
+- `module_b_radar.py:131` — stop pairing frame-max CPR with frame-min DOP. Either
+  classify per pixel and report the count, or remove `anomaly_classification`.
+- `module_b_radar.py:15-22` — delete `compute_cpr_from_sigma`, called from nowhere.
+- `module_c_ice.py` — **unwire it entirely.** Remove the import and call from
+  `mission_service.py:50,363`; replace `ml_likelihood` and
+  `scientific_candidate_mask` in the E/F/G call sites with the **criteria-screen
+  mask** (`cpr > th & dop < th & valid`), which is measured. Leave the file on
+  disk with a header stating why it is unwired: it is fitted to
+  `np.random.uniform` labels whose class 1 lies entirely outside this product's
+  achievable CPR range, so every prediction is an extrapolation from fabricated
+  examples. **Do not retrain it on better synthetic labels — better synthetic
+  labels are still synthetic.**
+- `module_e_landing.py:102` — `scientific_value` currently contains only
+  distance. Until Phase 3, rename it to `distance_proximity_index` and remove it
+  from the composite score, so 20 % of the ranking stops double-counting the
+  distance term already subtracted at `:113`.
+- `module_f_rover.py:294-302` — delete the canned `avoidance_explanations`.
+  Replace with statements derived from the path, or an empty list.
+- `module_f_rover.py:85` — remove the `max_slope_limit_deg=22.0` default; read
+  `settings.MAX_TRAVERSABLE_SLOPE_DEG`. Delete the two `"> 22°"` literals at `:237`.
+- `module_f_rover.py:220` — either scale the A\* heuristic into cost units or
+  set `algorithm="Dijkstra"` as the only supported mode and say so. An
+  inadmissible heuristic labelled A\* is a claim of optimality that is false.
+- `mission_service.py:245` — the `(250.0, 250.0)` fallback must become **fatal**.
+  If spacing cannot be resolved, return `NOT_INGESTED`. It must not be possible to
+  publish a km² off a placeholder.
+- `mission_service.py:288` and `pradan_pipeline.py:98-100` — remove
+  `np.zeros_like` as an absent state. A missing Stokes component must raise, not
+  silently produce CPR = 1.0 everywhere.
+- `mission_service.py:156-157` — an unknown crater id must 404, not become
+  Shackleton.
+- `mission_service.py:206` — `real_radar_available = True` is hardcoded, making
+  the Stokes branch at `:269-272` unreachable. Derive it, or delete the dead
+  branch until Phase 5 wires it properly.
+- `module_a_psr.py:90-91` — record the arguments actually passed, not literals.
+  `:104` — add the missing `"Low"` branch, or remove `confidence_level`.
+- `schemas.py:63-66` — delete all four defaults, especially the ice-positive
+  `anomaly_classification`. Make them required.
+- `schemas.py:94-195` — add `provenance: ProvenanceMetadata` and `data_mode` to
+  `CandidateLandingSite`, `RoverRouteResult` and the sensitivity types. Without
+  this, the fabricated numbers in E and F are structurally unlabelable.
+- `pdf_generator.py:220-232` — remove every `.get()` default and the three
+  hardcoded rover rows; render an explicit `NO DATA` row like the landing table
+  already does at `:196-200`. `:150` and `:256` — read the assumptions from the
+  payload. `:259-261` — delete the false "no pseudo-random seed is involved"
+  claim.
+
+Frontend:
+
+- **`StepPanel.tsx` — rewrite.** Every figure reads an `AnalysisValue` from the
+  static analysis, renders through the existing `Pv`/`showValue` helpers, shows
+  `—` plus the reason when absent, and carries a provenance chip. Delete every
+  hardcoded threshold and physics claim listed as item 8 in §1.2 — a threshold is
+  read from `analysis.thresholds`, a weight from `analysis.hazard_model`.
+- `MissionControl.tsx:85` — remove the `Peak P(ice)` cell. Put the Phase 5a
+  measured CPR-anomaly percentile there instead, marked `MEASURED` and labelled
+  `TOP 1% CPR WITHIN THIS SWATH — RANKING, NOT A DETECTION`.
+- `config.ts:128` — remove the `ml_likelihood` layer. It has no manifest entry, so
+  it is the one layer whose pixels come from the DEMO-capable backend, drawn
+  squashed onto the wrong aspect beside five measured rasters.
+- `config.ts:102,109,116,131,138,145` — these layer descriptions duplicate
+  constants that `layers.json` already carries (`valid_fraction`,
+  `ribbon_thickness_km`, `vmin`/`vmax`). Interpolate from the manifest, as
+  `MissionMap.tsx:710-716` already does correctly, so they cannot drift.
+- `MissionMap.tsx:124,512-514` — replace `KM_PER_DEG_LAT = 30.37` with the
+  inverse projection from `app/ingestion/sar_geometry` (validated to 13.2 mm).
+  Export it to the frontend as a small closed-form function, or precompute a
+  coarse lat/lon lookup grid into `layers.json`. Then the `≈` in the readout can
+  go. If you keep an approximation, **state its residual in the report** rather
+  than hedging in the UI.
+- `VerdictCard.tsx:45-51` — evidence rows 3 and 4 print `0.00 vs > 0.00`.
+  Suppress a threshold clause when the threshold is 0.
+
+**Gate 1** — this is the hard one. Produce a single table with one row per number
+rendered on `#mission`, listing: the label, the value shown, the provenance mark,
+and the file:line of the computation that produced it. **Every row must resolve to
+a raster read or an explicit absent state.** Any row that cannot is a defect, not
+a caveat. Plus: typecheck exit 0, `pytest` green, and one browser pass at fixed
+zoom confirming the verdict card, the five evidence rows and every StepPanel
+figure reconcile line-by-line against the printed statistics.
+
+---
+
+### PHASE 2 — Real illumination and PSR (1–2 sessions)
+
+The single biggest unlock: it fills `PSR AREA`, `cold-trap overlap`,
+`doubly-shadowed core` and `thermal stability`, and it is the physical reason to
+look for ice at all.
+
+Delete both invented illumination expressions (item 17). Compute a horizon.
+
+**Method.** For each pixel, the horizon elevation angle in azimuth `az` is
+`max over r of atan((h(p + r·u_az) − h(p)) / r)`. A pixel is lit for sun state
+`(az, el)` when `el > horizon(az)`. At the lunar south pole the Sun sweeps all
+360° of azimuth over a lunar day and its elevation stays within about ±1.54°.
+Sample `az` at 1° and `el` from 0° to 1.54°. Output `illumination_fraction ∈ [0,1]`
+per pixel and `psr_mask = (fraction == 0)`.
+
+**Three things that decide whether this is science or decoration:**
+
+1. **Compute the horizon on the FULL 7600 × 7600 LOLA array, then crop.** At the
+   pole the horizon is set by crater rims tens of kilometres outside the
+   165 × 56 km frame. A horizon computed only inside the frame invents sunlight
+   that real terrain blocks. The whole 80S product is on disk — use it.
+2. **Rotate-and-scan, not per-pixel ray marching.** For each azimuth, rotate with
+   `scipy.ndimage.rotate(order=1)`, take a running maximum of `(h−h0)/r` along
+   rows, rotate back. O(N) per azimuth instead of O(N · ray length). Decimate
+   until it completes in reasonable time and **report the resolution you actually
+   used.** A 240 m far-field horizon with an 80 m near field is a legitimate
+   multi-scale technique; a silently downsampled one is not.
+3. **Label the resolution.** A shadow mask derived from 80 m posts must not be
+   presented at 25 m. Emit `native_metres_per_pixel` and the decimation factor
+   alongside the mask.
+
+`doubly-shadowed core` means never directly lit **and** receiving no scattered
+light from lit terrain. Approximate with a sky-view factor restricted to lit
+horizon. If it cannot be computed defensibly, emit the absent state and say which
+term was missing. **Do not silently reuse the single-shadow mask for both** — the
+current code uses the lowest elevation quintile, which is not a shadowing event.
+
+**Thermal stability — DERIVED, no download.** No thermal product is on disk. A
+pixel that is never directly lit sits below the ~110 K water-ice stability limit,
+so emit `thermal_stability: DERIVED` carrying the assumed threshold and the words
+*"inferred from illumination, not from measured temperature"* through to the UI.
+If a Diviner product ever arrives it becomes MEASURED and nothing else changes.
+
+Then re-render the `illumination` layer from the **same** array the statistics
+use — one expression, one sun, one number. Update its `layers.json` provenance
+string. Note the string is regex-tested by `MissionMap.tsx:385`
+(`/synthetic|placeholder|analytic|unknown|unavailable/i`) — the new string must
+contain none of those six words or the UI will keep captioning it a placeholder.
+
+**Gate 2** — `PSR AREA` in km²; `illumination_fraction` percentiles; the azimuth
+count and elevation samples used; the decimation factor and effective metres per
+pixel; whether the doubly-shadowed term was computed or emitted absent; and a
+visual check that the PSR mask lands on crater floors, not on a smooth gradient.
+
+---
+
+### PHASE 3 — Landing sites, searched instead of asserted (1 session)
+
+Delete the five hardcoded offsets at `module_e_landing.py:70-76`.
+
+**Run the search on the native 25 m frame**, not the 100 × 100 serving grid. A
+site chosen on 1 km cells is located to ±500 m, which is not a landing site.
+Score all 14.9 M pixels vectorised and send only the resulting site list to the UI.
+
+Per-pixel criteria, all against `config.py` thresholds:
+
+- slope below `CRITICAL_LANDING_SLOPE_DEG` — this finally discriminates: on real
+  LOLA, `slope > 15°` covers **25.161 %** of the frame against 3.819 % on the
+  deleted placeholder
+- roughness below its limit
+- hazard below its limit
+- inside the amplitude mask. A site outside it has no radar evidence and must
+  **say so**, not be quietly excluded
+- distance to the nearest PSR within rover range — the ice-access term
+- `illumination_fraction` above a minimum — the solar-power term
+
+The last two are in direct tension, and **that tension is the science**: close to
+the cold trap but still able to charge. Report both numbers per site. Do not
+collapse them into one score and hide them.
+
+Then non-maximum suppression with a **stated** minimum separation, so the top N
+are not five pixels of one crater floor. Every returned site carries grid
+coordinates, lat/lon from `sar_geometry`, each criterion's value, each criterion's
+pass/fail against the named threshold, and a provenance mark.
+
+Emit a **suitability heatmap** as a layer, so the recommendation is visibly the
+argmax of something rather than an opinion.
+
+**One correction to carry in:** hazard is currently scored *after* the resample.
+On ~1 km serving cells roughness p50 is 214.5 m against a 50 m divisor, so
+`clip(roughness/50)` pins to 1.0 and slope stops contributing — live hazard mean
+0.635 with p99 = 1.0 is a saturation artefact, not a terrain map. **Score hazard
+on the native 25 m frame (where p50 is 5.8 m) and area-average the bounded 0–1
+field down to any serving grid.** Do not touch the 50 m divisor. Carry **two**
+numbers per serving cell: `hazard_mean` for traverse cost and `slope_max` for the
+hard-impassable gate — a cell that averages safe can still contain a 25° face.
+
+**Gate 3** — the top N sites with every criterion value, threshold, pass/fail and
+mark; the NMS separation used; the PSR-distance vs illumination pair for each
+site, unreduced; the hazard percentile table before and after the
+score-then-average change.
+
+---
+
+### PHASE 4 — The traverse, and a real ablation (1 session)
+
+Build a traversal cost surface from LOLA slope and hazard: per-cell cost rising
+with slope, hard-impassable where slope or hazard exceeds the rover limits in
+`config.py`. Run `scipy.sparse.csgraph.dijkstra` over the graph of passable cells
+— scipy is already allowed, no new dependency.
+
+A 14.9 M-cell graph is ~119 M edges and will not fit comfortably. Aggregate to a
+**stated** planning resolution (100 m cells → 565 × 1655 ≈ 935 k cells ≈ 7.5 M
+edges is comfortable), carrying `hazard_mean` and `slope_max` per planning cell as
+above. **Report the planning resolution as a number**, and state that path length
+is quantised to it.
+
+Deliver:
+
+- pairwise shortest-path distances between the Phase 3 sites, as a matrix
+- path polylines in grid coordinates and lat/lon
+- path length in metres, and an energy proxy (cumulative climb or integrated
+  cost), marked `DERIVED`
+- the shortest tour visiting the selected sites. N is small; for N ≤ 8 solve it
+  **exactly by enumeration** and say that is what you did, rather than shipping a
+  heuristic labelled optimal
+- **`UNREACHABLE` as an explicit state.** If no passable path exists between two
+  sites, that is a finding worth showing — never a distance of 0
+
+`target_coordinates` must stop being the grid centre. Targets come from Phase 3's
+sites and Phase 5a's anomaly ranking.
+
+Then the **real ablation** that replaces the deleted `experiments_runner`: rerun
+the planner with `compute_hazard_score`'s weights zeroed one at a time and report
+the measured deltas in distance, mean hazard and max slope. Boulder is
+permanently absent (`WEIGHT_BOULDER = 0`, no optical product on disk), so it
+appears as `NO DATA`, never as a row with a number.
+
+**Gate 4** — the distance matrix; the tour length; the method (exact enumeration
+or otherwise); any `UNREACHABLE` pairs; the planning resolution; the ablation
+table with boulder marked absent.
+
+---
+
+### PHASE 5 — The ice question (2–3 sessions; the hard one)
+
+`CANDIDATE AREA 0.00 km²` is not a bug in the threshold. It is the correct output
+of a measurement that cannot reach the threshold. This build computes
+
+```
+CPR = ((√lh − √lv) / (√lh + √lv))²
+```
+
+a **squared channel-imbalance ratio** that collapses to zero whenever LH ≈ LV,
+which is the normal regolith case. Native p50 = 0.000565, max = 0.053411 against
+a 1.00 threshold. **No value in [0, 1] fixes this. Do not retune `CPR_THRESHOLD`.**
+
+#### 5a · Ship something honest now (¼ session)
+
+Add a **relative** CPR anomaly ranking within the measured swath: top percentiles
+of the measured CPR field, with their area and locations, labelled
+`RELATIVE ANOMALY WITHIN THIS SWATH — NOT A CBOE DETECTION`. It answers "which
+places are most worth looking at" without claiming a detection the product cannot
+support. It is a ranking and the label must say ranking. This also fills the cell
+vacated by P(ice) in Phase 1.
+
+#### 5b · The real fix — Stokes from the complex products
+
+True hybrid-polarity CPR needs the phase term: `S3 = 2·Im⟨E_H · E_V*⟩`, then
+`CPR = (S0 − S3)/(S0 + S3)`. `module_b_radar.py` **already contains correct
+`compute_cpr_from_stokes()` and `compute_dop_from_stokes()` and has never been fed.**
+Feed them; do not write new ones.
+
+The data is on disk and verified present:
+
+```
+data/pradan/raw/data/calibrated/20200808/
+  ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_lh_d18.tif   2,165,948,598 bytes
+  ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_lv_d18.tif   2,165,948,598 bytes
+  ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_xx_d18.xml   (the label)
+```
+
+355768 × 759, `ComplexLSB8`, 21 azimuth looks.
+
+Rules:
+
+- Windowed `np.memmap` only. Same discipline as LOLA. Never whole-array.
+- **Average the Stokes parameters over the azimuth looks BEFORE forming ratios.**
+  Averaging after the ratio is a different and wrong quantity, and single-look
+  speckle will swamp the result.
+- Parse the PDS4 label for the complex layout rather than assuming interleave or
+  endianness. `LSB_INTEGER` vs `MSB`, and units inside angle brackets, are exactly
+  where silent corruption enters.
+- **Fatal check, same shape as the LOLA one:** reproduce a statistic the product
+  carries about itself from raw bytes before trusting the read.
+- `sli` is slant-range L1A. Geocoding to the `sri` ground-range frame is part of
+  the job — the `sli_grid` (11119 × 25, interval 32/32) in
+  `geometry/calibrated/20200808/` is the mapping.
+
+**Both outcomes ship.** If real CPR reaches published lunar values (≈0.3–0.7
+regolith, 0.7–1.3+ anomalous polar), the detector is alive and `CANDIDATE AREA`
+becomes a real number. If it does not, that is a **measured zero** — a legitimate
+scientific result — and it is presented as one.
+
+**Fallback, only with explicit approval:** if 5b proves too expensive, rename the
+amplitude quantity to what it actually is (a linear depolarisation ratio), drop
+the `CPR > 1` claim, and recalibrate the threshold to the real histogram. Weaker
+project, but not misleading. **Ask before choosing this.**
+
+**Gate 5** — the CPR percentiles from the complex read; the label statistic
+reproduced as the fatal check; the geocoding residual against the `sri` frame; and
+the final `CANDIDATE AREA`, including if it is a measured zero.
+
+---
+
+### PHASE 6 — Map clarity (1 session + download time)
+
+`render_layers.py` already writes full-resolution 6618 × 2258 lossless WebP with a
+single global stretch, so the remaining softness is **not** a render cap and must
+not be chased in CSS. Four honest upgrades, in order.
+
+**6.1 — LOLA 20 m/px.** This is the real fix and it is the largest single gain
+available to the look of the map. At 80 m native, the 25 m grid is a **3.2×
+upsample** — three of every four pixels of apparent detail are interpolation,
+which is exactly what `layers.json` already prints as *"carries no relief finer
+than 80 m"*. At 20 m native the 25 m grid becomes a slight **downsample**, so the
+displayed detail is real. Same code path as Phase A, **one `--input` change**:
+
+```
+python backend/scripts/ingest_lola_polar_dem.py --input data/pradan/lola/LDEM_80S_20M.IMG
+```
+
+**Do not change the 25 m grid to chase 20 m.** The gain is already there, and
+changing the grid ripples through every layer, mask and bound. Re-run the slope
+and hazard percentile tables afterwards — they will move, and that is expected,
+not a regression. Update `native_metres_per_pixel` and `resample_ratio` in the
+provenance sidecar and the layer provenance strings, keeping all six banned words
+out of them.
+
+**6.2 — Multi-directional hillshade.** `render_layers.compute_hillshade` uses a
+single sun at azimuth 315°, altitude 30°. Slopes facing away from that one light
+flatten out completely. Replace with a weighted blend over about four azimuths
+(e.g. 225/270/315/360 at equal weight, or the standard Swiss 315-dominant
+weighting). Keep the single-azimuth path available behind a flag and **state which
+one shipped** in `layers.json`.
+
+**6.3 — Hypsometric tint and contours for `dem_elevation`.** Today it is a flat
+viridis ramp with no relief cue at all — the relief exists only in the separate
+`hillshade` layer. Multiply an elevation-classed tint by the hillshade, and add
+contours at a stated interval. Both are **display choices, not data**, and
+`layers.json` must say so.
+
+**6.4 — Re-check the base CSS filter with numbers, not by eye.** After 6.1–6.3 the
+`mc.css` `.mc-raster--base` filter (currently `contrast(1.06) brightness(1.10)`) is
+compensating for a DEM that has changed. Print the 8-bit histogram of
+`hillshade.webp`: mean, median, p2, p98, and the clipped fraction at 0 and 255.
+Rule, not a guess: if the post-filter median exceeds ~190 or more than 1 % of
+pixels clip at 255, walk `brightness` back until neither holds. Report before and
+after.
+
+Do not restyle anything else. The two-tier coverage encoding, the graticule, the
+scale bar and the amber out-of-coverage styling are all measured decisions from
+earlier phases and stay.
+
+**Gate 6** — which LOLA product was ingested and its native post spacing; the
+before/after slope and hazard percentile tables; which hillshade azimuth scheme
+shipped; the hillshade histogram before and after any filter change; total payload
+per layer; and four screenshots at identical zoom and centre — Surface Relief and
+Radar Signals, before and after.
+
+---
+
+### PHASE 7 — Make it defensible on the day (1 session)
+
+**7.1** `docs/PROVENANCE.md` — one table, every number the app can display, its
+source raster, its computation, its mark, and its known limitation. This is the
+document to hand a reviewer.
+
+**7.2** `docs/METHODS.md` — the actual method for each phase: the georeferencing
+validation (13.2 mm), the LOLA label parse and its four traps, the horizon
+algorithm and its resolution, the site search and NMS, the traverse graph and its
+planning resolution, the Stokes derivation. Include the numbers, not the prose.
+
+**7.3** Fold `frontend/scripts/verify_map.mjs` and `verify_v8_view.mjs` into one
+committed script that reproduces every gate's evidence in a single command and
+writes to `docs/`. Delete the other.
+
+**7.4** Update `README.md` and the four stale `docs/*.md`
+(`ml-methodology.md` in particular describes the deleted Random Forest).
+
+**7.5** Rehearse the three questions this project will actually be asked:
+
+- *"You didn't find any ice."* → Correct. Here is the measured CPR distribution,
+  here is why an amplitude-only product cannot reach the CBOE threshold, here is
+  the Stokes derivation that can, and here is the measured result either way.
+- *"This is trivial."* → Here is the per-pixel site search over 14.9 M cells with
+  six criteria and stated NMS separation; here is the horizon-based PSR
+  computation over the full 7600² LOLA array; here is the sub-pixel
+  georeferencing validation against ISRO's own 937,296-node grid.
+- *"How do I know these numbers are real?"* → Every one carries a mark, every mark
+  resolves to a raster read, and `assert_dem_is_lola()` fails the build at
+  tolerance 0.0 m if the elevation is not the LOLA product.
+
+---
+
+## 5 · Out of scope — do not start these
+
+- LRO Diviner thermal ingest. Thermal is `DERIVED` from illumination (Phase 2).
+- Real optical imagery for boulder detection. Boulder risk is `NO DATA` and
+  `WEIGHT_BOULDER = 0`.
+- A second crater. `cpr_real.tif` / `dop_real.tif` are crater-agnostic shared
+  filenames; `assert_no_shared_real_rasters` will `SystemExit` the moment a second
+  crater becomes eligible. Shackleton and Shoemaker are correctly `NOT_INGESTED`.
+- NASA Moon Trek polar basemap / `LunarSouthPoleCRS`. Investigated and killed in
+  v2: every `trek.nasa.gov/tiles/Moon/SP/...` URL 404s, and independently, Leaflet
+  cannot reproject raster tiles client-side, so pre-rendered equirectangular tiles
+  can never align inside a polar-stereographic CRS. `frontend/src/utils/lunarCRS.ts`
+  has nothing to align to.
+- Retraining any classifier on synthetic labels, in any shape.
+- Retuning `CPR_THRESHOLD`.
+- The AI copilot. It is dead code after Phase 0.
+
+---
+
+## 6 · Definition of done
+
+The project is done when all six statements are true and each is backed by a
+number in a report:
+
+1. Every number rendered on `#mission` resolves to a raster read or an explicit
+   absent state, and carries a mark. (Gate 1)
+2. PSR area, cold-trap overlap and illumination fraction come from a horizon
+   computation over the full LOLA array, at a stated resolution. (Gate 2)
+3. Landing sites are the argmax of a six-criterion per-pixel search over
+   14.9 M native cells with stated NMS separation, each with per-criterion
+   evidence. (Gate 3)
+4. The traverse is a Dijkstra path over a slope-and-hazard cost surface at a
+   stated planning resolution, with `UNREACHABLE` as a real state. (Gate 4)
+5. CPR is either a Stokes-derived measurement or an explicitly-labelled
+   amplitude-only ratio with the claim withdrawn — and `CANDIDATE AREA` is a
+   measurement either way, including a measured zero. (Gate 5)
+6. The map's relief is real at 25 m (LOLA 20 m native), lit from more than one
+   direction, and the base filter is set from a histogram rather than by eye.
+   (Gate 6)

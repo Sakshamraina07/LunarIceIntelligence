@@ -6,7 +6,7 @@
  * inside the mission app, not here).
  */
 import type { LunarTarget } from '../data/targets';
-import { EVIDENCE_COLORS } from '../data/targets';
+import { NOT_INGESTED_LABEL, UNSCREENED_COLOR, targetColor } from '../data/targets';
 
 interface Props {
   live: boolean;
@@ -29,7 +29,11 @@ export function LandingChrome({ live, selected, onSelectClose, onEnterMission }:
           Lunar Ice Intelligence
         </div>
         <div className={`li-badge ${live ? 'li-badge--live' : 'li-badge--demo'}`}>
-          {live ? 'Data · Live backend' : 'Data · Demo / fallback'}
+          {/* `live` means at least one target came back with a screening verdict
+              from a REAL backend run. The old alternative read "Demo / fallback",
+              which named a seeded mode that no longer exists — the honest
+              alternative is that nothing has been screened in this build. */}
+          {live ? 'Data · Live backend' : 'Data · No swath ingested'}
         </div>
       </div>
 
@@ -145,16 +149,40 @@ export function LandingChrome({ live, selected, onSelectClose, onEnterMission }:
             ✕
           </button>
           <div className="li-detail-name">{selected.name}</div>
-          <div className="li-detail-label" style={{ color: EVIDENCE_COLORS[selected.evidence] }}>
-            {selected.label}
-          </div>
-          <div className="li-detail-note">{selected.note}</div>
-          <div className="li-detail-meta">
-            <span>
-              {selected.lat.toFixed(2)}° , {selected.lon.toFixed(2)}°
-            </span>
-            <span>{selected.demo ? 'Demo estimate' : 'Live · backend'}</span>
-          </div>
+          {selected.label ? (
+            <>
+              <div className="li-detail-label" style={{ color: targetColor(selected) }}>
+                {selected.label}
+              </div>
+              <div className="li-detail-note">{selected.note}</div>
+              <div className="li-detail-meta">
+                <span>
+                  {selected.lat.toFixed(2)}° , {selected.lon.toFixed(2)}°
+                </span>
+                <span>
+                  {selected.psrFraction !== undefined
+                    ? `${(selected.psrFraction * 100).toFixed(0)}% in permanent shadow`
+                    : 'Live · backend'}
+                </span>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* No swath, no verdict. The tier colour and the screening line are
+                  both withheld — the crater is still named and located, because
+                  its position is a published fact and not a result of ours. */}
+              <div className="li-detail-label" style={{ color: UNSCREENED_COLOR }}>
+                {NOT_INGESTED_LABEL}
+              </div>
+              <div className="li-detail-note">{selected.note}</div>
+              <div className="li-detail-meta">
+                <span>
+                  {selected.lat.toFixed(2)}° , {selected.lon.toFixed(2)}°
+                </span>
+                <span>{selected.diameterKm} km across · IAU/USGS</span>
+              </div>
+            </>
+          )}
         </div>
       )}
     </>

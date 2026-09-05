@@ -246,7 +246,25 @@
 .mc-layer--on .mc-layer-check { opacity: 1; }
 
 .mc-map-legend { bottom: 1rem; left: 1rem; width: 15rem; padding: 0.7rem 0.8rem; }
-.mc-legend-title { font-size: 0.72rem; font-weight: 600; color: var(--mc-text); margin-bottom: 0.4rem; }
+.mc-legend-title { font-size: 0.72rem; font-weight: 600; color: var(--mc-text); margin-bottom: 0.4rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+
+/* Provenance badge — states on the legend itself, not in a footnote, where the
+   pixels came from. As of V10 five of the seven layers are measured (three
+   topography from LOLA — relief, elevation, hazard — and two radar from DFSAR)
+   and two are modelled (the
+   illumination brightness proxy and P(ice)). The --synthetic rule is retained
+   and currently unused: a crater with no real product must still be able to say
+   so. Badge wording lives in MissionControl.provBadge(); this file only colours
+   it by provenance class. */
+.mc-prov {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; font-weight: 700;
+  letter-spacing: 0.06em; padding: 0.14rem 0.34rem; border-radius: 3px;
+  border: 1px solid currentColor; white-space: nowrap; flex: none; opacity: 0.9;
+}
+.mc-prov--measured  { color: #6ee7a8; background: rgba(110, 231, 168, 0.10); }
+.mc-prov--synthetic { color: #f2a14e; background: rgba(242, 161,  78, 0.10); }
+.mc-prov--model     { color: #c084fc; background: rgba(192, 132, 252, 0.10); }
 .mc-legend-bar { height: 8px; border-radius: 4px; border: 1px solid var(--mc-line); }
 .mc-legend-ends {
   display: flex; justify-content: space-between;
@@ -427,18 +445,70 @@
 .mc-fadein { animation: mc-fadein 0.3s ease; }
 @keyframes mc-fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-/* Leaflet: hide default zoom focus outlines, keep tiles crisp on upscaling */
+/* Leaflet: hide default zoom focus outlines. Layers are single images now, not
+   tiles, so the rendering hints live on .mc-raster. */
 .mc-map .leaflet-container { background: #03060c; outline: none; }
-.mc-map img.leaflet-tile { image-rendering: auto; }
+.mc-map img.leaflet-image-layer { image-rendering: auto; }
 
-/* Terrain base: lift relief so the hillshade reads as a real lunar surface —
-   deeper shadows, brighter sunlit crests, a touch of warmth like regolith. */
-.mc-base-tiles {
-  filter: contrast(1.14) brightness(1.16) saturate(0.92);
+/* Terrain base: lift relief a little so the hillshade reads as a surface rather
+   than a flat grey plate.
+
+   v7 — RE-MEASURED, NOT GUESSED. hillshade.webp is 6618 x 2258 = 14,943,444 px,
+   exactly neutral grey (max |R-B| = 0, so saturate() was a measured no-op and is
+   gone) and already clips 2.010 % at 255 straight out of the global
+   normalisation. Rec.709 luma histogram, and what the old filter did to it:
+
+     SOURCE                            mean 149.68  median 156  clip@255 2.010 %
+     contrast(1.14) brightness(1.16)   mean 176.06  median 186  clip@255 3.555 %
+     contrast(1.04) brightness(1.02)   mean 153.45  median 160  clip@255 2.223 %
+
+   The stated rule was median <= 190 and clip@255 <= 1 %. The median passed at
+   186; the 1 % bar is unreachable by ANY brightness >= 1.00 because the source
+   already exceeds it on its own, so the measurable form of the rule is ADDED
+   clipping: the old filter added 1.545 pp, this one adds 0.213 pp.
+
+   Also measured: contrast(), not brightness(), is what crushes the sunlit crests
+   — contrast(1.14) maps every v >= 239 to 1.0 BEFORE brightness is applied, so
+   walking brightness back to 0.98 only moves those pixels from 255 to 250 and
+   they stay a single flat value. Contrast is what came down here.
+   Numbers from: python backend/scripts/hillshade_histogram.py */
+.mc-raster--base {
+  /* v8 — set BETWEEN the two measured points in the table above, not guessed:
+       contrast(1.14) brightness(1.16)  median 186, +1.545 pp added clip
+       contrast(1.06) brightness(1.10)  <- here
+       contrast(1.04) brightness(1.02)  median 160, +0.213 pp added clip
+     This is a DISPLAY stretch on a shaded-relief product, and hillshade carries
+     no physical unit, so brightening it claims nothing. The stretch that DOES
+     carry units is the elevation one, recorded as vmin/vmax in layers.json, and
+     it is untouched. Re-measure before moving this again:
+     python backend/scripts/hillshade_histogram.py */
+  filter: contrast(1.06) brightness(1.10);
 }
-.leaflet-pane .mc-base-tiles img,
-.mc-base-tiles img.leaflet-tile {
-  image-rendering: auto;
+
+/* Past native zoom (log2(6618/256) ≈ 4.69) one image pixel covers more than one
+   screen pixel. Bicubic smoothing there invents detail the 25 m product does not
+   have, so the pixels are shown square instead — the resolution limit becomes
+   visible rather than hidden. Toggled from MissionMap on zoomend. */
+.mc-map--pixelated .mc-raster {
+  image-rendering: pixelated;
+}
+
+/* Shown only when /layers/layers.json fails to load, so an empty map explains
+   itself instead of looking like a rendering bug. */
+.mc-map-degraded {
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 32rem;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(242,193,78,0.45);
+  background: rgba(40,28,6,0.9);
+  color: #f2c14e;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  line-height: 1.5;
+  letter-spacing: 0.04em;
+  text-align: center;
 }
 
 /* Depth: gentle top-lit vignette for a curved-surface feel (kept light so the
@@ -503,3 +573,143 @@
   color: var(--mc-text-dim);
   text-shadow: 0 1px 3px rgba(0,0,0,0.9);
 }
+
+/* ── Per-value provenance ─────────────────────────────────────────
+   Every number in the verdict card and the context bar carries one of
+   these marks. UNAVAILABLE values are rendered visibly degraded — an em
+   dash plus the reason — so a simulated figure can never occupy the slot
+   a measured one would. See src/mission/analysis.ts. */
+.mc-pv {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 0.1rem 0.28rem;
+  border-radius: 2px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.mc-pv--measured    { color: #6ee7a8; background: rgba(110, 231, 168, 0.10); }
+.mc-pv--modelled    { color: #f2a14e; background: rgba(242, 161,  78, 0.10); }
+.mc-pv--derived     { color: #c084fc; background: rgba(192, 132, 252, 0.10); }
+.mc-pv--unavailable {
+  color: var(--mc-text-mute);
+  background: rgba(127, 147, 165, 0.10);
+  border: 1px dashed rgba(127, 147, 165, 0.35);
+}
+
+/* verdict headline provenance line */
+.mc-verdict-prov {
+  display: flex; align-items: center; gap: 0.45rem;
+  margin-top: 0.55rem;
+  font-size: 0.66rem;
+  color: var(--mc-text-mute);
+}
+.mc-verdict-pct--na { color: var(--mc-text-mute); opacity: 0.5; }
+.mc-verdict-pct { white-space: nowrap; }
+.mc-verdict { flex-wrap: wrap; }
+.mc-tier--na { color: var(--mc-text-mute); }
+.mc-card--pending { border-color: rgba(127, 147, 165, 0.28); }
+
+/* the null-result caveat — not a warning box, a scientific qualifier */
+.mc-caveat {
+  display: flex; gap: 0.45rem;
+  margin-top: 0.75rem;
+  padding: 0.55rem 0.6rem;
+  border-left: 2px solid rgba(242, 193, 78, 0.5);
+  background: rgba(242, 193, 78, 0.05);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: var(--mc-text-dim);
+}
+.mc-caveat-ico { flex: 0 0 auto; margin-top: 0.12rem; color: var(--mc-warn); }
+
+/* evidence rows: measured value beside the actual threshold */
+.mc-why--ev li { align-items: flex-start; gap: 0.5rem; }
+.mc-why-na { color: var(--mc-text-mute); opacity: 0.6; }
+.mc-ev-body { display: flex; flex-direction: column; gap: 0.12rem; min-width: 0; flex: 1 1 auto; }
+.mc-ev-head { display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.mc-ev-label { color: var(--mc-text); font-size: 0.78rem; }
+.mc-ev-label--na { color: var(--mc-text-mute); text-decoration: line-through; text-decoration-thickness: 1px; }
+.mc-ev-meta {
+  display: flex; align-items: baseline; gap: 0.4rem; flex-wrap: wrap;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+}
+.mc-ev-mlabel { color: var(--mc-text-mute); letter-spacing: 0.04em; }
+.mc-ev-num { color: var(--mc-text); font-weight: 700; }
+.mc-ev-num--na { color: var(--mc-text-mute); opacity: 0.55; }
+.mc-ev-th { color: var(--mc-text-mute); }
+
+/* a value that does not exist: em dash + the reason, in its place */
+.mc-na {
+  display: flex; gap: 0.5rem; align-items: flex-start;
+  margin-top: 0.4rem;
+  font-size: 0.68rem; line-height: 1.5;
+  color: var(--mc-text-mute);
+}
+.mc-na-dash {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem; font-weight: 700; line-height: 1;
+  color: var(--mc-text-mute); opacity: 0.6; flex: 0 0 auto;
+}
+.mc-na .mc-pv { margin-left: 0.35rem; }
+
+.mc-provfoot {
+  margin-top: 0.9rem; padding-top: 0.6rem;
+  border-top: 1px solid var(--mc-line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.54rem; letter-spacing: 0.06em; line-height: 1.7;
+  color: var(--mc-text-mute); word-break: break-word;
+}
+
+.mc-nores { margin-top: 0.7rem; font-size: 0.7rem; line-height: 1.6; color: var(--mc-text-mute); }
+.mc-nores-cmd {
+  margin-top: 0.5rem; padding: 0.35rem 0.5rem;
+  background: rgba(0,0,0,0.35); border: 1px solid var(--mc-line); border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: var(--mc-text-dim);
+}
+
+.mc-drift {
+  margin-top: 0.6rem; padding: 0.5rem 0.65rem;
+  border: 1px dashed rgba(242, 161, 78, 0.4); border-radius: 4px;
+  background: rgba(242, 161, 78, 0.05);
+  font-size: 0.66rem; line-height: 1.55; color: var(--mc-text-dim);
+}
+
+/* context-bar cells with no value: struck through, muted, never a number */
+.mc-ctx-k { display: flex; align-items: center; gap: 0.3rem; }
+.mc-ctx--na { background: repeating-linear-gradient(135deg, rgba(127,147,165,0.05) 0 6px, transparent 6px 12px); }
+.mc-ctx-v--na { color: var(--mc-text-mute); opacity: 0.55; }
+.mc-ctx--empty {
+  grid-column: 1 / -1;
+  font-size: 0.66rem; color: var(--mc-text-mute);
+  justify-content: center;
+}
+.mc-ctx--empty code {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+  color: var(--mc-text-dim); background: rgba(0,0,0,0.35); padding: 0.05rem 0.3rem; border-radius: 2px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   v8 — NOTHING IS DRAWN OVER THE GROUND
+   ══════════════════════════════════════════════════════════════════════════
+
+   84.36 % of this frame returned no radar amplitude. v6 marked that with
+   fillOpacity 0.82 of #03060c; v7 replaced it with a 45 deg hatch over a flat
+   tint. Measured off the real canvas at zoom 4 (mean sRGB relative luminance,
+   base drawn through its own CSS filter, void SVG rasterised on top), the
+   never-observed tier arrived at 0.041 of base under v6 and 0.747 under v7.
+
+   v8 removes the treatment entirely, so it is 1.000. The un-measured region is a
+   PROVENANCE fact, and provenance is already stated in words that are more
+   precise than any shape drawn over ground can be: the layer card reads
+   "SYNTHETIC DEM — relief shape is not measured topography" and the analysis rail
+   reads 1,460.68 km2 of measured radar in a 9,339.65 km2 frame. Coverage is
+   carried by two 1 px outlines with tooltips instead — the measured amplitude
+   ribbon and ISRO's pointed sri_ma swath — and by those sentences.
+
+   .mc-void-hatch / .mc-void-hatch--measured / .mc-void-scrim and the whole
+   .mc-map-coverage key are deleted, along with ensureHatch() and the three void
+   polygons in MissionMap.tsx. mix-blend-mode is still not used anywhere: M5
+   established that blending destroys the CPR ribbon this app exists to show. */
+

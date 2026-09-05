@@ -1,14 +1,49 @@
 """
 Deterministic Lunar South Polar Demo Data Generator.
-PRD Compliance: Generates mathematically sound, internally consistent, and physically realistic
-lunar South Polar craters (Shackleton, Shoemaker, Faustini) based on fixed random seeds.
-Simulates DEM, polar grazing illumination, PSRs, doubly-shadowed pockets, and DFSAR radar polarimetry.
+
+STATUS: TEST FIXTURE ONLY — NOT A SERVING PATH.
+
+This generator produces seeded synthetic rasters. It used to be the silent
+fallback whenever the real rasters were missing, which meant a cold start on a
+host without the SAR set served `scientific_screening_status: 'PASS'` and
+`ml_ice_likelihood_mean: 0.96` — the best-looking numbers in the app were the
+invented ones. A `DEMO` label on the payload was not enough, because the label
+is small and the number is large.
+
+`generate_crater_environment()` now refuses unless
+`LUNAR_ICE_ALLOW_DEMO_GENERATOR=1` is set in the environment. pytest sets it
+(see backend/conftest.py); the server never does. A request path that reaches
+this function therefore raises instead of fabricating a mission.
+
+`CRATER_CATALOG` below stays importable unconditionally: crater names, centres
+and diameters are published IAU/USGS facts, not generated data, and the API
+needs them to name a crater it is refusing to analyse.
 """
 
+import os
 import numpy as np
 from typing import Dict, Any, Tuple
 from app.core.config import settings
 from app.core.schemas import CraterInfo
+
+
+#: Set to "1" to permit synthetic environment generation. pytest only.
+DEMO_GENERATOR_ENV_FLAG = "LUNAR_ICE_ALLOW_DEMO_GENERATOR"
+
+
+def demo_generator_enabled() -> bool:
+    """True only when the test harness has explicitly opted in."""
+    return os.environ.get(DEMO_GENERATOR_ENV_FLAG, "") == "1"
+
+
+def _require_demo_generator_enabled() -> None:
+    if not demo_generator_enabled():
+        raise RuntimeError(
+            "Synthetic environment generation is disabled. "
+            f"lunar_generator is a pytest fixture; set {DEMO_GENERATOR_ENV_FLAG}=1 "
+            "to use it. A serving path must return an explicit NOT_INGESTED "
+            "state instead of seeded data — see mission_service._not_ingested_payload()."
+        )
 
 
 CRATER_CATALOG = {
@@ -73,6 +108,7 @@ class LunarDemoGenerator:
         self.pixel_scale_m = 250.0  # 250 m per pixel
 
     def generate_crater_environment(self, crater_id: str = "shackleton") -> Dict[str, np.ndarray]:
+        _require_demo_generator_enabled()
         np.random.seed(self.seed + hash(crater_id) % 1000)
         size = self.grid_size
 

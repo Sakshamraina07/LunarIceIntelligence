@@ -14,8 +14,15 @@ class Settings(BaseModel):
     VERSION: str = "2.0.0"
     API_V1_STR: str = "/api"
 
-    # Data Mode: 'DEMO' or 'REAL'
-    DATA_MODE: str = "DEMO"
+    # Requested data mode: 'REAL' or 'DEMO'.
+    #
+    # REAL is the default because DEMO is no longer a servable state. It is only
+    # a request, not an outcome: mission_service decides per crater from
+    # real_data_gate.real_data_status(), so a crater with no registered PDS4
+    # product answers NOT_INGESTED whatever this says. Defaulting to DEMO meant
+    # a caller who omitted the parameter — /report/pdf and /copilot/ask both did —
+    # silently asked for seeded data.
+    DATA_MODE: str = "REAL"
     RANDOM_SEED: int = 42
 
     # Henry Labs AI Copilot Settings
@@ -29,10 +36,18 @@ class Settings(BaseModel):
     CPR_THRESHOLD: float = 1.00
     DOP_THRESHOLD: float = 0.13
 
-    # Terrain Hazard Scoring Weights (Must sum to 1.0)
+    # Terrain Hazard Scoring Weights.
+    # These do NOT have to sum to 1.0 — compute_hazard_score divides by their
+    # sum, so the score stays in [0, 1] whatever they are.
+    # WEIGHT_BOULDER is 0.0 because there is no boulder raster: no boulder
+    # detector has been run on this frame, so a boulder term could only be fed
+    # a zeros array, and a zeros array is not a measurement — it is a claim that
+    # every cell is boulder-free. Weighting it out means the reported hazard is
+    # slope + roughness only, which is exactly what the data supports.
+    # Restore a non-zero weight the day a real boulder raster exists.
     WEIGHT_SLOPE: float = 0.50
     WEIGHT_ROUGHNESS: float = 0.30
-    WEIGHT_BOULDER: float = 0.20
+    WEIGHT_BOULDER: float = 0.0
 
     # Physical Slope Limits for Safe Rover Movement
     MAX_TRAVERSABLE_SLOPE_DEG: float = 20.0

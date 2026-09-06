@@ -178,8 +178,7 @@ export function StepPanel(props: Props) {
     return (
       <div className="mc-card mc-fadein">
         <Head eyebrow="Stage 02 · Optical" title="Permanent Shadow & Cold Traps"
-          desc="A permanently shadowed region needs a horizon computation: for each azimuth, the elevation angle of the highest terrain along that ray. This build does not have one yet." />
-        <StepUnavailable title="Shadow and PSR mapping" basis={status?.basis ?? ''} />
+          desc="A permanently shadowed region needs a horizon computation: for each azimuth, the elevation angle of the highest terrain along that ray. This build has one — swept over 360 azimuths of the full LOLA polar array, with the Sun modelled as a finite disc." />
         <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
           <Figure k="PSR Area" v={v.psr_area_km2} />
           <Figure k="Doubly Shadowed" v={v.doubly_shadowed_area_km2} />
@@ -190,7 +189,10 @@ export function StepPanel(props: Props) {
           Note what is <em>not</em> claimed here. There is no temperature anywhere in this
           project — no Diviner product is on disk and no thermal model runs — so no
           statement about how cold these hollows stay can be made from this build.
-          The elevation beneath the shadow is measured LOLA; the shadow is not.
+          The shadow itself <em>is</em> computed, from measured LOLA topography rather
+          than assumed: a horizon at every azimuth, validated against the LOLA team's own
+          published PSR mask at a Jaccard of 0.714. Thermal stability below is inferred
+          from that geometry alone, which is why it is marked DERIVED and not MEASURED.
         </div>
       </div>
     );

@@ -12,6 +12,13 @@ previous sessions. Everything needed is in this file or in the repo.
 
 **Last verified against the working tree:** 2026-09-05.
 
+**Revision v1.8** — **the novelty question is settled.** A 34-search sweep confirmed
+three clean nulls: nobody propagates speckle statistics into a per-pixel CPR
+significance test, nobody reports ice area with a confidence interval, nobody reports
+a false-positive rate for the CPR>1 test. Phase 8 is now DETECTION STATISTICS — the
+statistical twin of the algebraic ceiling already proved. Phase 9 (m-chi/m-delta on
+compact-pol) is a second confirmed gap; the dual-frequency work is demoted to Phase 10.
+
 **Revision v1.7** — **Phase 8 re-framed after a ten-paper review, and this is the
 settled answer on novelty.** The contribution is executing the multi-wavelength radar
 comparison that Fa & Cai (2013) and Virkki & Bhiravarasu (2019) explicitly recommend
@@ -236,6 +243,15 @@ These never relax. They are the working rules from the old
    mis-set, print the distribution and say so.
 5. A **measured zero is a result** and must be presented as one. A zero produced
    by an unfinished code path is not, and the report must distinguish them.
+5a. **A rendered layer's badge, legend and caption are driven by `layers.json`,
+   written by the same script that renders the pixels. A layer must not be able
+   to wear a badge describing a different computation.** Same class as the
+   provenance marks, and it exists for the same reason: the illumination layer
+   became a real horizon computation over measured LOLA topography while its
+   legend went on reading "MODEL OUTPUT", because the badge lived in
+   hand-maintained frontend config that nothing forced to agree with the
+   renderer. A caption is a claim about provenance and gets the same discipline
+   as a number.
 
 **Engineering**
 
@@ -397,8 +413,11 @@ returns in Phase 4.
 `real_data_gate.py`, `pradan_pipeline.py`.
 
 **0.7** Start the LOLA 20 m download **now**, in the background, so Phase 6 is not
-waiting on it. `LDEM_80S_20M.IMG` + `.LBL` (~1.9 GB) from
-`https://imbrium.mit.edu/DATA/LOLA_GDR/POLAR/IMG/` into `data/pradan/lola/`. Take
+waiting on it. `LDEM_80S_20M.IMG` + `.LBL` (~1.9 GB) from **PDS Geosciences**,
+`https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/`,
+into `data/pradan/lola/`. *(Amended after Phase 2: `imbrium.mit.edu` is down
+entirely — not one path but the host — so PDS Geosciences is the documented
+source for every LOLA product from here on. Identical products, same release.)* Take
 the `.IMG`, **not** the `.JP2` — the JP2s are lossy and no reader exists in the
 allowed dependency set. `LDEM_875S_20M` does **not** cover this frame (it reaches
 84.83° S at one corner); 80S does, with 147 km to spare.
@@ -764,7 +783,11 @@ available to this project. **The LOLA team publishes its own permanently-shadowe
 masks and average-illumination rasters, on the same PDS node the DEM came from,
 in the same `.IMG` + `.LBL` format `ingest_lola_polar_dem.py` already parses.**
 
-`https://imbrium.mit.edu/BROWSE/EXTRAS/ILLUMINATION/`
+`https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/extras/illumination/img/`
+
+*(Was `imbrium.mit.edu/BROWSE/EXTRAS/ILLUMINATION/`. That host is down entirely
+and PDS Geosciences is the documented source path for LOLA products from now
+on; this is where Phase 2 actually fetched LPSR and AVGVISIB from.)*
 
 | product | m/px | coverage | use |
 |---|---|---|---|
@@ -1162,7 +1185,162 @@ asserts corresponds to a statement in §6.
 
 ---
 
-### PHASE 8 (v1.7) — The step four papers asked for and nobody took
+### PHASE 8 (v1.8) — **THE NOVELTY: detection statistics for the CPR ice test**
+
+**This supersedes v1.6 and v1.7 as the headline contribution.** A second literature
+sweep (34 searches, full-text term-checks) established three clean nulls across the
+entire lunar polar radar ice literature:
+
+- **Zero** papers propagate speckle / multi-look statistics into a per-pixel CPR
+  uncertainty and test whether `CPR > 1` is significant at that pixel.
+- **Zero** papers report detected ice area with confidence intervals or error bars.
+- **Zero** papers report a false-positive rate, ROC curve, or statistical power for
+  the `CPR > 1` test.
+
+Sinha et al. 2026 — a Nature-family paper announcing subsurface ice — contains
+**zero occurrences** of "uncertainty", "error", "±", "significance" or "looks".
+
+**And the machinery to fix it is fifty years old and mature**: Touzi, Lopes &
+Bousquet (1988, *IEEE TGRS* 26:764) built a CFAR ratio detector that sets
+thresholds at a specified false-alarm probability; Lee, Hoppel, Mango & Miller
+(1994, *IEEE TGRS* 32:1017) give the closed-form PDF of the multilook intensity
+ratio. **Neither has ever been carried across to lunar CPR.** The two literatures
+never co-occur in a search.
+
+#### The core statistics — verified, reproduce these before building
+
+If SC and OC are each N-look intensity estimates, then `R / CPR_true ~ F(2N, 2N)`.
+
+**1. The published error bar is the wrong statistic.** Bhiravarasu et al. (2021,
+*PSJ* 2:134) — the DFSAR instrument paper — states *"an approximate 1/N^{1/2}
+uncertainty in the CPR measurements of ±0.16"* and elsewhere *"±0.2"*. But `1/√N`
+is the error of a **single channel**, not of a **ratio**. The correct relative
+standard deviation is `√((2N−1)/(N(N−2)))`:
+
+| N looks | correct rel. SD | published 1/√N | understated by |
+|---|---|---|---|
+| 7 | 0.6094 | 0.3780 | **1.61×** |
+| 21 (DFSAR azimuth looks) | 0.3206 | 0.2182 | **1.47×** |
+| 38 | 0.2341 | 0.1622 | 1.44× |
+| 49 | 0.2052 | 0.1429 | 1.44× |
+
+There is also a **positive bias**, `E[R] = CPR·N/(N−1)` — +5.0 % at N = 21 — which
+pushes estimates *toward* exceeding the threshold. Nobody corrects it.
+
+**2. The false-positive rate is large.** Probability an **ice-free** pixel registers
+`CPR > 1` from speckle alone:
+
+| true CPR | N=7 | N=21 | N=38 | N=49 |
+|---|---|---|---|---|
+| 0.3 | 1.57 % | 0.01 % | 0.00 % | 0.00 % |
+| 0.5 | 10.35 % | 1.35 % | 0.14 % | 0.04 % |
+| **0.7** | **25.66 %** | **12.59 %** | 6.11 % | 3.95 % |
+| **0.9** | **42.33 %** | **36.72 %** | 32.36 % | 30.15 % |
+
+Published lunar regolith CPR runs 0.3–0.7 typical and up to ~0.9 on blocky terrain.
+So **ordinary rocky ground false-positives at double-digit rates.**
+
+**3. The single-pixel detection floor is far above the threshold.** For a pixel to
+read `>1` with 95 % confidence, its *true* CPR must exceed:
+
+| N | 7 | 21 | 38 | 49 |
+|---|---|---|---|---|
+| floor | **2.484** | **1.671** | 1.462 | 1.396 |
+
+The threshold in use is **1.00**. At DFSAR's look count the test has **no
+single-pixel significance anywhere near where it is applied.**
+
+**4. Multiple comparisons — the "peak CPR" statistic is uninterpretable.** A
+reported peak is a maximum over thousands of noisy pixels. Median maximum over
+ice-free pixels at N = 21:
+
+| true CPR | 500 px | 1,500 px | 5,000 px |
+|---|---|---|---|
+| 0.5 | 1.29 | 1.43 | 1.59 |
+| 0.7 | 1.80 | **2.00** | 2.23 |
+
+F2 is 1.1 km across ≈ 1,520 pixels at 25 m. **With zero ice and a uniform true CPR
+of 0.7, the median peak over F2 is 2.00. Sinha et al. report 1.95.**
+
+**State that responsibly.** It is *not* proof their detection is noise — the look
+count of their full-pol product, their pixel size, their true background CPR and
+the inter-pixel correlation are all unknown to us. What it *does* establish is that
+**a peak-CPR statistic is uninterpretable without a multiple-comparisons
+correction, and nobody publishes one.** Compute it properly with their stated
+parameters, present it as a methodological finding, and let the reader draw the
+inference.
+
+**5. A systematic error nobody folds in.** Carter, Neish, Patterson et al. (2014,
+LPSC #2152) report a Mini-RF range-direction artifact with *"CPR magnitude
+variations of up to ~0.2-0.3"* — the same size as the whole random budget, and the
+same size as the margin by which anomalous craters exceed 1.
+
+#### Why this is the right novelty for this project
+
+It is the **statistical twin of the algebraic ceiling you already proved.** You have
+a deterministic limit (`CPR_amp ≤ 0.0042610` where `DOP < 0.13`) and this adds a
+statistical one. Together they are a **complete detection-limit analysis for lunar
+polar radar ice screening** — deterministic and statistical — which is exactly the
+project's thesis: *report what could not have been found.*
+
+It also does **not depend on your own frame having high CPR**, which the ceiling
+proof shows it cannot. The deliverable is a method plus a re-analysis of published
+values, and it upgrades automatically when Phase 5b produces true Stokes CPR.
+
+And it is uncontested: the live 2026 Sinha/Saran dispute is entirely about
+**physics** — the CPR formula, roughness, the DOP sign. **Nobody is arguing about
+the statistics.**
+
+#### What to build (6–10 h)
+
+1. `backend/scripts/cpr_detection_stats.py` — parse the true look count from the
+   PDS4 label (do not assume 21); implement the `F(2N,2N)` ratio statistic, the
+   bias correction, the per-pixel confidence interval, the false-alarm curve, the
+   detection floor, and the multiple-comparisons correction for a peak over an area.
+   `scipy.stats.f` only; nothing new in `requirements.txt`.
+2. **A per-pixel `cpr_significance` layer** — not "is CPR high" but "is CPR
+   *significantly* above threshold", with the confidence stated.
+3. **Report candidate area with a confidence interval**, the first in this
+   literature. A measured zero with a CI is still a result.
+4. **A re-analysis table** of the published F2/F3/S1/H3 values against their
+   detection floors — with every assumption you had to make listed beside it.
+5. Add to `emit_provenance.py`: any reported detection area must carry its CI.
+
+#### One sentence for the viva
+
+> *"Everyone tests whether CPR exceeds 1. Nobody asks whether that test can tell
+> the difference — so I computed its false-positive rate, and at this instrument's
+> look count, ordinary ice-free rock reads above the threshold 12 % of the time."*
+
+---
+
+### PHASE 9 (optional, 6–8 h) — m-χ / m-δ / m-α on DFSAR compact-pol
+
+A second confirmed gap from the same sweep, and **you have exactly the right data
+type for it.** Every published DFSAR paper applies *full-pol* decompositions
+(H-A-α, Freeman–Durden, Pauli, Yamaguchi) to DFSAR, while applying the *hybrid-pol*
+Raney decompositions (m-χ, m-δ, m-α) to **Mini-SAR / Mini-RF instead** — confirmed
+explicitly in Sahu et al. 2025 (*Remote Sensing* 17:31) and the Singh 2021 IIRS
+thesis. ISRO's own MIDAS tool implements m-χ and m-δ; no published DFSAR compact-pol
+result uses them.
+
+Your products are **compact-pol** (`_cp_`, LH/LV) — the exact mode these
+decompositions were designed for — and Phase 5b already produces the Stokes vector
+they consume, so the marginal cost is ~20 lines of numpy. They separate **even-bounce
+(dihedral/rocks)** from **odd-bounce (surface)** from **volume** scattering, which is
+the physical distinction the entire ice-vs-roughness dispute turns on.
+
+**Verify first:** obtain IEEE APSAR 2021 doc 10.1109/APSAR52370.2021.9688528,
+*"Chandrayaan-2 DFSAR Full and Compact Polarimetric Data Analysis"* — it is the one
+place a prior m-χ/m-δ DFSAR result could hide, and the sweep could not read it.
+
+Also flagged and unread: Putrevu et al. 2023, *JGR Planets*,
+10.1029/2023JE007745, whose title is literally *"Full-Polarimetric Analysis of
+Chandrayaan-2 Dual-Frequency SAR Data"* — read it before claiming any L-vs-S gap.
+
+---
+
+### PHASE 10 (demoted from v1.7) — The step four papers asked for and nobody took
 
 **Read this before the v1.6 text below, which it supersedes as the headline.**
 A ten-paper review settled the novelty question. The contribution is not a new

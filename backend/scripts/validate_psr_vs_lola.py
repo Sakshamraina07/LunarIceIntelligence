@@ -204,6 +204,77 @@ def main() -> int:
         print(f"  {edges[i]:5.2f} " + "".join(
             f"{H[i, j]:7.2f}" if H[i, j] >= 0.01 else "      ·" for j in range(8)))
 
+    # ------------------------------------------------- the sun-model A/B
+    # Both arms come from ONE horizon, reach the frame through ONE mapping, and
+    # have their masks re-derived by ONE rule. The only difference is rho.
+    models = {t: (proj[f"psr_mask_r{t}"], proj[f"illumination_fraction_r{t}"])
+              for t in sorted(hp.illumination_by_radius,
+                              key=lambda s: float(s))}
+    if len(models) > 1:
+        hr("SOLAR-MODEL A/B — point Sun vs finite disc, both against LPSR")
+        print("  Predictions were committed in docs/preregistration_solar_disc.md")
+        print("  BEFORE this sweep finished. Measured values are reported against")
+        print("  them below whether or not they land.\n")
+        rows = {}
+        for tag, (m, f) in models.items():
+            ok2 = np.isfinite(f) & np.isfinite(vis)
+            xx, yy = f[ok2].astype(np.float64), vis[ok2].astype(np.float64)
+            sl, _ic = np.polyfit(yy, xx, 1)
+            t_p = int((m & theirs).sum())
+            f_p = int((m & ~theirs).sum())
+            f_n = int((~m & theirs).sum())
+            t_n = int((~m & ~theirs).sum())
+            rows[tag] = {
+                "solar_radius_deg": float(tag),
+                "psr_km2": float(m.sum() * cell_km2),
+                "ratio": m.sum() / max(int(theirs.sum()), 1),
+                "jaccard": t_p / max(t_p + f_p + f_n, 1),
+                "dice": 2 * t_p / max(2 * t_p + f_p + f_n, 1),
+                "precision": t_p / max(t_p + f_p, 1),
+                "recall": t_p / max(t_p + f_n, 1),
+                "agreement": (t_p + t_n) / m.size,
+                "avgvisib_r": float(np.corrcoef(xx, yy)[0, 1]),
+                "avgvisib_slope": float(sl),
+                "avgvisib_rms": float(np.sqrt(((xx - yy) ** 2).mean()))}
+        tags = list(rows)
+        name = {t: ("point Sun" if float(t) == 0.0 else f"disc r={t}°") for t in tags}
+        print(f"  {'metric':>16}" + "".join(f"{name[t]:>14}" for t in tags))
+        for k in ("psr_km2", "ratio", "jaccard", "dice", "precision", "recall",
+                  "agreement", "avgvisib_r", "avgvisib_slope", "avgvisib_rms"):
+            print(f"  {k:>16}" + "".join(f"{rows[t][k]:>14.4f}" for t in tags))
+
+        # predicted vs measured, stated as it was pre-registered
+        pred = {"ratio": ("~1.16", 1.301), "jaccard": ("up", 0.6732),
+                "dice": ("up", 0.8047), "precision": ("up", 0.7115),
+                "recall": ("down slightly", 0.9258), "avgvisib_r": ("up", 0.8925),
+                "avgvisib_slope": ("up toward 1.0", 0.755),
+                "avgvisib_rms": ("down", 0.0890)}
+        disc = tags[-1]
+        print(f"\n  {'metric':>16}{'point (was)':>13}{'predicted':>16}"
+              f"{'measured':>11}{'held?':>8}")
+        held = 0
+        for k, (what, base) in pred.items():
+            got = rows[disc][k]
+            if what == "up":
+                ok3 = got > base
+            elif what.startswith("down"):
+                ok3 = got < base
+            elif what.startswith("up toward"):
+                ok3 = base < got <= 1.05
+            else:
+                ok3 = abs(got - 1.16) <= 0.06
+            held += ok3
+            print(f"  {k:>16}{base:>13.4f}{what:>16}{got:>11.4f}"
+                  f"{'YES' if ok3 else 'NO':>8}")
+        print(f"\n  {held} of {len(pred)} predictions held.")
+        better = (rows[disc]["jaccard"] > rows[tags[0]]["jaccard"]
+                  and rows[disc]["precision"] > rows[tags[0]]["precision"])
+        print("  DISC IMPROVES AGREEMENT — it ships." if better else
+              "  DISC DOES NOT IMPROVE AGREEMENT — hypothesis REJECTED, point Sun ships.")
+        (BASE_DIR / "docs/solar_model_ab.json").write_text(
+            json.dumps({"models": rows, "disc_improves": bool(better)}, indent=2),
+            encoding="utf-8")
+
     hr("VERDICT")
     over = ours.sum() / max(int(theirs.sum()), 1)
     print(f"  Predicted a modest positive bias of about 1.2–1.6x. Measured {over:.3f}x.")

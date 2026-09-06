@@ -589,6 +589,45 @@ Over the 260 pixels of F2 that *did* return amplitude:
 | CPR (amplitude-only) | 0.001442 | 0.000798 | max **0.015383** |
 | DOP | 0.061965 | 0.056468 | min 0.000455 |
 
+### 6.3 It is a different pass, and that is the point
+
+Their detection is almost certainly **not** a different reduction of our data. It
+cannot be, because the two use different acquisition modes.
+
+| | this project | Sinha et al. 2026 |
+|---|---|---|
+| polarimetric mode | **compact / hybrid pol** | **full pol** |
+| channels | LH, LV (`num_polarizations = 2`) | HH, HV, VH, VV |
+| product | `ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_*` | — |
+| beam mode | `STRIPMAP`, look `RIGHT`, band `L` | L **and** S |
+| pass | orbit **4265**, 2020-08-08 | not stated in the open text |
+
+The left column is read directly from our own PDS4 label. The right is from the
+paper's own description — it reports *"full-polarimetric L- and S-band
+observations"* and states it used *"the full-polarimetry data from Chandrayaan-2
+DFSAR for the first time"*.
+
+**A radar records one mode per pass.** DFSAR's full-pol and compact-pol are
+distinct acquisition configurations, so a single observation cannot be both.
+*(That is an inference from the instrument's design, not a quoted statement — the
+paper is paywalled and its orbit numbers were not verifiable from the open
+text.)* Their F2 detection therefore comes from a **different DFSAR pass over the
+same ground**.
+
+Which gives the finding its real shape:
+
+> **Even for a crater with a published detection, a different pass over the same
+> ground returned usable signal on only 17.09 % of it — with 100 % of it pointed
+> at. Radar coverage is per-pass, not per-crater.**
+
+That is Phase 8's thesis — that L-band polar coverage is thin and unquantified —
+confirmed against a specific published claim on a specific 1.1 km crater, rather
+than argued in general. It also sharpens why the two 2026 papers can disagree by
+a factor of two about the same feature: they are not necessarily looking at the
+same returned signal.
+
+### 6.4 Why the CPR numbers still cannot be compared
+
 Their peak CPR of 1.95 is **127× our maximum** — and **this is not a
 contradiction**. Our CPR is the amplitude-only ratio, which §1 proves cannot
 exceed 0.0042611 wherever DOP < 0.13 and cannot reach 1.95 anywhere by
@@ -599,5 +638,160 @@ crater, which is a far stronger position than a general improvement.
 
 ---
 
-*Sections 7 (site search), 8 (traverse) and 9 (Stokes derivation) arrive with
+## 7 · The radar product itself — looks, speckle, and what a DN means
+
+Everything in Phase 8 is a function of the look count *N*: a per-pixel
+significance test on CPR is built out of speckle statistics, and speckle
+statistics are parameterised by *N* and nothing else. So *N* is measured here,
+from the label and then from the pixels, before anything is built on it.
+
+Reproduce with `python -u backend/scripts/measure_enl.py`; the numbers below are
+written to `docs/enl.json`.
+
+### 7.1 The declared look count
+
+| field (from `..._d_sri_xx_cp_xx_d18.xml`) | value |
+|---|---|
+| `range_looks` | **1** |
+| `azimuth_looks` | **21** |
+| **total nominal looks** | **21** |
+| `azimuth_look_bandwidth` | 51.016 Hz |
+| `total_processed_azimuth_bandwidth` | 1071.336 Hz |
+| `range_window` | HAMMING, coefficient 0.7 |
+| `azimuth_window` | HAMMING, coefficient 1.0 |
+
+Two internal checks that the field means what it says. First, 21 × 51.016 =
+1071.336 Hz, which is the total processed azimuth bandwidth **exactly** — the
+looks are non-overlapping sub-bands that tile the aperture, which is the
+configuration that can deliver 21 statistically independent looks. Second, the
+single-look product from the same pass (`_sli_`) declares `azimuth_looks = 1`
+and `range_looks = 1`, and is stored as `ComplexLSB8` I/Q. The field
+discriminates between products from the same processor on the same day.
+
+### 7.2 Are the DN amplitude or intensity? — and why the obvious test fails
+
+This propagates into results that already exist. The CPR proxy forms
+`0.5*(sqrt(a) ∓ sqrt(b))²`, which is `sigma_sc`/`sigma_oc` only if `a` and `b`
+are **intensities**; if they are already amplitudes the derivation carries a
+spurious square root and the 0.0042610 ceiling would need recomputing.
+
+The tempting test is the variance ratio: an *N*-look intensity has
+`mean²/var = N`, its amplitude has `≈ 4N`, and 21 against 83 look far apart.
+**That test cannot settle it, and the reason is worth recording.** For small
+coefficient of variation, `mean²/var` of `X^k` is about `1/k²` times that of `X`.
+So *every* power of the DN yields a self-consistent story with its own implied
+look count, and reading 21 off one of them assumes the answer. Measured:
+`mean²/var` is 21.2–24.4 on DN and 5.3–6.5 on DN², which fits "intensity with
+21 looks" and "amplitude with 5.3 looks" equally well. The declared 21 cannot
+break the tie, because a real product is entitled to under-deliver its nominal
+looks — which, as §7.3 shows, this one does.
+
+**The label settles it, against the instrument's own noise floor.** The same
+label carries the noise-equivalent sigma-zero, and a scene cannot sit below the
+noise floor of the radar that recorded it. With `calibration_constant`
+K = 70.3089 dB, incidence 20.00°, and a median LH DN of 542:
+
+| hypothesis | σ⁰ = | median σ⁰ | relative to NESZ |
+|---|---|---|---|
+| **DN are amplitude** | DN² · sin θ / 10^(K/10) | −20.3 dB | **+11.2 dB** |
+| DN are intensity | DN · sin θ / 10^(K/10) | −47.6 dB | **−16.1 dB** |
+
+(NESZ from `nes0_coeff_0`: LH 7.038×10⁻⁴ = −31.5 dB, LV 6.065×10⁻⁴ = −32.2 dB.)
+
+The intensity reading puts the entire scene 16 dB *beneath* the instrument's own
+detection floor, which is not a worse fit but a physical impossibility. The
+amplitude reading puts it 11 dB above the floor, and −20.3 dB is an ordinary
+lunar L-band backscatter at 20° incidence.
+
+**Verdict: the DN are amplitude.** This is also the convention in the DFSAR
+instrument paper, whose calibration equation carries `(DN)²`
+(Bhiravarasu et al. 2021, *Planet. Sci. J.* **2**, 134, doi 10.3847/PSJ/abfdbf).
+
+**Nothing downstream changes.** `process_real_sar_pipeline.py` already computes
+`sigma0 = DN² · sinθ / (K_lin · G²)`, so the arrays the CPR proxy consumes are
+intensities, its `sqrt()` correctly recovers a field amplitude, and the
+0.0042610 ceiling stands as published. The ambiguity was real and worth
+resolving; the answer is that the existing code was right.
+
+### 7.3 The measured ENL, which is not 21
+
+ENL is `mean²/var` on intensity — here on DN², over patches lying entirely
+inside the DN mask (entirely, not mostly: one zero-fill pixel would dominate a
+patch's variance and manufacture a low outlier). The estimate is the **mode** of
+the per-patch distribution rather than its mean, because terrain texture adds
+variance and therefore only ever biases ENL *downward*; the population has a
+ceiling, not a centre.
+
+| patch | LH | LV |
+|---|---|---|
+| 16 × 16 (400 m) | **5.30** | **6.46** |
+| 32 × 32 (800 m) | 2.64 | 2.40 |
+| 64 × 64 (1.6 km) | 1.51 | 1.61 |
+
+Spread at 16 × 16 (LH): p5 0.77, median 4.12, p95 **9.14**.
+
+**Measured ENL is 5–6 against a nominal 21 — a factor of about four.** The fall
+with patch size is the signature of real terrain texture entering the variance,
+which is a property of the Moon rather than of the product. That cuts both ways
+and the honest statement is a bound, not a point: **the product's true ENL lies
+somewhere between about 9 (the p95 of the most homogeneous 400 m patches) and
+the nominal 21, and is certainly not 21.** Any CFAR threshold set from 21 looks
+would be set from a variance that the data does not have.
+
+A skewness cross-check was run and **did not discriminate** — measured third
+moments (+0.90 on DN, +1.74 on DN²) sit well above every speckle-only
+prediction, because bright scatterers dominate the third moment long before they
+dominate the second. It is recorded here as attempted and uninformative rather
+than quietly dropped.
+
+### 7.4 Neighbouring pixels are not independent
+
+Correlation of DN with itself at small lags, after removing each patch's mean:
+
+| direction | lag 1 | lag 2 | lag 3 |
+|---|---|---|---|
+| azimuth (lines) | **+0.838** | +0.565 | +0.363 |
+| range (samples) | **+0.576** | +0.476 | +0.396 |
+
+The anisotropy is itself evidence about its own cause: azimuth is far more
+correlated than range, and the product has 21 azimuth looks against 1 range
+look. This is the processing, not the terrain, which has no reason to prefer the
+azimuth axis of one particular pass. (These are an upper bound on the speckle
+correlation, since sub-patch terrain structure survives the mean removal.)
+
+### 7.5 What the 5 × 5 boxcar actually buys
+
+CPR and DOP are not formed on raw pixels: the pipeline applies a 5 × 5 boxcar to
+σ⁰ first. If pixels were independent that would multiply the looks by 25.
+Measured, over the DN mask eroded by the boxcar half-width so no window reaches
+a zero-fill pixel (2,337,086 → 2,294,084 px):
+
+| channel | ENL raw | ENL after 5 × 5 | gain | if independent |
+|---|---|---|---|---|
+| LH | 5.83 | 13.72 | **2.35×** | 25× |
+| LV | 5.14 | 19.77 | **3.84×** | 25× |
+
+**A significance test that assumed 25× would understate its own variance by
+roughly an order of magnitude and manufacture detections.** This is the number
+Phase 8 has to use, and it had to be measured rather than counted.
+
+### 7.6 One prior claim of uncertainty, recorded against our own novelty claim
+
+Phase 8 rests partly on the observation that this literature does not report
+uncertainty on CPR. One partial counterexample exists and is recorded here
+rather than left for a reader to find: the DFSAR instrument paper reports
+"~38 look average for each sampled location" over Peary crater and "an
+approximate 1/N^1/2 … uncertainty in the CPR measurements of ±0.16"
+(Bhiravarasu et al. 2021).
+
+That is a *global* error bar from a look count, quoted for one crater. It is not
+a per-pixel significance test, not a confidence interval on an ice area, and not
+a false-positive rate — so the three specific gaps Phase 8 targets survive. But
+the blanket statement "nobody reports uncertainty" is too strong and is not made
+anywhere in this project.
+
+---
+
+*Sections 8 (site search), 9 (traverse) and 10 (Stokes derivation) arrive with
 Phases 3, 4 and 5b.*
+

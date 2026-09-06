@@ -49,6 +49,15 @@ class HorizonProduct:
         # single-shadow mask must NOT be substituted for it.
         self.doubly_shadowed = arrays.get("doubly_shadowed")
         self.lit_crest_fraction = arrays.get("lit_crest_fraction")
+        # Every solar-disc radius the sweep carried, keyed by its suffix ("0",
+        # "0.25"). These exist so the point-Sun / finite-disc A/B can be
+        # re-measured from the product instead of re-run on trust, and so both
+        # models reach the frame through the SAME mapping and the SAME
+        # re-derivation of the mask. An A/B whose two arms differ anywhere but
+        # in rho is not an A/B.
+        self.illumination_by_radius = {
+            k[len("illumination_fraction_r"):]: v for k, v in arrays.items()
+            if k.startswith("illumination_fraction_r")}
         self.meta = meta
         self.path = npz_path
 
@@ -112,8 +121,17 @@ class HorizonProduct:
             res = np.where(w > 0.999, res, np.nan)
             out[name] = res.astype(np.float32)
 
+        # Every solar radius through the identical bilinear path, so the A/B
+        # differs in rho and in nothing else.
+        for tag, src in self.illumination_by_radius.items():
+            out[f"illumination_fraction_r{tag}"] = map_coordinates(
+                src.astype(np.float64), coords, order=1,
+                mode="nearest").astype(np.float32)
+
         # RE-DERIVED, not resampled. See the module docstring.
         out["psr_mask"] = out["illumination_fraction"] == 0.0
+        for tag in self.illumination_by_radius:
+            out[f"psr_mask_r{tag}"] = out[f"illumination_fraction_r{tag}"] == 0.0
 
         # doubly_shadowed is CATEGORICAL, so it is resampled NEAREST (order=0)
         # and never bilinearly — an interpolated boolean would invent

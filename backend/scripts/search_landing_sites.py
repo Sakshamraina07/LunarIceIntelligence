@@ -72,6 +72,22 @@ OUT = BASE_DIR / "docs" / "landing_sites.json"
 HEATMAP = NATIVE / "landing_suitability.tif"
 
 
+def _dem_prov() -> str:
+    """The DEM's provenance, READ from its sidecar, never typed.
+
+    This was the literal "LOLA LDEM_80S_80M V2.0, 80 m posts" and went stale the
+    moment Phase 6 ingested the 20 m product -- so the very first site list this
+    script produced on 20 m terrain described it as 80 m. Tenth instance of the
+    pattern in METHODS section 0, and the same fix as everywhere else.
+    """
+    side = BASE_DIR / "data/pradan/lola/ldem_frame_25m.provenance.json"
+    try:
+        d = json.loads(side.read_text(encoding="utf-8"))
+        return f"{d['provenance']} ({d['native_metres_per_pixel']:g} m posts)"
+    except (OSError, ValueError, KeyError):
+        return "DEM provenance sidecar unreadable — SOURCE NOT VERIFIED"
+
+
 def hr(t: str) -> None:
     print("\n" + "-" * 78)
     print(t)
@@ -281,7 +297,7 @@ def main() -> int:
                 )
             },
             "provenance": {
-                "slope/roughness/hazard": "MEASURED — LOLA LDEM_80S_80M V2.0, 80 m posts",
+                "slope/roughness/hazard": f"MEASURED — {_dem_prov()}",
                 "illumination/psr_distance": (
                     f"MEASURED — horizon computation at {hp.effective_m:g} m effective "
                     f"({hp.decimation}x from {hp.native_m:g} m posts), "

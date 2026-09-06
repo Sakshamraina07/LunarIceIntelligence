@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/landing-sites/1",
-  "generated_utc": "2026-09-06T09:25:43.974608+00:00",
+  "generated_utc": "2026-09-06T13:24:04.946051+00:00",
   "generator": "backend/scripts/search_landing_sites.py",
   "search": {
     "pixels_evaluated": 14943444,
@@ -18,70 +18,70 @@
     }
   },
   "criteria_coverage": {
-    "slope_below_landing_limit": 0.6249438884369627,
-    "roughness_below_limit": 0.77929712856019,
-    "hazard_below_limit": 0.7052204966940686,
+    "slope_below_landing_limit": 0.6162697835920555,
+    "roughness_below_limit": 0.7732064308602488,
+    "hazard_below_limit": 0.6978491035935224,
     "inside_amplitude_mask": 0.156395406574281,
     "psr_within_rover_range": 1.0,
-    "illumination_above_minimum": 0.5693653350593076
+    "illumination_above_minimum": 0.5888153360095572
   },
-  "all_six_fraction": 0.05920188144044974,
-  "all_six_area_km2": 552.9250000000001,
+  "all_six_fraction": 0.05860549950868087,
+  "all_six_area_km2": 547.3550000000001,
   "hazard_correction": {
     "serving_cell_km": 0.55,
     "score_at_25m_then_average": {
-      "p50": 0.3316444456577301,
-      "p90": 0.6889603734016418,
-      "p99": 0.7868183255195618,
+      "p50": 0.33884450793266296,
+      "p90": 0.6829046607017517,
+      "p99": 0.7873967289924622,
       "fraction_pinned_at_1": 0.0
     },
     "average_then_score_old": {
-      "p50": 0.3318561911582947,
-      "p90": 0.7077502012252808,
-      "p99": 0.7868183851242065,
+      "p50": 0.3396975100040436,
+      "p90": 0.7116759419441223,
+      "p99": 0.7874366641044617,
       "fraction_pinned_at_1": 0.0
     },
     "slope_max_per_cell": {
-      "p50": 14.823602676391602,
-      "p99": 36.10960006713867,
-      "max": 62.78678894042969
+      "p50": 18.150352478027344,
+      "p99": 44.11695098876953,
+      "max": 69.39152526855469
     }
   },
   "sites": [
     {
       "rank": 1,
       "grid": {
-        "line": 1907,
-        "sample": 426
+        "line": 965,
+        "sample": 5026
       },
-      "lat_deg": -89.68651,
-      "lon_deg": -162.70362,
-      "suitability_score": 0.9085,
+      "lat_deg": -86.2714,
+      "lon_deg": 82.64773,
+      "suitability_score": 0.92901,
       "ice_access": {
-        "psr_distance_km": 2.247,
+        "psr_distance_km": 3.053,
         "threshold_km": 20.0,
         "passed": true
       },
       "solar_power": {
-        "illumination_fraction": 0.51625,
+        "illumination_fraction": 0.45707,
         "threshold": 0.05,
         "passed": true
       },
       "criteria": {
         "slope_deg": {
-          "value": 0.4909,
+          "value": 0.256,
           "threshold": 12.0,
           "comparison": "<=",
           "passed": true
         },
         "roughness_m": {
-          "value": 1.73,
+          "value": 1.1688,
           "threshold": 10.0,
           "comparison": "<=",
           "passed": true
         },
         "hazard": {
-          "value": 0.0283,
+          "value": 0.0168,
           "threshold": 0.5,
           "comparison": "<=",
           "passed": true
@@ -93,21 +93,21 @@
           "passed": true
         },
         "psr_distance_km": {
-          "value": 2.2475,
+          "value": 3.0531,
           "threshold": 20.0,
           "comparison": "<=",
           "passed": true
         },
         "illumination_fraction": {
-          "value": 0.5162,
+          "value": 0.4571,
           "threshold": 0.05,
           "comparison": ">=",
           "passed": true
         }
       },
       "provenance": {
-        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_80M V2.0, 80 m posts",
-        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 4 azimuths",
+        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
+        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
         "in_amplitude_mask": "MEASURED \u2014 Chandrayaan-2 DFSAR amplitude",
         "lat_lon": "sar_geometry inverse projection, validated to 13.2 mm"
       }
@@ -115,37 +115,37 @@
     {
       "rank": 2,
       "grid": {
-        "line": 847,
-        "sample": 4745
+        "line": 1017,
+        "sample": 4822
       },
-      "lat_deg": -86.48623,
-      "lon_deg": 80.59122,
-      "suitability_score": 0.89195,
+      "lat_deg": -86.44345,
+      "lon_deg": 82.98586,
+      "suitability_score": 0.91969,
       "ice_access": {
-        "psr_distance_km": 0.57,
+        "psr_distance_km": 4.341,
         "threshold_km": 20.0,
         "passed": true
       },
       "solar_power": {
-        "illumination_fraction": 0.42955,
+        "illumination_fraction": 0.4563,
         "threshold": 0.05,
         "passed": true
       },
       "criteria": {
         "slope_deg": {
-          "value": 0.2177,
+          "value": 0.1754,
           "threshold": 12.0,
           "comparison": "<=",
           "passed": true
         },
         "roughness_m": {
-          "value": 0.0,
+          "value": 0.6452,
           "threshold": 10.0,
           "comparison": "<=",
           "passed": true
         },
         "hazard": {
-          "value": 0.0068,
+          "value": 0.0103,
           "threshold": 0.5,
           "comparison": "<=",
           "passed": true
@@ -157,21 +157,21 @@
           "passed": true
         },
         "psr_distance_km": {
-          "value": 0.5701,
+          "value": 4.3407,
           "threshold": 20.0,
           "comparison": "<=",
           "passed": true
         },
         "illumination_fraction": {
-          "value": 0.4295,
+          "value": 0.4563,
           "threshold": 0.05,
           "comparison": ">=",
           "passed": true
         }
       },
       "provenance": {
-        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_80M V2.0, 80 m posts",
-        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 4 azimuths",
+        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
+        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
         "in_amplitude_mask": "MEASURED \u2014 Chandrayaan-2 DFSAR amplitude",
         "lat_lon": "sar_geometry inverse projection, validated to 13.2 mm"
       }
@@ -179,37 +179,37 @@
     {
       "rank": 3,
       "grid": {
-        "line": 847,
-        "sample": 4964
+        "line": 715,
+        "sample": 5308
       },
-      "lat_deg": -86.30817,
-      "lon_deg": 81.04915,
-      "suitability_score": 0.88723,
+      "lat_deg": -86.01091,
+      "lon_deg": 80.1392,
+      "suitability_score": 0.91469,
       "ice_access": {
-        "psr_distance_km": 0.485,
+        "psr_distance_km": 2.031,
         "threshold_km": 20.0,
         "passed": true
       },
       "solar_power": {
-        "illumination_fraction": 0.42167,
+        "illumination_fraction": 0.409,
         "threshold": 0.05,
         "passed": true
       },
       "criteria": {
         "slope_deg": {
-          "value": 0.2059,
+          "value": 0.0489,
           "threshold": 12.0,
           "comparison": "<=",
           "passed": true
         },
         "roughness_m": {
-          "value": 0.4757,
+          "value": 0.592,
           "threshold": 10.0,
           "comparison": "<=",
           "passed": true
         },
         "hazard": {
-          "value": 0.01,
+          "value": 0.006,
           "threshold": 0.5,
           "comparison": "<=",
           "passed": true
@@ -221,21 +221,21 @@
           "passed": true
         },
         "psr_distance_km": {
-          "value": 0.4854,
+          "value": 2.0313,
           "threshold": 20.0,
           "comparison": "<=",
           "passed": true
         },
         "illumination_fraction": {
-          "value": 0.4217,
+          "value": 0.409,
           "threshold": 0.05,
           "comparison": ">=",
           "passed": true
         }
       },
       "provenance": {
-        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_80M V2.0, 80 m posts",
-        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 4 azimuths",
+        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
+        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
         "in_amplitude_mask": "MEASURED \u2014 Chandrayaan-2 DFSAR amplitude",
         "lat_lon": "sar_geometry inverse projection, validated to 13.2 mm"
       }
@@ -243,37 +243,37 @@
     {
       "rank": 4,
       "grid": {
-        "line": 1504,
-        "sample": 574
+        "line": 737,
+        "sample": 4956
       },
-      "lat_deg": -89.95624,
-      "lon_deg": 41.1777,
-      "suitability_score": 0.86555,
+      "lat_deg": -86.29947,
+      "lon_deg": 79.64655,
+      "suitability_score": 0.90089,
       "ice_access": {
-        "psr_distance_km": 1.914,
+        "psr_distance_km": 5.913,
         "threshold_km": 20.0,
         "passed": true
       },
       "solar_power": {
-        "illumination_fraction": 0.42226,
+        "illumination_fraction": 0.45948,
         "threshold": 0.05,
         "passed": true
       },
       "criteria": {
         "slope_deg": {
-          "value": 0.4102,
+          "value": 0.5526,
           "threshold": 12.0,
           "comparison": "<=",
           "passed": true
         },
         "roughness_m": {
-          "value": 1.9119,
+          "value": 0.6713,
           "threshold": 10.0,
           "comparison": "<=",
           "passed": true
         },
         "hazard": {
-          "value": 0.0272,
+          "value": 0.0223,
           "threshold": 0.5,
           "comparison": "<=",
           "passed": true
@@ -285,21 +285,21 @@
           "passed": true
         },
         "psr_distance_km": {
-          "value": 1.9144,
+          "value": 5.9129,
           "threshold": 20.0,
           "comparison": "<=",
           "passed": true
         },
         "illumination_fraction": {
-          "value": 0.4223,
+          "value": 0.4595,
           "threshold": 0.05,
           "comparison": ">=",
           "passed": true
         }
       },
       "provenance": {
-        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_80M V2.0, 80 m posts",
-        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 4 azimuths",
+        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
+        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
         "in_amplitude_mask": "MEASURED \u2014 Chandrayaan-2 DFSAR amplitude",
         "lat_lon": "sar_geometry inverse projection, validated to 13.2 mm"
       }
@@ -307,37 +307,37 @@
     {
       "rank": 5,
       "grid": {
-        "line": 602,
-        "sample": 5381
+        "line": 514,
+        "sample": 5408
       },
-      "lat_deg": -85.93494,
-      "lon_deg": 78.99118,
-      "suitability_score": 0.85921,
+      "lat_deg": -85.89873,
+      "lon_deg": 78.05602,
+      "suitability_score": 0.8986,
       "ice_access": {
-        "psr_distance_km": 1.665,
+        "psr_distance_km": 1.525,
         "threshold_km": 20.0,
         "passed": true
       },
       "solar_power": {
-        "illumination_fraction": 0.38905,
+        "illumination_fraction": 0.38903,
         "threshold": 0.05,
         "passed": true
       },
       "criteria": {
         "slope_deg": {
-          "value": 0.1918,
+          "value": 0.1954,
           "threshold": 12.0,
           "comparison": "<=",
           "passed": true
         },
         "roughness_m": {
-          "value": 0.7403,
+          "value": 2.2922,
           "threshold": 10.0,
           "comparison": "<=",
           "passed": true
         },
         "hazard": {
-          "value": 0.0115,
+          "value": 0.0233,
           "threshold": 0.5,
           "comparison": "<=",
           "passed": true
@@ -349,21 +349,21 @@
           "passed": true
         },
         "psr_distance_km": {
-          "value": 1.6653,
+          "value": 1.525,
           "threshold": 20.0,
           "comparison": "<=",
           "passed": true
         },
         "illumination_fraction": {
-          "value": 0.3891,
+          "value": 0.389,
           "threshold": 0.05,
           "comparison": ">=",
           "passed": true
         }
       },
       "provenance": {
-        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_80M V2.0, 80 m posts",
-        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 4 azimuths",
+        "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
+        "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
         "in_amplitude_mask": "MEASURED \u2014 Chandrayaan-2 DFSAR amplitude",
         "lat_lon": "sar_geometry inverse projection, validated to 13.2 mm"
       }

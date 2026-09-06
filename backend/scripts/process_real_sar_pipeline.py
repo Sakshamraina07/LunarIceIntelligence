@@ -518,7 +518,13 @@ def process_real_data(analysis_size: int = DEFAULT_ANALYSIS_SIZE,
         a_line_mpp = frame.shape[0] * frame.pixel_size_m[1] / float(analysis_size)
         a_sample_mpp = frame.shape[1] * frame.pixel_size_m[0] / float(analysis_size)
         print(_terrain_table(analysis["dem"], a_line_mpp, dem_native_mpp,
-                             title="ANALYSIS GRID (what mission_service reads)",
+                             title=("ANALYSIS GRID — DIAGNOSTIC ONLY, DO NOT QUOTE. "
+                                    "Roughness here uses a 5x5 window on 80.79 m samples, "
+                                    "so it spans ~404 m and measures REGIONAL RELIEF, not "
+                                    "25 m roughness. clip(roughness/50) pins 2.39 % of it "
+                                    "at 1.0, which is why nothing is scored on this grid: "
+                                    "pradan_pipeline scores at 25 m and area-averages the "
+                                    "bounded field down. Quote the NATIVE table above"),
                              sample_px_m=a_sample_mpp))
 
     # --- 8. metadata: real frame in, hardcoded bounding box out -----------

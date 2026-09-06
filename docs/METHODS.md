@@ -1103,8 +1103,153 @@ the data by a factor of five is a discovery; a simulator tuned until it agrees,
 and then written up, is nothing at all — and from the inside the two feel
 identical unless the prediction was committed first.
 
+## 8 · The 20 m DEM, and what it actually bought
+
+### 8.1 The resample reversed direction, and the filter strength is a measurement
+
+80 m → 25 m was a 3.2× **upsample**, where bilinear point-sampling is correct:
+there is nothing between the posts to alias. 20 m → 25 m is a **downsample** of
+f = 1.25, where it is wrong — `map_coordinates` interpolates, it does not
+average, so content the 25 m grid cannot represent folds back instead of being
+averaged away.
+
+The two library conventions are four times apart and **neither is acceptable**.
+Measured against an *ideal band-limited downsample* — a brick wall at the output
+Nyquist, sampled onto the same 25 m grid, so both spectra live on one grid and no
+cross-grid normalisation enters — over three windows of the real 20 m array:
+
+| σ (source px) | passband loss ≥120 m | alias excess ≤65 m | worse of the two |
+|---|---|---|---|
+| `(f−1)/2` = 0.125 | −0.000 | **0.234** | 0.234 |
+| `f/2` = 0.625 | **0.192** | −0.489 | 0.192 |
+| **0.400 — shipped** | **0.042** | **0.031** | **0.042** |
+
+**They fail in opposite directions.** `(f−1)/2` is indistinguishable from *no
+filter* to four decimals in every column and every slope percentile — at f = 1.25
+scipy truncates it to a three-tap kernel of centre weight ≈0.9999 — while the
+unfiltered control runs **23.4 % hot in amplitude at Nyquist**, so the aliasing
+is measured rather than assumed. `f/2` removes 19.2 % of real terrain at 120 m
+and longer, which is the detail the 20 m product was fetched for.
+
+σ = 0.400 is the **minimax**: it minimises the worse of the two failure modes, at
+0.042 against 0.192 for the better convention — a 4.5× improvement. Reproduce
+with `backend/scripts/choose_antialias_sigma.py`; recorded in
+`docs/antialias_sigma.json` and in the DEM's provenance sidecar.
+
+*Two defects in the first version of that measurement, both caught before the
+verdict was used. A wavelength row fell outside the last frequency bin and a
+`dict.get(..., [1,1,1])` default then supplied three **fabricated** 1.000s to the
+verdict. And the control read 0.630 where it had to read 1.000, because two PSDs
+on different grids were divided without normalising `|FFT|²` by `(dx/N)²` and the
+window energy. The control now reads 1.000 at 400, 200 and 120 m, which is the
+self-check that the method is sound.*
+
+### 8.2 What the 1.85 GB bought — provenance, not resolution
+
+Native frame, 25 m grid, 80 m source → 20 m source:
+
+| | 80 m | 20 m | Δ |
+|---|---|---|---|
+| slope p50 | 9.343° | 9.563° | +2.4 % |
+| slope p90 | 20.172° | 20.600° | +2.1 % |
+| roughness p50 | 5.806 m | 5.948 m | +2.4 % |
+| roughness p90 | 12.923 m | 13.077 m | +1.2 % |
+| hazard p50 | 0.3355 | 0.3436 | +2.4 % |
+| mean hazard | 0.3647 | 0.3726 | +2.2 % |
+| slope > 15° | 25.161 % | 25.895 % | +0.73 pp |
+| *critical hazard fraction* | *0.1146* | *0.1221* | *+6.5 %* |
+| *slope max* | *62.787°* | *69.392°* | *+10.5 %* |
+
+**The distribution shifted uniformly by about 2.4 %.** It is not that the tails
+moved most: p50 +2.4 % against p90 +2.1 % is the same shift throughout. The two
+larger numbers are *derived* and should not be read as detail gain —
+`critical_hazard_fraction` moves 6.5 % because a 2 % shift amplifies at a
+threshold crossing, and `slope max` is a single pixel.
+
+**Why the gain is small, and it is not a disappointment.** The 25 m analysis grid
+is the binding constraint, not the source posts. A 25 m grid cannot carry
+anything below 50 m wavelength, and §8.1's measured filter low-passes at exactly
+that Nyquist. So the 20 m product buys only the 50–160 m band — real, but modest
+in any statistic taken on a 25 m grid.
+
+**The real gain is provenance.** *"20 m native, low-passed and resampled to 25 m"*
+is a clean statement. *"80 m native, bilinearly upsampled 3.2× to 25 m"* put a
+caveat on **every** slope, roughness and hazard figure, and through them on every
+landing criterion downstream. That caveat is now gone from the entire chain. That
+is what the download bought, and claiming a detail gain the grid cannot carry
+would be the opposite of the discipline this project is for.
+
+**The 25 m grid stays.** The radar is natively 25 m. A 20 m grid would put real
+20 m terrain under *upsampled* radar — trading one interpolation for a worse one.
+
+### 8.3 The saturation problem had returned, in the request path
+
+Roughness is a 5 × 5 window. On the 2048² serving grid the sample spacing is
+**80.79 m**, so that window spans **~404 m** and measures *regional relief* — a
+different physical quantity wearing the same name. `clip(roughness / 50)` then
+pins at 1.0 and slope stops contributing to hazard at all.
+
+`build_analysis.py` and `render_layers.py` — everything the UI reads — score on
+the native 2258 × 6618 frame at 25 m and were never affected. But
+`pradan_pipeline.process_real_dem`, which `mission_service` and the PDF use,
+resized the DEM to the serving grid **first** and scored there:
+
+| hazard | p50 | p90 | p95 | p99 | pinned at 1.0 |
+|---|---|---|---|---|---|
+| resize-then-score *(was)* | 0.393 | 0.843 | 0.933 | **1.000** | **2.4143 %** |
+| **score-then-average** *(now)* | 0.344 | 0.709 | 0.743 | 0.788 | **0.0000 %** |
+| native reference | 0.344 | 0.721 | 0.744 | 0.788 | 0.0002 % |
+
+The fix is the agreed one: score at 25 m, then **area-average the bounded 0–1
+field** onto the serving grid — `INTER_AREA`, never `INTER_LINEAR`, which would
+point-sample and reintroduce the aliasing. Averaging a bounded score is
+meaningful in a way that averaging a DEM and re-differencing it is not.
+
+`slope_max_deg` is carried **beside** `hazard_mean`, by a maximum filter sized to
+the serving cell and then nearest-sampled, because an average hides the thing a
+lander cares about: a cell that averages safe can still hold one impassable face.
+Measured on the current frame, p50 11.36° against a cell-mean slope of 9.58°, and
+the frame maximum of 69.39° survives the downsampling intact.
+
+The 2048² table in the ingest log is now labelled **DIAGNOSTIC ONLY, DO NOT
+QUOTE** with the reason inline, so it cannot be mistaken for a 25 m roughness.
+
+### 8.4 One map, two scales, stated per layer
+
+The horizon sweep runs on the LOLA polar array at 240 m effective and is **not**
+rerun at 20 m: that array is 30400², 3.7 GB as float32, and 360 rotations of it
+is not feasible. So after this phase the map draws **20 m-derived terrain beneath
+an 80 m-derived shadow mask** — a 10× scale disparity, and the largest on the
+map.
+
+That is ordinary multi-scale practice and it is legitimate. It is not a footnote.
+`layers.json` now carries a resolution record per layer, written by the same
+script that renders the pixels, and the legend prints it:
+
+| layer | native | effective | decimation |
+|---|---|---|---|
+| hillshade, dem_elevation, hazard_map | 20 m | 25 m | 1 |
+| **illumination** | **80 m** | **240 m** | **3** |
+| cpr_heatmap, dop_heatmap | 25 m | 25 m | 1 |
+
+The field is optional in the TypeScript type so a manifest without it reads as
+**absent** rather than defaulting to 25 m. Near-field horizon refinement at 20 m
+is out of scope and was not started.
+
+### 8.5 The Faustini floor, reported not tuned
+
+From the new 20 m frame, relative to the label's own 1737400 m sphere:
+min **−4250.8 m**, p01 −3933.0 m, p50 −821.1 m, max +1958.7 m.
+
+The ingest prints its own prior — "expectation was −3 to −4 km" — as **NOT met**
+and adjusts nothing. That prior came from a superseded handoff, not from a
+published value, and p01 sits inside the band. The check that *can* fail is the
+label-range reproduction in step 3.1, which passed with **residual 0** against a
+0.5 m tolerance; this one cannot discriminate, because the old synthetic array
+passed it too.
+
 ---
 
-*Sections 8 (site search), 9 (traverse) and 10 (Stokes derivation) arrive with
+*Sections 9 (site search), 10 (traverse) and 11 (Stokes derivation) arrive with
 Phases 3, 4 and 5b.*
 

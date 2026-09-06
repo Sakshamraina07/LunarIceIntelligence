@@ -16,6 +16,8 @@ from PIL import Image
 from app.core.config import settings
 from app.modules.module_b_radar import compute_cpr_from_stokes, compute_dop_from_stokes, classify_radar_polarimetry
 from app.modules.module_a_psr import compute_hillshade
+from scipy.ndimage import maximum_filter
+
 from app.modules.module_d_terrain import compute_terrain_metrics, compute_hazard_score
 
 
@@ -171,6 +173,11 @@ def simulate_grazing_illumination(
     return np.clip(hill * (elev_norm ** 1.3), 0.0, 1.0).astype(np.float32)
 
 
+#: The DFSAR frame's own post spacing. Terrain is scored here and only
+#: then averaged onto whatever grid is being served.
+NATIVE_POST_M = 25.0
+
+
 def process_real_dem(
     dem_path: str,
     spacing_m: Tuple[float, float],
@@ -186,16 +193,58 @@ def process_real_dem(
     dict echoes it back under "spacing_m" so downstream code cannot re-guess.
     """
     dem_raw = read_raster_file(dem_path)
+
+    # ---- SCORE NATIVELY, THEN AREA-AVERAGE DOWN ---------------------------
+    # THE SATURATION PROBLEM, AND WHY THIS ORDER MATTERS.
+    #
+    # This function used to resize the DEM to target_shape FIRST and derive
+    # slope, roughness and hazard on that grid. For the 2048^2 serving grid the
+    # sample spacing is 80.79 m, so the 5x5 roughness window spans ~404 m: it
+    # measures REGIONAL RELIEF, a different physical quantity wearing the same
+    # name. clip(roughness / 50) then pins to 1.0 and slope stops contributing
+    # to hazard at all. Measured on the current frame:
+    #
+    #     resize-then-score   hazard p50 0.393  p90 0.843  p99 1.000   2.4143 % pinned
+    #     score-then-average  hazard p50 0.344  p90 0.709  p99 0.788   0.0000 % pinned
+    #     native reference    hazard p50 0.344  p90 0.721  p99 0.788   0.0002 % pinned
+    #
+    # Hazard is a BOUNDED 0-1 score, so averaging it down is meaningful in a way
+    # that averaging a DEM and re-differencing it is not. Score at 25 m, then
+    # area-average the bounded field onto whatever grid is being served.
+    #
+    # slope_max_deg is carried BESIDE hazard_mean because an average hides the
+    # thing a lander cares about: a cell that averages safe can still hold a
+    # single impassable face.
+    native_spacing = (NATIVE_POST_M, NATIVE_POST_M)
+    slope_n, aspect_n, rough_n = compute_terrain_metrics(dem_raw, native_spacing)
+    hazard_n = compute_hazard_score(slope_n, rough_n,
+                                    np.zeros_like(dem_raw, dtype=np.float32))
+
     if dem_raw.shape != target_shape:
-        dem = cv2.resize(dem_raw, (target_shape[1], target_shape[0]), interpolation=cv2.INTER_LINEAR)
+        th, tw = target_shape
+        dem = cv2.resize(dem_raw, (tw, th), interpolation=cv2.INTER_LINEAR)
+        # INTER_AREA is the area average; INTER_LINEAR would point-sample and
+        # reintroduce exactly the aliasing this ordering exists to avoid.
+        hazard = cv2.resize(hazard_n, (tw, th), interpolation=cv2.INTER_AREA)
+        slope_deg = cv2.resize(slope_n, (tw, th), interpolation=cv2.INTER_AREA)
+        roughness = cv2.resize(rough_n, (tw, th), interpolation=cv2.INTER_AREA)
+        aspect_deg = cv2.resize(aspect_n, (tw, th), interpolation=cv2.INTER_NEAREST)
+        # Block MAX, not a mean: a maximum filter sized to the serving cell,
+        # then nearest-sampled so the value is a real cell maximum rather than
+        # an interpolation between two of them.
+        by = max(1, int(np.ceil(dem_raw.shape[0] / float(th))))
+        bx = max(1, int(np.ceil(dem_raw.shape[1] / float(tw))))
+        slope_max = cv2.resize(maximum_filter(slope_n, size=(by, bx)),
+                               (tw, th), interpolation=cv2.INTER_NEAREST)
     else:
         dem = dem_raw.copy()
+        hazard, slope_deg, roughness = hazard_n, slope_n, rough_n
+        aspect_deg, slope_max = aspect_n, slope_n
 
     hillshade = compute_hillshade(dem, spacing_m)
     illumination = simulate_grazing_illumination(dem, spacing_m, sun_altitude_deg=1.5)
     psr_mask = (illumination < 0.05)
     doubly_shadowed = psr_mask & (dem < np.percentile(dem, 20))
-    slope_deg, aspect_deg, roughness = compute_terrain_metrics(dem, spacing_m)
 
     return {
         "dem": dem,
@@ -206,7 +255,14 @@ def process_real_dem(
         "slope_deg": slope_deg,
         "aspect_deg": aspect_deg,
         "roughness": roughness,
-        "spacing_m": spacing_m
+        "hazard": hazard,
+        "slope_max_deg": slope_max,
+        "spacing_m": spacing_m,
+        # Every terrain field above was computed at NATIVE_POST_M and averaged
+        # onto this grid. A consumer that reports them as though they were
+        # measured at `spacing_m` is overstating the resolution.
+        "terrain_scored_at_m": NATIVE_POST_M,
+        "terrain_order": "scored natively, then area-averaged to the serving grid",
     }
 
 

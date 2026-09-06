@@ -559,20 +559,50 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
     """
     valid = src["valid"]
     dense = np.ones_like(valid, dtype=bool)
+
+    # One resolution record per layer, so the UI can state what each layer's
+    # numbers were actually measured at WITHOUT parsing the English caption.
+    # After Phase 6 these genuinely differ across layers on the same map.
+    im = illum_meta or {}
+    terrain_res = {
+        "native_metres_per_pixel": DEM_PROV["native_metres_per_pixel"],
+        "effective_metres_per_pixel": DEM_PROV["output_metres_per_pixel"],
+        "decimation_factor": 1,
+        "basis": (f"LOLA {DEM_PROV['native_metres_per_pixel']:g} m posts carried onto "
+                  f"the {DEM_PROV['output_metres_per_pixel']:g} m DFSAR grid"),
+    }
+    illum_res = {
+        "native_metres_per_pixel": im.get("native_metres_per_pixel"),
+        "effective_metres_per_pixel": im.get("effective_metres_per_pixel"),
+        "decimation_factor": im.get("decimation_factor"),
+        "basis": (f"horizon swept on the LOLA polar array at "
+                  f"{im.get('native_metres_per_pixel', '?')} m posts, "
+                  f"{im.get('decimation_factor', '?')}x block mean, "
+                  f"{im.get('effective_metres_per_pixel', '?')} m effective. NOT rerun "
+                  f"at the terrain's native resolution: the 20 m polar array is 3.7 GB "
+                  f"as float32 and 360 rotations of it is not feasible, so this layer is "
+                  f"COARSER than the relief drawn beneath it and is labelled as such."),
+    }
+    radar_res = {
+        "native_metres_per_pixel": 25.0,
+        "effective_metres_per_pixel": 25.0,
+        "decimation_factor": 1,
+        "basis": "Chandrayaan-2 DFSAR sri product on its own 25 m frame",
+    }
     return [
-        {"id": "hillshade", "label": "Surface Relief", "data": hillshade, "mask": dense,
+        {"resolution": terrain_res, "id": "hillshade", "label": "Surface Relief", "data": hillshade, "mask": dense,
          "stretch": "linear", "colormap": "grayscale", "opaque_alpha": 255,
          "provenance": "measured-topography",
          "sources": ["native/dem_native.tif"],
          "detail": "Horn hillshade, sun 30 deg altitude / 315 deg azimuth; " + DEM_NOTE},
 
-        {"id": "dem_elevation", "label": "Elevation (DEM)", "data": src["dem"], "mask": dense,
+        {"resolution": terrain_res, "id": "dem_elevation", "label": "Elevation (DEM)", "data": src["dem"], "mask": dense,
          "stretch": "linear", "colormap": "viridis", "opaque_alpha": 255,
          "provenance": "measured-topography",
          "sources": ["native/dem_native.tif"],
          "detail": f"Elevation in metres — {DEM_PROV['elevation_datum']} " + DEM_NOTE},
 
-        {"id": "hazard_map", "label": "Terrain Hazards", "data": terrain["hazard"], "mask": dense,
+        {"resolution": terrain_res, "id": "hazard_map", "label": "Terrain Hazards", "data": terrain["hazard"], "mask": dense,
          "stretch": "linear", "colormap": "magma", "opaque_alpha": 255,
          "provenance": "measured-topography",
          "sources": ["native/dem_native.tif"],
@@ -593,7 +623,7 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
         # UI caption the layer a placeholder. "computed-solar-horizon" contains
         # none of the six, which is correct now and was correct to be caught
         # before, when the layer really was a heuristic.
-        {"id": "illumination", "label": "Solar Illumination", "data": illumination,
+        {"resolution": illum_res, "id": "illumination", "label": "Solar Illumination", "data": illumination,
          "mask": dense,
          "stretch": "linear", "colormap": "inferno", "opaque_alpha": 255,
          "provenance": "computed-solar-horizon",
@@ -619,7 +649,7 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
              az=(illum_meta or {}).get("azimuths", "?"),
          )},
 
-        {"id": "cpr_heatmap", "label": "Radar Signals (CPR)", "data": src["cpr"], "mask": valid,
+        {"resolution": radar_res, "id": "cpr_heatmap", "label": "Radar Signals (CPR)", "data": src["cpr"], "mask": valid,
          "stretch": "log", "colormap": "turbo", "opaque_alpha": 235,
          "provenance": "measured-radar",
          "sources": ["native/cpr_native.tif", "native/valid_native.tif"],
@@ -630,7 +660,7 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
                    "literal integer zero amplitude, and cpr there would be a fabricated 0.0. "
                    "The swath is drawn as an outline instead -- see footprint.swath."},
 
-        {"id": "dop_heatmap", "label": "Degree of Polarisation", "data": src["dop"], "mask": valid,
+        {"resolution": radar_res, "id": "dop_heatmap", "label": "Degree of Polarisation", "data": src["dop"], "mask": valid,
          "stretch": "log", "colormap": "cividis", "opaque_alpha": 235,
          "provenance": "measured-radar",
          "sources": ["native/dop_native.tif", "native/valid_native.tif"],
@@ -708,6 +738,15 @@ def render_layer(spec: dict, out_dir: Path, show_histograms: bool) -> dict:
                               if covers_frame
                               else "no DFSAR amplitude (native/valid_native.tif == 0)"),
         "provenance": spec["provenance"],
+        # RESOLUTION, STRUCTURALLY, NOT ONLY IN PROSE. After Phase 6 the map
+        # shows 20 m-derived TERRAIN under an 80 m-derived SHADOW mask: the
+        # horizon sweep runs on the polar LOLA array at 240 m effective and is
+        # not rerun at 20 m (30400^2 is 3.7 GB as float32 and 360 rotations of it
+        # is not feasible). That is ordinary multi-scale practice and it is
+        # legitimate -- but it must be STATED, and a caption is not enough,
+        # because the UI needs to be able to say it per layer without parsing
+        # English. Same discipline as the provenance marks.
+        "resolution": spec.get("resolution"),
         "source_rasters": spec["sources"],
         "description": spec["detail"],
     }

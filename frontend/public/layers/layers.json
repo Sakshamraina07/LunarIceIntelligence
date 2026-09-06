@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/layers-manifest/1",
-  "generated_utc": "2026-09-06T10:48:12+00:00",
+  "generated_utc": "2026-09-06T11:03:09+00:00",
   "generator": "backend/scripts/render_layers.py",
   "replaces": "backend/scripts/generate_tiles.py + backend/tiles/faustini/** (tile pyramid: ~331 tiles/layer, per-tile normalisation, visible seams)",
   "product_id": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",
@@ -1909,6 +1909,12 @@
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
+      "resolution": {
+        "native_metres_per_pixel": 20.0,
+        "effective_metres_per_pixel": 25.0,
+        "decimation_factor": 1,
+        "basis": "LOLA 20 m posts carried onto the 25 m DFSAR grid"
+      },
       "source_rasters": [
         "native/dem_native.tif"
       ],
@@ -1937,6 +1943,12 @@
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
+      "resolution": {
+        "native_metres_per_pixel": 20.0,
+        "effective_metres_per_pixel": 25.0,
+        "decimation_factor": 1,
+        "basis": "LOLA 20 m posts carried onto the 25 m DFSAR grid"
+      },
       "source_rasters": [
         "native/dem_native.tif"
       ],
@@ -1965,6 +1977,12 @@
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
+      "resolution": {
+        "native_metres_per_pixel": 20.0,
+        "effective_metres_per_pixel": 25.0,
+        "decimation_factor": 1,
+        "basis": "LOLA 20 m posts carried onto the 25 m DFSAR grid"
+      },
       "source_rasters": [
         "native/dem_native.tif"
       ],
@@ -1993,6 +2011,12 @@
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "computed-solar-horizon",
+      "resolution": {
+        "native_metres_per_pixel": 80.0,
+        "effective_metres_per_pixel": 240.0,
+        "decimation_factor": 3,
+        "basis": "horizon swept on the LOLA polar array at 80.0 m posts, 3x block mean, 240.0 m effective. NOT rerun at the terrain's native resolution: the 20 m polar array is 3.7 GB as float32 and 360 rotations of it is not feasible, so this layer is COARSER than the relief drawn beneath it and is labelled as such."
+      },
       "source_rasters": [
         "LDEM_80S_80M.IMG"
       ],
@@ -2021,6 +2045,12 @@
       "alpha_opaque": 235,
       "transparent_where": "no DFSAR amplitude (native/valid_native.tif == 0)",
       "provenance": "measured-radar",
+      "resolution": {
+        "native_metres_per_pixel": 25.0,
+        "effective_metres_per_pixel": 25.0,
+        "decimation_factor": 1,
+        "basis": "Chandrayaan-2 DFSAR sri product on its own 25 m frame"
+      },
       "source_rasters": [
         "native/cpr_native.tif",
         "native/valid_native.tif"
@@ -2050,6 +2080,12 @@
       "alpha_opaque": 235,
       "transparent_where": "no DFSAR amplitude (native/valid_native.tif == 0)",
       "provenance": "measured-radar",
+      "resolution": {
+        "native_metres_per_pixel": 25.0,
+        "effective_metres_per_pixel": 25.0,
+        "decimation_factor": 1,
+        "basis": "Chandrayaan-2 DFSAR sri product on its own 25 m frame"
+      },
       "source_rasters": [
         "native/dop_native.tif",
         "native/valid_native.tif"

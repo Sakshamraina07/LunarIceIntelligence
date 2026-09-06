@@ -542,6 +542,19 @@
 @keyframes mc-shimmer { from { background-position: 120% 0; } to { background-position: -120% 0; } }
 
 /* Plain-language legend hint under the gradient bar */
+/* The resolution the active layer was MEASURED at. Monospaced and set apart
+   from the prose caption because it is a number a reader may need to compare
+   against another layer's: after Phase 6 the terrain is 20 m-derived and the
+   shadow mask is 80 m-derived on the same map. */
+.mc-legend-res {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  color: var(--mc-text-mute);
+  margin-top: 0.4rem;
+  opacity: 0.9;
+}
+
 .mc-legend-hint {
   font-size: 0.66rem;
   line-height: 1.4;

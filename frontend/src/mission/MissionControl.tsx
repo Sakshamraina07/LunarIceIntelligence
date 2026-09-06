@@ -23,7 +23,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { fetchCraters, fetchMissionState, getReportPdfUrl } from '../services/api';
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
-import { MissionMap, type MissionMapHandle, groundResolutionLabel, loadManifest } from './MissionMap';
+import { MissionMap, type MissionMapHandle, type LayerManifestEntry, groundResolutionLabel, loadManifest } from './MissionMap';
 import { VerdictCard } from './VerdictCard';
 import { StepPanel } from './StepPanel';
 import { STEPS, LAYERS, LAYER_MAP } from './config';
@@ -161,11 +161,14 @@ export default function MissionControl() {
   // legend simply omits the hint until then rather than showing a stale one.
   const [layerCopy, setLayerCopy] = useState<Record<string, string>>({});
   const [layerProv, setLayerProv] = useState<Record<string, string>>({});
+  const [layerRes, setLayerRes] = useState<Record<string, NonNullable<LayerManifestEntry['resolution']>>>({});
   useEffect(() => {
     loadManifest().then((m) => {
       if (!m) return;
       setLayerCopy(Object.fromEntries(m.layers.map((l) => [l.id, l.description])));
       setLayerProv(Object.fromEntries(m.layers.map((l) => [l.id, l.provenance])));
+      setLayerRes(Object.fromEntries(m.layers.flatMap((l) =>
+        l.resolution ? [[l.id, l.resolution] as const] : [])));
     });
   }, []);
 
@@ -327,6 +330,20 @@ export default function MissionControl() {
               {/* From layers.json, not from config.ts. The manifest is written by
                   the same script that renders the pixels, so this caption cannot
                   describe a different formula than the image it sits under. */}
+              {/* The resolution this layer was MEASURED at, from layers.json.
+                  Stated per layer because they now differ on the same map: 20 m
+                  terrain under an 80 m shadow mask. A viewer comparing the two
+                  has to be told, and a paragraph of caption is not enough. */}
+              {layerRes[activeLayer] && (
+                <div className="mc-legend-res">
+                  {layerRes[activeLayer].native_metres_per_pixel} m native
+                  {layerRes[activeLayer].effective_metres_per_pixel
+                    !== layerRes[activeLayer].native_metres_per_pixel
+                    && ` · ${layerRes[activeLayer].effective_metres_per_pixel} m effective`}
+                  {(layerRes[activeLayer].decimation_factor ?? 1) > 1
+                    && ` · ${layerRes[activeLayer].decimation_factor}× block mean`}
+                </div>
+              )}
               {layerCopy[activeLayer] && <div className="mc-legend-hint">{layerCopy[activeLayer]}</div>}
             </div>
           )}

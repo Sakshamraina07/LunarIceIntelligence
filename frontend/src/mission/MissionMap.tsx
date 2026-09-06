@@ -155,6 +155,18 @@ export interface LayerManifestEntry {
   alpha_opaque: number;
   transparent_where: string;
   provenance: string;
+  /** What this layer's numbers were actually measured at. Written by
+   *  render_layers.py alongside the pixels. Differs BETWEEN layers on the same
+   *  map: after Phase 6 the terrain is 20 m-derived while the shadow mask is
+   *  still 80 m-derived (240 m effective), because the horizon sweep is not
+   *  feasible on the 20 m polar array. Optional because older manifests predate
+   *  the field, and a missing resolution must read as absent, not as 25 m. */
+  resolution?: {
+    native_metres_per_pixel: number | null;
+    effective_metres_per_pixel: number | null;
+    decimation_factor: number | null;
+    basis: string;
+  } | null;
   source_rasters: string[];
   description: string;
 }

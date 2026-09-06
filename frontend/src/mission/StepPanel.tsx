@@ -503,7 +503,11 @@ export function StepPanel(props: Props) {
   // ── STEP 9 · Sensitivity Studio ───────────────────────────────
   if (step === 9) {
     const sliders = [
-      { label: 'CPR Threshold', val: props.cprTh, min: 0.6, max: 1.6, step: 0.05, key: 'cprThreshold', fmt: (n: number) => n.toFixed(2) },
+      // The THRESHOLD is genuinely a CPR threshold -- it is the published
+      // criterion this build is screening against, from Sinha et al. It keeps
+      // the name. What the build measures against it is not CPR, and that is
+      // said where the measurement is shown, not here.
+      { label: 'CPR Threshold (published criterion)', val: props.cprTh, min: 0.6, max: 1.6, step: 0.05, key: 'cprThreshold', fmt: (n: number) => n.toFixed(2) },
       { label: 'DOP Threshold', val: props.dopTh, min: 0.06, max: 0.20, step: 0.01, key: 'dopThreshold', fmt: (n: number) => n.toFixed(2) },
       { label: 'Assumed Depth (m)', val: props.iceDepth, min: 1, max: 12, step: 0.5, key: 'iceDepthM', fmt: (n: number) => `${n}` },
       { label: 'Ice Fraction', val: props.iceFrac, min: 0.03, max: 0.35, step: 0.01, key: 'iceFraction', fmt: (n: number) => `${(n * 100).toFixed(0)}%` },

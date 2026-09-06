@@ -27,7 +27,7 @@ sentence; only a generator or a gate does.**
 
 ### The second pattern: the verification apparatus itself being wrong
 
-Three instances, and it is a distinct failure from the one above, because the
+Four instances, and it is a distinct failure from the one above, because the
 thing that has drifted is the thing meant to catch drift.
 
 1. **`verify_map.mjs` asserted a pane v8 had removed.** It exited 3 before
@@ -40,12 +40,25 @@ thing that has drifted is the thing meant to catch drift.
    `mc.css` shipped `1.06 / 1.10`** — restated as literals under a comment that
    said "what mc.css says today".
 
-**The third is the worst of the three**, and it is worth being precise about why.
+4. **`composite_contrast.py` measured a quantity that could be satisfied without
+   the thing it was checking for.** Its first version scored only *relief
+   retention* — how much high-frequency structure survives in the composite. The
+   radar layers scored **2.61 at opacity 0.72, more structure than the bare
+   hillshade**, while the landforms underneath were completely hidden: the
+   structure being counted was the layer's own speckle. Adding a correlation test
+   against the base's high-pass turned three PASSes into FAILs.
+
+**The fourth is the only one found BY DESIGN rather than by accident.** It was
+caught because the number was implausible on its face — a composite cannot carry
+*more* terrain relief than the terrain — and that is what a measurement is for.
+The first three were each noticed by a person looking at something else.
+
+**The third is the worst of the four**, and it is worth being precise about why.
 The first two *failed* — noisily, uselessly, but visibly. The third *passed*, on
 a filter the application does not apply. A gate that validates something other
 than what ships does not merely fail to catch a problem; **it certifies the wrong
 thing**, and its green light is then evidence for a claim nobody checked. Two of
-these three were found by accident rather than by any process.
+the first three were found by accident rather than by any process.
 
 The rule now applied, and the reason `hillshade_histogram.py` parses `mc.css`
 and `stamp_methods.py` digests artifacts rather than quoting them:

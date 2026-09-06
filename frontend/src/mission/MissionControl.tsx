@@ -130,7 +130,11 @@ function contextCells(a: Analysis): CtxCell[] {
     // scene, and the label says so in as many words, because a percentile of a
     // sub-threshold distribution is not a detection.
     {
-      k: 'Top 1% CPR',
+      // Renamed with its sibling. Same quantity, same proxy, same objection:
+      // METHODS 7.9.2 shows it does not measure CPR. Leaving one cell reading
+      // "CPR" beside another reading "channel imbalance", both fed by the same
+      // array, is the collision this project keeps finding.
+      k: 'Top 1% ch. imbal.',
       v: v.cpr_p99,
       sub: 'ranking within this swath — not a detection',
       digits: 4,
@@ -342,6 +346,10 @@ export default function MissionControl() {
           {/* layer control */}
           <div className="mc-map-overlay mc-map-panel mc-layerctl">
             <div className="mc-layerctl-head">Layers</div>
+            {/* Scrolls rather than overflowing. The legend below is capped so it
+                cannot cover this, but the switcher must also survive a short
+                viewport on its own. */}
+            <div className="mc-layerctl-body">
             {LAYERS.map((l) => (
               <button key={l.id} className={`mc-layer ${activeLayer === l.id ? 'mc-layer--on' : ''}`} onClick={() => setActiveLayer(l.id)}>
                 <span className="mc-layer-sw" style={{ background: l.swatch }} />
@@ -369,6 +377,7 @@ export default function MissionControl() {
           {/* map tools */}
           <div className="mc-map-overlay mc-map-tools">
             <button className="mc-tool" onClick={() => mapRef.current?.zoomIn()} title="Zoom in"><ZoomIn size={15} /></button>
+            </div>
             <button className="mc-tool" onClick={() => mapRef.current?.zoomOut()} title="Zoom out"><ZoomOut size={15} /></button>
             <button className="mc-tool" onClick={() => mapRef.current?.reset()} title="Reset view"><Maximize2 size={14} /></button>
             <div className="mc-tool mc-north" title="North">N</div>

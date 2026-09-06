@@ -245,7 +245,34 @@
 .mc-layer-check { margin-left: auto; color: var(--mc-accent); opacity: 0; }
 .mc-layer--on .mc-layer-check { opacity: 1; }
 
-.mc-map-legend { bottom: 1rem; left: 1rem; width: 15rem; padding: 0.7rem 0.8rem; }
+/* THE LEGEND MUST NOT GROW INTO THE LAYER SWITCHER.
+   Both panels are absolutely positioned at left: 1rem -- the switcher from the
+   top, this from the bottom -- so a tall legend extends upward and covers the
+   controls. With the honest captions this project writes, that reached the point
+   where only two of six layer buttons were clickable and a user could not switch
+   away from the layer whose own legend was hiding the switch. That is a control
+   made unreachable, not a cosmetic crowding.
+   The captions are long because they are accurate and they are not shortened.
+   The card is capped instead and its prose scrolls inside it. */
+.mc-map-legend {
+  bottom: 1rem; left: 1rem; width: 15rem; padding: 0.7rem 0.8rem;
+  max-height: 52%;
+  display: flex; flex-direction: column;
+}
+/* Everything above the prose keeps its natural height; only the prose scrolls,
+   so the title, badge, colour bar, scale ends and opacity slider are always
+   visible however long the caption is. */
+.mc-map-legend > .mc-legend-hint {
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+}
+.mc-map-legend > .mc-legend-hint::-webkit-scrollbar { width: 4px; }
+.mc-map-legend > .mc-legend-hint::-webkit-scrollbar-thumb {
+  background: var(--mc-line-strong); border-radius: 2px;
+}
+/* And the switcher itself scrolls rather than overflowing its panel. */
+.mc-layerctl-body { max-height: 40vh; overflow-y: auto; scrollbar-width: thin; }
 .mc-legend-title { font-size: 0.72rem; font-weight: 600; color: var(--mc-text); margin-bottom: 0.4rem;
   display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
 

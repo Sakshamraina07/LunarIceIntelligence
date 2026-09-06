@@ -1030,6 +1030,16 @@ def build(crater_id: str = "faustini") -> dict:
                      if e["passed"] and not e.get("informative", True)]
     evaluable = [e for e in evidence if e["provenance"] != UNAVAILABLE]
     withheld_n = len(evidence) - len(evaluable)
+    # The two counts are related by construction; assert it so a future edit
+    # cannot let them drift into disagreeing on the same screen.
+    assert passed_n == informative_pass_n + len(uninformative), (
+        f"criteria_passed ({passed_n}) must equal informative ({informative_pass_n}) "
+        f"+ uninformative ({len(uninformative)}). They are two views of one tally and "
+        f"a difference means one of them is counting something the other is not.")
+    for _e in uninformative:
+        assert _e.get("uninformative_reason"), (
+            f"{_e['label']} is marked uninformative with no reason. A row that "
+            f"declines to be evidence must say why, or it is just a downgrade.")
     status = "PASS" if cand_n > 0 else "FAIL"
     print(f"\n  {passed_n} passed / {len(evaluable)} evaluable / {withheld_n} withheld "
           f"of {len(evidence)} named criteria")
@@ -1292,6 +1302,18 @@ def build(crater_id: str = "faustini") -> dict:
         "candidate_area_km2": val(round(cand_km2, 4), "km²", MEASURED,
                                   note="Pixel count passing both criteria, times the frame's own cell "
                                        "area. A measured zero here is a result, not a gap."),
+        # BOTH counts reach the UI, and the INFORMATIVE one is what any headline
+        # must use. Keeping criteria_passed as well is deliberate -- it is the
+        # raw tally and it is what makes the difference between the two visible
+        # rather than hidden by a redefinition.
+        "criteria_informative_passed": val(
+            informative_pass_n, "", MEASURED,
+            note=("Criteria that passed AND bear on the question. Differs from "
+                  f"criteria_passed ({passed_n}) because {len(uninformative)} pass for a "
+                  "reason unrelated to ice: "
+                  + "; ".join(e["uninformative_reason"] for e in uninformative)
+                  if uninformative else
+                  "Criteria that passed and bear on the question.")),
         "criteria_passed": val(passed_n, "", MEASURED,
                                note=f"Of {len(evidence)} named criteria: "
                                     + ", ".join(f"{e['label']} = "

@@ -248,9 +248,18 @@ export function StepPanel(props: Props) {
         <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
           <Figure k="Candidate Area" v={v.candidate_area_km2} digits={2}
             sub={`${showPercent(v.screening_pass_fraction)} % of the measured swath`} />
-          <Figure k="Criteria passed" v={v.criteria_passed} digits={0}
+          {/* INFORMATIVE passes, matching the verdict card. Rendering
+              criteria_passed here while the card renders
+              criteria_informative_passed would put 1 and 0 for the same thing on
+              one screen -- the divergence class the cross-path gate exists for,
+              except within a single page. */}
+          <Figure k="Criteria passed" v={v.criteria_informative_passed ?? v.criteria_passed}
+            digits={0}
             suffix={` / ${analysis.verdict.criteria_evaluable} evaluable`}
-            sub={`${analysis.verdict.criteria_withheld} withheld of ${analysis.verdict.criteria_total} named`} />
+            sub={(analysis.verdict.criteria_uninformative_passed
+              ? `${analysis.verdict.criteria_uninformative_passed} more passes but is not evidence · `
+              : '')
+              + `${analysis.verdict.criteria_withheld} withheld of ${analysis.verdict.criteria_total} named`} />
         </div>
         <div className="mc-details">
           <div className="mc-details-k">Evidence checklist</div>

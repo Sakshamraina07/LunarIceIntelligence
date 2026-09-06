@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/layers-manifest/1",
-  "generated_utc": "2026-09-06T12:14:37+00:00",
+  "generated_utc": "2026-09-06T12:27:57+00:00",
   "generator": "backend/scripts/render_layers.py",
   "replaces": "backend/scripts/generate_tiles.py + backend/tiles/faustini/** (tile pyramid: ~331 tiles/layer, per-tile normalisation, visible seams)",
   "product_id": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",

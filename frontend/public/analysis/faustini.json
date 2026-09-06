@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-06T12:14:59.902284+00:00",
+  "generated_utc": "2026-09-06T12:28:19.210704+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -323,6 +323,12 @@
       "unit": "km²",
       "provenance": "MEASURED",
       "note": "Pixel count passing both criteria, times the frame's own cell area. A measured zero here is a result, not a gap."
+    },
+    "criteria_informative_passed": {
+      "value": 0,
+      "unit": "",
+      "provenance": "MEASURED",
+      "note": "Criteria that passed AND bear on the question. Differs from criteria_passed (1) because 1 pass for a reason unrelated to ice: Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock."
     },
     "criteria_passed": {
       "value": 1,

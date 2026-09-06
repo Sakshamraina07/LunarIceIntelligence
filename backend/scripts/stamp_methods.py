@@ -60,6 +60,7 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/enl.json": ["7.1", "7.3", "7.5", "7.6"],
     "docs/slc_multilook_control.json": ["7.4"],
     "docs/cpr_significance.json": ["7.7", "7.9.1", "7.9.2", "7.9.3"],
+    "docs/rover_coverage.json": ["6.5"],
     "docs/psr_validation.json": ["5.10"],
     "docs/solar_model_ab.json": ["5.3", "5.10"],
     "docs/antialias_sigma.json": ["8.1"],

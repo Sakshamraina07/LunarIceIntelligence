@@ -656,6 +656,38 @@ crater, which is a far stronger position than a general improvement.
 
 ---
 
+### 6.5 A planned traverse mostly crosses ground the radar never saw
+
+The coverage thesis is usually argued from the frame: 15.64 % of it carries
+amplitude, and even F2 — a crater with a published detection — returned usable
+signal on 17.09 % of itself while 100 % of it was pointed at. This is the same
+fact met from the other direction, and it is the form a mission planner would
+actually feel.
+
+Three rover strategies are planned across this frame by Dijkstra over measured
+slope, roughness, hazard and illumination. Classifying each of their 33 waypoints
+by what the radar did there (`docs/rover_coverage.json`):
+
+| strategy | km | inside the amplitude ribbon | pointed, no return | never observed | **no radar return** |
+|---|---|---|---|---|---|
+| Shortest | 18.1 | 9 (27.3 %) | 9 (27.3 %) | 15 (45.5 %) | **72.7 %** |
+| **Safest** | **34.6** | **3 (9.1 %)** | 11 (33.3 %) | 19 (57.6 %) | **90.9 %** |
+| Science-Aware | 18.1 | 9 (27.3 %) | 9 (27.3 %) | 15 (45.5 %) | **72.7 %** |
+
+**The safest route is the worst covered.** That is not a coincidence and it is
+the point: safety is scored from LOLA topography, which covers the whole frame,
+while radar covers a thin ribbon — so optimising for terrain safety walks the
+rover *away* from the only ground with any radar evidence on it. Nine tenths of
+the route a lander would actually prefer crosses terrain about which this
+instrument says nothing at all.
+
+Two honest qualifications. The destination is a hardcoded grid centre — the
+screen found no candidate, so there is nothing to route *to* — which is why the
+UI marks the route DEMO TARGET and reports no traverse distance. And "pointed, no
+return" and "never observed" are different failures: the first is a radar that
+looked and got nothing back, the second is ground outside the swath entirely.
+They are counted separately above rather than merged into one comfortable number.
+
 ## 7 · The radar product itself — looks, speckle, and what a DN means
 
 Everything in Phase 8 is a function of the look count *N*: a per-pixel
@@ -1296,7 +1328,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `8de063d`.
+Stamped at commit `6dd25a3`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -1306,8 +1338,9 @@ Stamped at commit `8de063d`.
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
 | `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
+| `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
-| `frontend/public/analysis/faustini.json` | `1b52de2160842ca0…` | §8.2, §8.3 |
+| `frontend/public/analysis/faustini.json` | `f84a892efe7ffaf3…` | §8.2, §8.3 |
 
 <!-- END GENERATED STAMP -->

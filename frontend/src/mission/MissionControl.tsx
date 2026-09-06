@@ -629,11 +629,23 @@ export default function MissionControl() {
               failure, and it must not be dressed as a spinner over a blank panel. */}
           {!mission && (
             <div className="mc-map-overlay mc-map-panel mc-map-vectorstate">
-              TERRAIN LOADED · {error ? 'ANALYSIS UNAVAILABLE' : loading ? 'ANALYSIS PENDING' : 'NO ANALYSIS'}
+              TERRAIN LOADED · {error ? 'STUDIO UNAVAILABLE' : loading ? 'STUDIO PENDING' : 'NO STUDIO'}
+              {/* THIS SENTENCE NAMES WHAT IS ACTUALLY MISSING.
+                  It used to say landing sites and rover routes need the backend.
+                  Both are now static artifacts — the Phase 3 sites from
+                  landing_sites.json and the Phase 4 traverse from traverse.json,
+                  drawn above this banner while it claimed they could not be —
+                  so the sentence had stopped describing the screen it sits on.
+                  What genuinely needs the backend is the sensitivity studio, the
+                  stage panels and the PDF, and those are what it names. */}
               <div className="mc-map-vectorstate-sub">
                 {error
-                  ? 'Landing sites and rover routes need the on-demand backend, which is not reachable. Every raster above is a static asset and is unaffected.'
-                  : 'Rasters are served from the CDN and are already drawn. Landing-site and route vectors follow when the backend responds.'}
+                  ? 'The sensitivity studio, the stage panels and the PDF need the on-demand '
+                    + 'backend, which is not reachable. The verdict, the rasters, the searched '
+                    + 'landing sites, the Phase 4 traverse and the criteria probe are all '
+                    + 'static artifacts and are unaffected.'
+                  : 'Rasters, sites and the traverse are static and already drawn. The '
+                    + 'sensitivity studio and the stage panels follow when the backend responds.'}
               </div>
             </div>
           )}

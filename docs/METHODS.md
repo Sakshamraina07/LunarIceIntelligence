@@ -133,8 +133,16 @@ something that is not a verifier.
    console read `#1 outside … #5 outside`; after it, `#1 amplitude … #5
    amplitude`, matching all five records.
 
-**Both are the same defect as the five in the second pattern, one step
-upstream.** There, a *verifier* restated the value it was meant to check. Here a
+A third, smaller instance surfaced the moment the traverse was drawn without a
+backend running: the degraded-state banner read *"landing sites and rover routes
+need the on-demand backend, which is not reachable"* — printed directly over five
+searched sites and a five-route traverse, both drawn from static artifacts. That
+sentence was true when it was written and had not been true since Phase 3. It now
+names what actually needs the backend: the sensitivity studio, the stage panels
+and the PDF.
+
+**Both of the first two are the same defect as the five in the second pattern,
+one step upstream.** There, a *verifier* restated the value it was meant to check. Here a
 *producer* and a *consumer* each restated a transform that already existed
 elsewhere in the repository — and, as always, the second copy agreed with the
 first until it did not. The rule generalises without amendment:

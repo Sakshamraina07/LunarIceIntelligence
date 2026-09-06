@@ -109,9 +109,12 @@ def main() -> int:
     # only the PDF was wrong, which is the worst shape for a bug to have: looking
     # at the app does not reveal it.
     timings.append(("6 · cross-path gate",
-                    run("6/6 · assert_paths_agree.py — API vs static analysis",
+                    run("6/7 · assert_paths_agree.py — API vs static analysis",
                         [py, str(SCRIPTS / "assert_paths_agree.py"),
                          "--crater", args.crater])))
+    timings.append(("7 · METHODS staleness",
+                    run("7/7 · stamp_methods.py --check — METHODS vs its artifacts",
+                        [py, str(SCRIPTS / "stamp_methods.py"), "--check"])))
 
     print("\n" + "=" * 78)
     print("  REBUILD COMPLETE — the imagery and the numbers describe the same data")

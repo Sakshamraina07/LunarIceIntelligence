@@ -7,6 +7,24 @@ method can and cannot support.
 Sections are added as phases land. Anything not listed here is not yet computed,
 and `PROVENANCE.md` names the phase that will compute it.
 
+## 0 · The recurring defect in this project
+
+**Five instances so far of one failure: a caption, a name or a summary that
+stopped tracking the computation it describes.** The illumination layer's
+`MODEL OUTPUT` badge over a real horizon computation; a `StepUnavailable`
+heading above four measured values; a `within 2.00%` summary printed over a row
+gated at 5%; one DEM product name hardcoded in twelve places and stale in all
+twelve at once; and `dem_native_synthetic.tif` holding real LOLA elevation.
+
+They are not five unrelated bugs, and the direction varies — two overstated, two
+understated, one merely drifted. What they share is that a human wrote a
+description once and nothing afterwards forced it to agree with the thing it
+described. The fixes are all the same shape: make whatever produces the number
+also produce the words about it, and fail the build when they part company. That
+is what PRD rules 5a–5c, `emit_provenance.py`, `assert_paths_agree.py` and
+`stamp_methods.py` exist to do. **Provenance discipline does not catch a stale
+sentence; only a generator or a gate does.**
+
 ---
 
 ## 1 · The polarimetric ice screen, and why it is empty by construction
@@ -1261,3 +1279,35 @@ passed it too.
 *Sections 9 (site search), 10 (traverse) and 11 (Stokes derivation) arrive with
 Phases 3, 4 and 5b.*
 
+<!-- BEGIN GENERATED STAMP -- do not edit by hand -->
+
+## Provenance of the numbers in this document
+
+Every measured figure quoted above is transcribed from an artifact on
+disk. Those artifacts are digested here, so that a figure which has gone
+stale is **detectable** rather than merely wrong —
+`python backend/scripts/stamp_methods.py --check` fails the build when an
+artifact has moved since this stamp was written, and names the sections
+that were read from it.
+
+**What this does not do.** It does not verify that any individual digit
+was transcribed correctly; only generation could do that, and generating
+this document would mean templating the prose that carries its reasoning.
+It catches the failure that has actually occurred here — an artifact
+changing underneath text that still quotes the old numbers.
+
+Stamped at commit `6fdfbb5`.
+
+| artifact | sha256 | sections |
+|---|---|---|
+| `data/pradan/lola/horizon_240m.provenance.json` | `f84a64b1ae849b27…` | §5.4, §5.6, §8.4 |
+| `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
+| `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
+| `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
+| `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
+| `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
+| `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
+| `frontend/public/analysis/faustini.json` | `b0c92a7f373533ec…` | §8.2, §8.3 |
+
+<!-- END GENERATED STAMP -->

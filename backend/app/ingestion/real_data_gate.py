@@ -263,13 +263,21 @@ def assert_no_shared_real_rasters(catalog: Dict[str, object]) -> Dict[str, objec
         for crater_id, status in eligible.items()
     }
 
+    # DERIVED from crater_inputs(), never maintained by hand. This list was
+    # hand-written and went stale within one session: DEM_NATIVE_ROLE was added
+    # to crater_inputs and the collision check kept comparing the old three, so
+    # the newly-vetted raster was resolved and digested but never checked for
+    # collisions. A list that must be edited in step with another list will
+    # eventually not be.
+    roles = tuple(crater_inputs("__roles__").keys())
+
     collisions: List[Dict[str, str]] = []
     ids = sorted(eligible)
     pairs = 0
     for i, a in enumerate(ids):
         for b in ids[i + 1:]:
             pairs += 1
-            for role in (DEM_ROLE, DEM_NATIVE_ROLE, CPR_ROLE, DOP_ROLE):
+            for role in roles:
                 pa, pb = eligible[a].inputs.get(role), eligible[b].inputs.get(role)
                 if pa is not None and pa == pb:
                     collisions.append({"crater_a": a, "crater_b": b, "role": role,
@@ -281,7 +289,7 @@ def assert_no_shared_real_rasters(catalog: Dict[str, object]) -> Dict[str, objec
     rec: Dict[str, object] = {
         "checked_craters": ids,
         "pairs_compared": pairs,
-        "roles": [DEM_ROLE, DEM_NATIVE_ROLE, CPR_ROLE, DOP_ROLE],
+        "roles": list(roles),
         "digests": digests,
         "tolerance": "no two eligible craters may share a raster path or digest",
         "collisions": collisions,

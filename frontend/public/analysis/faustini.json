@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-06T11:25:34.412590+00:00",
+  "generated_utc": "2026-09-06T11:50:40.204554+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -364,13 +364,13 @@
       "provenance": "MEASURED",
       "note": "20 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 20 m posts and the upsample added no relief below that. Read this as a 20 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Despite its filename, native/dem_native.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "safe_slope_fraction": {
+    "slope_fraction_below_20deg": {
       "value": 0.888762,
       "unit": "",
       "provenance": "MEASURED",
       "note": "Fraction of the frame at or below MAX_TRAVERSABLE_SLOPE_DEG = 20°, read from config.py. 20 m-POST QUANTITY. The gradient is taken on the 25 m grid, but LOLA measured the surface at 20 m posts and the upsample added no relief below that. Read this as a 20 m slope, not a 25 m one. Elevation is LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Despite its filename, native/dem_native.tif holds that measured LOLA topography bit-for-bit (verified every run: max|diff| 0.0 m against lola/ldem_frame_25m.tif); the name is retained only so existing consumers keep working."
     },
-    "landable_slope_fraction": {
+    "slope_fraction_below_12deg": {
       "value": 0.61627,
       "unit": "",
       "provenance": "MEASURED",

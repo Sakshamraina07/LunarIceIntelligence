@@ -1716,6 +1716,13 @@ impossible.*
 
 ## 11 · Detection statistics — the contribution
 
+> **Read down a column: at N = 6 nothing clears the floor, by N = 38 everything
+> does. The look count decides the answer, and it is not reported.**
+
+That is this section's thesis, and it is the project's contribution. It accuses
+nobody of being wrong, it is checkable by anyone in ten minutes with
+`scipy.stats.f`, and the table it refers to is §11.3.
+
 ### 11.1 Per-pixel significance, at a named look count
 
 Not *"is this value high"* but *"is it significantly above threshold"*, with the
@@ -1828,7 +1835,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `3fbff2a`.
+Stamped at commit `68ae42b`.
 
 | artifact | sha256 | sections |
 |---|---|---|

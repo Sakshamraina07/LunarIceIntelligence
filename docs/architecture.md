@@ -1,68 +1,45 @@
-# System Architecture: Lunar Ice Intelligence v2.0
+# System Architecture
 
-## High-Level Pipeline
+*What actually runs, as of PRD Phase 8. No machine-learning component exists in
+this project — see `ml-methodology.md`.*
 
-The Lunar Ice Intelligence & Mission Planning System integrates lunar remote sensing, radar polarimetry, machine learning, and multi-objective path planning into an explainable 7-module pipeline:
+## The two paths, and why there are two
 
-```text
-                 LUNAR DATA INGESTION
-          (DFSAR, OHRC, LOLA / DEM Rasters)
-          [REAL MODE / DETERMINISTIC DEMO MODE]
-                          │
-                          ▼
-             ┌─────────────────────────┐
-             │ A. PSR / CRATER MAPPING │
-             └────────────┬────────────┘
-                          │
-                          ▼
-             ┌─────────────────────────┐
-             │ B. RADAR ANALYSIS       │
-             │ CPR + DOP Polarimetry   │
-             └────────────┬────────────┘
-                          │
-                          ▼
-             ┌─────────────────────────┐
-             │ C. ICE INTELLIGENCE     │
-             │ Scientific + ML Model   │
-             └────────────┬────────────┘
-                          │
-               ┌──────────┴──────────┐
-               ▼                     ▼
-     ┌──────────────────┐   ┌────────────────────┐
-     │ D. TERRAIN       │   │ E. LANDING SITE    │
-     │ SAFETY           │──►│ SELECTION          │
-     └──────────────────┘   └─────────┬──────────┘
-                                       │
-                                       ▼
-                          ┌──────────────────────┐
-                          │ F. ROVER PLANNING    │
-                          │ A* + Dijkstra        │
-                          │ Science-Aware Route  │
-                          └──────────┬───────────┘
-                                     │
-                                     ▼
-                          ┌──────────────────────┐
-                          │ G. ICE VOLUME +      │
-                          │ MISSION REPORT (PDF) │
-                          └──────────────────────┘
+```
+  RASTERS ON DISK                    data/pradan/  (~9 GB, gitignored)
+       |
+       |  OFFLINE PRODUCERS (backend/scripts/) — run by rebuild_all.py
+       |
+       +-> ingest_lola_polar_dem.py   LOLA polar DEM -> this frame's 25 m grid
+       +-> process_real_sar_pipeline.py  DFSAR L2 -> native cpr/dop/valid/footprint
+       +-> build_analysis.py          THE NUMBERS -> public/analysis/<crater>.json
+       +-> render_layers.py           THE PIXELS  -> public/layers/*.webp + layers.json
+       +-> detection_statistics.py    significance + the confidence interval
+       +-> search_landing_sites.py    Phase 3 sites -> public/analysis/landing_sites.json
+       +-> plan_traverse.py           Phase 4 routes -> public/analysis/traverse.json
+       |
+       v
+  frontend/  (Vite + React + Leaflet)   reads the STATIC artifacts above
+       |
+  backend/app/  (FastAPI)               the REQUEST path: /api/mission, the PDF
 ```
 
-## Backend Modular Architecture (`backend/app/`)
-- **`core/config.py`**: Centralized configuration of thresholds (CPR > 1.0, DOP < 0.13), weights, and rover parameters.
-- **`core/schemas.py`**: Strict Pydantic contracts and data provenance models.
-- **`demo/lunar_generator.py`**: Deterministic synthetic South Polar lunar craters (Shackleton, Shoemaker, Faustini) based on fixed random seed (42).
-- **`modules/module_a_psr.py`**: Grazing solar illumination ray-tracing and distinction between primary PSRs and doubly-shadowed cold-traps.
-- **`modules/module_b_radar.py`**: DFSAR Stokes polarimetric decomposition calculating Circular Polarization Ratio (CPR) and Degree of Polarization (DOP).
-- **`modules/module_c_ice.py`**: Scientific dual-threshold screening mask and explainable Random Forest ML Ice Likelihood estimator ($P \in [0, 1]$).
-- **`modules/module_d_terrain.py`**: Multi-factor terrain hazard index combining surface slope, roughness, and boulder risk.
-- **`modules/module_e_landing.py`**: Algorithmic multi-criteria ranking of landing candidates based on touchdown safety, solar array illumination, target proximity, and scientific vantage.
-- **`modules/module_f_rover.py`**: 8-connected grid graph traversal comparing Shortest, Safest, and Science-Aware strategies using A* and Dijkstra algorithms with a simplified engineering energy model.
-- **`modules/module_g_volume.py`**: 3-tier ice-equivalent volume range estimation and parameter sensitivity analysis.
-- **`modules/experiments_runner.py`**: Automated evaluation suite for Experiments 1 through 5 and progressive ablation studies.
-- **`services/pdf_generator.py`**: ReportLab mission decision PDF report generator.
-- **`api/api_router.py`**: REST endpoints powering the client interface.
+**The UI reads static artifacts, not the API.** That is deliberate and it is why
+a bug in the request path once could not reach the screen (`METHODS.md` §8.3).
+Because the same terrain quantity is then computed by two paths that share no
+code, `assert_paths_agree.py` runs on every rebuild and fails the build if they
+diverge — they have, twice.
 
-## Frontend Architecture (`frontend/src/`)
-- **`components/Map/GISMapViewer.tsx`**: High-performance HTML5 Canvas GIS viewer with multi-raster layer switching, interactive crosshair coordinate telemetry, landing site pins, and rover trajectories.
-- **`components/Workflow/MissionStepper.tsx`**: 12-step guided mission sequence.
-- **`components/Views/WorkflowViews.tsx`**: Specialized step-by-step telemetry cards, ranked landing tables, trajectory comparison matrices, sensitivity sliders, and report downloads.
+## The gate chain
+
+`rebuild_all.py` runs eight stages and **any non-zero exit stops the rebuild**,
+so a build that would have shipped an unlabelled number fails before it reaches
+disk. The gates are listed in `testing.md`.
+
+## Rules that constrain the code
+
+- No `rasterio`, no GDAL. numpy, scipy, cv2, PIL, tifffile only.
+- Never `imread` a multi-gigabyte raster whole — `np.memmap` and windowed reads.
+- PDS labels parsed as text, with units taken from the angle brackets.
+- Every number reaching a screen carries `MEASURED` / `DERIVED` / `MODELLED` /
+  `NO DATA`. `np.zeros_like` is not an absent state.

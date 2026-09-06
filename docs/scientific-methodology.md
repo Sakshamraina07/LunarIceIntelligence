@@ -1,37 +1,31 @@
-# Scientific Methodology: Lunar Ice Intelligence v2.0
+# Scientific Methodology — SUPERSEDED by METHODS.md
 
-## 1. Permanent Shadow & Doubly-Shadowed Cold-Traps (Module A)
-- **Grazing Angle Solar Ray-Tracing**: At lunar polar latitudes (> 85°S), the Sun hovers between 1.0° and 2.0° above the local horizon. Deep impact craters intercept direct sunlight, creating Permanent Shadow Regions (PSRs).
-- **Distinction Between PSR and Doubly-Shadowed Traps**:
-  - *Primary PSR*: Regions receiving zero direct solar irradiance, but potentially illuminated by secondarily scattered photons from warm sunlit crater rims.
-  - *Doubly-Shadowed Pockets*: Micro-craters and steep-walled nested depressions within the primary PSR floor that are geometrically shielded from both primary solar radiation and secondary rim reflection. Equilibrium temperatures remain < 40 K, permitting the stable preservation of volatile water ice over geologic timescales.
+This document predates every measurement in the project and contains at least one
+statement now known to be wrong:
 
-## 2. Polarimetric Radar Physics (Module B)
-- **Circular Polarization Ratio (CPR)**:
-  $$\text{CPR} = \frac{\sigma_{SC}}{\sigma_{OC}}$$
-  where $\sigma_{SC}$ is same-sense circular backscatter and $\sigma_{OC}$ is opposite-sense circular backscatter.
-  - *Dry Regolith*: Dominated by single-bounce specular reflections, resulting in $\sigma_{OC} > \sigma_{SC}$ ($\text{CPR} \sim 0.3 - 0.6$).
-  - *Volatile Ice Deposits*: Low-loss dielectric ice structures trigger the **Coherent Backscatter Opposition Effect (CBOE)**, causing constructive multi-bounce interference that reverses circular polarization, producing anomalously high CPR ($\text{CPR} > 1.0$).
-- **Degree of Polarization (DOP)**:
-  $$\text{DOP} = \frac{\sqrt{S_1^2 + S_2^2 + S_3^2}}{S_0}$$
-  derived from Stokes parameters $(S_0, S_1, S_2, S_3)$. Multiple subsurface volume scattering depolarizes the return signal, driving $\text{DOP} < 0.13$.
+> *"At lunar polar latitudes (> 85°S), the Sun hovers between 1.0° and 2.0° above
+> the local horizon."*
 
-## 3. Scientific Screening Baseline (Module C)
-A grid cell qualifies as a **Candidate Ice-Bearing Region** if and only if:
-$$\text{CPR} > \tau_{\text{CPR}} \quad \land \quad \text{DOP} < \tau_{\text{DOP}} \quad \land \quad \text{PSR Overlap}$$
-Default thresholds: $\tau_{\text{CPR}} = 1.00$, $\tau_{\text{DOP}} = 0.13$.
+**That is false, and correcting it was a methods contribution.** ±1.54° is the
+bound on the SUBSOLAR LATITUDE, not on solar elevation. Solar elevation at a
+point of latitude φ reaches `1.54° + (90° − |φ|)`, which is 1.54° only exactly at
+the pole and 6.71° at this frame's outer edge. Treating it as a constant
+under-illuminates the frame by up to 4.4× and inflated the PSR area from
+26,900 km² to a figure 2.88× the entire frame before the domain was fixed.
 
-> **Mandatory Scientific Limitation:** Radar anomalies meeting these criteria are strictly categorized as **"Radar signatures consistent with potential ice-bearing regions"** and never as definitive confirmation of water ice without in-situ verification.
+It also described "grazing-angle ray-tracing", which was a brightness proxy with
+no horizon term in it. That was replaced in Phase 2 by an actual horizon
+computation over the full LOLA polar array, validated against the LOLA team's own
+published PSR mask.
 
-## 4. Multi-Criteria Terrain Hazard Scoring (Module D)
-Terrain hazard combines slope gradient, surface roughness, and boulder risk:
-$$\text{Hazard} = \frac{w_1 \cdot \text{SlopeRisk} + w_2 \cdot \text{RoughnessRisk} + w_3 \cdot \text{BoulderRisk}}{w_1 + w_2 + w_3} \in [0, 1]$$
-Default weights: $w_1 = 0.50$, $w_2 = 0.30$, $w_3 = 0.20$. Rover maximum tilt safety threshold is 20.0°; slopes exceeding 22.0° represent impassable barriers.
+**`METHODS.md` is the single methodological record.**
 
-## 5. Volumetric Uncertainty Ranges (Module G)
-Ice volume is estimated as a three-tier range:
-$$\text{Volume} = \text{Area} \times \text{Assumed Depth} \times \text{Ice Volumetric Fraction}$$
-- **Conservative Tier**: Depth = 2.0 m, Fraction = 5% (isolated cryo-grains).
-- **Expected Tier**: Depth = 5.0 m, Fraction = 15% (LCROSS-consistent permafrost mix).
-- **Upper Bound Tier**: Depth = 10.0 m, Fraction = 30% (thick ice-cemented regolith lenses).
-- **Mass Calculation**: Mass = $\text{Volume} \times \rho_{\text{ice}}$ where $\rho_{\text{ice}} = 930\text{ kg/m}^3$.
+| topic | section |
+|---|---|
+| the polarimetric screen, and why it is empty by construction | §1 |
+| georeferencing, validated against ISRO's own grid | §2 |
+| illumination, permanent shadow, and the solar-elevation correction | §5 |
+| external validation against LPSR — Jaccard 0.714 | §5.10 |
+| the screening thresholds and whose they are | §6 |
+| the radar product: looks, speckle, and what a DN means | §7 |
+| detection statistics, floors, and the confidence interval | §11 |

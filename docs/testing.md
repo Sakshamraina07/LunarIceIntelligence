@@ -1,29 +1,63 @@
-# Testing & Verification Guide: Lunar Ice Intelligence v2.0
+# Verification
 
-## Automated Test Suite (`backend/tests/`)
-Run all automated unit and integration tests via Pytest:
-```powershell
-cd d:\FYP\backend
-python -m pytest -v tests/
+## One command
+
+```bash
+python -u backend/scripts/verify_all.py
 ```
 
-### Coverage Overview
-- **`test_science.py`**:
-  - `test_cpr_computation`: Verifies CPR ratio calculations and safe epsilon handling for zero-division.
-  - `test_dop_computation`: Verifies Stokes vector purity and strict $[0, 1]$ bounds.
-  - `test_hazard_score_bounds`: Verifies monotonic increase with slope/roughness and normalization.
-  - `test_ice_volume_estimation_tiers`: Verifies 3-tier calculations and density conversions.
-- **`test_rover.py`**:
-  - `test_energy_step_model`: Validates simplified energy power consumption on slopes.
-  - `test_rover_path_reachability`: Validates A* path finding from start to target.
-  - `test_impassable_cliff_barrier_failure`: Validates PRD Section 40 requirement that impassable terrain gracefully returns `NO FEASIBLE PATH FOUND` rather than fabricating paths.
-- **`test_pipeline.py`**:
-  - `test_full_mission_pipeline_execution`: Runs complete end-to-end mission workflow across Shackleton, Shoemaker, and Faustini craters.
-  - `test_experiments_suite_execution`: Runs all 4 research experiments and the 6-step ablation study.
+Runs every gate, maps each to the statement it backs in **PRD section 6**, and
+writes `docs/verification.json`. Roughly 2.5 minutes; `--skip-slow` omits the
+three that re-read multi-gigabyte rasters and marks them **UNVERIFIED, not
+passed**.
 
-## Frontend Build Verification
-```powershell
-cd d:\FYP\frontend
-npm run build
+It asserts nothing of its own. Every verdict is produced by the gate that owns
+it — a verifier computing its own opinion would be one more source of truth, and
+this project has spent long enough removing those.
+
+## The gates
+
+| id | gate | what it refuses to let ship |
+|---|---|---|
+| G1 | `emit_provenance.py` | a value reaching the UI unmarked, marked MODELLED, absent without a reason, in the wrong unit, or a non-zero candidate area under an amplitude-only screen; **and a detection area without its confidence interval** |
+| G2 | `validate_psr_vs_lola.py` | shadow that disagrees with the LOLA team's own published mask — currently Jaccard 0.714, ratio 1.174× |
+| G3 | `search_landing_sites.py` | a site chosen on a coarse grid, a criterion that admits >99 % of the frame going unlabelled, or a site sitting on interpolated terrain without its verdict |
+| G4 | `plan_traverse.py` | a route shorter than its own straight-line separation, or `UNREACHABLE` reported before connectivity is |
+| G5 | `detection_statistics.py` | a candidate area without an interval, or a significance claim without a named look count |
+| G6 | `hillshade_histogram.py` | a base filter set by eye — post-filter median > ~190 or >1 % clipping at 255 |
+| G6b | `composite_contrast.py` | a science layer that hides the relief beneath it, tested on retention **and** correlation |
+| G7 | `assert_paths_agree.py` | the API and the static analysis disagreeing on a terrain quantity |
+| G8 | `stamp_methods.py --check` | a figure in METHODS whose source artifact has moved since it was written |
+
+`rebuild_all.py` runs G1, G5, G7 and G8 on every rebuild, and **any non-zero exit
+stops the build**, so a rebuild that would ship an unlabelled number fails before
+it reaches disk.
+
+## The browser gate
+
+```bash
+node frontend/scripts/verify_v8_view.mjs      # needs the dev server up
+node frontend/scripts/capture_layers.mjs --tag after
 ```
-Builds the production client bundle using Vite, validating all TypeScript contracts without errors.
+
+Nine assertions on the live map — opening view, reset, marker and route
+visibility measured rather than assumed, the zoom-out clamp, and no page errors.
+Zero new dependencies: CDP over the global WebSocket in Node 22.
+
+## Unit tests
+
+```bash
+python -m pytest -q backend/tests/
+```
+
+These cover the module contracts. **They are not the evidence** — the gates above
+are. A passing unit test says a function does what its author expected; a passing
+gate says a number on screen is real.
+
+## Injection testing
+
+Every assertion in G1 was verified by **making it fail on purpose** and checking
+it caught the thing. So were the G5 interval gate, the G8 staleness stamp, and
+the G4 straight-line invariant. An assertion that has never failed is an
+assertion nobody has tested — and this project found five cases where the
+verification apparatus itself was wrong (`METHODS.md` §0).

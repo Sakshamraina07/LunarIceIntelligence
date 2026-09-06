@@ -1,0 +1,79 @@
+{
+  "generated_utc": "2026-09-06T14:46:35.296292+00:00",
+  "generator": "backend/scripts/verify_all.py",
+  "gates": [
+    {
+      "id": "G1",
+      "statement": "Every number on #mission carries a mark and resolves to a raster read or an explicit absent state",
+      "gate": "emit_provenance.py \u2014 six assertions, each injection-tested",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.2
+    },
+    {
+      "id": "G2",
+      "statement": "PSR, cold-trap overlap and illumination come from a horizon computation over the full LOLA array at a stated resolution",
+      "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 31.2
+    },
+    {
+      "id": "G3",
+      "statement": "Landing sites are the argmax of a six-criterion search over 14.9 M native cells with stated NMS and per-criterion evidence",
+      "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 28.0
+    },
+    {
+      "id": "G4",
+      "statement": "The traverse is Dijkstra over a slope-and-hazard cost surface at a stated planning resolution, with UNREACHABLE a real state",
+      "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 34.6
+    },
+    {
+      "id": "G5",
+      "statement": "CPR is an explicitly-labelled amplitude-only ratio with the claim withdrawn, and CANDIDATE AREA is a measurement including a zero",
+      "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 5.7
+    },
+    {
+      "id": "G6",
+      "statement": "The map's relief is real at 25 m, lit from more than one direction, and the base filter is set from a histogram rather than by eye",
+      "gate": "hillshade_histogram.py + composite_contrast.py",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 4.6
+    },
+    {
+      "id": "G6b",
+      "statement": "(same statement) the science layers composite over that relief without hiding it",
+      "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 51.0
+    },
+    {
+      "id": "G7",
+      "statement": "The API and the static analysis agree on every terrain quantity they both report",
+      "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 10.1
+    },
+    {
+      "id": "G8",
+      "statement": "Every measured figure quoted in METHODS.md still matches the artifact it was transcribed from",
+      "gate": "stamp_methods.py --check \u2014 15 artifacts",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.3
+    }
+  ],
+  "all_pass": true
+}

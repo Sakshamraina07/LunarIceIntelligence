@@ -161,6 +161,25 @@ The last of those is worth the emphasis: the banner and the code were making the
 same claim, the banner's version was corrected first, and for one commit the app
 told the truth in a sentence and contradicted it in a render.
 
+**And a sixth instance of the SECOND pattern, in the capture harness itself.**
+The stage fit ran inside a `requestAnimationFrame`, which only fires when the
+page actually paints. On a background tab or a host that is not compositing the
+callback never runs, so the fit silently did not happen — with no error, and no
+way to tell that from a fit that ran and chose this view. Measured in one
+session: `focusRoute`, called straight from a click handler, fired every time;
+`focusSites`, called from an rAF, fired never. The same condition had already
+stopped the rover animation, and it stopped the rail's smooth scroll too.
+
+**`capture_traverse.mjs` could not have caught it**, because headless Chrome
+paints: the harness saw 5/5 sites while the running app showed 3. A verifier that
+runs in a *more permissive environment than the user's* is a verifier that passes
+on conditions the user does not have — the same defect as reading a value the
+application does not use, one level out. Both are now effects and instant
+scrolls: React's own after-commit hook has no such condition, and it runs after
+the map's child effects, so the bounds being fitted to are already drawn. The fit
+also now logs what it fitted, or why it did not, so a silent no-op cannot happen
+again undetected.
+
 **Both of the first two are the same defect as the five in the second pattern,
 one step upstream.** There, a *verifier* restated the value it was meant to check. Here a
 *producer* and a *consumer* each restated a transform that already existed

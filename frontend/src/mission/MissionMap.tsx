@@ -858,9 +858,17 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
    * Null bounds means there is nothing to show: no search on this host, or an
    * UNREACHABLE route. It does nothing, rather than flying somewhere arbitrary.
    */
-  function fitTo(b: L.LatLngBounds | null | undefined, maxZoom: number): void {
+  function fitTo(b: L.LatLngBounds | null | undefined, maxZoom: number,
+                 what = 'bounds'): void {
     const map = mapRef.current;
-    if (!b || !map) return;
+    // Say WHY nothing happened. A fit that silently no-ops because the layer it
+    // targets has not been drawn yet is indistinguishable, from the outside,
+    // from a fit that ran and chose this view.
+    if (!b || !map) {
+      console.info(`[MissionMap] not fitting to ${what}: `
+        + `${!map ? 'no map' : 'nothing drawn to fit to yet'}`);
+      return;
+    }
     const wrap = map.getContainer().parentElement;
     const w = (sel: string) => {
       const el = wrap?.querySelector(sel) as HTMLElement | null;
@@ -881,13 +889,14 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       paddingBottomRight: [w('.mc-mapstack'), 60],
       animate: false, maxZoom,
     });
+    console.info(`[MissionMap] fitted to ${what} at zoom ${map.getZoom().toFixed(2)}`);
   }
 
   useImperativeHandle(ref, () => ({
     zoomIn: () => mapRef.current?.zoomIn(),
     zoomOut: () => mapRef.current?.zoomOut(),
-    focusSites: () => fitTo(siteBoundsRef.current, 6),
-    focusRoute: (rank: number) => fitTo(routeBoundsRef.current[rank], 7),
+    focusSites: () => fitTo(siteBoundsRef.current, 6, 'the searched sites'),
+    focusRoute: (rank: number) => fitTo(routeBoundsRef.current[rank], 7, `route ${rank}`),
     // Reset returns to the 40 km home window, NOT the full extent. Flying to
     // geom.bounds put the reviewer back in a 1:2.93 letterbox where the craters
     // and the traverse were a hairline — which made the button that is supposed to

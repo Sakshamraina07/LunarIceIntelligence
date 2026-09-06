@@ -1,6 +1,6 @@
 {
   "schema": "traverse/1",
-  "generated_utc": "2026-09-06T16:52:09.402858+00:00",
+  "generated_utc": "2026-09-06T17:09:34.318328+00:00",
   "generator": "backend/scripts/plan_traverse.py",
   "planning": {
     "resolution_m": 100.0,

@@ -390,15 +390,34 @@ export default function MissionControl() {
   const gotoStep = (s: number) => {
     setStep(s);
     if (STEP_LAYER[s]) setActiveLayer(STEP_LAYER[s]);
-    // After paint, so the fit measures the panels this stage actually renders.
-    if (s === 6) requestAnimationFrame(() => mapRef.current?.focusSites());
-    if (s === 7 && selectedRoute !== null) {
-      requestAnimationFrame(() => mapRef.current?.focusRoute(selectedRoute));
-    }
+    // The fit itself is an EFFECT, below — not a requestAnimationFrame from
+    // here. See the comment there; it is not a style preference.
   };
   const activeRoutes = showRoute ? ['Shortest', 'Safest', 'Science-Aware'] : [];
   /** The traverse is drawn only where it is the subject. */
   const traverseHere = showTraverse && TRAVERSE_STEPS.has(step) && !!traverse;
+
+  /**
+   * Fit the map to the current stage's subject, after React has committed it.
+   *
+   * NOT `requestAnimationFrame`, which is what this was and why it silently did
+   * nothing: rAF only fires when the page actually paints, so on a background
+   * tab, a throttled window, or any host that is not compositing, the callback
+   * never runs and the fit never happens — with no error and no way to tell that
+   * from "the fit ran and chose this view". Measured here: `focusRoute` fired
+   * from a click handler worked every time while `focusSites` from an rAF fired
+   * never, in the same session. An effect is React's own after-commit hook and
+   * has no such condition. It also runs AFTER the map's child effects, so the
+   * bounds it fits to are already drawn.
+   *
+   * Keyed on `step` alone: selecting a route re-fits through `pickRoute`, and
+   * putting `selectedRoute` here as well would yank the view on every selection.
+   */
+  useEffect(() => {
+    if (step === 6) mapRef.current?.focusSites();
+    else if (step === 7 && selectedRoute !== null) mapRef.current?.focusRoute(selectedRoute);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   /**
    * Bring the traverse controls into view when their stage opens.
@@ -415,13 +434,18 @@ export default function MissionControl() {
     const rail = railRef.current;
     const el = traversePanelRef.current;
     if (!rail || !el) return;
-    const id = requestAnimationFrame(() => {
-      rail.scrollTo({
-        top: Math.max(0, el.offsetTop - rail.offsetTop - 8),
-        behavior: 'smooth',
-      });
+    // Same reason as the fit above: this is already inside an effect, so the
+    // layout is committed and there is nothing to wait for a paint for.
+    // INSTANT, not smooth. Smooth scrolling is animated by the compositor and
+    // does not run on a page that is not painting — the same condition that
+    // stopped the stage fit when it was a requestAnimationFrame. Measured here:
+    // with smooth, the panel stayed 190 % of a rail-height down. This is a
+    // reposition on a stage change, not a gesture, so there is nothing to
+    // animate anyway.
+    rail.scrollTo({
+      top: Math.max(0, el.offsetTop - rail.offsetTop - 8),
+      behavior: 'auto',
     });
-    return () => cancelAnimationFrame(id);
   }, [traverseHere, step]);
   const legend = LAYER_MAP[activeLayer];
 

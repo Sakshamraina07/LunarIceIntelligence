@@ -48,10 +48,28 @@ when what was actually unavailable was four re-query sliders.
 The consequence was visible: the badge derived from that sentence sat in the
 global header beside VERDICT, so a screen on which the verdict, the rasters, the
 sites, the traverse, the probe and both sweep tables were all rendering correctly
-announced itself as degraded. The badge is not deleted — it moved to the
-Sensitivity Studio, the one stage a no-raster host actually costs anything, with
-its whole explanation. `NEEDS_BACKEND` is now a single exported string, so the
-next drift has one place to happen instead of three.
+announced itself as degraded. The badge is not deleted — it moved to the stage a
+no-raster host actually costs something, with its whole explanation.
+`NEEDS_BACKEND` is now a single exported string, so the next drift has one place
+to happen instead of three.
+
+**And it drifted a third time, one commit later, in the commit that caused it.**
+The badge went to the Sensitivity Studio because that stage's four sliders
+re-queried the pipeline. §1.7 then precomputed the joint screen, the sliders
+became a read of a static artifact, and stage 09 stopped depending on a host at
+all — which made both the sentence *and the badge's location* wrong again, in the
+same change that removed the dependency. A host-state badge on a stage with no
+host dependency is the identical defect it was moved out of the header to fix,
+one scope smaller. It now sits in stage 12, beside the PDF, which is the only
+consumer left. G15 followed it **both** times: it clicks to stage 12, asserts the
+badge and explanation render there, and asserts stage 09 shows none —
+`--inject staleststage`.
+
+> **The fix that removes a dependency has to carry the sentence describing it.**
+> Three revisions of one sentence, each correct when written, each falsified by a
+> later improvement. This is not a sentence that keeps being written carelessly;
+> it is a sentence with no generator, which is why it needed a gate reading the
+> rendered text rather than a resolution to be more careful.
 
 ### The second pattern: the verification apparatus itself being wrong
 
@@ -576,6 +594,63 @@ again. That area would be "pixels whose two channels differ by a little", which
 is not a CBOE signature and is not evidence of ice. PRD §2 rule 4 stands: if a
 threshold is mis-set, print the distribution and say so. The distribution is
 printed above.
+
+### 1.7 How far the threshold has to fall — the sweep, precomputed
+
+Stage 09's four sliders re-queried `/api/mission/{crater}`, which re-runs the
+pipeline and therefore needs the 9 GB of gitignored products. No deployed host
+has them, so on the live site the sliders did nothing — beside two sweep tables,
+on the same stage, that worked, because they were already read from the committed
+analysis. `emit_sweep_grid.py` now measures the joint screen offline at every
+threshold pair and writes `analysis/sweep_grid.json`; the sliders index into it
+and stage 09 needs no host at all.
+
+**The axis range is set from the measured field, and that is the whole point.**
+A CPR axis spanning the published criterion — CPR ∈ [0.6, 1.6], as the sliders
+used to — is a column of zeros at every position, because nothing in this swath
+comes near it. A control whose output never moves is a vacuous criterion behind a
+control surface: it reads as a broken widget, and it is what the
+non-discriminating gate exists to catch. So the axis is built to span where the
+count actually changes, and the published value is carried **on** the axis and
+marked, so the degenerate point is shown rather than cropped away.
+
+**The result, as a single number:**
+
+| quantity | value | mark |
+|---|---|---|
+| peak CPR anywhere in the swath | 0.0534108989 | `MEASURED` |
+| max CPR among pixels satisfying DOP < 0.13 — **the crossing** | **0.0042610574** | `MEASURED` |
+| algebraic ceiling `tanh²(artanh(0.13)/2)` (§1.2, independent) | 0.0042610829 | `DERIVED` |
+| agreement between them | 2.550e-08 absolute, **5.985e-06 relative** | — |
+| **factor the published threshold must fall before one pixel passes** | **234.68×** | `MEASURED` |
+
+The candidate count is non-zero for a threshold `t` exactly when `t` is below the
+crossing, so that one number answers the question completely. And the measured
+crossing lands on the algebraic ceiling to six parts in a million — a field
+measurement and a closed-form identity, computed by different code from different
+inputs, agreeing to six significant figures.
+
+> **The emptiness is confirmed, not merely asserted.** §1.2 derives that
+> `DOP < 0.13` caps an amplitude-formed CPR at 0.0042611; this measures the cap
+> in the data and finds it exactly there. The screen is empty by construction,
+> and the construction is now checked against the product rather than only
+> argued from algebra.
+
+The grid is 26 × 19 = 494 cells, 383 of them non-zero, varying on **both** axes —
+so the sliders move, and what they show is measured at every position. Volume is
+deliberately **not** in the artifact: it is area × assumed depth × assumed pore
+fraction, both untested, so it stays `DERIVED` and is computed where it is
+displayed, beside its own mark. Putting it in the file would have let a derived
+number inherit the file's measured provenance by proximity.
+
+**G17** asserts four things, each injection-tested: the grid agrees with
+`faustini.json` at the published operating point; the axes are built from the
+field's own extrema and still carry the published values; the grid is not
+constant **on either axis** — a grid varying with CPR alone would pass a naive
+check with a dead DOP slider; and the stated factor is arithmetically the
+published threshold over the crossing, with the counts dying exactly there. The
+`configaxis` injection — re-centring the axis on the published threshold, the
+defect this gate exists for — trips two of the four independently.
 
 ---
 
@@ -2685,7 +2760,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `5a202c0`.
+Stamped at commit `0057c46`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -2708,5 +2783,6 @@ Stamped at commit `5a202c0`.
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
+| `frontend/public/analysis/sweep_grid.json` | `a6c22dbcf875dad5…` | §1.7 |
 
 <!-- END GENERATED STAMP -->

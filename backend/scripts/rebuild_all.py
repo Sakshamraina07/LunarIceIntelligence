@@ -145,6 +145,17 @@ def main() -> int:
     timings.append(("8 · probe grid",
                     run("8/12 · emit_probe_grid.py — the measured field, point by point",
                         [py, str(SCRIPTS / "emit_probe_grid.py")])))
+    # The joint screen at every threshold pair. It reads the same native arrays
+    # build_analysis just read, so it runs after it and before the gates that
+    # compare the two.
+    timings.append(("8b · sweep grid",
+                    run("8b/12 · emit_sweep_grid.py — the screen at every threshold pair",
+                        [py, str(SCRIPTS / "emit_sweep_grid.py"),
+                         "--crater", args.crater])))
+    timings.append(("8c · sweep discriminates",
+                    run("8c/12 · assert_sweep_grid_discriminates.py — G17",
+                        [py, str(SCRIPTS / "assert_sweep_grid_discriminates.py"),
+                         "--crater", args.crater])))
     timings.append(("9 · provenance gate",
                     run("9/12 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
                         [py, str(SCRIPTS / "emit_provenance.py"), args.crater])))

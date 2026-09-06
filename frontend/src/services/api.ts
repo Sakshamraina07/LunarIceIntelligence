@@ -50,8 +50,15 @@ export const BACKEND_COPY: Record<BackendState, { badge: string; heading: string
  * and the PDF.
  *
  * A sentence naming more than is broken is the same defect as one naming less.
+ *
+ * THIRD REVISION, AND THE REASON IS THE POINT. It said "the four re-query
+ * sliders in stage 09, and the PDF" until `emit_sweep_grid.py` precomputed the
+ * joint screen and those sliders stopped querying anything. The dependency was
+ * removed and the sentence describing it would have survived the same commit --
+ * the drift this constant exists to stop, committed by the change that made it
+ * false. One export, one place to fix, and a gate that reads the rendered text.
  */
-export const NEEDS_BACKEND = 'the four re-query sliders in stage 09, and the PDF';
+export const NEEDS_BACKEND = 'the PDF report in stage 12';
 const API_BASE_URL = `${API_ORIGIN}/api`;
 
 export async function fetchHealthCheck() {

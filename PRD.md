@@ -1721,7 +1721,7 @@ the three outcomes above was observed.
 
 ## 6 · Definition of done
 
-The project is done when all ten statements are true and each is backed by a
+The project is done when all eleven statements are true and each is backed by a
 number in a report:
 
 1. Every number rendered on `#mission` resolves to a raster read or an explicit
@@ -1788,3 +1788,12 @@ number in a report:
     the live site's report control says the report needs an ingested host rather
     than offering a button that 409s. A 409 is correct behaviour; a control that
     hides it is not.
+11. **The precomputed sweep discriminates, over a range set by the data.**
+    (Gate 17) Stage 09's sliders read a static grid instead of re-querying a host
+    that holds no rasters. A CPR axis spanning the published criterion would read
+    0.00 km² at every position — a vacuous criterion behind a control surface —
+    so the axis is built from the measured field and the published value is
+    carried on it and marked. The result is a single number: **the published CPR
+    threshold must fall 234.68× — from 1.00 to 0.0042611 — before one pixel
+    passes**, and that measured crossing sits on the algebraic ceiling §1.2
+    derives independently, agreeing to 6e-6.

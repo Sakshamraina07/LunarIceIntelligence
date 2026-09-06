@@ -344,25 +344,36 @@ async function main() {
     };
   })()`);
 
-  // ── walk to stage 09, which now owns host state ──────────────────────────
+  // ── walk to the stage that owns host state ───────────────────────────────
+  // Stage 12. It was stage 09 for exactly one commit: 09 was the only screen a
+  // no-raster host cost anything, until emit_sweep_grid.py precomputed the joint
+  // screen and its sliders stopped querying. The PDF is the last consumer, so
+  // the badge sits beside it. This gate followed it BOTH times rather than
+  // keeping a green light by no longer looking.
+  //
   // Clicked rather than deep-linked, because the click is the path a reader
   // takes and a stage that only renders when addressed directly is not one
   // click away.
-  await ev(`(() => {
-    const b = [...document.querySelectorAll('.mc-step')]
-      .find(e => /09/.test(e.innerText));
-    if (b) b.click();
-    return !!b;
-  })()`);
-  await sleep(1200);
-  const stage9 = await ev(`(() => {
-    const el = document.querySelector('.mc-hoststate');
-    return {
-      present: !!el,
-      text: el ? el.innerText : '',
-      panelText: (document.querySelector('.mc-rail')?.innerText) || '',
-    };
-  })()`);
+  const visit = async (n) => {
+    await ev(`(() => {
+      const b = [...document.querySelectorAll('.mc-step')]
+        .find(e => e.innerText.trim().startsWith('${n}'));
+      if (b) b.click();
+      return !!b;
+    })()`);
+    await sleep(1200);
+    return ev(`(() => {
+      const el = document.querySelector('.mc-hoststate');
+      return {
+        present: !!el,
+        text: el ? el.innerText : '',
+        panelText: (document.querySelector('.mc-rail')?.innerText) || '',
+      };
+    })()`);
+  };
+  // Stage 09 first: it must NOT claim a host dependency it no longer has.
+  const stage9 = await visit('09');
+  const hostStage = await visit('12');
 
   // console errors, from BOTH channels: Runtime.exceptionThrown catches the
   // uncaught throw that unmounted the tree; Log/console.error catches ours.
@@ -416,20 +427,27 @@ async function main() {
 
   // ── 5. the three backend states, named apart ────────────────────────────
   const c = contradictions(INJECT === 'contradictstate'
-    ? stage9.text + ' the backend is not reachable and is reachable'
-    : stage9.text, STATE);
-  log(`  backend state       ${STATE}, stage-09 badge "${c.badge.trim()}"`);
+    ? hostStage.text + ' the backend is not reachable and is reachable'
+    : hostStage.text, STATE);
+  log(`  backend state       ${STATE}, stage-12 badge "${c.badge.trim()}"`);
   problems.push(...c.problems);
 
   // 5a. the badge and its explanation SURVIVED the move. "Move it, delete
   //     nothing" is only true if the destination actually renders it.
-  if (!stage9.present || INJECT === 'nohoststate') {
-    problems.push('stage 09 renders no .mc-hoststate block — the host-state badge '
+  if (!hostStage.present || INJECT === 'nohoststate') {
+    problems.push('stage 12 renders no .mc-hoststate block — the host-state badge '
       + 'and its explanation were removed rather than moved');
   }
-  if (stage9.present && stage9.text.trim().length < 80) {
-    problems.push(`the stage-09 host-state block is ${stage9.text.trim().length} chars; `
+  if (hostStage.present && hostStage.text.trim().length < 80) {
+    problems.push(`the host-state block is ${hostStage.text.trim().length} chars; `
       + 'the explanation did not come with the badge');
+  }
+  // 5d. AND IT LEFT STAGE 09. A host-state badge on a stage with no host
+  //     dependency is the same defect as one in the global header, one scope
+  //     smaller — it tells a reader something is degraded that is not.
+  if (stage9.present || INJECT === 'staleststage') {
+    problems.push('stage 09 still renders a host-state block, but its sweep grid '
+      + 'is precomputed and it depends on no host');
   }
 
   // 5b. and it did NOT stay in the header, where it read as a global failure.
@@ -450,7 +468,8 @@ async function main() {
     problems.push('stage 09 claims its sweep tables are unavailable; they are '
       + 'static artifacts and render on a host with no rasters');
   }
-  log(`  stage-09 host block ${stage9.present ? `${stage9.text.trim().length} chars` : 'ABSENT'}`
+  log(`  stage-12 host block ${hostStage.present ? `${hostStage.text.trim().length} chars` : 'ABSENT'}`
+      + `, stage-09 clean: ${!stage9.present}`
       + `, header badges: "${state.headerBadges}"`);
   if (errText.length > 0 || inj('console')) {
     problems.push(`${errText.length || 1} console error(s): ${errText[0] ?? '(injected)'}`);

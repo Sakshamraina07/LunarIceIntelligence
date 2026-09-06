@@ -39,6 +39,7 @@ import { ProbeReadout } from './ProbeReadout';
 import { TraversePanel } from './TraversePanel';
 import { loadProbeGrid, type ProbeGrid, type ProbeSample } from './probe';
 import { loadTraverse, type Traverse } from './traverse';
+import { loadSweepGrid, type SweepGrid } from './sweep';
 import { Download, ZoomIn, ZoomOut, Maximize2, MapPin, Check, Crosshair, Route } from 'lucide-react';
 import './mc.css';
 
@@ -231,6 +232,10 @@ export default function MissionControl() {
    *  search has been run on this host -- an absent state, not an empty list. */
   const [searched, setSearched] = useState<SearchedSites | null>(null);
   useEffect(() => { loadSearchedSites().then(setSearched); }, []);
+  // The precomputed joint screen. Stage 09's sliders read this instead of
+  // re-querying a host that does not hold the rasters.
+  const [sweepGrid, setSweepGrid] = useState<SweepGrid | null>(null);
+  useEffect(() => { loadSweepGrid().then(setSweepGrid); }, []);
   /* ── the criteria probe ──────────────────────────────────────────────────
    * Off by default and its 6.5 MB of float32 is fetched only when it is first
    * switched on, so a reader who never opens it never pays for it. `probeSettled`
@@ -852,6 +857,7 @@ export default function MissionControl() {
               step={step}
               backend={backend}
               backendReal={backendReal}
+              sweepGrid={sweepGrid}
               analysis={analysis}
               mission={mission}
               craterId={craterId}

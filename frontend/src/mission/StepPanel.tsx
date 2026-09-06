@@ -43,6 +43,7 @@ import { showValue, showPercent, stepStatus } from './analysis';
 import { Figure, Pv, StepUnavailable } from './Prov';
 import { getReportPdfUrl, API_ORIGIN, BACKEND_COPY, NEEDS_BACKEND,
          type BackendState } from '../services/api';
+import { readSweep, nearestIndex, type SweepGrid } from './sweep';
 import { Check, X, Minus, Download, Crosshair } from 'lucide-react';
 
 interface Props {
@@ -55,6 +56,10 @@ interface Props {
   /** Whether an `ok` host is serving REAL or generated data. Orthogonal to the
    *  three states: `backend` describes the connection, this the payload. */
   backendReal: boolean;
+  /** The precomputed joint screen. `null` means the artifact is absent, and
+   *  stage 09 then shows its tables and withholds the interactive grid rather
+   *  than indexing into something that is not there. */
+  sweepGrid: SweepGrid | null;
   /** The measured producer. `null` means no analysis exists for this crater. */
   analysis: Analysis | null;
   /** On-demand backend. Optional: the panel must render without it. */
@@ -715,47 +720,29 @@ export function StepPanel(props: Props) {
       { label: 'Ice Fraction', val: props.iceFrac, min: 0.03, max: 0.35, step: 0.01, key: 'iceFraction', fmt: (n: number) => `${(n * 100).toFixed(0)}%` },
     ];
     const sens = analysis.sensitivity;
+    // The sliders address an INDEX, because neither axis is evenly spaced: the
+    // CPR axis is geometric, the whole structure living below 0.0043. The
+    // threshold VALUE stays the state that is held, so nothing else in the app
+    // has to learn about grid indices.
+    const grid = props.sweepGrid;
+    const ci = grid ? nearestIndex(grid.cpr_axis.values, props.cprTh) : 0;
+    const dj = grid ? nearestIndex(grid.dop_axis.values, props.dopTh) : 0;
     return (
       <div className="mc-card mc-fadein">
         <Head eyebrow="Stage 09 · Sweep" title="Sensitivity Studio"
           desc="Each row below re-thresholds the native arrays and counts pixels. The area column is a measurement at every row, not a baseline scaled by a formula." />
 
-        {/* THE HOST-STATE BADGE LIVES HERE, not in the global header.
-            This is the only stage that loses anything when the host has no
-            rasters, so this is where the badge belongs and where its whole
-            explanation is kept. Nothing was deleted in the move. */}
-        <div className={`mc-hoststate mc-hoststate--${props.backend}`}>
-          <div className="mc-hoststate-badge">
-            <span className="mc-badge-dot" />
-            {props.backend === 'ok' && !props.backendReal
-              ? 'LIVE · SIMULATED PAYLOAD'
-              : BACKEND_COPY[props.backend].badge}
-          </div>
-          <div className="mc-hoststate-body">
-            {props.backend === 'unreachable' &&
-              `Nothing answered at ${API_ORIGIN}. `}
-            {props.backend === 'not_ingested' &&
-              'The backend answered and reports it holds no ingested rasters for '
-              + 'this crater — it is reachable, and it has nothing to serve. '}
-            {props.backend === 'pending' &&
-              'Waiting for the analysis backend. '}
-            {props.backend === 'ok' && props.backendReal &&
-              'The backend answered and holds the ingested rasters for this '
-              + 'crater. '}
-            {props.backend === 'ok' && !props.backendReal &&
-              'The backend answered, but reports its payload is generated rather '
-              + 'than measured, so the sliders below re-run a simulation and not '
-              + 'this product. '}
-            {props.backend === 'ok'
-              ? 'The sliders below re-run the pipeline against them.'
-              : <>The only things on this screen that need it are {NEEDS_BACKEND}.
-                  <strong> The two sweep tables below are static artifacts and are
-                  measured, not degraded</strong> — they are read from the committed
-                  analysis, the same file the verdict is read from, so every number
-                  in them is the same number a host with the rasters would print.</>}
-          </div>
-        </div>
+        {/* THE HOST-STATE BLOCK WAS HERE AND HAS MOVED AGAIN, TO STAGE 12.
+            It was put on this stage because this was the only screen a
+            no-raster host cost anything: the four sliders below re-queried the
+            pipeline. emit_sweep_grid.py then precomputed the joint screen, the
+            sliders became a read of a static artifact, and this stage stopped
+            depending on a host at all.
 
+            Leaving a host-state badge on a stage with no host dependency would
+            be the same defect it was moved here to fix, one commit later and in
+            the opposite direction. The only consumer left is the PDF, so the
+            block now sits in stage 12 beside the control it describes. */}
         <div className="mc-details">
           <div className="mc-details-k">
             CPR threshold sweep
@@ -788,25 +775,109 @@ export function StepPanel(props: Props) {
           </ul>
         </div>
 
-        <div className="mc-details">
-          <div className="mc-details-k">Re-query the on-demand backend</div>
-          <div className="mc-metric-sub" style={{ marginBottom: '0.5rem' }}>
-            These sliders re-run the backend pipeline. They do not move the tables
-            above, which are precomputed at the configured thresholds.
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
-            {sliders.map((s) => (
-              <div key={s.key}>
-                <div className="mc-slider-row">
-                  <span>{s.label}</span>
-                  <span style={{ color: 'var(--mc-accent)', fontFamily: "'JetBrains Mono',monospace" }}>{s.fmt(s.val)}</span>
-                </div>
-                <input className="mc-slider" type="range" min={s.min} max={s.max} step={s.step} value={s.val}
-                  onChange={(e) => props.onUpdateParams({ [s.key]: parseFloat(e.target.value) })} />
+        {/* ── THE INTERACTIVE SCREEN, READ FROM A STATIC ARTIFACT ──────────
+            These sliders used to re-query /api/mission/{crater}, which re-runs
+            the pipeline and needs the 9 GB of rasters. No deployed host has
+            them, so on the live site they did nothing — beside two tables that
+            worked, on the same stage. They now index into a grid measured
+            offline at every threshold pair, so this stage needs no host.
+
+            THE CPR AXIS DELIBERATELY RUNS FAR BELOW THE PUBLISHED CRITERION.
+            A slider spanning CPR ∈ [0.6, 1.6] would read 0.00 km² at every
+            position, because nothing in this swath comes within a factor of 235
+            of the published threshold. A control whose output never moves is a
+            vacuous criterion behind a control surface — it looks like a broken
+            widget, and it is what the NON-DISCRIMINATING gate exists to catch.
+            The axis is built from the measured field instead, and the published
+            value is carried ON it and marked, so the degenerate point is
+            visible rather than cropped away. */}
+        {grid ? (() => {
+          const r = readSweep(grid, ci, dj, props.iceDepth, props.iceFrac);
+          const axisSliders = [
+            { label: 'CPR threshold', idx: ci, n: grid.cpr_axis.values.length,
+              onIdx: (i: number) => props.onUpdateParams({ cprThreshold: grid.cpr_axis.values[i] }),
+              shown: r.cprThreshold < 0.01 ? r.cprThreshold.toExponential(3) : r.cprThreshold.toFixed(3) },
+            { label: 'DOP threshold', idx: dj, n: grid.dop_axis.values.length,
+              onIdx: (j: number) => props.onUpdateParams({ dopThreshold: grid.dop_axis.values[j] }),
+              shown: r.dopThreshold.toFixed(4) },
+          ];
+          return (
+            <div className="mc-details">
+              <div className="mc-details-k">
+                The screen, at any threshold pair
+                <Pv p="MEASURED" />
               </div>
-            ))}
+              <div className="mc-metric-sub" style={{ marginBottom: '0.6rem' }}>
+                Precomputed over the native arrays — {grid.counts.length}×
+                {grid.dop_axis.values.length} threshold pairs, each an exact pixel
+                count. No host is queried.
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem' }}>
+                {axisSliders.map((s) => (
+                  <div key={s.label}>
+                    <div className="mc-slider-row">
+                      <span>{s.label}</span>
+                      <span style={{ color: 'var(--mc-accent)', fontFamily: "'JetBrains Mono',monospace" }}>
+                        {s.shown}
+                      </span>
+                    </div>
+                    <input className="mc-slider" type="range" min={0} max={s.n - 1} step={1}
+                      value={s.idx} onChange={(e) => s.onIdx(parseInt(e.target.value, 10))} />
+                  </div>
+                ))}
+                {sliders.slice(2).map((s) => (
+                  <div key={s.key}>
+                    <div className="mc-slider-row">
+                      <span>{s.label}</span>
+                      <span style={{ color: 'var(--mc-accent)', fontFamily: "'JetBrains Mono',monospace" }}>{s.fmt(s.val)}</span>
+                    </div>
+                    <input className="mc-slider" type="range" min={s.min} max={s.max} step={s.step} value={s.val}
+                      onChange={(e) => props.onUpdateParams({ [s.key]: parseFloat(e.target.value) })} />
+                  </div>
+                ))}
+              </div>
+
+              <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
+                <Figure k="Candidate pixels" digits={0}
+                  v={{ value: r.candidatePx, unit: 'px', provenance: 'MEASURED' }}
+                  sub="an exact count over the native arrays at this threshold pair" />
+                <Figure k="Candidate area" digits={4}
+                  v={{ value: r.areaKm2, unit: 'km²', provenance: 'MEASURED' }}
+                  sub="that count × the frame's own cell area" />
+                <Figure k="Ice volume" digits={0}
+                  v={{ value: r.volumeM3, unit: 'm³', provenance: 'DERIVED' }}
+                  sub="area × assumed depth × assumed pore fraction — both untested assumptions" />
+              </div>
+              {r.isPublishedPoint && (
+                <div className="mc-note" style={{ marginTop: '0.6rem' }}>
+                  This is the published operating point — CPR &gt; {grid.published_operating_point.cpr_threshold},
+                  DOP &lt; {grid.published_operating_point.dop_threshold}. The area here is
+                  the headline verdict, and it is a measured zero.
+                </div>
+              )}
+              <div className="mc-note" style={{ marginTop: '0.6rem' }}>
+                <strong>Where the answer changes.</strong> {grid.crossing.statement}
+              </div>
+              <div className="mc-metric-sub" style={{ marginTop: '0.5rem' }}>
+                CPR axis — {grid.cpr_axis.grid_source}
+              </div>
+            </div>
+          );
+        })() : (
+          <div className="mc-details">
+            <div className="mc-details-k">The screen, at any threshold pair</div>
+            <div className="mc-na">
+              <span className="mc-na-dash">—</span>
+              <span>
+                analysis/sweep_grid.json is not present, so the interactive grid is
+                withheld rather than indexed into. The two tables above are
+                unaffected — they are a different artifact.
+                <Pv p="UNAVAILABLE" />
+              </span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     );
   }
@@ -909,6 +980,43 @@ export function StepPanel(props: Props) {
             ))}
           </ul>
         </div>
+        {/* THE HOST-STATE BADGE LIVES HERE, not in the global header, and not on
+            stage 09 where it first moved. The PDF is now the ONLY thing on any
+            screen that needs the on-demand host -- the sweep grid took the last
+            other dependency away -- so the badge sits beside the control it
+            describes. Nothing was deleted in either move. */}
+        <div className={`mc-hoststate mc-hoststate--${props.backend}`}>
+          <div className="mc-hoststate-badge">
+            <span className="mc-badge-dot" />
+            {props.backend === 'ok' && !props.backendReal
+              ? 'LIVE · SIMULATED PAYLOAD'
+              : BACKEND_COPY[props.backend].badge}
+          </div>
+          <div className="mc-hoststate-body">
+            {props.backend === 'unreachable' &&
+              `Nothing answered at ${API_ORIGIN}. `}
+            {props.backend === 'not_ingested' &&
+              'The backend answered and reports it holds no ingested rasters for '
+              + 'this crater — it is reachable, and it has nothing to serve. '}
+            {props.backend === 'pending' &&
+              'Waiting for the analysis backend. '}
+            {props.backend === 'ok' && props.backendReal &&
+              'The backend answered and holds the ingested rasters for this '
+              + 'crater. '}
+            {props.backend === 'ok' && !props.backendReal &&
+              'The backend answered, but reports its payload is generated rather '
+              + 'than measured, so the sliders below re-run a simulation and not '
+              + 'this product. '}
+            {props.backend === 'ok'
+              ? 'The sliders below re-run the pipeline against them.'
+              : <>The only things on this screen that need it are {NEEDS_BACKEND}.
+                  <strong> The two sweep tables below are static artifacts and are
+                  measured, not degraded</strong> — they are read from the committed
+                  analysis, the same file the verdict is read from, so every number
+                  in them is the same number a host with the rasters would print.</>}
+          </div>
+        </div>
+
         {/* THIS WAS THE LAST `mission ? … : …` STANDING IN FOR THREE STATES.
             It printed "the backend, which is not reachable" on a screen whose
             own header said the backend had answered — the identical defect the

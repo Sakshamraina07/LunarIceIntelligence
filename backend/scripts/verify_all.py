@@ -165,6 +165,17 @@ GATES = [
             "names the state it was issued under",
      "assert_pdf_refuses_without_rasters.py — the loader, the 409, the rendered bytes",
      [sys.executable, str(SCRIPTS / "assert_pdf_refuses_without_rasters.py")], False),
+
+    # Stage 09's sliders stopped re-querying a host that has no rasters and now
+    # read a precomputed grid. That removed a dependency and introduced a new way
+    # to be wrong: a grid of identical cells is a control surface over a criterion
+    # that does not discriminate. A CPR axis spanning the PUBLISHED threshold is
+    # exactly that -- nothing here comes within 235x of it -- so the axis is built
+    # from the measured field, and this asserts it still is.
+    ("G17", "The precomputed sweep discriminates on both axes, its axes are built "
+            "from the measured field, and it agrees with the analysis",
+     "assert_sweep_grid_discriminates.py - agreement, measured axes, it moves, the crossing",
+     [sys.executable, str(SCRIPTS / "assert_sweep_grid_discriminates.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

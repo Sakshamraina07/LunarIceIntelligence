@@ -133,13 +133,33 @@ something that is not a verifier.
    console read `#1 outside … #5 outside`; after it, `#1 amplitude … #5
    amplitude`, matching all five records.
 
-A third, smaller instance surfaced the moment the traverse was drawn without a
-backend running: the degraded-state banner read *"landing sites and rover routes
-need the on-demand backend, which is not reachable"* — printed directly over five
-searched sites and a five-route traverse, both drawn from static artifacts. That
-sentence was true when it was written and had not been true since Phase 3. It now
-names what actually needs the backend: the sensitivity studio, the stage panels
-and the PDF.
+**Drawing the deliverable then surfaced three more of the FIRST pattern in one
+afternoon, all of them prose written before Phase 3 and 4 ran and never revisited.**
+
+- The degraded-state banner read *"landing sites and rover routes need the
+  on-demand backend, which is not reachable"* — printed directly over five
+  searched sites and a five-route traverse, both from static artifacts. It now
+  names what actually needs the backend: the sensitivity studio, the stage panels
+  and the PDF.
+- Stage 06 asserted *"the five sites are hardcoded grid offsets … asserted and
+  then scored, not searched"* and stage 07 *"no traverse is planned"*, beside a
+  map drawing both. Both stages now report from the artifact that holds the
+  result — `landing_sites.json` and `traverse.json` — and fall back to the
+  absence notice only when it is genuinely absent. The corresponding reasons in
+  `build_analysis.py` were rewritten to say where the answer is rather than that
+  there is not one; **zero numeric or boolean values in `faustini.json` changed**,
+  verified scalar by scalar, and the marks stayed 41 MEASURED / 5 DERIVED /
+  0 MODELLED / 10 UNAVAILABLE / 0 unmarked.
+- And the sharpest one: `if (!mission) return` at the top of the landing-site
+  effect meant that **with the backend down, no landing sites were drawn at all**
+  — including the five that come from a static file and need no backend. The
+  guard was right when written, when the only sites came from the API. It had
+  simply stopped tracking what it guards. It now sits on the API branch, which
+  really does need `mission`.
+
+The last of those is worth the emphasis: the banner and the code were making the
+same claim, the banner's version was corrected first, and for one commit the app
+told the truth in a sentence and contradicted it in a render.
 
 **Both of the first two are the same defect as the five in the second pattern,
 one step upstream.** There, a *verifier* restated the value it was meant to check. Here a
@@ -1996,7 +2016,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `d1485f4`.
+Stamped at commit `432c085`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -2014,7 +2034,7 @@ Stamped at commit `d1485f4`.
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
-| `frontend/public/analysis/faustini.json` | `f84a892efe7ffaf3…` | §8.2, §8.3 |
+| `frontend/public/analysis/faustini.json` | `de1cfb3a0d650d75…` | §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
 
 <!-- END GENERATED STAMP -->

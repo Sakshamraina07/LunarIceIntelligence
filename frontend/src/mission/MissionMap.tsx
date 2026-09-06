@@ -751,6 +751,15 @@ export interface MissionMapHandle {
    * meaning what it meant.
    */
   focusRoute: (rank: number) => void;
+  /**
+   * Fit all the searched landing sites into the visible map.
+   *
+   * The opening view is a fixed 40 km window on the ribbon centroid, which is
+   * the right default and is not where the five sites are. Arriving at the
+   * Landing Sites stage and having to hunt for them is the complaint this
+   * answers. No-op when no search has been run, rather than flying nowhere.
+   */
+  focusSites: () => void;
 }
 
 interface Props {
@@ -812,6 +821,8 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
   const traverseRef = useRef<L.LayerGroup | null>(null);
   /** rank -> the drawn route's own bounds, filled by the traverse effect. */
   const routeBoundsRef = useRef<Record<number, L.LatLngBounds>>({});
+  /** bounds of all searched sites, filled by the sites effect. */
+  const siteBoundsRef = useRef<L.LatLngBounds | null>(null);
   const roverRef = useRef<L.Marker | null>(null);
   const probeMarkRef = useRef<L.LayerGroup | null>(null);
   // The click handler is bound once, when the map is built, so it reads the
@@ -834,31 +845,49 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
   const craterRef = useRef(crater);
   craterRef.current = crater;
 
+  /**
+   * Fly to some bounds, fitted into the part of the map that is actually
+   * VISIBLE.
+   *
+   * The layer switcher sits over the left edge and the probe over the right, so
+   * a symmetric padding centres the target underneath one of them — which is the
+   * same as not going there at all. Both widths are measured off the DOM rather
+   * than written as constants, so the fit follows the CSS instead of a second
+   * copy of it.
+   *
+   * Null bounds means there is nothing to show: no search on this host, or an
+   * UNREACHABLE route. It does nothing, rather than flying somewhere arbitrary.
+   */
+  function fitTo(b: L.LatLngBounds | null | undefined, maxZoom: number): void {
+    const map = mapRef.current;
+    if (!b || !map) return;
+    const wrap = map.getContainer().parentElement;
+    const w = (sel: string) => {
+      const el = wrap?.querySelector(sel) as HTMLElement | null;
+      return el ? el.getBoundingClientRect().width + 24 : 24;
+    };
+    // NOT ANIMATED, AND THAT IS THE FIX RATHER THAN THE COMPROMISE.
+    //
+    // flyToBounds left the mc-frame pane's SVG renderer holding a stale clip —
+    // viewBox and a scale(1.298) transform from the pre-flight view — because
+    // the markers are re-added by their own effects while the animation is still
+    // running, so they are clipped against bounds that no longer exist. Leaflet
+    // writes d="M0 0" for a clipped path rather than erroring, so two of the five
+    // searched sites simply were not there, on the stage whose subject is where
+    // the searched sites are. A hard setView resets the renderers, and a fit that
+    // shows all five beats a fit that glides to three.
+    map.fitBounds(b, {
+      paddingTopLeft: [w('.mc-layerctl'), 40],
+      paddingBottomRight: [w('.mc-mapstack'), 60],
+      animate: false, maxZoom,
+    });
+  }
+
   useImperativeHandle(ref, () => ({
     zoomIn: () => mapRef.current?.zoomIn(),
     zoomOut: () => mapRef.current?.zoomOut(),
-    focusRoute: (rank: number) => {
-      const b = routeBoundsRef.current[rank];
-      const map = mapRef.current;
-      // No bounds means the route was not drawn — UNREACHABLE, or the layer is
-      // off. Do nothing rather than flying somewhere arbitrary.
-      if (!b || !map) return;
-      // Fit into the VISIBLE map, not the whole panel. The layer switcher sits
-      // over the left edge and the traverse/probe stack over the right, so a
-      // symmetric padding centres the route underneath one of them — which is
-      // the same as not going there. Both widths are measured off the DOM rather
-      // than restated as constants, so the fit follows the CSS.
-      const wrap = map.getContainer().parentElement;
-      const w = (sel: string) => {
-        const el = wrap?.querySelector(sel) as HTMLElement | null;
-        return el ? el.getBoundingClientRect().width + 24 : 24;
-      };
-      map.flyToBounds(b, {
-        paddingTopLeft: [w('.mc-layerctl'), 40],
-        paddingBottomRight: [w('.mc-mapstack'), 60],
-        duration: 0.7, maxZoom: 7,
-      });
-    },
+    focusSites: () => fitTo(siteBoundsRef.current, 6),
+    focusRoute: (rank: number) => fitTo(routeBoundsRef.current[rank], 7),
     // Reset returns to the 40 km home window, NOT the full extent. Flying to
     // geom.bounds put the reviewer back in a 1:2.93 letterbox where the craters
     // and the traverse were a hairline — which made the button that is supposed to
@@ -1334,13 +1363,25 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     const geom = geomRef.current;
     if (!group || !geom) return;
     group.clearLayers();
-    // No mission, no sites. The group is left EMPTY rather than filled with
-    // placeholder markers — an invented pin on a real map is worse than no pin.
-    if (!mission) return;
+
+    // THE `if (!mission) return` THAT USED TO BE HERE DREW NOTHING WITHOUT THE
+    // BACKEND — INCLUDING THE FIVE SITES THAT DO NOT NEED IT.
+    //
+    // It was right when it was written: the only sites on this map came from
+    // GET /api/mission, and an invented pin on a real map is worse than no pin.
+    // Phase 3 changed that. The searched sites are a static artifact,
+    // landing_sites.json, and they were being suppressed by a guard on a source
+    // they do not come from — so with the studio unreachable the Landing Sites
+    // stage showed no landing sites at all, while the banner beside it (correctly)
+    // said the sites were static and unaffected. METHODS §0, first pattern: the
+    // guard stopped tracking what it guards.
+    //
+    // The rule the guard was protecting is unchanged and is now applied where it
+    // belongs — to the API branch, further down, which really does need `mission`.
 
     // Classified before the showLandingSites early-return: the count describes
     // the mission state, not what happens to be toggled on.
-    const rows = mission.landing_sites.map((site) => {
+    const rows = (mission?.landing_sites ?? []).map((site) => {
       const [py, px] = gridToPixel(geom, site.grid_x, site.grid_y);
       return { site, py, px, cov: coverageAt(geom, py, px) };
     });
@@ -1424,6 +1465,8 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
         );
         marker.addTo(group);
       });
+      siteBoundsRef.current = L.latLngBounds(
+        searchedSites.map((s2) => pixelToCrs(geom, s2.grid.line, s2.grid.sample)));
       console.info('[MissionMap] Phase 3 searched sites drawn at native raster '
         + 'coordinates (API sites suppressed): ' + inRibbon.join(', '));
       if (disagree.length) {
@@ -1432,6 +1475,14 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
           + 'outside the measured ribbon on this map, so one of the two is wrong '
           + `about where they are: ${disagree.join('; ')}`);
       }
+      return;
+    }
+
+    // Here, and only here: these sites come from the on-demand backend, and
+    // without it there is nothing to draw and nothing is substituted.
+    if (!mission) {
+      console.info('[MissionMap] no searched sites and no backend — the landing-site '
+        + 'layer is empty, and nothing is drawn in its place.');
       return;
     }
 

@@ -33,12 +33,22 @@ interface Props {
   onFraction: (f: number) => void;
   playing: boolean;
   onPlaying: (p: boolean) => void;
+  /**
+   * Render as a card in the intelligence rail rather than as a panel floating
+   * over the map.
+   *
+   * The overlay version covered the top-right quadrant of the map, which is
+   * where several of the searched sites are, so the panel describing the sites
+   * was hiding them. In the rail it costs the map nothing.
+   */
+  inRail?: boolean;
 }
 
 const ROUTE_COLOUR = ['#4fd1e6', '#6ee7a8', '#f2c14e', '#c084fc', '#fb7185'];
 
 export function TraversePanel({
   traverse, settled, selected, onSelect, fraction, onFraction, playing, onPlaying,
+  inRail = false,
 }: Props) {
   const routes = traverse?.primary_site_to_cold_trap ?? [];
   const cur = routes.find((r) => r.rank === selected) ?? null;
@@ -48,7 +58,9 @@ export function TraversePanel({
     : undefined;
 
   return (
-    <div className="mc-map-overlay mc-map-panel mc-traversectl">
+    <div className={inRail
+      ? 'mc-card mc-traversectl mc-traversectl--rail'
+      : 'mc-map-overlay mc-map-panel mc-traversectl'}>
       <div className="mc-probe-head">
         <span className="mc-trv-dot" />
         <span>Traverse · Phase 4</span>

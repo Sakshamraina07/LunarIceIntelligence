@@ -39,6 +39,21 @@ import { loadTraverse, type Traverse } from './traverse';
 import { Download, ZoomIn, ZoomOut, Maximize2, MapPin, Check, Crosshair, Route } from 'lucide-react';
 import './mc.css';
 
+/**
+ * The stages the Phase 4 traverse belongs to: 06 Landing Sites and 07 Rover
+ * Traverse.
+ *
+ * It used to draw on every stage including 01 Target Selection, where the whole
+ * question is which points were targeted and five routes plus a control panel
+ * are simply in the way. A deliverable shown everywhere is not emphasis; it is
+ * clutter, and it hides the thing the current stage is about.
+ *
+ * 07 is included because that stage IS the traverse — hiding it there to satisfy
+ * a literal reading of "the landing sites section" would leave the Rover
+ * Traverse panel with no rover traverse on it.
+ */
+const TRAVERSE_STEPS = new Set([6, 7]);
+
 const STEP_LAYER: Record<number, string> = {
   1: 'hillshade', 2: 'illumination', 3: 'cpr_heatmap', 4: 'ml_likelihood',
   5: 'hazard_map', 6: 'hillshade', 7: 'hillshade', 8: 'dem_elevation',
@@ -327,6 +342,10 @@ export default function MissionControl() {
   }, [roverFraction, roverPlaying]);
 
   const mapRef = useRef<MissionMapHandle>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+  const traversePanelRef = useRef<HTMLDivElement>(null);
+
+
   useEffect(() => {
     fetchCraters().then(setCraters).catch(() =>
       setError('Cannot reach the Lunar Intelligence backend on port 8000.'));
@@ -357,8 +376,53 @@ export default function MissionControl() {
       .catch((e) => { setError(e.message || 'Mission execution error'); setLoading(false); });
   }, [craterId, cprTh, dopTh, iceDepth, iceFrac, roverAlgo]);
 
-  const gotoStep = (s: number) => { setStep(s); if (STEP_LAYER[s]) setActiveLayer(STEP_LAYER[s]); };
+  /**
+   * Move to a stage, switch to its layer, and — for the two stages whose subject
+   * is a thing on the map — go and look at that thing.
+   *
+   * The opening view is a fixed 40 km window on the ribbon centroid. That is the
+   * right default: it is panel-independent and shows a 39 km crater as a crater.
+   * It is also not where the five searched sites are, so arriving at Landing
+   * Sites and having to hunt for them was the complaint. Stage 06 now fits all
+   * five; stage 07 fits the selected route. Neither happens on load, so the
+   * opening view keeps meaning what it meant.
+   */
+  const gotoStep = (s: number) => {
+    setStep(s);
+    if (STEP_LAYER[s]) setActiveLayer(STEP_LAYER[s]);
+    // After paint, so the fit measures the panels this stage actually renders.
+    if (s === 6) requestAnimationFrame(() => mapRef.current?.focusSites());
+    if (s === 7 && selectedRoute !== null) {
+      requestAnimationFrame(() => mapRef.current?.focusRoute(selectedRoute));
+    }
+  };
   const activeRoutes = showRoute ? ['Shortest', 'Safest', 'Science-Aware'] : [];
+  /** The traverse is drawn only where it is the subject. */
+  const traverseHere = showTraverse && TRAVERSE_STEPS.has(step) && !!traverse;
+
+  /**
+   * Bring the traverse controls into view when their stage opens.
+   *
+   * Placing the panel high in the rail was not enough on its own: the verdict
+   * card alone is taller than the rail, so the panel still started 146 % of a
+   * rail-height down — present, and below the fold, which is the same as absent
+   * for anyone who does not already know it is there. The rail is scrolled to it
+   * instead. The verdict is one scroll up and the stage panel one scroll down;
+   * nothing is hidden, the stage's own controls are simply where the eye lands.
+   */
+  useEffect(() => {
+    if (!traverseHere) return;
+    const rail = railRef.current;
+    const el = traversePanelRef.current;
+    if (!rail || !el) return;
+    const id = requestAnimationFrame(() => {
+      rail.scrollTo({
+        top: Math.max(0, el.offsetTop - rail.offsetTop - 8),
+        behavior: 'smooth',
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [traverseHere, step]);
   const legend = LAYER_MAP[activeLayer];
 
   // Two independent mode chips, because there are two independent data paths and
@@ -436,7 +500,7 @@ export default function MissionControl() {
             showLandingSites={showLandingSites}
             scienceOpacity={scienceOpacity}
             searchedSites={searched?.sites ?? null}
-            traverse={showTraverse ? traverse : null}
+            traverse={traverseHere ? traverse : null}
             selectedRoute={selectedRoute}
             onSelectRoute={pickRoute}
             roverFraction={roverFraction}
@@ -473,7 +537,20 @@ export default function MissionControl() {
                 two things called "rover route" on one screen is exactly the
                 confusion this panel is here to end, and this is the one with a
                 computation behind it. */}
-            <button className={`mc-layer ${showTraverse ? 'mc-layer--on' : ''}`} onClick={() => setShowTraverse((v) => !v)}>
+            {/* Off-stage this does not silently do nothing: it says which
+                stage owns the traverse and goes there. A toggle that appears to
+                fail is worse than one that is absent. */}
+            <button
+              className={`mc-layer ${traverseHere ? 'mc-layer--on' : ''}`}
+              onClick={() => {
+                if (!TRAVERSE_STEPS.has(step)) { gotoStep(6); setShowTraverse(true); return; }
+                setShowTraverse((v) => !v);
+              }}
+              title={TRAVERSE_STEPS.has(step)
+                ? undefined
+                : 'The traverse is drawn on stage 06 Landing Sites and 07 Rover Traverse. '
+                  + 'Click to go there.'}
+            >
               <Route size={11} style={{ color: '#4fd1e6' }} /> Traverse + Rover
               <span className="mc-layer-tag" title={
                 'Dijkstra at a stated 100 m planning resolution over measured slope, '
@@ -510,27 +587,14 @@ export default function MissionControl() {
           {/* The right-hand instrument stack, inboard of the zoom column. Both
               panels are opt-in and neither one is rendered when its toggle is
               off, so the map is never smaller than it has to be. */}
-          {(probeOn || showTraverse) && (
+          {/* Only the probe floats over the map now. The traverse panel moved
+              into the rail: it covered the top-right quadrant, which is where
+              several of the searched sites are, so the panel describing the
+              sites was hiding them. */}
+          {probeOn && (
             <div className="mc-mapstack">
-              {probeOn && (
-                <ProbeReadout grid={probeGrid} settled={probeSettled} sample={probe}
-                              onClose={() => { setProbeOn(false); setProbe(null); }} />
-              )}
-              {showTraverse && (
-                <TraversePanel
-                  traverse={traverse} settled={traverseSettled}
-                  selected={selectedRoute}
-                  onSelect={pickRoute}
-                  fraction={roverFraction} onFraction={setRoverFraction}
-                  playing={roverPlaying}
-                  onPlaying={(pl) => {
-                    // Pressing play at the goal restarts from the site. The
-                    // alternative is a button that visibly does nothing.
-                    if (pl && roverFraction >= 1) setRoverFraction(0);
-                    setRoverPlaying(pl);
-                  }}
-                />
-              )}
+              <ProbeReadout grid={probeGrid} settled={probeSettled} sample={probe}
+                            onClose={() => { setProbeOn(false); setProbe(null); }} />
             </div>
           )}
 
@@ -653,7 +717,7 @@ export default function MissionControl() {
         </div>
 
         {/* intelligence rail */}
-        <div className="mc-rail">
+        <div className="mc-rail" ref={railRef}>
           {/* Verdict: static, measured, independent of the backend's state. */}
           <VerdictCard analysis={analysis} craterName={craters[craterId]?.name ?? craterId} />
 
@@ -665,7 +729,33 @@ export default function MissionControl() {
             </div>
           )}
 
+          {/* The traverse controls, in the rail and only on the two stages they
+              belong to, ABOVE the step panel: on those stages the traverse is
+              what the map is showing, and a rail this tall buries anything
+              underneath. The routes on the map are gated by the same flag, so a
+              panel can never be describing lines that are not drawn. */}
+          {traverseHere && (
+            <div ref={traversePanelRef}>
+            <TraversePanel
+              inRail
+              traverse={traverse} settled={traverseSettled}
+              selected={selectedRoute}
+              onSelect={pickRoute}
+              fraction={roverFraction} onFraction={setRoverFraction}
+              playing={roverPlaying}
+              onPlaying={(pl) => {
+                // Pressing play at the goal restarts from the site. The
+                // alternative is a button that visibly does nothing.
+                if (pl && roverFraction >= 1) setRoverFraction(0);
+                setRoverPlaying(pl);
+              }}
+            />
+            </div>
+          )}
+
           <StepPanel
+              searchedSites={searched}
+              traverse={traverse}
               probeOn={probeOn}
               onProbe={(on) => { setProbeOn(on); if (!on) setProbe(null); }}
               step={step}
@@ -686,6 +776,7 @@ export default function MissionControl() {
                 if (p.iceFraction !== undefined) setIceFrac(p.iceFraction);
               }}
           />
+
         </div>
       </div>
       {/* ── bottom context bar ──

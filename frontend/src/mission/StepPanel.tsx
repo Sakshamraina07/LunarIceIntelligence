@@ -37,7 +37,8 @@
  * panel renders with the backend stopped.
  */
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
-import type { Analysis, SweepAxis } from './analysis';
+import type { Analysis, SweepAxis, SearchedSites } from './analysis';
+import type { Traverse } from './traverse';
 import { showValue, showPercent, stepStatus } from './analysis';
 import { Figure, Pv, StepUnavailable } from './Prov';
 import { getReportPdfUrl } from '../services/api';
@@ -64,6 +65,17 @@ interface Props {
    *  one click away rather than buried in a layer list. */
   probeOn: boolean;
   onProbe: (on: boolean) => void;
+  /**
+   * Phase 3 and Phase 4, read straight from their own artifacts.
+   *
+   * Stages 06 and 07 used to say the landing sites were hardcoded offsets and
+   * that no traverse was planned — printed beside five searched sites and five
+   * drawn routes, because that prose was written before those phases ran and
+   * nothing forced it to keep up. Both stages now report from the artifact when
+   * it exists, and fall back to the absence notice only when it does not.
+   */
+  searchedSites: SearchedSites | null;
+  traverse: Traverse | null;
 }
 
 function Head({ eyebrow, title, desc }: { eyebrow: string; title: string; desc: string }) {
@@ -386,15 +398,89 @@ export function StepPanel(props: Props) {
 
   // ── STEP 6 · Landing Sites ────────────────────────────────────
   if (step === 6) {
+    const searched = props.searchedSites;
     return (
       <div className="mc-card mc-fadein">
         <Head eyebrow="Stage 06 · Landing" title="Landing Site Ranking"
-          desc="A landing site should be the argmax of a search over the frame. These are not that yet." />
-        <StepUnavailable title="Landing site selection" basis={status?.basis ?? ''} />
-        <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
-          <Figure k="Recommended site" v={v.landing_site} />
-          <Figure k="Sites evaluated" v={v.landing_sites_evaluated} />
-        </div>
+          desc={searched
+            ? 'The argmax of a six-criterion search over every native 25 m pixel in the frame, '
+              + 'with non-maximum suppression so the five are five places and not five pixels of one.'
+            : 'A landing site should be the argmax of a search over the frame. These are not that yet.'} />
+
+        {/* THE SEARCH RESULT, FROM THE SEARCH'S OWN FILE.
+            Not restated from the analysis document, which does not hold it and
+            says so — one answer, one source. Where the search has not been run
+            on this host the absence notice below is what shows, unchanged. */}
+        {searched ? (
+          <>
+            <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
+              <div className="mc-metric">
+                <div className="mc-metric-k">Pixels searched<Pv p="MEASURED" /></div>
+                <div className="mc-metric-v">
+                  {(searched.search.pixels_evaluated as number).toLocaleString()}
+                </div>
+                <div className="mc-metric-sub">
+                  every native {String(searched.search.metres_per_pixel)} m cell, vectorised
+                </div>
+              </div>
+              <div className="mc-metric">
+                <div className="mc-metric-k">Separation<Pv p="MEASURED" /></div>
+                <div className="mc-metric-v">{String(searched.search.nms_separation_km)} km</div>
+                <div className="mc-metric-sub">
+                  non-maximum suppression, {String(searched.search.nms_separation_px)} px
+                </div>
+              </div>
+            </div>
+
+            <div className="mc-details">
+              <div className="mc-details-k">The five sites<Pv p="MEASURED" /></div>
+              <table className="mc-table">
+                <thead><tr><th>#</th><th>Lat</th><th>Lon</th><th>Score</th><th>PSR</th><th>Terrain</th></tr></thead>
+                <tbody>
+                  {searched.sites.map((st) => {
+                    const suspect = /SUSPECT/i.test(st.interpolation_check.verdict);
+                    return (
+                      <tr key={st.rank}>
+                        <td style={{ fontFamily: "'JetBrains Mono',monospace" }}>{st.rank}</td>
+                        <td>{st.lat_deg.toFixed(3)}°</td>
+                        <td>{st.lon_deg.toFixed(3)}°</td>
+                        <td>{st.suitability_score.toFixed(4)}</td>
+                        <td>{st.ice_access.psr_distance_km.toFixed(2)} km</td>
+                        <td style={{ color: suspect ? 'var(--mc-warn)' : 'var(--mc-text-mute)' }}>
+                          {suspect ? 'SUSPECT' : 'OK'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              {/* The distance is to a MODELLED cold trap. Said here as well as on
+                  the map, because a column headed "PSR" beside a landing site
+                  reads as a distance to ice if nothing says otherwise. */}
+              <div className="mc-metric-sub" style={{ marginTop: '0.45rem' }}>
+                PSR is the distance to the nearest <b>modelled</b> cold trap — where ice
+                could persist under the horizon computation, not where ice is. Terrain is
+                the interpolation guard: whether the ground is genuinely smooth or is
+                where the LOLA data ran out.
+              </div>
+            </div>
+
+            {/* Why the ranking is what it is, from the file's own note rather
+                than from a second opinion written here. */}
+            <div className="mc-note" style={{ marginTop: '0.7rem' }}>
+              Ranked by {searched.ranking_note.determined_by.join(' and ')}.{' '}
+              {searched.ranking_note.safety_is_inert_here ? searched.ranking_note.why : ''}
+            </div>
+          </>
+        ) : (
+          <>
+            <StepUnavailable title="Landing site selection" basis={status?.basis ?? ''} />
+            <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
+              <Figure k="Recommended site" v={v.landing_site} />
+              <Figure k="Sites evaluated" v={v.landing_sites_evaluated} />
+            </div>
+          </>
+        )}
         {mission && mission.landing_sites.length > 0 && (
           <div className="mc-details">
             <div className="mc-details-k">
@@ -439,15 +525,96 @@ export function StepPanel(props: Props) {
   // ── STEP 7 · Rover Traverse ───────────────────────────────────
   if (step === 7) {
     const routes = mission?.rover_routes ?? {};
+    const trv = props.traverse;
+    const conn = trv ? trv.connectivity[String(trv.planning.resolution_m)] : undefined;
+    const reach = trv
+      ? trv.primary_site_to_cold_trap.filter((r) => r.status === 'REACHABLE')
+      : [];
     return (
       <div className="mc-card mc-fadein">
         <Head eyebrow="Stage 07 · Rover" title="Multi-Strategy Traverse"
-          desc="A traverse needs a target worth reaching and a cost surface at a stated planning resolution. Neither is wired to the measured producer yet." />
-        <StepUnavailable title="Traverse planning" basis={status?.basis ?? ''} />
-        <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
-          <Figure k="Traverse distance" v={v.rover_traverse_km} digits={2} />
-          <Figure k="Traverse energy" v={v.rover_energy_wh} digits={0} />
-        </div>
+          desc={trv
+            ? trv.planning.algorithm + ' at a stated ' + trv.planning.resolution_m
+              + ' m planning resolution. Connectivity is established before any distance is quoted.'
+            : 'A traverse needs a target worth reaching and a cost surface at a stated planning resolution. Neither is wired to the measured producer yet.'} />
+
+        {trv ? (
+          <>
+            {/* CONNECTIVITY FIRST, the same order plan_traverse.py reports in:
+                "how far" is meaningless until "can it get there at all" has an
+                answer, and an UNREACHABLE that is really reporting the cell size
+                would be the hazard-saturation defect one level up. */}
+            {conn && (
+              <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
+                <div className="mc-metric">
+                  <div className="mc-metric-k">Sites connected<Pv p="MEASURED" /></div>
+                  <div className="mc-metric-v">{conn.sites_in_largest}/{conn.n_sites}</div>
+                  <div className="mc-metric-sub">
+                    in one component holding{' '}
+                    {(conn.largest_component_fraction_of_passable * 100).toFixed(1)}% of all
+                    passable cells — the graph does not fragment
+                  </div>
+                </div>
+                <div className="mc-metric">
+                  <div className="mc-metric-k">Passable<Pv p="MEASURED" /></div>
+                  <div className="mc-metric-v">{(conn.passable_fraction * 100).toFixed(1)}<small> %</small></div>
+                  <div className="mc-metric-sub">
+                    of {conn.cells.toLocaleString()} planning cells; a cell containing any
+                    impassable 25 m face is impassable
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mc-details">
+              <div className="mc-details-k">Site to modelled cold trap<Pv p="MEASURED" /></div>
+              <table className="mc-table">
+                <thead><tr><th>#</th><th>Length</th><th>Climb</th><th>Energy</th><th>Points</th></tr></thead>
+                <tbody>
+                  {trv.primary_site_to_cold_trap.map((r) => (
+                    <tr key={r.rank}>
+                      <td style={{ fontFamily: "'JetBrains Mono',monospace" }}>{r.rank}</td>
+                      {r.status === 'REACHABLE' ? (
+                        <>
+                          <td>{(r.length_m! / 1000).toFixed(2)} km</td>
+                          <td>{r.climb_m} m</td>
+                          <td>{r.energy_J_per_kg?.toLocaleString()} J/kg</td>
+                          <td style={{ color: 'var(--mc-text-mute)' }}>{r.cells}</td>
+                        </>
+                      ) : (
+                        /* An explicit state, never a distance of 0 — a zero here
+                           would read as "no travel needed". */
+                        <td colSpan={4} style={{ color: 'var(--mc-warn)' }}>UNREACHABLE — {r.why}</td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="mc-metric-sub" style={{ marginTop: '0.45rem' }}>
+                Every length is a multiple of {trv.planning.resolution_m} m, or{' '}
+                {(trv.planning.resolution_m * Math.SQRT2).toFixed(1)} m diagonally:{' '}
+                ±{trv.planning.resolution_m / 2} m. Energy is{' '}
+                <b>{trv.energy_proxy.provenance}</b> and per kilogram, so no rover mass is
+                invented; µ<sub>roll</sub> = {trv.energy_proxy.mu_roll} is an assumed rolling
+                resistance, not a measurement.
+              </div>
+            </div>
+
+            {reach.length > 0 && (
+              <div className="mc-note" style={{ marginTop: '0.7rem', borderLeftColor: 'var(--mc-warn)' }}>
+                {reach[0].target}
+              </div>
+            )}
+          </>
+        ) : (
+          <>
+            <StepUnavailable title="Traverse planning" basis={status?.basis ?? ''} />
+            <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
+              <Figure k="Traverse distance" v={v.rover_traverse_km} digits={2} />
+              <Figure k="Traverse energy" v={v.rover_energy_wh} digits={0} />
+            </div>
+          </>
+        )}
         {Object.keys(routes).length > 0 && (
           <div className="mc-details">
             <div className="mc-details-k">

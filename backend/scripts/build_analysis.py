@@ -231,16 +231,24 @@ DOUBLY_ABSENT_REASON = (
 )
 
 LANDING_ABSENT_REASON = (
-    "The five sites are hardcoded grid offsets (18,50 / 82,75 / 78,25 / 50,15 / 48,85), asserted and "
-    "then scored, not searched -- and their lat/lon came from a flat 30.37 km per degree constant that "
-    "is wrong by about 57x in longitude at this latitude. Withheld until the Phase 3 per-pixel search "
-    "over the native frame runs."
+    "Not computed in THIS file, and not substituted here. The sites are computed by Phase 3 -- "
+    "search_landing_sites.py, the argmax of a six-criterion search over all 14,943,444 native 25 m "
+    "pixels with 5 km non-maximum suppression -- and served from docs/landing_sites.json, which is "
+    "what the map draws and what the Landing Sites stage reports. What this file will not do is "
+    "restate them: two copies of one answer is how the site markers and the search came to disagree "
+    "about where the same five points were. The value that WAS here until Phase 3 was the best of "
+    "five hardcoded grid offsets (18,50 / 82,75 / 78,25 / 50,15 / 48,85), asserted and then scored, "
+    "with lat/lon from a flat 30.37 km per degree constant wrong by about 57x in longitude at this "
+    "latitude. It is recorded here because it shipped."
 )
 
 ROVER_ABSENT_REASON = (
-    "No traverse is planned from this file. The cost surface would be measured LOLA slope and hazard, "
-    "but the target is still a hardcoded grid centre and no Dijkstra solve runs here, so a distance or "
-    "an energy figure would be an unfinished code path rather than a result. Phase 4."
+    "No traverse is planned from THIS file, and none is invented here. Phase 4 plans it -- "
+    "plan_traverse.py, Dijkstra over an 8-connected grid at a stated 100 m planning resolution with "
+    "connectivity established before any distance is quoted -- and docs/traverse.json holds the five "
+    "site-to-cold-trap routes the map draws, each with its length, climb and per-kilogram energy. "
+    "A single 'traverse distance' in this file would have to pick one of those five and would say "
+    "less than the five say."
 )
 
 
@@ -863,11 +871,14 @@ def build(crater_id: str = "faustini") -> dict:
         "provenance": MEASURED,
         "computed_by": "backend/scripts/build_analysis.py (sweep_threshold / sweep_assumption)",
         "withheld_columns": {
-            "rover_distance_km": ("Phase 4. No traverse is planned from this file, so a distance column "
-                                  "would be an unfinished code path, not a result."),
-            "rover_energy_wh": "Phase 4, same reason.",
-            "best_landing_site_id": ("Phase 3. The sites are still hardcoded grid offsets, so the winner "
-                                     "cannot move with a threshold and a column saying so would be noise."),
+            "rover_distance_km": ("The traverse is planned by Phase 4 and lives in docs/traverse.json, "
+                                  "but it is planned against terrain and a modelled cold trap -- neither "
+                                  "of which moves when a CPR or DOP threshold moves. A column constant "
+                                  "down every row would suggest it had been tested against the sweep."),
+            "rover_energy_wh": "Same: derived from a length that this sweep does not move.",
+            "best_landing_site_id": ("The sites are searched by Phase 3 over the native frame, on six "
+                                     "criteria of which none is a CPR or DOP threshold, so the winner "
+                                     "cannot move with these axes either."),
         },
         "note": ("candidate_area_km2 is a pixel count times the frame's own cell area, so it is MEASURED "
                  "at every row. volume_m3 is DERIVED from it by the assumed depth and pore fraction. The "

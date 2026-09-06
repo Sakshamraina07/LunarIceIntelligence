@@ -1219,3 +1219,13 @@
 }
 .mc-probe-cta svg { flex: 0 0 auto; margin-top: 0.1rem; color: var(--mc-accent); }
 .mc-probe-cta b { display: block; color: var(--mc-text); margin-bottom: 0.15rem; }
+
+/* The traverse controls as a rail card. Same content, no map occlusion — it used
+ * to float over the top-right quadrant, which is where several searched sites
+ * are, so the panel describing the sites was covering them. */
+.mc-traversectl--rail { padding: 0.85rem 0.9rem; }
+.mc-traversectl--rail .mc-probe-head { font-size: 0.62rem; }
+.mc-traversectl--rail .mc-trv-item { font-size: 0.72rem; padding: 0.38rem 0.45rem; }
+.mc-traversectl--rail .mc-trv-conn,
+.mc-traversectl--rail .mc-trv-note,
+.mc-traversectl--rail .mc-trv-target { font-size: 0.64rem; }

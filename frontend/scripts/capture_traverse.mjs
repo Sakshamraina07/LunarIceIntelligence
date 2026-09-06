@@ -128,16 +128,77 @@ async function main() {
     return f;
   };
 
-  // ── 1. the traverse, with the rover part way along route 1 ────────────────
+  // Counted as DRAWN, not as present. Leaflet writes d="M0 0" for a path it has
+  // clipped out of view rather than erroring, so an element in the DOM is not
+  // evidence that anything is on the screen — which is exactly how two of the
+  // five searched sites came to be invisible while the DOM cheerfully said five.
+  const drawn = () => ev(`(() => {
+    const d = (sel) => [...document.querySelectorAll(sel)]
+      .filter(e => (e.getAttribute('d') || '') !== 'M0 0').length;
+    return {
+      routes: d('.mc-traverse'),
+      waypoints: d('.mc-traverse-wp'),
+      sites: d('.mc-site--searched'),
+      ends: document.querySelectorAll('.mc-route-end').length,
+      rover: document.querySelectorAll('.mc-rover-icon').length,
+      labels: document.querySelectorAll('.mc-wp-label').length,
+    };
+  })()`);
+
+  const problems = [];
+  const expect = (ok, what) => { if (!ok) problems.push(what); };
+
+  // ── 1. stage 06 as it arrives: every site and every route in one view ─────
   //
-  // Position is set through the SLIDER, not by poking state: the odometer that
-  // appears in the shot is then the one the app computed, not one this script
-  // asserted. A capture that set the number it photographs would be a picture
-  // of its own argument.
+  // This is the shot that answers "where are the landing sites". The stage fits
+  // all five on arrival, so ALL FIVE must be drawn — this assertion is the one
+  // that would have caught the two that were silently clipped.
+  await ev(`(async () => {
+    [...document.querySelectorAll('.mc-step')]
+      .find(b => b.textContent.includes('Landing Sites')).click();
+    await new Promise(r => setTimeout(r, 3200));
+  })()`);
+  const overview = await drawn();
+  log(`  stage 06 — ${overview.sites}/5 sites drawn, ${overview.routes}/5 routes, `
+    + `${overview.waypoints}/177 waypoints, ${overview.ends} endpoints`);
+  expect(overview.sites === 5, `only ${overview.sites}/5 sites drawn on stage 06`);
+  expect(overview.routes === 5, `only ${overview.routes}/5 routes drawn on stage 06`);
+  expect(overview.waypoints === 177,
+         `only ${overview.waypoints}/177 waypoints drawn on stage 06`);
+  // Two claims about the panel, and they are different claims. It must not be
+  // over the map — that is what hid the sites. And it must be REACHABLE without
+  // hunting: the rail scrolls, so a panel below the fold is present and useless.
+  const panel = await ev(`(() => {
+    const el = document.querySelector('.mc-rail .mc-traversectl--rail');
+    if (!el) return { inRail: false };
+    const r = el.getBoundingClientRect();
+    const rail = document.querySelector('.mc-rail').getBoundingClientRect();
+    return {
+      inRail: true,
+      overMap: !!document.querySelector('.mc-mapwrap .mc-traversectl'),
+      // how far below the top of the rail its own top sits, in rail-heights
+      depth: +((r.top - rail.top) / rail.height).toFixed(2),
+    };
+  })()`);
+  log(`  panel    — in rail: ${panel.inRail}, over the map: ${panel.overMap}, `
+    + `${(panel.depth * 100).toFixed(0)}% down the rail`);
+  expect(panel.inRail, 'the traverse panel is not in the rail');
+  expect(!panel.overMap, 'the traverse panel is floating over the map again');
+  expect(panel.depth < 1, `the traverse panel starts ${(panel.depth * 100).toFixed(0)}% `
+    + 'down the rail — below the fold, so it has to be hunted for');
+  await shot('01-landing-sites');
+
+  // ── 2. one route, close up, with the rover part way along it ──────────────
+  //
+  // Position is set through the SLIDER, not by poking state: the odometer in the
+  // photograph is then the one the app computed rather than one this script
+  // asserted. A capture that set the number it photographs would be a picture of
+  // its own argument. Here only the focused route is expected to be in view —
+  // the others are legitimately off-screen, and demanding 5/5 would be the
+  // script failing on its own zoom.
   const odo = await ev(`(async () => {
-    const pick = (n) => [...document.querySelectorAll('.mc-trv-item')]
-      .find(x => x.textContent.includes('Site ' + n));
-    pick(1).click();
+    [...document.querySelectorAll('.mc-trv-item')]
+      .find(x => x.textContent.includes('Site 1')).click();
     await new Promise(r => setTimeout(r, 2400));
     document.querySelector('.mc-map-tools button[title="Zoom in"]').click();
     await new Promise(r => setTimeout(r, 1200));
@@ -148,19 +209,19 @@ async function main() {
     await new Promise(r => setTimeout(r, 900));
     return document.querySelector('.mc-trv-odo').innerText.replace(/\\s+/g, ' ');
   })()`);
-  const counts = await ev(`({
-    routes: document.querySelectorAll('.mc-traverse').length,
-    waypoints: document.querySelectorAll('.mc-traverse-wp').length,
-    ends: document.querySelectorAll('.mc-route-end').length,
-    rover: document.querySelectorAll('.mc-rover-icon').length,
-    labels: document.querySelectorAll('.mc-wp-label').length,
-  })`);
-  log(`  traverse — ${counts.routes} routes, ${counts.waypoints} waypoints, `
-    + `${counts.ends} endpoints, ${counts.rover} rover, ${counts.labels} distance ticks`);
+  const close = await drawn();
+  log(`  route 1  — ${close.routes} routes in view, ${close.waypoints} waypoints, `
+    + `${close.rover} rover, ${close.labels} distance ticks`);
   log(`  odometer — ${odo}`);
-  await shot('01-traverse-rover');
+  // Route 1 has 30 waypoints; the fit is padded, so essentially all of them
+  // should be on screen. A handful clipped at the edge is fine, half is not.
+  expect(close.routes >= 1, 'the focused route is not drawn');
+  expect(close.waypoints >= 25, `only ${close.waypoints} waypoints in the route shot`);
+  expect(close.rover === 1, `${close.rover} rovers, expected exactly 1`);
+  expect(/1\.70 km of 3\.27 km/.test(odo), `odometer reads "${odo}"`);
+  await shot('02-traverse-rover');
 
-  // ── 2. the probe, reading a measured cell ────────────────────────────────
+  // ── 3. the probe, reading a measured cell ────────────────────────────────
   const probe = await ev(`(async () => {
     const b = [...document.querySelectorAll('.mc-layer')]
       .find(x => x.textContent.includes('Criteria Probe'));
@@ -168,30 +229,35 @@ async function main() {
     await new Promise(r => setTimeout(r, 3000));
     const el = document.querySelector('.leaflet-container');
     const rc = el.getBoundingClientRect();
-    // Aim at the rover: that is inside the amplitude ribbon by construction,
-    // because the route starts at a site whose in_amplitude_mask criterion
-    // passed. Clicking a fixed screen fraction would depend on the view.
+    // Aim at the rover: it sits on a route that starts at a site whose
+    // in_amplitude_mask criterion passed, so it is inside the measured ribbon by
+    // construction. A fixed screen fraction would depend on the view instead.
     const rv = document.querySelector('.mc-rover-icon').getBoundingClientRect();
     for (const t of ['mousedown', 'mouseup', 'click'])
       el.dispatchEvent(new MouseEvent(t, { bubbles: true, cancelable: true,
         clientX: rv.x + rv.width / 2, clientY: rv.y + rv.height / 2,
         view: window, button: 0 }));
-    await new Promise(r => setTimeout(r, 800));
+    await new Promise(r => setTimeout(r, 900));
     return document.querySelector('.mc-probe').innerText.replace(/\\n+/g, ' | ');
   })()`);
-  log('  probe    — ' + probe.slice(0, 300));
-  await shot('02-probe');
+  log('  probe    — ' + probe.slice(0, 260));
+  expect(/MEASURED RADAR/.test(probe), 'the probe did not land on measured radar');
+  expect(/needs > 1\.00/.test(probe), 'the probe did not print the CPR threshold');
+  expect(/Detection floor/.test(probe), 'the probe did not print the detection floor');
+  await shot('03-probe');
 
   await S('Target.closeTarget', { targetId });
   proc.kill();
 
-  // Refuse to report success on an empty draw. A capture script that writes a
-  // blank PNG and exits 0 is the third instance of METHODS §0's second pattern.
-  if (counts.routes < 1 || counts.waypoints < 1 || counts.rover !== 1) {
-    fail(`nothing to capture: ${counts.routes} routes, ${counts.waypoints} waypoints, `
-       + `${counts.rover} rover. The shots would be evidence of nothing.`);
+  // Refuse to report success on shots that show nothing. A capture script that
+  // writes a blank PNG and exits 0 is another instance of METHODS §0's second
+  // pattern — and the first version of this file did exactly that in reverse,
+  // demanding 5/5 routes in a shot deliberately zoomed into one of them.
+  if (problems.length) {
+    fail('the shots are not evidence of what they claim:\n    - '
+       + problems.join('\n    - '));
   }
-  log('\n  both shots taken with the app driven through its own controls.');
+  log('\n  three shots, every one taken by driving the app through its own controls.');
   return 0;
 }
 

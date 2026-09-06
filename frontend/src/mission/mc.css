@@ -1266,3 +1266,36 @@
   font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--mc-warn); margin-left: 0.15rem;
 }
+
+/* ── host state, on the stage it describes ──────────────────────────────────
+   This block moved out of the global header. Beside VERDICT it read as a
+   system-wide failure; it is not one, and it now sits on the Sensitivity Studio
+   because that is the only stage a no-raster host costs anything. Nothing was
+   deleted in the move -- the badge and its whole explanation are both here. */
+.mc-hoststate {
+  margin: 0.9rem 0 0.2rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--mc-line);
+  border-left: 2px solid var(--mc-text-mute);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.mc-hoststate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.09em;
+  color: var(--mc-text-mute);
+}
+.mc-hoststate-body {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  line-height: 1.55;
+  color: var(--mc-text-mute);
+}
+.mc-hoststate-body strong { color: var(--mc-text); font-weight: 500; }
+/* `ok` is the only state that is not a caveat, so it is the only one tinted. */
+.mc-hoststate--ok { border-left-color: var(--mc-accent); }
+.mc-hoststate--ok .mc-hoststate-badge { color: var(--mc-accent); }

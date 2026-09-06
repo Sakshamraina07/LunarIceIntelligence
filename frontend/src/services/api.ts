@@ -33,11 +33,25 @@ export class MissionUnavailable extends Error {
 
 /** One place decides how each state is worded. */
 export const BACKEND_COPY: Record<BackendState, { badge: string; heading: string }> = {
-  pending: { badge: 'STUDIO · …', heading: 'STUDIO PENDING' },
-  unreachable: { badge: 'STUDIO · UNREACHABLE', heading: 'STUDIO UNREACHABLE' },
-  not_ingested: { badge: 'STUDIO · NO RASTERS', heading: 'STUDIO HAS NO RASTERS' },
-  ok: { badge: 'STUDIO · REAL', heading: 'STUDIO LIVE' },
+  pending: { badge: 'CHECKING HOST', heading: 'CHECKING HOST' },
+  unreachable: { badge: 'BACKEND UNREACHABLE', heading: 'BACKEND UNREACHABLE' },
+  not_ingested: { badge: 'NO RASTERS ON HOST', heading: 'NO RASTERS ON HOST' },
+  ok: { badge: 'LIVE', heading: 'LIVE' },
 };
+
+/**
+ * WHAT THE ON-DEMAND BACKEND IS ACTUALLY FOR, measured rather than assumed.
+ *
+ * The banner used to say "the sensitivity studio, the stage panels and the PDF"
+ * need it. That was written before `/api/sensitivity/{param}` was changed to
+ * read the committed analysis artifact, and it stopped being true then: the
+ * sweep TABLES in stage 09 are static and render on a host with no rasters. The
+ * only things that genuinely re-run a pipeline are the four sliders beside them
+ * and the PDF.
+ *
+ * A sentence naming more than is broken is the same defect as one naming less.
+ */
+export const NEEDS_BACKEND = 'the four re-query sliders in stage 09, and the PDF';
 const API_BASE_URL = `${API_ORIGIN}/api`;
 
 export async function fetchHealthCheck() {

@@ -149,11 +149,16 @@ function contradictions(text, state) {
   if (said.unreachable && said.reachable) {
     problems.push('the page claims the backend is BOTH reachable and not reachable');
   }
-  const badge = (text.match(/STUDIO\s*[·.]\s*[A-Z ]+/i) || [])[0] || '(no STUDIO badge)';
-  const expect = { ok: /REAL|SIMULATED/i, not_ingested: /NO RASTERS/i,
-                   unreachable: /UNREACHABLE/i }[state];
+  // THE BADGE MOVED TO STAGE 09 and this gate moved with it. Matching the
+  // header would now pass vacuously -- there is no host-state badge there --
+  // which is the failure mode where a check keeps its green light by no longer
+  // looking at anything. `text` is stage 09's own rendered text.
+  const badge = (text.match(/(BACKEND UNREACHABLE|NO RASTERS ON HOST|CHECKING HOST|LIVE(?: · SIMULATED PAYLOAD)?)/) || [])[0]
+    || '(no host-state badge)';
+  const expect = { ok: /^LIVE/, not_ingested: /^NO RASTERS ON HOST$/,
+                   unreachable: /^BACKEND UNREACHABLE$/ }[state];
   if (expect && !expect.test(badge)) {
-    problems.push(`badge reads "${badge.trim()}" in state ${state}`);
+    problems.push(`stage-09 host badge reads "${badge.trim()}" in state ${state}`);
   }
   if (state === 'not_ingested' && said.unreachable) {
     problems.push('the backend answered, and the page says it is not reachable');
@@ -323,6 +328,39 @@ async function main() {
       boundariesTripped: document.querySelectorAll('.mc-boundary').length,
       bodyChars: document.body.innerText.trim().length,
       text: document.body.innerText,
+      // The header's BADGES only, not the whole bar.
+      //
+      // NOTE: no backticks in this comment -- it lives inside a template
+      // literal, and the first version of it terminated the string.
+      // The first version of this CHECK read the whole .mc-topbar bar and
+      // failed in state unreachable on the Report control, which says "backend
+      // unreachable" because it is REQUIRED to name the state it is in. That is
+      // a control describing itself, which is correct; what moved to stage 09 is
+      // a free-standing badge describing the SYSTEM. A check that cannot tell
+      // those apart would have forced the Report control to go quiet, i.e. it
+      // would have caused the exact defect this file exists to prevent.
+      headerBadges: [...document.querySelectorAll('.mc-topbar .mc-badge')]
+        .map(e => e.innerText).join(' | '),
+    };
+  })()`);
+
+  // ── walk to stage 09, which now owns host state ──────────────────────────
+  // Clicked rather than deep-linked, because the click is the path a reader
+  // takes and a stage that only renders when addressed directly is not one
+  // click away.
+  await ev(`(() => {
+    const b = [...document.querySelectorAll('.mc-step')]
+      .find(e => /09/.test(e.innerText));
+    if (b) b.click();
+    return !!b;
+  })()`);
+  await sleep(1200);
+  const stage9 = await ev(`(() => {
+    const el = document.querySelector('.mc-hoststate');
+    return {
+      present: !!el,
+      text: el ? el.innerText : '',
+      panelText: (document.querySelector('.mc-rail')?.innerText) || '',
     };
   })()`);
 
@@ -378,10 +416,42 @@ async function main() {
 
   // ── 5. the three backend states, named apart ────────────────────────────
   const c = contradictions(INJECT === 'contradictstate'
-    ? state.text + ' the backend is not reachable and is reachable'
-    : state.text, STATE);
-  log(`  backend state       ${STATE}, badge "${c.badge.trim()}"`);
+    ? stage9.text + ' the backend is not reachable and is reachable'
+    : stage9.text, STATE);
+  log(`  backend state       ${STATE}, stage-09 badge "${c.badge.trim()}"`);
   problems.push(...c.problems);
+
+  // 5a. the badge and its explanation SURVIVED the move. "Move it, delete
+  //     nothing" is only true if the destination actually renders it.
+  if (!stage9.present || INJECT === 'nohoststate') {
+    problems.push('stage 09 renders no .mc-hoststate block — the host-state badge '
+      + 'and its explanation were removed rather than moved');
+  }
+  if (stage9.present && stage9.text.trim().length < 80) {
+    problems.push(`the stage-09 host-state block is ${stage9.text.trim().length} chars; `
+      + 'the explanation did not come with the badge');
+  }
+
+  // 5b. and it did NOT stay in the header, where it read as a global failure.
+  const headerHost = /BACKEND UNREACHABLE|NO RASTERS ON HOST|STUDIO ·/
+    .test(INJECT === 'badgeinheader'
+      ? state.headerBadges + ' | NO RASTERS ON HOST' : state.headerBadges);
+  if (headerHost) {
+    problems.push('a host-state badge is back in the global header, where it '
+      + 'reads as a system-wide failure; it belongs on stage 09');
+  }
+
+  // 5c. the whole point of the move: a no-raster host must NOT be described as
+  //     breaking the sweep tables, which are static and render fine.
+  const claimsTablesBroken = /sweep tables[^.]*(unavailable|cannot|not available)/i
+    .test(INJECT === 'tablesbroken'
+      ? stage9.panelText + ' the sweep tables are unavailable' : stage9.panelText);
+  if (claimsTablesBroken) {
+    problems.push('stage 09 claims its sweep tables are unavailable; they are '
+      + 'static artifacts and render on a host with no rasters');
+  }
+  log(`  stage-09 host block ${stage9.present ? `${stage9.text.trim().length} chars` : 'ABSENT'}`
+      + `, header badges: "${state.headerBadges}"`);
   if (errText.length > 0 || inj('console')) {
     problems.push(`${errText.length || 1} console error(s): ${errText[0] ?? '(injected)'}`);
   }

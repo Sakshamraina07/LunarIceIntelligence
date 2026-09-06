@@ -9,12 +9,12 @@ and `PROVENANCE.md` names the phase that will compute it.
 
 ## 0 · The recurring defect in this project
 
-*Four patterns, seventeen instances. Two of them are about descriptions drifting
+*Four patterns, eighteen instances. Two of them are about descriptions drifting
 from what they describe, one is about a transform written twice, and the fourth
 is about a whole surface that had no check on it at all.*
 
-**Five instances so far of one failure: a caption, a name or a summary that
-stopped tracking the computation it describes.** The illumination layer's
+**Six instances of one failure: a caption, a name or a summary that stopped
+tracking the computation it describes.** The illumination layer's
 `MODEL OUTPUT` badge over a real horizon computation; a `StepUnavailable`
 heading above four measured values; a `within 2.00%` summary printed over a row
 gated at 5%; one DEM product name hardcoded in twelve places and stale in all
@@ -28,6 +28,30 @@ also produce the words about it, and fail the build when they part company. That
 is what PRD rules 5a–5c, `emit_provenance.py`, `assert_paths_agree.py` and
 `stamp_methods.py` exist to do. **Provenance discipline does not catch a stale
 sentence; only a generator or a gate does.**
+
+**The sixth drifted PESSIMISTIC, twice, in the same sentence.** The map banner
+shown on a host without rasters named what needs the on-demand backend. First it
+said the landing sites and rover routes did — both had become static artifacts,
+drawn on the map *above the banner denying them*. That was corrected to "the
+sensitivity studio, the stage panels and the PDF". Then `/api/sensitivity/{param}`
+was changed to read the committed analysis artifact instead of scaling a
+fabricated 8.75 km² base area, which made stage 09's sweep **tables** static too —
+and the sentence was wrong again, still claiming a whole studio was unavailable
+when what was actually unavailable was four re-query sliders.
+
+> **A sentence naming more than is broken is the same defect as one naming
+> less.** The first five instances overstated what the project had; this one
+> overstated what it had lost. Both are a description that stopped tracking its
+> computation, and understating your own work is not the safe direction — it is
+> the same failure wearing modesty.
+
+The consequence was visible: the badge derived from that sentence sat in the
+global header beside VERDICT, so a screen on which the verdict, the rasters, the
+sites, the traverse, the probe and both sweep tables were all rendering correctly
+announced itself as degraded. The badge is not deleted — it moved to the
+Sensitivity Studio, the one stage a no-raster host actually costs anything, with
+its whole explanation. `NEEDS_BACKEND` is now a single exported string, so the
+next drift has one place to happen instead of three.
 
 ### The second pattern: the verification apparatus itself being wrong
 
@@ -2661,7 +2685,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `cd463a3`.
+Stamped at commit `5a202c0`.
 
 | artifact | sha256 | sections |
 |---|---|---|

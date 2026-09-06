@@ -32,7 +32,7 @@ this project has spent long enough removing those.
 | G10 | `assert_upper_bounds_labelled.py` | a bounded figure quoted as if it were a rate, anywhere in the tracked sources |
 | G12 | `assert_incidence_geometry.py` | an incidence field in which any pixel sits below the look angle — an identity on a convex body — and any consumer that uses one |
 | G13 | (same script) | two consumers disagreeing about the look count of the one CPR field |
-| G15 | `verify_production.mjs --all-states` | a production bundle that does not mount, a map at zero size, zero site markers, a tripped error boundary, an application console error, or two rendered strings disagreeing about whether the backend is reachable — loaded in headless Chromium in **all three** backend states (unreachable / not-ingested / ok) |
+| G15 | `verify_production.mjs --all-states` | a production bundle that does not mount, a map at zero size, zero site markers, a tripped error boundary, an application console error, or two rendered strings disagreeing about whether the backend is reachable — loaded in headless Chromium in **all three** backend states (unreachable / not-ingested / ok); **and the host-state badge having been deleted rather than moved** — G15 clicks through to stage 09, asserts the badge and its explanation render there with the wording the observed state calls for, and asserts no host-state badge has drifted back into the global header |
 | G16 | `assert_pdf_refuses_without_rasters.py` | a PDF issued on a host that answers but holds no rasters — the loader must raise, the endpoint must return 409, and a report that *is* issued must name the host state it was issued under |
 
 **The sequence skips G11 and G14 because those numbers were never allocated** —
@@ -94,6 +94,13 @@ the more dangerous kind of green light because it looks like one. The defect G16
 exists to catch is *a loader that tolerates absence*, so that is what is now
 injected: `report_data._read` is replaced by one that invents a document instead
 of raising, exactly as a `.get(key, default)` would.
+
+G15's header assertion **failed in state `unreachable` on a string that was
+correct**. It read the whole top bar, and the Report control there says "backend
+unreachable" because it is required to name the state it is in. A check that
+cannot tell *a control describing itself* from *a badge describing the system*
+would have forced the Report control to go quiet — causing the exact defect the
+file exists to prevent. It now reads `.mc-topbar .mc-badge` only.
 
 G10's own first version **failed on its own test fixture**: the injection payload
 was a string literal in the file, so the gate found an unlabelled occurrence in a

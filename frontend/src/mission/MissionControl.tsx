@@ -22,7 +22,8 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { fetchCraters, fetchMissionState, getReportPdfUrl, API_ORIGIN,
-         BACKEND_COPY, MissionUnavailable, type BackendState } from '../services/api';
+         BACKEND_COPY, NEEDS_BACKEND, MissionUnavailable,
+         type BackendState } from '../services/api';
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
 import { MissionMap, type MissionMapHandle, type LayerManifestEntry, groundResolutionLabel, loadManifest } from './MissionMap';
 import { loadSearchedSites, type SearchedSites } from './analysis';
@@ -464,6 +465,11 @@ export default function MissionControl() {
   // Two independent mode chips, because there are two independent data paths and
   // conflating them is exactly how a DEMO verdict came to wear a REAL label.
   const verdictReal = analysis?.data_mode === 'REAL';
+  // NOT DELETED WITH THE HEADER BADGE. A host can answer OK and still be
+  // serving generated data, which is a fourth thing to say and not one of the
+  // three states -- `ok` describes the CONNECTION, this describes the PAYLOAD.
+  // It is passed to stage 09, which now owns host state, rather than dropped
+  // because the chip that used to carry it moved.
   const backendReal = mission?.data_mode === 'REAL';
   const cells = analysis ? contextCells(analysis) : [];
   // Sliders re-query the backend; the precomputed verdict is fixed at the
@@ -487,20 +493,21 @@ export default function MissionControl() {
               ? (verdictReal ? 'VERDICT · REAL, PRECOMPUTED' : 'VERDICT · NOT PRECOMPUTED')
               : 'VERDICT · LOADING'}
           </span>
-          {/* on-demand backend source, named separately so it cannot borrow the above */}
-          <span
-            className={`mc-badge ${backend === 'ok' && backendReal ? 'mc-badge--real' : 'mc-badge--demo'}`}
-            title={'Powers the stage panels, sensitivity studio and PDF only. Never '
-              + 'the verdict.' + (error ? ` — ${error}` : '')}
-          >
-            <span className="mc-badge-dot" />
-            {/* OFFLINE WHILE THE BACKEND WAS ANSWERING was the same defect as the
-                banner beside it, in three words instead of twenty. The badge is
-                now a function of the observed state. */}
-            {backend === 'ok' && !backendReal
-              ? 'STUDIO · SIMULATED'
-              : BACKEND_COPY[backend].badge}
-          </span>
+          {/* THE HOST-STATE BADGE USED TO LIVE HERE AND IT IS NOT DELETED --
+              it moved to the Sensitivity Studio stage, which is the only screen
+              it describes. See StepPanel step 9.
+
+              In the global header, beside VERDICT, it read as a system-wide
+              failure. It is not one: the verdict, the rasters, the searched
+              landing sites, the Phase 4 traverse, the criteria probe AND the
+              stage-09 sweep tables are all static artifacts that render on a
+              host with no rasters. What a no-raster host actually costs is four
+              sliders and the PDF button, so the two controls that lose something
+              say so THEMSELVES -- the Report control below, and stage 09.
+
+              An indicator positioned to imply more breakage than exists is the
+              same class of error as a caption that stopped tracking its
+              computation; it just fails in the pessimistic direction. */}
           {/* THE REPORT CONTROL IS A FUNCTION OF THE SAME THREE STATES.
               `/report/pdf/{crater}` returns 409 unless the host has the ingested
               rasters, which the deployed host does not — the 409 is correct
@@ -763,14 +770,17 @@ export default function MissionControl() {
           {!mission && (
             <div className="mc-map-overlay mc-map-panel mc-map-vectorstate">
               TERRAIN LOADED · {BACKEND_COPY[backend].heading}
-              {/* THIS SENTENCE NAMES WHAT IS ACTUALLY MISSING.
-                  It used to say landing sites and rover routes need the backend.
-                  Both are now static artifacts — the Phase 3 sites from
-                  landing_sites.json and the Phase 4 traverse from traverse.json,
-                  drawn above this banner while it claimed they could not be —
-                  so the sentence had stopped describing the screen it sits on.
-                  What genuinely needs the backend is the sensitivity studio, the
-                  stage panels and the PDF, and those are what it names. */}
+              {/* THIS SENTENCE NAMES WHAT IS ACTUALLY MISSING, AND IT HAS BEEN
+                  WRONG TWICE IN THE SAME DIRECTION.
+                  First it said landing sites and rover routes need the backend;
+                  both had become static artifacts drawn above this very banner.
+                  Then it said "the sensitivity studio, the stage panels and the
+                  PDF" -- but /api/sensitivity/{param} was changed to read the
+                  committed analysis artifact, so stage 09's sweep TABLES are
+                  static too and render fine here.
+                  What is left is the four re-query sliders and the PDF. A
+                  sentence naming more than is broken is the same defect as one
+                  naming less, and this one drifted pessimistic twice. */}
               {/* ONE SENTENCE PER STATE, AND THEY DO NOT OVERLAP.
                   This said "which is not reachable" on the same screen as the
                   panel below saying "is reachable but reports NOT_INGESTED",
@@ -784,10 +794,10 @@ export default function MissionControl() {
                   + 'this crater — it is reachable, and it has nothing to serve. '}
                 {backend === 'pending' &&
                   'Waiting for the analysis backend. '}
-                The sensitivity studio, the stage panels and the PDF are the only
-                things that need it. The verdict, the rasters, the searched landing
-                sites, the Phase 4 traverse and the criteria probe are static
-                artifacts and are unaffected.
+                The only things that need it are {NEEDS_BACKEND}. The verdict, the
+                rasters, the searched landing sites, the Phase 4 traverse, the
+                criteria probe and stage 09's sweep tables are static artifacts and
+                are unaffected.
               </div>
             </div>
           )}
@@ -840,6 +850,8 @@ export default function MissionControl() {
               probeOn={probeOn}
               onProbe={(on) => { setProbeOn(on); if (!on) setProbe(null); }}
               step={step}
+              backend={backend}
+              backendReal={backendReal}
               analysis={analysis}
               mission={mission}
               craterId={craterId}

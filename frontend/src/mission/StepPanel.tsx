@@ -41,11 +41,20 @@ import type { Analysis, SweepAxis, SearchedSites } from './analysis';
 import type { Traverse } from './traverse';
 import { showValue, showPercent, stepStatus } from './analysis';
 import { Figure, Pv, StepUnavailable } from './Prov';
-import { getReportPdfUrl } from '../services/api';
+import { getReportPdfUrl, API_ORIGIN, BACKEND_COPY, NEEDS_BACKEND,
+         type BackendState } from '../services/api';
 import { Check, X, Minus, Download, Crosshair } from 'lucide-react';
 
 interface Props {
   step: number;
+  /** Which of the three backend states the fetch layer observed. Never derived
+   *  from `mission != null`, which cannot tell "nothing answered" from "it
+   *  answered and said it has nothing" -- the defect that put three sentences
+   *  from one boolean on one screen. */
+  backend: BackendState;
+  /** Whether an `ok` host is serving REAL or generated data. Orthogonal to the
+   *  three states: `backend` describes the connection, this the payload. */
+  backendReal: boolean;
   /** The measured producer. `null` means no analysis exists for this crater. */
   analysis: Analysis | null;
   /** On-demand backend. Optional: the panel must render without it. */
@@ -711,6 +720,42 @@ export function StepPanel(props: Props) {
         <Head eyebrow="Stage 09 · Sweep" title="Sensitivity Studio"
           desc="Each row below re-thresholds the native arrays and counts pixels. The area column is a measurement at every row, not a baseline scaled by a formula." />
 
+        {/* THE HOST-STATE BADGE LIVES HERE, not in the global header.
+            This is the only stage that loses anything when the host has no
+            rasters, so this is where the badge belongs and where its whole
+            explanation is kept. Nothing was deleted in the move. */}
+        <div className={`mc-hoststate mc-hoststate--${props.backend}`}>
+          <div className="mc-hoststate-badge">
+            <span className="mc-badge-dot" />
+            {props.backend === 'ok' && !props.backendReal
+              ? 'LIVE · SIMULATED PAYLOAD'
+              : BACKEND_COPY[props.backend].badge}
+          </div>
+          <div className="mc-hoststate-body">
+            {props.backend === 'unreachable' &&
+              `Nothing answered at ${API_ORIGIN}. `}
+            {props.backend === 'not_ingested' &&
+              'The backend answered and reports it holds no ingested rasters for '
+              + 'this crater — it is reachable, and it has nothing to serve. '}
+            {props.backend === 'pending' &&
+              'Waiting for the analysis backend. '}
+            {props.backend === 'ok' && props.backendReal &&
+              'The backend answered and holds the ingested rasters for this '
+              + 'crater. '}
+            {props.backend === 'ok' && !props.backendReal &&
+              'The backend answered, but reports its payload is generated rather '
+              + 'than measured, so the sliders below re-run a simulation and not '
+              + 'this product. '}
+            {props.backend === 'ok'
+              ? 'The sliders below re-run the pipeline against them.'
+              : <>The only things on this screen that need it are {NEEDS_BACKEND}.
+                  <strong> The two sweep tables below are static artifacts and are
+                  measured, not degraded</strong> — they are read from the committed
+                  analysis, the same file the verdict is read from, so every number
+                  in them is the same number a host with the rasters would print.</>}
+          </div>
+        </div>
+
         <div className="mc-details">
           <div className="mc-details-k">
             CPR threshold sweep
@@ -864,7 +909,13 @@ export function StepPanel(props: Props) {
             ))}
           </ul>
         </div>
-        {mission ? (
+        {/* THIS WAS THE LAST `mission ? … : …` STANDING IN FOR THREE STATES.
+            It printed "the backend, which is not reachable" on a screen whose
+            own header said the backend had answered — the identical defect the
+            badge and banner were fixed for, surviving one stage further down
+            because nothing had looked at stage 12. It is now a function of the
+            observed state, like every other sentence about the host. */}
+        {props.backend === 'ok' ? (
           <a className="mc-btn mc-btn--solid" style={{ marginTop: '0.9rem', width: '100%', justifyContent: 'center' }}
             href={getReportPdfUrl(props.craterId)} target="_blank" rel="noopener noreferrer">
             <Download size={14} /> Download PDF Report
@@ -873,8 +924,15 @@ export function StepPanel(props: Props) {
           <div className="mc-na" style={{ marginTop: '0.9rem' }}>
             <span className="mc-na-dash">—</span>
             <span>
-              The PDF is typeset by the backend, which is not reachable. The
-              measured analysis above is unaffected — it is a static asset.
+              {props.backend === 'not_ingested'
+                ? 'The backend answered and holds no ingested rasters for this '
+                  + 'crater, so /report/pdf returns 409 and no document is issued. '
+                  + 'A report rendered from a host with less data would be a '
+                  + 'thinner document presented as the same one.'
+                : props.backend === 'unreachable'
+                  ? `Nothing answered at ${API_ORIGIN}, so no report can be requested.`
+                  : 'Waiting for the analysis backend.'}
+              {' '}The measured analysis above is unaffected — it is a static asset.
               <Pv p="UNAVAILABLE" />
             </span>
           </div>

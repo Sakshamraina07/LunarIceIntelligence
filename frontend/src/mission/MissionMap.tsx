@@ -742,8 +742,38 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     //
     // maxBounds + maxBoundsViscosity: 1.0 (constructor, above) do the matching
     // job for panning; together they mean the frame is the world.
+    // DO NOT use map.getBoundsZoom() here. It respects `zoomSnap` (0.5 above)
+    // and FLOORS its answer to a snap increment, so a true fit of 2.0795 comes
+    // back as 2.0 and the floor is set one snap step too far out. Measured on
+    // a 1082x467 panel: frame 1024 px wide in a 1082 px viewport, 94.6 % fill.
+    // The size of the gap depends on where the true fit falls between snap
+    // steps, and the worst case is a fit just under a boundary -- 2^-0.5 =
+    // 70.7 % of the width and half the area, which is the "postage stamp in a
+    // grey field" this floor exists to prevent. That size dependence is also
+    // why the bug reads as intermittent and why it survived a previous fix.
+    //
+    // So compute the fit directly, through Leaflet's own projection at zoom 0
+    // (CRS-agnostic -- no assumption that 1 CRS unit is 1 px) and take the
+    // exact log2. Never snapped, never a literal, and recomputed on resize.
+    // geom.bounds is an L.LatLngBoundsLiteral — a PLAIN ARRAY, not an
+    // L.LatLngBounds — so it has no getNorthWest(). map.getBoundsZoom() hid that
+    // by calling toLatLngBounds() internally; computing the fit by hand does
+    // not, and the missing conversion threw a TypeError that aborted this whole
+    // effect, leaving minZoom at its constructor value of 0. That is far worse
+    // than the snapping bug being fixed here: at zoom 0 the frame is 256 px wide
+    // in a 1081 px panel, 23.7 % fill.
+    const fitBoundsLL = L.latLngBounds(geom.bounds);
+    const fitZoomOut = () => {
+      const nw = map.project(fitBoundsLL.getNorthWest(), 0);
+      const se = map.project(fitBoundsLL.getSouthEast(), 0);
+      const w = Math.abs(se.x - nw.x);
+      const h = Math.abs(se.y - nw.y);
+      const size = map.getSize();
+      if (!(w > 0 && h > 0 && size.x > 0 && size.y > 0)) return map.getMinZoom();
+      return Math.log2(Math.min(size.x / w, size.y / h));
+    };
     const clampZoomOut = () => {
-      map.setMinZoom(map.getBoundsZoom(geom.bounds, false));
+      map.setMinZoom(fitZoomOut());
     };
     clampZoomOut();
     // The panel resizes with the window and with the side rails opening and

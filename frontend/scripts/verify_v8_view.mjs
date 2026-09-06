@@ -216,6 +216,40 @@ function harness() {
              legendishTextInMap: [...new Set(legendish)].slice(0, 6) };
   };
 
+  /**
+   * (g) the zoom-out floor. Regressed twice, so it is measured here rather than
+   * trusted: the furthest zoom-out must be EXACTLY the zoom that fits the whole
+   * frame, derived from the live panel and never a literal.
+   *
+   * Two distinct ways this has broken. map.getBoundsZoom() respects zoomSnap and
+   * FLOORS, so a true fit of 2.0795 was set as 2.0 and the frame filled 94.6 % of
+   * the width. And a hand-rolled fit that forgot geom.bounds is a plain array,
+   * not an L.LatLngBounds, threw and left minZoom at its constructor 0 — frame at
+   * 23.7 % width. Both look like "the raster is a small picture in a grey field",
+   * and neither shows up in a screenshot taken at the opening view.
+   */
+  H.zoomClamp = function () {
+    const map = H.map, b = map.options.maxBounds, size = map.getSize();
+    if (!b) return { error: 'maxBounds is not set on the map instance' };
+    const nw = map.project(b.getNorthWest(), 0);
+    const se = map.project(b.getSouthEast(), 0);
+    const w = Math.abs(se.x - nw.x), h = Math.abs(se.y - nw.y);
+    const trueFit = Math.log2(Math.min(size.x / w, size.y / h));
+    const minZoom = map.getMinZoom();
+    const scale = Math.pow(2, minZoom);
+    return {
+      viewport: [size.x, size.y], minZoom, trueFit,
+      deltaZoom: minZoom - trueFit,
+      widthFillAtFloor: (w * scale) / size.x,
+      heightFillAtFloor: (h * scale) / size.y,
+      // The frame's own bounds out of layers.json, not a padded or fixed box.
+      boundsUnits: [[b.getSouth(), b.getWest()], [b.getNorth(), b.getEast()]],
+      boundsMatchesCrs: Math.abs((b.getNorth() - b.getSouth()) - H.geom.H) < 1e-6
+                     && Math.abs((b.getEast() - b.getWest()) - H.geom.W) < 1e-6,
+      maxBoundsViscosity: map.options.maxBoundsViscosity,
+    };
+  };
+
   /** (b) the mc-void pane. */
   H.voidPane = function () {
     let pane = null, threw = null;
@@ -572,6 +606,7 @@ async function main() {
   const panel = await ev('window.__mc8.coveragePanel()');
   const voidPane = await ev('window.__mc8.voidPane()');
   const rasters = await ev('window.__mc8.rasterInventory()');
+  const clamp = await ev('window.__mc8.zoomClamp()');
   const shotOpening = await S('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   writeFileSync(path.join(CFG.out, `v8_opening_view${SUF}.png`), Buffer.from(shotOpening.data, 'base64'));
 
@@ -722,6 +757,23 @@ async function main() {
            + ` (+${ofull.glows.n} emphasis underlay(s), faint by design)`,
       pass: ofull.lines.visible >= 3 && ofull.lines.faint === 0,
     },
+    // The floor must be the exact fit, not a snapped one and not the
+    // constructor default. One millizoom of tolerance for float noise only.
+    zoom_out_clamp: {
+      value: clamp.error ? clamp.error
+        : `minZoom ${clamp.minZoom?.toFixed(4)} vs fit ${clamp.trueFit?.toFixed(4)}`
+          + ` (d ${clamp.deltaZoom?.toFixed(5)}), width fill `
+          + `${(clamp.widthFillAtFloor * 100)?.toFixed(2)}%, viscosity `
+          + `${clamp.maxBoundsViscosity}, bounds match crs ${clamp.boundsMatchesCrs}`,
+      // At the exact fit, scale = min(sx/w, sy/h), so BOTH fills are <= 1 and
+      // the LIMITING one is exactly 1. Asserting width alone would fail on a
+      // tall narrow panel where height is the limiting dimension -- a real
+      // configuration, since the side rails open and close.
+      pass: !clamp.error && Math.abs(clamp.deltaZoom) < 1e-3
+         && Math.max(clamp.widthFillAtFloor, clamp.heightFillAtFloor) > 0.999
+         && clamp.widthFillAtFloor <= 1.001 && clamp.heightFillAtFloor <= 1.001
+         && clamp.boundsMatchesCrs === true && clamp.maxBoundsViscosity === 1.0,
+    },
     no_page_errors: { value: errors, pass: errors.length === 0 },
   };
 
@@ -743,7 +795,7 @@ async function main() {
 
   const report = { generated_utc: new Date().toISOString(), url: CFG.url, browser: bin,
                    viewport: [CFG.width, CFG.height], init, opening, panel, voidPane, rasters,
-                   raf, reset, overlays, overlaysFull, consoleLines: lines, errors, gate };
+                   raf, reset, overlays, overlaysFull, clamp, consoleLines: lines, errors, gate };
   writeFileSync(path.join(CFG.out, `verify_v8_view${SUF}.json`), JSON.stringify(report, null, 2));
   log(`\n  wrote   docs/verify_v8_view${SUF}.json, docs/v8_opening_view${SUF}.png,`
     + ` docs/v8_after_reset${SUF}.png, docs/v8_full_extent${SUF}.png`);

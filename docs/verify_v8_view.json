@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-05T21:46:00.595Z",
+  "generated_utc": "2026-09-06T10:25:58.258Z",
   "url": "http://localhost:3000/#/mission",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewport": [
@@ -8,10 +8,10 @@
   ],
   "init": {
     "ok": true,
-    "zoom": 3.5,
+    "zoom": 3.4999985874841726,
     "size": {
       "x": 1167,
-      "y": 698
+      "y": 691
     },
     "ringPts": 206,
     "homeUnits": [
@@ -27,17 +27,17 @@
     "mpu": 646.289062
   },
   "opening": {
-    "zoom": 3.5,
+    "zoom": 3.4999985874841726,
     "centre": [
-      44.9897,
-      128.7376
+      45.0339,
+      128.7378
     ],
     "units": {
-      "h": 61.6951,
-      "w": 103.1492
+      "h": 61.0764,
+      "w": 103.1493
     },
     "km": {
-      "h": 39.87,
+      "h": 39.47,
       "w": 66.66
     },
     "home_km": {
@@ -167,18 +167,18 @@
   },
   "reset": {
     "before": {
-      "zoom": 2,
+      "zoom": 2.188588845707348,
       "centre": [
-        43.6103,
-        127.985
+        43.6215,
+        128.0044
       ],
       "units": {
-        "h": 172.75,
-        "w": 291.75
+        "h": 151.5818,
+        "w": 256
       },
       "km": {
-        "h": 111.65,
-        "w": 188.55
+        "h": 97.97,
+        "w": 165.45
       },
       "home_km": {
         "h": 40,
@@ -258,28 +258,28 @@
     "destMatchesHome": true
   },
   "overlays": {
-    "paths": 24,
+    "paths": 40,
     "markers": {
-      "n": 0,
-      "visible": 0,
-      "styled": 0,
+      "n": 6,
+      "visible": 2,
+      "styled": 6,
       "faint": 0,
-      "amber": 0,
-      "amberAndVisible": 0
+      "amber": 4,
+      "amberAndVisible": 1
     },
     "lines": {
-      "n": 24,
-      "visible": 14,
-      "styled": 24,
+      "n": 33,
+      "visible": 23,
+      "styled": 33,
       "faint": 0,
-      "amber": 0,
-      "amberAndVisible": 0
+      "amber": 5,
+      "amberAndVisible": 5
     },
     "glows": {
-      "n": 0,
+      "n": 1,
       "visible": 0,
       "styled": 0,
-      "faint": 0,
+      "faint": 1,
       "amber": 0,
       "amberAndVisible": 0
     },
@@ -455,7 +455,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -471,7 +471,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -487,7 +487,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -503,7 +503,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -519,7 +519,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -535,7 +535,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -551,7 +551,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -567,7 +567,7 @@
         "dashed": true,
         "box": [
           0,
-          838
+          829
         ],
         "amber": false,
         "styled": true,
@@ -638,34 +638,34 @@
         "visible": false
       },
       {
-        "kind": "line",
-        "stroke": "#8aa0b4",
-        "strokeWidth": 1,
-        "strokeOpacity": 0.55,
-        "fill": "none",
+        "kind": "marker",
+        "stroke": "#4fd1e6",
+        "strokeWidth": 2.5,
+        "strokeOpacity": 1,
+        "fill": "#4fd1e6",
         "fillOpacity": 1,
         "dashed": false,
         "box": [
-          1402,
-          678
+          18,
+          18
         ],
         "amber": false,
         "styled": true,
         "visible": true
       },
       {
-        "kind": "line",
-        "stroke": "#4fd1e6",
-        "strokeWidth": 1.2,
-        "strokeOpacity": 0.75,
-        "fill": "none",
-        "fillOpacity": 1,
+        "kind": "marker",
+        "stroke": "#f2c14e",
+        "strokeWidth": 3,
+        "strokeOpacity": 1,
+        "fill": "#6b5620",
+        "fillOpacity": 0.9,
         "dashed": true,
         "box": [
-          1402,
-          423
+          20,
+          20
         ],
-        "amber": false,
+        "amber": true,
         "styled": true,
         "visible": true
       }
@@ -673,18 +673,18 @@
   },
   "overlaysFull": {
     "view": {
-      "zoom": 2,
+      "zoom": 2.188588845707348,
       "centre": [
         43.6724,
         128
       ],
       "units": {
-        "h": 172.75,
-        "w": 291.75
+        "h": 151.5818,
+        "w": 256
       },
       "km": {
-        "h": 111.65,
-        "w": 188.55
+        "h": 97.97,
+        "w": 165.45
       },
       "home_km": {
         "h": 40,
@@ -734,7 +734,7 @@
           "fillOpacity": 1,
           "dashed": true,
           "box": [
-            1024,
+            1167,
             0
           ],
           "amber": false,
@@ -750,7 +750,7 @@
           "fillOpacity": 1,
           "dashed": true,
           "box": [
-            1024,
+            1167,
             0
           ],
           "amber": false,
@@ -766,7 +766,7 @@
           "fillOpacity": 1,
           "dashed": true,
           "box": [
-            1024,
+            1167,
             0
           ],
           "amber": false,
@@ -782,7 +782,7 @@
           "fillOpacity": 1,
           "dashed": true,
           "box": [
-            1024,
+            1167,
             0
           ],
           "amber": false,
@@ -798,7 +798,7 @@
           "fillOpacity": 1,
           "dashed": true,
           "box": [
-            1024,
+            1167,
             0
           ],
           "amber": false,
@@ -814,7 +814,7 @@
           "fillOpacity": 1,
           "dashed": true,
           "box": [
-            1024,
+            1167,
             0
           ],
           "amber": false,
@@ -831,7 +831,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -847,7 +847,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -863,7 +863,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -879,7 +879,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -895,7 +895,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -911,7 +911,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -927,7 +927,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -943,7 +943,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -959,7 +959,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -975,7 +975,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -991,7 +991,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -1007,7 +1007,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -1023,7 +1023,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -1039,7 +1039,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -1055,7 +1055,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -1071,7 +1071,7 @@
           "dashed": true,
           "box": [
             0,
-            349
+            398
           ],
           "amber": false,
           "styled": true,
@@ -1112,12 +1112,31 @@
       ]
     }
   },
+  "clamp": {
+    "viewport": [
+      1167,
+      691
+    ],
+    "minZoom": 2.188588845707348,
+    "trueFit": 2.188588845707348,
+    "deltaZoom": 0,
+    "widthFillAtFloor": 0.9999999999999998,
+    "heightFillAtFloor": 0.5762221951824801,
+    "boundsUnits": [
+      [
+        0,
+        0
+      ],
+      [
+        87.344817,
+        256
+      ]
+    ],
+    "boundsMatchesCrs": true,
+    "maxBoundsViscosity": 1
+  },
   "consoleLines": [
     "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
-    "info: [MissionMap] landing-site coverage — 5/5 outside the measured amplitude ribbon. Grid offsets are hardcoded in module_e_landing.py.",
-    "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_5\",\"rank\":3,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":4,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_4\",\"rank\":5,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"}]",
-    "info: [MissionMap] rover waypoint coverage — all strategies terminate at target_coordinates (the hardcoded grid centre):",
-    "table: [{\"strategy\":\"Shortest\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":true},{\"strategy\":\"Safest\",\"waypoints\":33,\"km\":\"39.4\",\"in_amplitude_ribbon\":\"12 (36.4%)\",\"pointed_no_return\":3,\"never_observed\":18,\"drawn\":true},{\"strategy\":\"Science-Aware\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":true}]",
     "info: [MissionMap] landing-site coverage — 5/5 outside the measured amplitude ribbon. Grid offsets are hardcoded in module_e_landing.py.",
     "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_5\",\"rank\":3,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":4,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_4\",\"rank\":5,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"}]",
     "info: [MissionMap] rover waypoint coverage — all strategies terminate at target_coordinates (the hardcoded grid centre):",
@@ -1144,7 +1163,7 @@
       "pass": true
     },
     "c_opening_is_home_window": {
-      "value": "66.66x39.87 km vs home 40x40",
+      "value": "66.66x39.47 km vs home 40x40",
       "pass": true
     },
     "d_reset_returns_home": {
@@ -1153,11 +1172,15 @@
       "measured_animated": true
     },
     "sites_visible": {
-      "value": "6/6 visible at full extent (0/0 in the 40 km window), faint 0",
+      "value": "6/6 visible at full extent (2/6 in the 40 km window), faint 0",
       "pass": true
     },
     "routes_visible": {
       "value": "33/33 route strokes visible at full extent, faint 0 (+1 emphasis underlay(s), faint by design)",
+      "pass": true
+    },
+    "zoom_out_clamp": {
+      "value": "minZoom 2.1886 vs fit 2.1886 (d 0.00000), width fill 100.00%, viscosity 1, bounds match crs true",
       "pass": true
     },
     "no_page_errors": {

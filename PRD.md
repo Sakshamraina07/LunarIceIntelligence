@@ -261,6 +261,16 @@ These never relax. They are the working rules from the old
    placeholder overstates a measurement. Such a criterion may be kept when it is
    a real mission constraint that a different frame would bind on -- but it must
    never be counted as evidence of selectivity.
+5c. **A caption asserting ABSENCE over a real measurement is the same defect
+   class as a plausible placeholder standing in for one.** Both are a caption
+   that stopped tracking its own computation; they differ only in direction, and
+   **understating is not safer than overstating.** Step 2's panel rendered
+   `<StepUnavailable title="Shadow and PSR mapping">` above four real MEASURED
+   and DERIVED values, under a heading reading "This build does not have one
+   yet", for as long as it took anyone to look — all three written before Phase 2
+   and none updated when the horizon computation shipped. When a phase lands,
+   its panel copy, its step gate and its notes are part of the deliverable, not
+   commentary on it.
 
 **Engineering**
 

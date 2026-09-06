@@ -41,7 +41,31 @@ export async function fetchMissionState(
     const err = await res.json().catch(() => ({ message: 'Network error' }));
     throw new Error(err.message || 'Failed to fetch mission state');
   }
-  return res.json();
+  const doc = await res.json();
+
+  // A 200 IS NOT A PAYLOAD. The backend answers 200 with `status:
+  // "NOT_INGESTED"` when it is reachable and holds none of the rasters — which
+  // is exactly what the deployed instance does, because the 9 GB of Chandrayaan-2
+  // and LOLA products are gitignored and are not on that host. That document has
+  // no `target_coordinates`, no `landing_sites` and no `rover_routes`.
+  //
+  // It used to be returned as if it were a MissionState. Every consumer then
+  // read fields the type promised were there, `mission.target_coordinates.x`
+  // threw inside a React effect, the tree unmounted, and the deployed page was
+  // blank. Rejecting here means `mission` non-null carries the meaning every
+  // consumer already assumed, instead of each of them having to re-derive it.
+  //
+  // A backend too old to send `status` is treated as OK: absent is not
+  // NOT_INGESTED, and inventing a degraded state for it would be the same
+  // mistake pointed the other way.
+  if (doc && typeof doc.status === 'string' && doc.status !== 'OK') {
+    const why = doc?.gate?.reason ?? doc?.gate?.message ?? doc.status;
+    throw new Error(
+      `The mission backend is reachable but reports ${doc.status}: ${why}. `
+      + 'The verdict, the map rasters, the searched landing sites and the Phase 4 '
+      + 'traverse are static artifacts and are unaffected.');
+  }
+  return doc as MissionState;
 }
 
 export async function fetchSensitivity(parameterName: string, baseAreaKm2: number): Promise<SensitivityAnalysisResult> {

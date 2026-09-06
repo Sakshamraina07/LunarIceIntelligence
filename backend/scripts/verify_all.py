@@ -124,6 +124,17 @@ GATES = [
      "assert_incidence_geometry.py --only g13 — read from the pipeline, not inferred",
      [sys.executable, str(SCRIPTS / "assert_incidence_geometry.py"),
       "--only", "g13"], False),
+
+    # The deployed page was blank: one uncaught throw in one effect unmounted the
+    # whole tree. No gate had ever loaded the BUILT application, and the dev
+    # server cannot see it -- the crash needs the production bundle and the
+    # production API base. This builds it, serves it against a stub returning the
+    # exact degraded payload the deployed backend returns, and refuses a blank
+    # page or a single console error.
+    ("G15", "The production build mounts and renders against a backend that "
+            "answers 200 and says it has no data",
+     "verify_production.mjs — the built bundle, in headless Chromium",
+     ["node", str(BASE_DIR / "frontend" / "scripts" / "verify_production.mjs")], True),
 ]
 
 

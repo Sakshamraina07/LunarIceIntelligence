@@ -104,7 +104,7 @@ bytes and fails the build on any figure that is not in the artifacts.
 
 ## Verification
 
-`verify_all.py` runs twelve gates and maps each to a statement in PRD section 6.
+`verify_all.py` runs fourteen gates and maps each to a statement in PRD section 6.
 Five of them also run on every rebuild, and any non-zero exit stops the build.
 Each was verified by making it fail on purpose — including five cases where the
 verification apparatus itself turned out to be wrong (`docs/METHODS.md` §0).

@@ -1229,3 +1229,27 @@
 .mc-traversectl--rail .mc-trv-conn,
 .mc-traversectl--rail .mc-trv-note,
 .mc-traversectl--rail .mc-trv-target { font-size: 0.64rem; }
+
+/* A contained failure. It must look like neither a working panel nor an absent
+ * measurement: this project already has NO DATA for the second, and a caught
+ * error is a third thing. */
+.mc-boundary {
+  margin: 0.6rem 0; padding: 0.7rem 0.8rem;
+  border: 1px solid rgba(242, 116, 139, 0.45); border-radius: 4px;
+  background: rgba(242, 116, 139, 0.07);
+}
+.mc-boundary-head {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-mono); font-size: var(--fs-caption);
+  font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--mc-bad);
+}
+.mc-boundary-msg {
+  margin-top: 0.45rem; font-family: var(--font-mono);
+  font-size: var(--fs-caption); line-height: 1.5; color: var(--mc-text);
+  word-break: break-word;
+}
+.mc-boundary-note {
+  margin-top: 0.4rem; font-size: var(--fs-caption); line-height: 1.5;
+  color: var(--mc-text-mute);
+}

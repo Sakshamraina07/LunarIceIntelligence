@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T19:42:10.355749+00:00",
+  "generated_utc": "2026-09-06T20:21:58.410377+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 26.1
+      "seconds": 38.2
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 22.4
+      "seconds": 25.5
     },
     {
       "id": "G4",
@@ -32,7 +32,7 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 38.7
+      "seconds": 35.1
     },
     {
       "id": "G5",
@@ -40,7 +40,7 @@
       "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 6.7
+      "seconds": 5.3
     },
     {
       "id": "G6",
@@ -48,7 +48,7 @@
       "gate": "hillshade_histogram.py + composite_contrast.py",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 4.9
+      "seconds": 4.1
     },
     {
       "id": "G6b",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 47.1
+      "seconds": 48.0
     },
     {
       "id": "G7",
@@ -64,7 +64,7 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 9.1
+      "seconds": 8.5
     },
     {
       "id": "G8",
@@ -80,7 +80,7 @@
       "gate": "assert_pdf_agrees_with_analysis.py \u2014 the rendered bytes, not the inputs",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.8
+      "seconds": 0.9
     },
     {
       "id": "G10",
@@ -104,7 +104,15 @@
       "gate": "assert_incidence_geometry.py --only g13 \u2014 read from the pipeline, not inferred",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.1
+      "seconds": 0.2
+    },
+    {
+      "id": "G15",
+      "statement": "The production build mounts and renders against a backend that answers 200 and says it has no data",
+      "gate": "verify_production.mjs \u2014 the built bundle, in headless Chromium",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 31.0
     }
   ],
   "all_pass": true

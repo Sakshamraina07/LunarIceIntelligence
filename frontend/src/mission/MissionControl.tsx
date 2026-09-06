@@ -32,6 +32,7 @@ import { STEPS, LAYERS, LAYER_MAP } from './config';
 import type { LayerDef } from './config';
 import { loadAnalysis, PROV_MARK, isMissing, showValue } from './analysis';
 import type { Analysis, AnalysisValue, Provenance } from './analysis';
+import { PanelBoundary } from './PanelBoundary';
 import { ProbeReadout } from './ProbeReadout';
 import { TraversePanel } from './TraversePanel';
 import { loadProbeGrid, type ProbeGrid, type ProbeSample } from './probe';
@@ -517,6 +518,11 @@ export default function MissionControl() {
               footprint rings and coordinate readout need no backend at all. Only
               the vectors do, and MissionMap draws those when `mission` is
               non-null and skips them otherwise. It does NOT draw placeholders. */}
+          {/* THE FLOOR. One throw in this component blanked the whole page in
+              production; it is contained now, and the rest of the screen — the
+              verdict, the stat bar, the stage panels, all of which read static
+              artifacts and need no backend — stays alive. */}
+          <PanelBoundary name="Mission map">
           <MissionMap
             ref={mapRef}
             mission={mission}
@@ -537,6 +543,7 @@ export default function MissionControl() {
             onCoords={setCoords}
             onZoom={setZoom}
           />
+          </PanelBoundary>
 
           {/* layer control */}
           <div className="mc-map-overlay mc-map-panel mc-layerctl">
@@ -743,7 +750,9 @@ export default function MissionControl() {
         {/* intelligence rail */}
         <div className="mc-rail" ref={railRef}>
           {/* Verdict: static, measured, independent of the backend's state. */}
-          <VerdictCard analysis={analysis} craterName={craters[craterId]?.name ?? craterId} />
+          <PanelBoundary name="Verdict">
+            <VerdictCard analysis={analysis} craterName={craters[craterId]?.name ?? craterId} />
+          </PanelBoundary>
 
           {thresholdsDrifted && (
             <div className="mc-drift">
@@ -777,6 +786,7 @@ export default function MissionControl() {
             </div>
           )}
 
+          <PanelBoundary name={`Stage ${String(step).padStart(2, '0')}`}>
           <StepPanel
               searchedSites={searched}
               traverse={traverse}
@@ -800,6 +810,7 @@ export default function MissionControl() {
                 if (p.iceFraction !== undefined) setIceFrac(p.iceFraction);
               }}
           />
+          </PanelBoundary>
 
         </div>
       </div>

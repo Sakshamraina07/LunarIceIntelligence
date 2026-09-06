@@ -158,9 +158,29 @@ export interface SensitivityAnalysisResult {
   sensitivity_summary: string;
 }
 
+/**
+ * THE ON-DEMAND BACKEND HAS TWO WIRE SHAPES AND THIS TYPE DECLARED ONE.
+ *
+ * Every field below was non-optional, so TypeScript proved that
+ * `mission.target_coordinates.x` was safe — and in production it was `.x` of
+ * undefined, because the deployed backend answers 200 with
+ * `status: "NOT_INGESTED"` and a payload carrying `selected_crater`,
+ * `data_mode`, `gate`, `status` and nothing else. It is reachable and it holds
+ * none of the 9 GB of gitignored rasters.
+ *
+ * A type that cannot represent a shape the wire actually produces is not a
+ * check, it is a second copy of an assumption. `status` is now declared, and
+ * `fetchMissionState` refuses anything that is not OK — so `MissionState`
+ * describes the ONE shape it always described, and the other shape never
+ * reaches a consumer.
+ */
 export interface MissionState {
+  /** 'OK' on a full payload. Older backends omit it; absent is treated as OK. */
+  status?: 'OK' | 'NOT_INGESTED' | string;
+  /** Why the payload is degraded, when it is. */
+  gate?: Record<string, unknown>;
   selected_crater: CraterInfo;
-  data_mode: 'DEMO' | 'REAL';
+  data_mode: 'DEMO' | 'REAL' | 'NOT_INGESTED';
   psr: PSRAnalysisResult;
   radar: RadarAnalysisResult;
   ice: IceIntelligenceResult;

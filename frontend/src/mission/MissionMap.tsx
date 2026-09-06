@@ -839,6 +839,16 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
   const [ready, setReady] = useState(false);
 
   const crater = mission?.selected_crater ?? null;
+  /*
+   * A payload that arrived and says it has nothing is not the same as no
+   * payload: `status: NOT_INGESTED` is what the deployed backend returns, being
+   * reachable and holding none of the gitignored rasters. A `missionHasData`
+   * flag was drafted here to distinguish them — and then deleted, because
+   * `fetchMissionState` now REFUSES that payload at the boundary, so `mission`
+   * non-null already carries the meaning every consumer in this file assumed.
+   * Two guards for one condition is a second source of truth, and the whole
+   * defect was one place assuming what another place had not checked.
+   */
   // The map is built asynchronously now (it waits for layers.json), so the
   // mousemove handler reads the crater through a ref instead of closing over
   // whichever one happened to be current when the effect ran.
@@ -1321,8 +1331,29 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     if (!map || !geom) return;
     if (targetRef.current) { map.removeLayer(targetRef.current); targetRef.current = null; }
 
+    // A MISSION PAYLOAD IS NOT THE SAME THING AS A MISSION.
+    //
+    // `!mission` was the whole guard, and it was written when the backend either
+    // answered with a full payload or did not answer at all. There is a third
+    // state and it is the one production is in: a backend that ANSWERS 200 with
+    // `status: NOT_INGESTED` -- alive, reachable, and holding none of the 9 GB of
+    // rasters, which are gitignored and are not on the deployed host. That
+    // payload carries no `target_coordinates`, no `landing_sites` and no
+    // `rover_routes`, so `mission.target_coordinates.x` read `.x` of undefined,
+    // threw inside a React effect, unmounted the tree, and served a blank page.
+    //
+    // The field is checked, not the object. `t?.x` would have been enough to stop
+    // the throw and would have drawn a marker at `undefined` -- the guard is on
+    // whether the value EXISTS, because an absent target is an absent state and
+    // this project draws nothing for those.
     if (!mission || !crater) return;
     const t = mission.target_coordinates;
+    if (!t || typeof t.x !== 'number' || typeof t.y !== 'number') {
+      console.info('[MissionMap] no target coordinates in the mission payload '
+        + `(status ${mission.status ?? 'unknown'}, data_mode ${mission.data_mode ?? 'unknown'}) `
+        + '— no target marker is drawn, and none is invented.');
+      return;
+    }
     const [py, px] = gridToPixel(geom, t.x, t.y);
     const ll = frameLatLon(geom, t.x, t.y);
     const cov = coverageAt(geom, py, px);
@@ -1489,9 +1520,22 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
 
     // Here, and only here: these sites come from the on-demand backend, and
     // without it there is nothing to draw and nothing is substituted.
+    //
+    // THE MESSAGE THIS REPLACES WAS FALSE IN TWO WAYS, and both were visible in
+    // the deployed console: it printed "no searched sites and no backend" in the
+    // render before landing_sites.json resolved, and the very next line listed
+    // five searched sites. It said "no searched sites" when they were still
+    // loading, and "no backend" when the backend had answered 200 and told us it
+    // holds no rasters. A log line that lies is the same defect class as a
+    // caption that lies -- METHODS §0 -- so it now names which of the two inputs
+    // is absent and why.
     if (!mission) {
-      console.info('[MissionMap] no searched sites and no backend — the landing-site '
-        + 'layer is empty, and nothing is drawn in its place.');
+      console.info('[MissionMap] API landing sites: none. '
+        + (searchedSites === null
+            ? 'The Phase 3 search has not loaded yet — if it resolves, its sites '
+              + 'are drawn and these are suppressed.'
+            : 'The Phase 3 search returned no sites either.')
+        + ' Nothing is drawn in place of either.');
       return;
     }
 

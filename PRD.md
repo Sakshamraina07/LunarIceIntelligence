@@ -1754,7 +1754,14 @@ number in a report:
 7. **The PDF report is a rendering of the analysis artifacts, not a second
    computation of them**, and every figure it prints appears in those artifacts
    at the precision printed. (Gate 9)
-8. **There is one incidence field, and it satisfies `incidence > look angle` at
+8. **The production build renders.** (Gate 15) Not the dev server — the built
+   bundle, loaded in a browser, against a backend that answers 200 and reports
+   it holds no rasters. The deployed page was blank for one uncaught throw in
+   one effect, with every asset returning 200 and the shell mounting before the
+   tree unmounted. No gate had ever loaded the built application, and `tsc`
+   could not catch it because the wire type declared one shape while the wire
+   has two.
+9. **There is one incidence field, and it satisfies `incidence > look angle` at
    every pixel.** (Gate 12) That is an identity on a convex body —
    `sin θ = ((R+h)/R) sin η` — so no correct implementation can violate it. The
    project shipped a Bragg-domain criterion built on a field where **80.53 %** of

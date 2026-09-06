@@ -1,0 +1,185 @@
+{
+  "tag": "before",
+  "url": "http://localhost:3000/",
+  "viewport": [
+    1600,
+    900
+  ],
+  "views": [
+    {
+      "name": "full",
+      "centre": [
+        43.7,
+        128
+      ],
+      "zoom": 2.2
+    },
+    {
+      "name": "detail",
+      "centre": [
+        43.7,
+        128
+      ],
+      "zoom": 4.5
+    }
+  ],
+  "captured": [
+    {
+      "view": "full",
+      "layer": "Surface Relief",
+      "file": "before.full.surface-relief.png",
+      "state": {
+        "zoom": 2.166163082646113,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "full",
+      "layer": "Elevation (DEM)",
+      "file": "before.full.elevation-dem.png",
+      "state": {
+        "zoom": 2.166163082646113,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "full",
+      "layer": "Solar Illumination",
+      "file": "before.full.solar-illumination.png",
+      "state": {
+        "zoom": 2.166163082646113,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "full",
+      "layer": "Terrain Hazards",
+      "file": "before.full.terrain-hazards.png",
+      "state": {
+        "zoom": 2.166163082646113,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "full",
+      "layer": "Radar Signals (CPR)",
+      "file": "before.full.radar-signals-cpr.png",
+      "state": {
+        "zoom": 2.166163082646113,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "full",
+      "layer": "Degree of Polarisation",
+      "file": "before.full.degree-of-polarisation.png",
+      "state": {
+        "zoom": 2.166163082646113,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "detail",
+      "layer": "Surface Relief",
+      "file": "before.detail.surface-relief.png",
+      "state": {
+        "zoom": 4.5,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "detail",
+      "layer": "Elevation (DEM)",
+      "file": "before.detail.elevation-dem.png",
+      "state": {
+        "zoom": 4.5,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "detail",
+      "layer": "Solar Illumination",
+      "file": "before.detail.solar-illumination.png",
+      "state": {
+        "zoom": 4.5,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "detail",
+      "layer": "Terrain Hazards",
+      "file": "before.detail.terrain-hazards.png",
+      "state": {
+        "zoom": 4.5,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "detail",
+      "layer": "Radar Signals (CPR)",
+      "file": "before.detail.radar-signals-cpr.png",
+      "state": {
+        "zoom": 4.5,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "detail",
+      "layer": "Degree of Polarisation",
+      "file": "before.detail.degree-of-polarisation.png",
+      "state": {
+        "zoom": 4.5,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    }
+  ],
+  "generated_utc": "2026-09-06T11:59:21.962Z"
+}

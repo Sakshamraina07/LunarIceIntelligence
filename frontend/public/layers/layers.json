@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/layers-manifest/1",
-  "generated_utc": "2026-09-06T12:27:57+00:00",
+  "generated_utc": "2026-09-06T12:37:26+00:00",
   "generator": "backend/scripts/render_layers.py",
   "replaces": "backend/scripts/generate_tiles.py + backend/tiles/faustini/** (tile pyramid: ~331 tiles/layer, per-tile normalisation, visible seams)",
   "product_id": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",
@@ -1893,22 +1893,37 @@
       "preview": "hillshade.preview.webp",
       "width": 6618,
       "height": 2258,
-      "bytes": 8705612,
-      "preview_bytes": 95146,
+      "bytes": 8861292,
+      "preview_bytes": 96576,
       "preview_width": 640,
       "preview_height": 218,
       "colormap": "grayscale",
       "stretch": {
         "mode": "linear",
-        "expression": "linear on [0.579505, 0.881329]  (p2..p98)",
+        "expression": "linear on [0.640819, 0.827824]  (p2..p98)",
         "fitted_over_pixels": 14943444,
         "fitted_over_fraction": 1.0
       },
-      "vmin": 0.57950473,
-      "vmax": 0.88132882,
+      "vmin": 0.64081854,
+      "vmax": 0.82782429,
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
+      "display_choices": {
+        "hillshade_azimuths_deg": [
+          270.0,
+          315.0,
+          0.0,
+          45.0
+        ],
+        "hillshade_altitude_deg": 30.0,
+        "scheme": "mean of Horn hillshades across a 135 deg ARC (270/315/0/45), not evenly spaced -- a DISPLAY CHOICE, not a solar model. Evenly-spaced azimuths cancel the directional term (sum cos(az-aspect) = 0) and collapse to a slope map: measured on this frame that scheme correlates -0.950 with slope alone at 9x less contrast, against -0.128 for both the single sun and this arc. The real Sun here is within 1.54 deg of the horizon and lights almost none of this -- see the Solar Illumination layer, which is computed from horizons.",
+        "contrast_std": 0.042,
+        "correlation_with_slope_only": -0.128,
+        "single_azimuth_available": "render_layers.py --hillshade-azimuths 315"
+      },
+      "contours_m": null,
+      "contour_pixels": null,
       "resolution": {
         "native_metres_per_pixel": 20.0,
         "effective_metres_per_pixel": 25.0,
@@ -1918,7 +1933,7 @@
       "source_rasters": [
         "native/dem_native.tif"
       ],
-      "description": "Horn hillshade, sun 30 deg altitude / 315 deg azimuth; derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
+      "description": "Horn hillshade, 30.0 deg altitude, averaged over azimuths 270/315/0/45 deg (a display choice, not a solar model); derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
     },
     {
       "id": "dem_elevation",
@@ -1927,22 +1942,64 @@
       "preview": "dem_elevation.preview.webp",
       "width": 6618,
       "height": 2258,
-      "bytes": 1602248,
-      "preview_bytes": 84896,
+      "bytes": 1993704,
+      "preview_bytes": 111146,
       "preview_width": 640,
       "preview_height": 218,
-      "colormap": "viridis",
+      "colormap": "cividis",
       "stretch": {
-        "mode": "linear",
-        "expression": "linear on [-3881.71, 1131.2]  (p2..p98)",
+        "mode": "percentile",
+        "expression": "piecewise-linear through percentile knots -- NOT LINEAR IN VALUE; 15 knots from -4250.84 to 1958.66, p50 at -821.149",
         "fitted_over_pixels": 14943444,
-        "fitted_over_fraction": 1.0
+        "fitted_over_fraction": 1.0,
+        "percentiles": [
+          0,
+          2,
+          5,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90,
+          95,
+          98,
+          100
+        ],
+        "knots": [
+          -4250.8447,
+          -3881.7085,
+          -3794.7744,
+          -3631.6418,
+          -2601.3032,
+          -1780.0581,
+          -1089.1591,
+          -821.149,
+          -584.3019,
+          -337.3125,
+          118.4528,
+          498.0581,
+          812.893,
+          1131.1969,
+          1958.6594
+        ],
+        "linear_in_value": false
       },
-      "vmin": -3881.70849609,
-      "vmax": 1131.19689941,
+      "vmin": -4250.84472656,
+      "vmax": 1958.65942383,
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
+      "display_choices": {
+        "ramp": "hypsometric tint on PERCENTILE breakpoints, so each colour step covers roughly equal screen area. THE COLOUR SCALE IS NOT LINEAR IN METRES. The frame runs -4250.8 m to +1958.7 m but its median is -821.1 m, so a linear ramp would spend most of its colour on a thin deep tail and flatten everything else.",
+        "contour_interval_m": 250.0,
+        "contours": "drawn where elevation crosses a multiple of the interval, one pixel wide. A display choice: they add no information the raster does not already carry, they make the gradient legible."
+      },
+      "contours_m": 250.0,
+      "contour_pixels": 335282,
       "resolution": {
         "native_metres_per_pixel": 20.0,
         "effective_metres_per_pixel": 25.0,
@@ -1952,7 +2009,7 @@
       "source_rasters": [
         "native/dem_native.tif"
       ],
-      "description": "Elevation in metres \u2014 heights above a sphere of radius 1,737,400.0 m (1737.4 km), the label's own A_AXIS_RADIUS. Not a geoid, not local mean terrain, and not a height above the LRO orbit. derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
+      "description": "Elevation in metres \u2014 heights above a sphere of radius 1,737,400.0 m (1737.4 km), the label's own A_AXIS_RADIUS. Not a geoid, not local mean terrain, and not a height above the LRO orbit. Hypsometric tint on PERCENTILE breakpoints, so the colour scale is NOT linear in metres; contours every 250 m. Both are display choices. derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
     },
     {
       "id": "hazard_map",
@@ -1977,6 +2034,9 @@
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
+      "display_choices": null,
+      "contours_m": null,
+      "contour_pixels": null,
       "resolution": {
         "native_metres_per_pixel": 20.0,
         "effective_metres_per_pixel": 25.0,
@@ -2011,6 +2071,12 @@
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "computed-solar-horizon",
+      "display_choices": {
+        "resampling": "nearest-equivalent \u2014 NOT smoothed, NOT feathered",
+        "blockiness": "THIS LAYER LOOKS BLOCKY AGAINST THE TERRAIN, AND THAT IS CORRECT. It is computed at 240 m effective while the relief beneath it is 20 m-derived on a 25 m grid \u2014 a 10x scale disparity, the largest on the map. Its shadow edges therefore step visibly against sharp terrain. Nothing is smoothed, feathered or upsampled to hide that: softening the edges would draw a shadow boundary at a precision the computation does not have, which is the one thing this project will not do. Read the steps as the resolution they are."
+      },
+      "contours_m": null,
+      "contour_pixels": null,
       "resolution": {
         "native_metres_per_pixel": 80.0,
         "effective_metres_per_pixel": 240.0,
@@ -2045,6 +2111,9 @@
       "alpha_opaque": 235,
       "transparent_where": "no DFSAR amplitude (native/valid_native.tif == 0)",
       "provenance": "measured-radar",
+      "display_choices": null,
+      "contours_m": null,
+      "contour_pixels": null,
       "resolution": {
         "native_metres_per_pixel": 25.0,
         "effective_metres_per_pixel": 25.0,
@@ -2080,6 +2149,9 @@
       "alpha_opaque": 235,
       "transparent_where": "no DFSAR amplitude (native/valid_native.tif == 0)",
       "provenance": "measured-radar",
+      "display_choices": null,
+      "contours_m": null,
+      "contour_pixels": null,
       "resolution": {
         "native_metres_per_pixel": 25.0,
         "effective_metres_per_pixel": 25.0,

@@ -33,9 +33,35 @@ from PIL import Image
 BASE_DIR = Path(__file__).resolve().parents[2]
 IMG = BASE_DIR / "frontend" / "public" / "layers" / "hillshade.webp"
 
-# what mc.css:449 says today
-CONTRAST = 1.14
-BRIGHTNESS = 1.16
+MC_CSS = BASE_DIR / "frontend" / "src" / "mission" / "mc.css"
+
+
+def read_css_filter() -> tuple[float, float, str]:
+    """READ the filter out of mc.css instead of restating it here.
+
+    These were literals -- CONTRAST = 1.14, BRIGHTNESS = 1.16, under a comment
+    saying "what mc.css:449 says today" -- while mc.css actually said
+    contrast(1.06) brightness(1.10). So the check tested a filter the app does
+    not apply, and would have passed or failed on a fiction. A verifier that
+    restates the thing it verifies is not a verifier.
+    """
+    import re
+    try:
+        text = MC_CSS.read_text(encoding="utf-8")
+    except OSError:
+        return 1.0, 1.0, "mc.css unreadable — SOURCE NOT VERIFIED"
+    # The base-map filter: a `filter:` declaration carrying contrast() and
+    # brightness(), ignoring the backdrop-filter blurs.
+    for m in re.finditer(r"(?<!backdrop-)filter:\s*([^;]+);", text):
+        decl = m.group(1)
+        c = re.search(r"contrast\(([0-9.]+)\)", decl)
+        b = re.search(r"brightness\(([0-9.]+)\)", decl)
+        if c and b:
+            return float(c.group(1)), float(b.group(1)), decl.strip()
+    return 1.0, 1.0, "no contrast()+brightness() filter found in mc.css"
+
+
+CONTRAST, BRIGHTNESS, CSS_DECL = read_css_filter()
 
 
 def css_filter(v8: np.ndarray, contrast: float, brightness: float) -> np.ndarray:

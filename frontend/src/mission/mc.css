@@ -482,7 +482,17 @@
      carry units is the elevation one, recorded as vmin/vmax in layers.json, and
      it is untouched. Re-measure before moving this again:
      python backend/scripts/hillshade_histogram.py */
-  filter: contrast(1.06) brightness(1.10);
+  /* MEASURED, not chosen. backend/scripts/hillshade_histogram.py reads THIS
+     declaration (it used to restate it as literals and drifted), applies it to
+     the rendered hillshade.webp and reports the luminance histogram. The rule is
+     post-filter median <= ~190 and <= 1 % clipping at 255.
+
+     brightness(1.10) gave median 163 (fine) but 7.197 % clipped at 255 — a
+     fourteenth of the frame rendered as pure white with its relief gone.
+     Walking brightness back with contrast held: 1.08 -> 6.300 %, 1.04 -> 4.472 %,
+     1.00 -> 2.960 %, and 0.98 -> 0.000 %. So 0.98 is the first value that
+     clears both rules, and it is what ships. */
+  filter: contrast(1.06) brightness(0.98);
 }
 
 /* Past native zoom (log2(6618/256) ≈ 4.69) one image pixel covers more than one

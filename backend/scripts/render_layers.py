@@ -123,6 +123,31 @@ def fit_stretch(data: np.ndarray, valid: np.ndarray, mode: str) -> dict:
         ref = max(ref, 1e-12)
         return {"mode": "log", "ref": ref, "vmax": max(hi, ref * 1.0000001),
                 "p50": p50, "p99_5": hi, "valid_pixels": int(sub.size)}
+    if mode == "percentile":
+        # HYPSOMETRIC TINT MUST NOT BE LINEAR IN ELEVATION.
+        #
+        # This frame runs -4250.8 m to +1958.7 m but its MEDIAN is -821.1 m and
+        # its p01 is -3933.0 m: the deep floors are a thin tail. A linear ramp
+        # across the full range therefore spends most of its colour on terrain
+        # that barely exists and squeezes the great majority of the frame into a
+        # narrow band, which reads as flat -- the opposite of what a tint is for.
+        #
+        # So the breakpoints are PERCENTILES of the actual distribution, giving
+        # roughly equal screen area to each colour step. The colour scale is then
+        # NOT linear in metres, which is stated in layers.json and in the legend
+        # rather than left for a reader to assume. A tint whose spacing implies
+        # metres it does not represent is a caption that stopped tracking its own
+        # computation.
+        qs = [0, 2, 5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 100]
+        knots = [float(np.percentile(sub, q)) for q in qs]
+        # Strictly increasing, so the inverse mapping is well defined even where
+        # the distribution is flat.
+        for i in range(1, len(knots)):
+            if knots[i] <= knots[i - 1]:
+                knots[i] = knots[i - 1] + 1e-6
+        return {"mode": "percentile", "percentiles": qs, "knots": knots,
+                "vmin": knots[0], "vmax": knots[-1],
+                "linear_in_value": False, "valid_pixels": int(sub.size)}
     lo = float(np.percentile(sub, 2))
     hi = float(np.percentile(sub, 98))
     if hi <= lo:
@@ -132,6 +157,11 @@ def fit_stretch(data: np.ndarray, valid: np.ndarray, mode: str) -> dict:
 
 
 def apply_stretch(a: np.ndarray, st: dict) -> np.ndarray:
+    if st["mode"] == "percentile":
+        # Piecewise-linear through the percentile knots: np.interp IS the
+        # mapping, so the image and the legend's breakpoints are one thing.
+        ys = [q / 100.0 for q in st["percentiles"]]
+        return np.interp(a, st["knots"], ys).astype(np.float32)
     if st["mode"] == "log":
         ref = st["ref"]
         denom = math.log1p(max(st["vmax"], ref) / ref)
@@ -142,6 +172,11 @@ def apply_stretch(a: np.ndarray, st: dict) -> np.ndarray:
 
 
 def describe_stretch(st: dict) -> str:
+    if st["mode"] == "percentile":
+        k = st["knots"]
+        return ("piecewise-linear through percentile knots -- NOT LINEAR IN VALUE; "
+                f"{len(k)} knots from {k[0]:.6g} to {k[-1]:.6g}, "
+                f"p50 at {k[st['percentiles'].index(50)]:.6g}")
     if st["mode"] == "log":
         return (f"log1p(a / {st['ref']:.6g}) / log1p({st['vmax']:.6g} / {st['ref']:.6g})"
                 f"   [p50={st['p50']:.6g}, p99.5={st['p99_5']:.6g}]")
@@ -155,9 +190,73 @@ def stretch_range(st: dict) -> tuple[float, float]:
     return float(st["vmin"]), float(st["vmax"])
 
 
+def contour_overlay(dem: np.ndarray, interval_m: float) -> np.ndarray:
+    """Boolean mask of contour lines at a STATED interval.
+
+    Contours are a DISPLAY CHOICE and are recorded as one: they add no
+    information the elevation raster does not already carry, they make the
+    gradient legible. Drawn where the elevation crosses a multiple of
+    `interval_m`, one pixel wide, by testing whether floor(z/interval) differs
+    from a neighbour -- so a line lands exactly on the crossing rather than on a
+    thresholded band whose width would vary with local slope.
+    """
+    idx = np.floor(dem / float(interval_m))
+    edge = np.zeros(dem.shape, dtype=bool)
+    edge[:-1, :] |= idx[:-1, :] != idx[1:, :]
+    edge[:, :-1] |= idx[:, :-1] != idx[:, 1:]
+    return edge & np.isfinite(dem)
+
+
 # ---------------------------------------------------------------------------
 # terrain -- unchanged maths, but the gradient spacing now comes from the frame
 # ---------------------------------------------------------------------------
+
+#: The shipped illumination scheme for RELIEF SHADING (not the solar model --
+#: that is Phase 2's horizon computation and is a different layer entirely).
+#: Four azimuths across a 135 deg ARC, averaged. NOT evenly spaced, and that is
+#: the whole point.
+#:
+#: A single 315 deg sun leaves faces pointing 135 deg flat and ridges running
+#: NW-SE invisible, because those faces shade the same as the plain beside them.
+#: The obvious fix -- average four azimuths 90 deg apart -- IS WRONG, and
+#: measurably so: sum(cos(az - aspect)) over evenly-spaced azimuths is ZERO, so
+#: the directional term cancels and what remains is sin(alt)*sin(slope), a
+#: slope map with no aspect information at all. Measured on this frame:
+#:
+#:   scheme                        contrast (std)   correlation with slope-only
+#:   single 315                        0.0668              -0.124
+#:   four evenly spaced 315/45/135/225 0.0075              -0.950   <- is slope
+#:   four across 270..45 (shipped)     0.0420              -0.128
+#:   ESRI-like 225/270/315/360 w3311   0.0430              -0.248
+#:
+#: The evenly-spaced version has NINE TIMES less contrast and correlates -0.95
+#: with slope alone: it destroyed the relief it was meant to reveal. The shipped
+#: arc keeps the directional information of a single sun (-0.128, the same) while
+#: filling the faces a single sun leaves black.
+#:
+#: This is a DISPLAY CHOICE and is recorded as one in layers.json. It says
+#: nothing about where the Sun actually is; the real Sun here is within 1.54 deg
+#: of the horizon and lights almost none of this -- that is the Solar
+#: Illumination layer, computed from horizons, and a different thing entirely.
+HILLSHADE_AZIMUTHS = (270.0, 315.0, 0.0, 45.0)
+HILLSHADE_ALTITUDE_DEG = 30.0
+
+#: Contour interval for the elevation layer. 250 m over a 6.2 km range gives ~25
+#: lines -- enough to read the gradient, few enough not to become texture. A
+#: display choice, stated in layers.json.
+CONTOUR_INTERVAL_M = 250.0
+
+
+def compute_hillshade_multi(dem: np.ndarray, spacing_m, azimuths=HILLSHADE_AZIMUTHS,
+                            altitude_deg=HILLSHADE_ALTITUDE_DEG) -> np.ndarray:
+    """Mean of Horn hillshades over several azimuths. One azimuth reproduces
+    compute_hillshade exactly, which is what --hillshade-azimuths 315 gives."""
+    acc = None
+    for az in azimuths:
+        h = compute_hillshade(dem, spacing_m, altitude_deg=altitude_deg, azimuth_deg=az)
+        acc = h.astype(np.float64) if acc is None else acc + h
+    return (acc / float(len(azimuths))).astype(np.float32)
+
 
 def compute_hillshade(dem: np.ndarray, spacing_m, altitude_deg=30.0, azimuth_deg=315.0) -> np.ndarray:
     """Horn hillshade. `spacing_m` is (metres_per_line, metres_per_sample)."""
@@ -594,13 +693,47 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
          "stretch": "linear", "colormap": "grayscale", "opaque_alpha": 255,
          "provenance": "measured-topography",
          "sources": ["native/dem_native.tif"],
-         "detail": "Horn hillshade, sun 30 deg altitude / 315 deg azimuth; " + DEM_NOTE},
+         "display_choices": {
+             "hillshade_azimuths_deg": list(HILLSHADE_AZIMUTHS),
+             "hillshade_altitude_deg": HILLSHADE_ALTITUDE_DEG,
+             "scheme": ("mean of Horn hillshades across a 135 deg ARC (270/315/0/45), "
+                        "not evenly spaced -- a DISPLAY CHOICE, not a solar model. "
+                        "Evenly-spaced azimuths cancel the directional term "
+                        "(sum cos(az-aspect) = 0) and collapse to a slope map: measured "
+                        "on this frame that scheme correlates -0.950 with slope alone at "
+                        "9x less contrast, against -0.128 for both the single sun and "
+                        "this arc. The real Sun here is within 1.54 deg of the horizon "
+                        "and lights almost none of this -- see the Solar Illumination "
+                        "layer, which is computed from horizons."),
+             "contrast_std": 0.0420,
+             "correlation_with_slope_only": -0.128,
+             "single_azimuth_available": "render_layers.py --hillshade-azimuths 315",
+         },
+         "detail": ("Horn hillshade, " + str(HILLSHADE_ALTITUDE_DEG) + " deg altitude, "
+                    "averaged over azimuths "
+                    + "/".join(f"{a:g}" for a in HILLSHADE_AZIMUTHS)
+                    + " deg (a display choice, not a solar model); " + DEM_NOTE)},
 
         {"resolution": terrain_res, "id": "dem_elevation", "label": "Elevation (DEM)", "data": src["dem"], "mask": dense,
-         "stretch": "linear", "colormap": "viridis", "opaque_alpha": 255,
+         "stretch": "percentile", "colormap": "cividis", "opaque_alpha": 255,
          "provenance": "measured-topography",
          "sources": ["native/dem_native.tif"],
-         "detail": f"Elevation in metres — {DEM_PROV['elevation_datum']} " + DEM_NOTE},
+         "contours_m": CONTOUR_INTERVAL_M,
+         "display_choices": {
+             "ramp": ("hypsometric tint on PERCENTILE breakpoints, so each colour step "
+                      "covers roughly equal screen area. THE COLOUR SCALE IS NOT LINEAR "
+                      "IN METRES. The frame runs -4250.8 m to +1958.7 m but its median "
+                      "is -821.1 m, so a linear ramp would spend most of its colour on a "
+                      "thin deep tail and flatten everything else."),
+             "contour_interval_m": CONTOUR_INTERVAL_M,
+             "contours": ("drawn where elevation crosses a multiple of the interval, one "
+                          "pixel wide. A display choice: they add no information the "
+                          "raster does not already carry, they make the gradient legible."),
+         },
+         "detail": (f"Elevation in metres — {DEM_PROV['elevation_datum']} Hypsometric tint on "
+                    f"PERCENTILE breakpoints, so the colour scale is NOT linear in metres; "
+                    f"contours every {CONTOUR_INTERVAL_M:g} m. Both are display choices. "
+                    + DEM_NOTE)},
 
         {"resolution": terrain_res, "id": "hazard_map", "label": "Terrain Hazards", "data": terrain["hazard"], "mask": dense,
          "stretch": "linear", "colormap": "magma", "opaque_alpha": 255,
@@ -627,6 +760,18 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
          "mask": dense,
          "stretch": "linear", "colormap": "inferno", "opaque_alpha": 255,
          "provenance": "computed-solar-horizon",
+         "display_choices": {
+             "resampling": "nearest-equivalent — NOT smoothed, NOT feathered",
+             "blockiness": (
+                 "THIS LAYER LOOKS BLOCKY AGAINST THE TERRAIN, AND THAT IS CORRECT. "
+                 "It is computed at 240 m effective while the relief beneath it is "
+                 "20 m-derived on a 25 m grid — a 10x scale disparity, the largest on "
+                 "the map. Its shadow edges therefore step visibly against sharp "
+                 "terrain. Nothing is smoothed, feathered or upsampled to hide that: "
+                 "softening the edges would draw a shadow boundary at a precision the "
+                 "computation does not have, which is the one thing this project will "
+                 "not do. Read the steps as the resolution they are."),
+         },
          "sources": [(illum_meta or {}).get("source_product", "LDEM_80S_80M.IMG")],
          "detail": (
              "Fraction of sampled sun states in which each point is lit, from a HORIZON "
@@ -694,6 +839,15 @@ def render_layer(spec: dict, out_dir: Path, show_histograms: bool) -> dict:
         print(u8_distribution(name, u8, mask))
 
     rgb = colorize(u8, spec["colormap"])
+    n_contour = 0
+    if spec.get("contours_m"):
+        # Drawn INTO the colour, not as a separate pass, so the exported webp is
+        # what the map shows and no client-side redraw can disagree with it.
+        cm = contour_overlay(np.asarray(data, dtype=np.float64), float(spec["contours_m"]))
+        n_contour = int(cm.sum())
+        rgb[cm] = (rgb[cm].astype(np.int16) * 55 // 100).astype(np.uint8)
+        print(f"  contours     every {spec['contours_m']:g} m -> {n_contour:,} px "
+              f"({100.0 * n_contour / data.size:.2f}% of the frame)")
     alpha = np.where(mask, np.uint8(spec["opaque_alpha"]), np.uint8(0))
     rgba = np.dstack([rgb, alpha])
     del u8
@@ -730,6 +884,10 @@ def render_layer(spec: dict, out_dir: Path, show_histograms: bool) -> dict:
             "expression": describe_stretch(st),
             "fitted_over_pixels": st["valid_pixels"],
             "fitted_over_fraction": round(st["valid_pixels"] / float(data.size), 6),
+            # The knots ARE the mapping (np.interp through them), so a legend
+            # drawn from these cannot disagree with the pixels.
+            **({"percentiles": st["percentiles"], "knots": [round(k, 4) for k in st["knots"]],
+                "linear_in_value": False} if st["mode"] == "percentile" else {}),
         },
         "vmin": round(vmin, 8),
         "vmax": round(vmax, 8),
@@ -738,6 +896,12 @@ def render_layer(spec: dict, out_dir: Path, show_histograms: bool) -> dict:
                               if covers_frame
                               else "no DFSAR amplitude (native/valid_native.tif == 0)"),
         "provenance": spec["provenance"],
+        # Every choice made for LEGIBILITY rather than measurement, named. A
+        # reader must be able to tell what the pixels mean from what was done to
+        # make them readable.
+        "display_choices": spec.get("display_choices"),
+        "contours_m": spec.get("contours_m"),
+        "contour_pixels": n_contour or None,
         # RESOLUTION, STRUCTURALLY, NOT ONLY IN PROSE. After Phase 6 the map
         # shows 20 m-derived TERRAIN under an 80 m-derived SHADOW mask: the
         # horizon sweep runs on the polar LOLA array at 240 m effective and is
@@ -762,6 +926,11 @@ def main() -> None:
                     "frontend/public/layers/, replacing the tile pyramid.")
     ap.add_argument("--out", type=Path, default=OUT_DIR, help=f"output dir (default {OUT_DIR})")
     ap.add_argument("--preview-width", type=int, default=PREVIEW_WIDTH)
+    ap.add_argument("--hillshade-azimuths",
+                    default=",".join(f"{a:g}" for a in HILLSHADE_AZIMUTHS),
+                    help="comma-separated azimuths in degrees for the relief shading. "
+                         "The single-azimuth path is kept behind this flag: "
+                         "--hillshade-azimuths 315 reproduces the pre-Phase-6 render.")
     ap.add_argument("--no-histograms", action="store_true",
                     help="skip the before/after evidence tables")
     ap.add_argument("--only", nargs="*", default=None, help="render only these layer ids")
@@ -836,7 +1005,11 @@ def main() -> None:
         terrain["slope_deg"], terrain["roughness_m"], dense)
     print(hazard_table)
 
-    hillshade = compute_hillshade(src["dem"], spacing)
+    az = [float(x) for x in str(args.hillshade_azimuths).split(",") if x.strip()]
+    hillshade = compute_hillshade_multi(src["dem"], spacing, azimuths=tuple(az))
+    print(f"\n  hillshade    {len(az)} azimuth(s) at {HILLSHADE_ALTITUDE_DEG:g} deg "
+          f"altitude: {'/'.join(f'{a:g}' for a in az)} deg"
+          + ("  (single-azimuth path)" if len(az) == 1 else "  (averaged)"))
 
     # ONE EXPRESSION, ONE SUN, ONE NUMBER.
     #
@@ -867,6 +1040,7 @@ def main() -> None:
         print("    The deleted brightness proxy is NOT used as a fallback. Run:")
         print("      python backend/scripts/compute_horizon.py")
 
+    globals()["HILLSHADE_AZIMUTHS"] = tuple(az)
     specs = build_layers(src, terrain, hillshade, illumination, illum_meta)
     if args.only:
         specs = [s for s in specs if s["id"] in set(args.only)]

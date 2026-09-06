@@ -989,6 +989,25 @@ terrain, whatever the instrument, whatever the threshold.** The screen is
 logically empty for every `CPR_THRESHOLD` above 0.00426 — 235× below the
 configured 1.00.
 
+> **SUPERSEDED AS THE DEEPEST RESULT (v1.8, Phase 8 groundwork).** The ceiling
+> above is a bound on the proxy's *magnitude*, and it holds only under the DOP
+> gate. The Monte Carlo in `METHODS §7.9.2` proves something strictly stronger
+> and unconditional: **at equal channel powers the proxy's population value is
+> exactly zero for every value of CPR.** Across a factor of five in true CPR its
+> median is constant to five decimal places (0.00043); hold the CPR fixed and add
+> 3 dB of channel imbalance and it moves by a factor of 68, landing on its
+> population value to four decimals. The circular polarisation ratio lives in the
+> **H–V phase**, and taking magnitudes discards it before the ratio is formed.
+> **The quantity this build calls CPR is a channel-imbalance estimator carrying
+> CPR's name** — it is not a weak estimator of CPR, it is not an estimator of CPR
+> at all.
+>
+> The two results were derived independently, share no step, and agree: the
+> ceiling from the identity, the same fact from the sampling distribution. The
+> Monte Carlo is now the primary statement and the algebra is its corroboration.
+> The simulator behind it is itself validated against the swath in §7.9.3, by a
+> pre-registered test that failed on its first run and caught a real omission.
+
 This predicts the observed sweep exactly, and that agreement is the check:
 
 | CPR threshold | ceiling 0.00426 | pixels passing | observed |

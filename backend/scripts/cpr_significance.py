@@ -104,7 +104,8 @@ def correlation_area(field: np.ndarray, valid: np.ndarray, patch: int = 64,
 
 # ------------------------------------------------------- B. the Monte Carlo
 def monte_carlo(n_looks: int, cpr_true: float, imbalance_db: float,
-                trials: int, rng: np.random.Generator) -> dict:
+                trials: int, rng: np.random.Generator,
+                coherence: float | None = None) -> dict:
     """Sampling distributions of the TRUE Stokes CPR and of our amplitude proxy.
 
     Compact pol: circular transmit, linear H and V receive. Per look the
@@ -128,7 +129,21 @@ def monte_carlo(n_looks: int, cpr_true: float, imbalance_db: float,
     # which is why the CPR = 1.0 row is kept in the table below: it is the only
     # value that is its own reciprocal, so it cannot catch this, and every other
     # row can.
-    off = 1j * rho_im * np.sqrt(var_h * var_v)
+    #
+    # THE H-V COHERENCE IS A FREE PARAMETER AND MUST BE MEASURED, NOT ASSUMED.
+    # CPR fixes only Im(rho). Leaving Re(rho) at zero makes |rho| as small as the
+    # CPR allows, i.e. makes LH and LV as INDEPENDENT as possible -- which is the
+    # noisiest case for a statistic built on their difference. The real swath has
+    # a measured LH/LV intensity correlation of 0.96, and intensity correlation
+    # is |rho|^2, so the honest floor is computed at the measured value. The
+    # first version of this simulation omitted this and predicted a proxy floor
+    # 25x too high; the pre-registered check in section D is what caught it.
+    rho_re = 0.0
+    if coherence is not None:
+        if coherence ** 2 < rho_im ** 2:
+            raise SystemExit(f"|rho| {coherence} too small for CPR {cpr_true}")
+        rho_re = float(np.sqrt(coherence ** 2 - rho_im ** 2))
+    off = (rho_re + 1j * rho_im) * np.sqrt(var_h * var_v)
     C = np.array([[var_h, off], [np.conj(off), var_v]], dtype=np.complex128)
     # Hermitian square root, so draws have exactly covariance C.
     evals, evecs = np.linalg.eigh(C)
@@ -169,6 +184,9 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--f2-pixels", type=int, default=1520)
     ap.add_argument("--trials", type=int, default=200000)
+    ap.add_argument("--coherence", type=float, default=None,
+                    help="|rho| for section B; omit for the idealised "
+                         "independent-channel case, 0.9822 for the measured swath")
     ap.add_argument("--out", default="docs/cpr_significance.json")
     args = ap.parse_args()
     rng = np.random.default_rng(20200808)
@@ -224,13 +242,14 @@ def main() -> int:
     print("  through the H-V correlation and the population channel imbalance")
     print("  through the diagonal, independently — which is the experiment.\n")
     N = 5
-    print(f"  N = {N} looks, {args.trials:,} trials per row\n")
+    print(f"  N = {N} looks, {args.trials:,} trials per row, |rho| = "
+          f"{'0 (idealised, independent channels)' if args.coherence is None else args.coherence}\n")
     print(f"  {'true CPR':>9}{'imbal dB':>10} | {'Stokes CPR: median':>19}"
           f"{'p5':>8}{'p95':>8} | {'proxy: median':>15}{'p95':>9}{'pop.':>8}")
     mc = []
     for cpr_t, imb in ((0.3, 0.0), (0.7, 0.0), (1.0, 0.0), (1.5, 0.0),
                        (0.7, 1.0), (0.7, 3.0)):
-        r = monte_carlo(N, cpr_t, imb, args.trials, rng)
+        r = monte_carlo(N, cpr_t, imb, args.trials, rng, coherence=args.coherence)
         mc.append(r)
         s, p = r["stokes_cpr"], r["amplitude_proxy"]
         print(f"  {cpr_t:>9.2f}{imb:>10.1f} | {s['median']:>19.3f}{s['p5']:>8.3f}"
@@ -257,6 +276,134 @@ def main() -> int:
     print("  that difference, so the floor is positive-definite and biased UP.")
     print("  This is the same fact as the 0.0042610 ceiling, arrived at from the")
     print("  distribution rather than from the algebra.")
+
+    # ---------------------------------------------------------------- D
+    hr("D. VALIDATION AGAINST THE REAL SWATH — predictions in "
+       "docs/preregistration_proxy_validation.md")
+    print("  Committed before this run: the proxy's first-order form is")
+    print("  chi2_1/(8N), the screening field's effective N is 13.72 (LH) /")
+    print("  19.77 (LV) after the 5x5 boxcar, and the falsifiable claim is that")
+    print("  the OBSERVED distribution cannot sit below the simulated zero-")
+    print("  imbalance floor, because a scene cannot be quieter than the speckle")
+    print("  floor of the instrument that recorded it.\n")
+    # cpr_real.tif is 2048x2048 -- the RESAMPLED analysis grid, not the native
+    # 2258 x 6618. Resampling 6618 range samples down to 2048 smooths by a
+    # further ~3.2x, so comparing it against a simulation at the NATIVE-grid
+    # effective N compares two different fields. The native proxy is therefore
+    # rebuilt here exactly as process_real_sar_pipeline.py forms it -- calibrate,
+    # 5x5 boxcar, then the amplitude proxy -- and that is what the simulation is
+    # judged against. sin(theta) and K cancel out of the ratio; the per-channel
+    # gain imbalance does not, and is taken from the label.
+    from scipy.ndimage import uniform_filter
+    _r = BASE_DIR / "data/pradan/raw/data/calibrated/20200808"
+    _s = "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_{}_d18.tif"
+    lh_dn = np.asarray(tifffile.imread(str(_r / _s.format("lh"))), dtype=np.float64)
+    lv_dn = np.asarray(tifffile.imread(str(_r / _s.format("lv"))), dtype=np.float64)
+    inc = np.asarray(tifffile.imread(str(_r / "ch2_sar_ncxl_20200808t201154198"
+                                          "_d_sri_in_cp_xx_d18.tif")), dtype=np.float64)
+    nat_valid = (lh_dn > 0) & (lv_dn > 0)
+    sin_t = np.sin(np.deg2rad(inc))
+    s_lh = uniform_filter(lh_dn ** 2 * sin_t / 1.018442 ** 2, size=5)
+    s_lv = uniform_filter(lv_dn ** 2 * sin_t / 1.000923 ** 2, size=5)
+    from scipy.ndimage import binary_erosion
+    inner = binary_erosion(nat_valid, np.ones((5, 5), dtype=bool))
+    a_, b_ = np.sqrt(np.maximum(s_lh, 0)), np.sqrt(np.maximum(s_lv, 0))
+    with np.errstate(invalid="ignore", divide="ignore"):
+        nat_proxy = ((a_ - b_) / (a_ + b_)) ** 2
+    nat = nat_proxy[inner & np.isfinite(nat_proxy)]
+    print(f"  NATIVE proxy rebuilt over {nat.size:,} px (2258 x 6618, boxcar-eroded):")
+    print(f"    median {np.median(nat):.5f}  p95 {np.percentile(nat, 95):.5f}  "
+          f"p99 {np.percentile(nat, 99):.5f}  max {nat.max():.5f}")
+    out["native_proxy"] = {"n": int(nat.size), "median": float(np.median(nat)),
+                           "p95": float(np.percentile(nat, 95)),
+                           "p99": float(np.percentile(nat, 99)),
+                           "max": float(nat.max())}
+    # How correlated are the two channels after smoothing? The simulation's
+    # zero-imbalance floor implicitly assumed LH and LV fluctuate independently;
+    # if they do not, the difference of their roots is quieter than that floor.
+    def _local_corr(x, y, m, patch=16):
+        h, w = (x.shape[0] // patch) * patch, (x.shape[1] // patch) * patch
+        rs = lambda a: a[:h, :w].reshape(h // patch, patch, w // patch,
+                                        patch).swapaxes(1, 2).reshape(-1, patch * patch)
+        X, Y, M = rs(x), rs(y), rs(m)
+        k = M.all(axis=1)
+        X, Y = X[k], Y[k]
+        X = X - X.mean(axis=1, keepdims=True)
+        Y = Y - Y.mean(axis=1, keepdims=True)
+        num = (X * Y).sum(axis=1)
+        den = np.sqrt((X * X).sum(axis=1) * (Y * Y).sum(axis=1))
+        r = num[den > 0] / den[den > 0]
+        return float(np.median(r))
+    r_hv = _local_corr(s_lh, s_lv, inner)
+    print(f"    median within-patch LH/LV intensity correlation: {r_hv:+.4f}")
+    out["native_proxy"]["lh_lv_local_correlation"] = r_hv
+    del lh_dn, lv_dn, inc, s_lh, s_lv, a_, b_, nat_proxy
+
+    obs = cpr[valid].astype(np.float64)
+    o = {f"p{q}": float(np.percentile(obs, q)) for q in (50, 90, 95, 99)}
+    o["max"] = float(obs.max())
+    o["mean"] = float(obs.mean())
+    print(f"  observed cpr_real over {obs.size:,} valid px:  median {o['p50']:.5f}  "
+          f"p95 {o['p95']:.5f}  p99 {o['p99']:.5f}  max {o['max']:.5f}")
+
+    # The scene's own channel imbalance, recovered from DOP = |LH-LV|/(LH+LV):
+    # LH/LV = (1+d)/(1-d), so the imbalance in dB follows directly.
+    dop = np.asarray(tifffile.imread(str(BASE_DIR / "data/pradan/dfsar/dop_real.tif")),
+                     dtype=np.float64)[valid]
+    d_med = float(np.median(dop))
+    imb_db = 10.0 * np.log10((1.0 + d_med) / max(1.0 - d_med, 1e-12))
+    print(f"  scene median DOP {d_med:.5f}  ->  median channel imbalance "
+          f"{imb_db:.3f} dB")
+
+    from scipy.stats import chi2
+    print(f"\n  {'N':>4}{'predicted p95':>15}{'simulated p95':>15}"
+          f"{'sim median':>12}{'pred median':>13}")
+    val = {"observed": o, "scene_median_imbalance_db": imb_db, "by_N": {}}
+    coh = float(np.sqrt(max(r_hv, 0.0)))     # intensity correlation = |rho|^2
+    print(f"\n  measured |rho| = sqrt({r_hv:.4f}) = {coh:.4f}, supplied to the floor")
+    for N in (5, 14, 20):
+        r = monte_carlo(N, 1.0, 0.0, args.trials, rng, coherence=coh)
+        sim = r["amplitude_proxy"]
+        # chi2_1/(8N) assumed independent channels; with correlation r the
+        # variance of the difference carries a factor (1 - r).
+        pred_p95 = float(chi2.ppf(0.95, 1) * (1.0 - r_hv) / (8 * N))
+        pred_med = float(chi2.ppf(0.50, 1) * (1.0 - r_hv) / (8 * N))
+        val["by_N"][N] = {"sim_p95": sim["p95"], "sim_median": sim["median"],
+                          "predicted_p95": pred_p95, "predicted_median": pred_med}
+        print(f"  {N:>4}{pred_p95:>15.5f}{sim['p95']:>15.5f}"
+              f"{sim['median']:>12.5f}{pred_med:>13.5f}")
+
+    hr("PREDICTED vs MEASURED")
+    p1 = all(abs(v["sim_p95"] / v["predicted_p95"] - 1) < 0.05
+             for k, v in val["by_N"].items())
+    s14, s20 = val["by_N"][14], val["by_N"][20]
+    p2 = s14["sim_p95"] < o["max"] and s20["sim_p95"] < o["max"]
+    nat_p95 = out["native_proxy"]["p95"]
+    p3 = nat_p95 >= min(s14["sim_p95"], s20["sim_p95"])
+    print(f"  P1  MC reproduces chi2_1/(8N) to ~1 %                     "
+          f"{'HELD' if p1 else 'FAILED':>8}")
+    print(f"      N=14 {s14['sim_p95']:.5f} vs {s14['predicted_p95']:.5f} predicted;  "
+          f"N=20 {s20['sim_p95']:.5f} vs {s20['predicted_p95']:.5f}")
+    print(f"  P2  simulated p95 at measured N falls below observed max  "
+          f"{'HELD' if p2 else 'FAILED':>8}")
+    print(f"      sim p95 {s20['sim_p95']:.5f}–{s14['sim_p95']:.5f}  vs  observed max "
+          f"{o['max']:.5f}")
+    print(f"  P3  observed p95 at or above the pure-noise floor         "
+          f"{'HELD' if p3 else 'FAILED':>8}")
+    print(f"      NATIVE observed p95 {nat_p95:.5f}  vs  simulated floor p95 "
+          f"{min(s14['sim_p95'], s20['sim_p95']):.5f}")
+    val["P1_mc_matches_analytic"] = bool(p1)
+    val["P2_sim_below_observed_max"] = bool(p2)
+    val["P3_observed_above_noise_floor"] = bool(p3)
+    out["validation"] = val
+    if not p3:
+        print("\n  P3 IS THE FALSIFIABLE ONE AND IT FAILED. The observed swath is")
+        print("  QUIETER than the speckle floor implied by the measured ENL. Either")
+        print("  the ENL is wrong or the simulator is. Phase 8 stops here until this")
+        print("  is understood — the significance layer is not built on this.")
+    else:
+        print("\n  The Monte Carlo is validated against real data at the measured")
+        print("  effective look count. Numbers built on it are safe to use.")
 
     (BASE_DIR / args.out).write_text(json.dumps(out, indent=2), encoding="utf-8")
     print(f"\nwrote {args.out}")

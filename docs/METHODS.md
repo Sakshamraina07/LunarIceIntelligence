@@ -959,60 +959,142 @@ Median peak over an ice-free F2, true CPR 0.7, as the median of the maximum of
 would be precisely the error this project exists to avoid.** Only the
 right-hand column may be used.
 
-#### 7.9.2 The F(2N,2N) machinery does not describe our own CPR values
+#### 7.9.2a Why F(2N,2N) may not be applied to our own values
 
 `R ~ CPR · F(2N, 2N)` holds for a ratio of two independent N-look **intensities**
 — which is what published CPR, `σ_SC/σ_OC` from the Stokes vector, is. The
-critique in §7.8 is aimed at those values and stands. **It is not what this
-build computes.** Our amplitude proxy,
+critique in §7.8 is aimed at those values and stands. It is **not** what this
+build computes: the amplitude proxy `((√LH − √LV)/(√LH + √LV))²` is a different
+functional form with a different sampling distribution, and applying F(2N,2N) to
+it would be the same class of error the critique is about. Its distribution is
+therefore obtained by Monte Carlo, below — which turned out to say something
+considerably stronger than "different distribution".
 
-```
-proxy = ((√LH − √LV) / (√LH + √LV))²
-```
+#### 7.9.2 The quantity this build calls CPR is a channel-imbalance estimator
 
-is a different functional form with a different sampling distribution, and
-applying F(2N,2N) to it would be the same class of error the critique is about.
+**This is the deepest result in the project, and it is stronger than the
+0.0042610 ceiling recorded in §1.** The ceiling bounded the proxy's *magnitude*
+under the DOP gate. This bounds its *information content*, everywhere,
+unconditionally.
 
-So its distribution is obtained by Monte Carlo instead
-(`backend/scripts/cpr_significance.py`): circular complex Gaussian draws at N
-looks, with the population CPR set through the H–V correlation and the
-population channel imbalance set through the diagonal, independently. N = 5,
-60,000 trials per row.
+**The statement.** At equal channel powers, the amplitude proxy's population
+value is **exactly zero for every value of CPR**. Not small — zero, identically,
+as an algebraic fact about the quantity rather than a property of this scene. It
+is a function of LH and LV alone, and the circular polarisation ratio lives in
+the **H–V phase**, which taking magnitudes discards before the ratio is ever
+formed. What remains responds to one thing only: the imbalance between the two
+channels. **It is a channel-imbalance estimator carrying CPR's name.**
 
-| true CPR | imbalance | Stokes median | p5 | p95 | proxy median | proxy p95 | proxy population |
+##### The experiment
+
+`backend/scripts/cpr_significance.py`. Circular complex Gaussian draws at N
+looks. The population CPR is set through the H–V correlation and the population
+channel imbalance through the covariance diagonal, **independently**, so the two
+can be moved one at a time — which is the whole design. Run at the swath's own
+measured coherence, |ρ| = 0.9822 (§7.9.3), N = 5, 120,000 trials per row.
+
+| true CPR | imbalance | Stokes median | Stokes p5 | p95 | **proxy median** | proxy p95 | proxy population |
 |---|---|---|---|---|---|---|---|
-| 0.30 | 0 dB | **0.301** | 0.101 | 0.894 | 0.0084 | 0.076 | 0 |
-| 0.70 | 0 dB | **0.703** | 0.236 | 2.099 | 0.0115 | 0.096 | 0 |
-| 1.00 | 0 dB | **1.001** | 0.337 | 2.990 | 0.0121 | 0.102 | 0 |
-| 1.50 | 0 dB | **1.506** | 0.504 | 4.497 | 0.0115 | 0.097 | 0 |
-| 0.70 | 1 dB | 0.700 | 0.236 | 2.082 | 0.0132 | 0.108 | 0.0033 |
-| 0.70 | 3 dB | 0.699 | 0.250 | 1.949 | **0.0316** | 0.172 | 0.0292 |
+| 0.30 | 0 dB | **0.300** | 0.233 | 0.387 | **0.00043** | 0.00434 | 0 |
+| 0.70 | 0 dB | **0.700** | 0.563 | 0.869 | **0.00043** | 0.00432 | 0 |
+| 1.00 | 0 dB | **1.000** | 0.806 | 1.239 | **0.00043** | 0.00438 | 0 |
+| 1.50 | 0 dB | **1.500** | 1.203 | 1.866 | **0.00043** | 0.00435 | 0 |
+| 0.70 | 1 dB | 0.700 | 0.563 | 0.869 | 0.00331 | 0.01224 | 0.00331 |
+| 0.70 | 3 dB | 0.700 | 0.569 | 0.861 | **0.02922** | 0.04967 | 0.02924 |
 
-**The simulator validates itself where the answer is known.** The Stokes
-estimator's median lands on the true CPR to three decimals in every row, and its
-p5/p95 reproduce the analytic F(10,10) quantiles (0.336, 2.978). That is what
-licenses trusting it for the proxy, where no closed form exists.
+**Read the last three columns down.** Across a factor of five in true CPR the
+proxy's median is *constant to five decimal places*. Hold the CPR fixed and add
+3 dB of channel imbalance and it moves by a factor of **68**, landing on its
+population value to four decimals. The Stokes estimator, computed from the very
+same draws, tracks the truth in every row.
 
-**The result.** Across a true CPR range of 0.3 to 1.5 — a factor of five — the
-proxy's median moves by **0.0036**. It is not a weak estimator of CPR; it is not
-an estimator of CPR at all. At equal channel powers its population value is
-**exactly zero whatever the CPR is**, because it is a function of LH/LV alone
-and the circular polarisation ratio lives in the H–V *phase*, which taking
-magnitudes discards. Add 3 dB of channel imbalance at unchanged CPR and it moves
-by an order of magnitude, because imbalance is the only thing it can see.
+##### Two independent routes to one conclusion
 
-Its non-zero median at zero imbalance is a pure **speckle noise floor**: LH and
-LV differ by chance at finite looks and the proxy squares that difference, so the
-floor is positive-definite and biased upward. This is the same fact as the
-0.0042610 ceiling recorded in §1, reached from the sampling distribution instead
-of from the algebra — two independent routes to one conclusion.
+The algebra of §1 — `CPR_amp = tanh²(x/4)`, `DOP_amp = |tanh(x/2)|`, one degree
+of freedom, ceiling 0.0042610 — and this simulation were derived separately and
+agree. The proxy's non-zero median at zero imbalance is a pure **speckle noise
+floor**: LH and LV differ by chance at finite looks and the proxy squares that
+difference, so the floor is positive-definite and biased upward. That is the same
+fact as the ceiling, reached from the sampling distribution instead of from the
+identity. **Neither is quoted as confirming the other's method; they share no
+step.**
 
-*Open, and for Phase 8: the proxy's simulated p95 at N = 5 is ~0.10, above the
-0.0534 maximum actually observed across the swath. The screening field is
-boxcar-smoothed, which §7.6 measures as worth 2.35–3.84× more looks, so the
-effective N for that field is nearer 12–19 and the simulated floor should fall
-accordingly. Checking that the observed distribution matches the simulation at
-the measured effective N is a validation this project has not yet run.*
+##### One deliberate control, and why it is in the table
+
+The CPR = 1.00 row is kept even though it adds no new physics. An early version
+of this simulation had a sign error on `Im(C[0,1])` that **inverted** the Stokes
+CPR — 0.30 read as 3.35. **CPR = 1.0 is its own reciprocal, so that row alone
+cannot detect an inversion**, and had the table contained only it, the bug would
+have shipped. Every other row disagreed immediately. The row stays as a standing
+reminder that a test whose expected value is a fixed point of the failure mode is
+not a test.
+
+#### 7.9.3 The simulator, validated against the swath — a pre-registered failure
+
+Predictions were committed in `docs/preregistration_proxy_validation.md` **before
+this was run**, because a simulator nobody checked against data is not evidence,
+and that applies to ours.
+
+**P1 — the Monte Carlo should reproduce the analytic form.** To first order the
+proxy is `χ²₁/(8N)` when the channels are independent. Predicted median 0.01137
+and p95 0.09604 at N = 5; measured 0.01207 and 0.09995 — within 4 %. **Held**, at
+N = 5, 14 and 20.
+
+**P3 — the observed swath cannot be quieter than the speckle floor.** This was
+the falsifiable one, and **it failed.**
+
+| | pre-registered | measured |
+|---|---|---|
+| simulated floor p95 at N = 14–20 | 0.024–0.034 | 0.024–0.035 |
+| observed p95, native grid | *above the floor* | **0.00508** |
+
+The observed swath came out **five times quieter than its own speckle floor** —
+the same impossibility, in the same direction, as the intensity reading of §7.2
+putting the scene below the instrument's noise floor.
+
+**Two candidate explanations, one wrong and one right.**
+
+The first suspect was the grid. `cpr_real.tif` is 2048 × 2048 — the *resampled*
+analysis product, not the native 2258 × 6618 — and resampling 6618 range samples
+down to 2048 smooths by a further ~3.2×. Comparing it against a simulation at
+native-grid N compares two different fields. So the native proxy was rebuilt from
+the raw DN exactly as `process_real_sar_pipeline.py` forms it. **It made almost no
+difference**: native p95 0.00508 against resampled 0.00478. The hypothesis was
+tested and rejected.
+
+The real cause was an omission in the simulator. **The measured LH/LV intensity
+correlation over the swath is +0.9647.** CPR fixes only the *imaginary* part of
+the H–V correlation; leaving the real part at zero — which the first version did
+implicitly — makes the two channels as independent as the CPR allows, and so as
+noisy as possible for a statistic built on their difference. With
+`Var(δ₁ − δ₂) = 2(1 − r)/N`, a correlation of 0.96 lowers the floor by ~28×.
+
+Supplying the **measured** |ρ| = √0.9647 = 0.9822 — measured, not fitted to close
+the gap:
+
+| | value |
+|---|---|
+| simulated floor p95, N = 14–20 | 0.00090 – 0.00133 |
+| observed native p95 | **0.00508** |
+
+**P3 now holds**, with the observed distribution sitting a factor of 5.6 above the
+floor. That excess is real channel imbalance and terrain, which is a measurement
+rather than an error. P2 holds likewise.
+
+**What is honestly weaker after this.** The `(1 − r)` correction is first-order,
+and at r = 0.96 the Monte Carlo departs from it by 5–10 % (0.00133 against
+0.00121 predicted at N = 14) — so P1 passes in its independent-channel form and
+not in its corrected form. And the correlation used is the *total* within-patch
+correlation, which conflates speckle coherence with terrain shared between the
+two channels; feeding it in as |ρ|² is an empirical calibration of the floor, not
+a physical decomposition of it. Neither weakens §7.9.2, whose central claim —
+population value identically zero at equal channel powers — holds at every
+coherence, including zero.
+
+**The pre-registered check earned its keep.** It was written to be capable of
+failing, it failed, and what it caught was a real omission in our own simulator
+rather than a problem with the data. Had the prediction been written afterwards,
+the coherence term would simply never have been noticed.
 
 ---
 

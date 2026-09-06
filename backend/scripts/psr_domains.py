@@ -86,7 +86,17 @@ def main() -> int:
                                RAW / f"{STEM}_d_sri_xx_cp_xx_d18.xml")
     shape = (2258, 6618)
     proj = hp.to_frame(frame, shape)
-    cell_frame = 25.0 * 25.0 / 1e6
+    # DERIVED from the frame's own GeoTIFF pixel size, not typed. The literal
+    # 25.0 * 25.0 was correct for this frame and would have gone on being
+    # correct right up until the grid changed, at which point every AREA in this
+    # script would have been silently wrong while every count stayed right.
+    # Asserted against the published value so this change provably moves no
+    # number: it removes a trap without touching a result.
+    cell_frame = (frame.pixel_size_m[0] / 1000.0) * (frame.pixel_size_m[1] / 1000.0)
+    assert abs(cell_frame - 0.000625) < 1e-12, (
+        f"frame pixel size {frame.pixel_size_m} gives a cell area of "
+        f"{cell_frame:.12f} km2, not the 0.000625 km2 every published area in "
+        f"this project was computed with. Areas would move; stop and reconcile.")
     psr_frame = proj["psr_mask"]
     frame_km2 = shape[0] * shape[1] * cell_frame
     psr_frame_km2 = float(psr_frame.sum()) * cell_frame

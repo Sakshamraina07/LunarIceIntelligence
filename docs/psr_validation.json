@@ -7,12 +7,12 @@
     "resample": "PSR nearest-neighbour (categorical); AVGVISIB bilinear (continuous)"
   },
   "ours": {
-    "psr_km2": 2043.21875,
+    "psr_km2": 2043.2187500000005,
     "effective_metres_per_pixel": 240.0,
     "azimuths": 360
   },
   "theirs": {
-    "psr_km2": 1740.16375,
+    "psr_km2": 1740.1637500000004,
     "metres_per_pixel": 120.0
   },
   "confusion": {

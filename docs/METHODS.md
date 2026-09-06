@@ -9,7 +9,7 @@ and `PROVENANCE.md` names the phase that will compute it.
 
 ## 0 · The recurring defect in this project
 
-*Four patterns, sixteen instances. Two of them are about descriptions drifting
+*Four patterns, seventeen instances. Two of them are about descriptions drifting
 from what they describe, one is about a transform written twice, and the fourth
 is about a whole surface that had no check on it at all.*
 
@@ -31,7 +31,7 @@ sentence; only a generator or a gate does.**
 
 ### The second pattern: the verification apparatus itself being wrong
 
-Five instances, and it is a distinct failure from the one above, because the
+Seven instances, and it is a distinct failure from the one above, because the
 thing that has drifted is the thing meant to catch drift.
 
 1. **`verify_map.mjs` asserted a pane v8 had removed.** It exited 3 before
@@ -180,6 +180,21 @@ scrolls: React's own after-commit hook has no such condition, and it runs after
 the map's child effects, so the bounds being fitted to are already drawn. The fit
 also now logs what it fitted, or why it did not, so a silent no-op cannot happen
 again undetected.
+
+**And a seventh: G16's injection passed for a reason that was not its claim.**
+The gate asserts that no report is issued on a host without the analysis
+artifacts. Its first injection tested the **generator** — hand it an empty bundle
+and see whether a PDF comes out. None did, so the gate printed INJECTION CAUGHT
+and looked green. But the generator had raised a `KeyError` on a malformed dict:
+the branch never reached the claim, and would have gone on printing INJECTION
+CAUGHT if the loader had been replaced with one that invented data. **An
+injection that fails for the wrong reason tests nothing, and it is the more
+dangerous kind of green light, because it looks like one.** The defect G16 exists
+to catch is *a loader that tolerates absence*, so the injection now replaces
+`report_data._read` with one that returns an invented document instead of
+raising — exactly what a `.get(key, default)` would do. This one was caught by
+reading the gate's own output rather than its exit code, which is the only reason
+it is instance seven and not a footnote in some later phase.
 
 #### The sub-kind: a TYPE that stopped tracking the wire
 
@@ -330,6 +345,46 @@ letters and a 3 kB block of it contains the byte pairs `BT` and `TJ` by chance �
 a plausibility test that passes on garbage. Chains are now tried most-decoded
 first, and the stream regex is anchored because `stream\r?\n` also matches the
 tail of `endstream`.
+
+### The three backend states apply to the report too — G16
+
+The screen names three backend states apart (§0, third pattern — three
+sentences, one boolean): *unreachable*,
+*reachable but holding no rasters*, and *ok*. The report is the one artefact that
+leaves the browser, and the same rule binds it:
+
+| state | what the report does |
+|---|---|
+| unreachable | nothing answers; there is no report to speak of |
+| reachable, `NOT_INGESTED` | **no PDF is issued.** `load_report_bundle` raises `ReportArtifactsMissing`, `api_router.py` turns that into **409** |
+| reachable, `OK` | a PDF, which **names on its own front page the host state it was issued under**, and what a host without the rasters returns instead |
+
+A thinner report rendered from whatever happened to be present would be the
+`np.zeros_like` mistake in document form: a plausible artefact standing where a
+measurement belongs, read on paper without the badge that would have warned a
+reader. So absence refuses rather than degrades. **G16 —
+`assert_pdf_refuses_without_rasters.py`** asserts all three legs: the loader
+raises with the analysis directory absent, the router maps that to 409, and an
+issued report states its own host state.
+
+**THE PDF FIX IS VERIFIABLE LOCALLY ONLY, AND THAT IS NOT A GAP IN THE GATE.**
+The deployed backend answers `NOT_INGESTED` for `faustini` — the 9 GB of
+Chandrayaan-2 and LOLA products are gitignored and no deployed host holds them —
+so `/report/pdf/faustini` returns **409 in production**, by design. There is no
+PDF on the deployed site to check, and there should not be. G16 therefore
+exercises the issued-report leg only on a host that holds the artifacts, which is
+a development machine. What the live site *is* checked on is the other half of
+the same rule: its report control says plainly that the report **needs an
+ingested host** instead of offering a button that 409s, because a control that
+hides a correct refusal is not itself correct.
+
+The gate's own injection was **wrong on its first pass and passed anyway** — it
+injected at the generator, which raised a `KeyError` on a malformed dict, so the
+gate reported INJECTION CAUGHT for a reason unrelated to its claim. That is
+logged in §0 as the seventh instance of the SECOND pattern, *the verification
+apparatus itself being wrong*. The injection now replaces
+`report_data._read` with one that invents a document instead of raising —
+a loader that tolerates absence, which is the defect G16 exists to catch.
 
 
 ---
@@ -2606,7 +2661,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `dd5a4cc`.
+Stamped at commit `cd463a3`.
 
 | artifact | sha256 | sections |
 |---|---|---|

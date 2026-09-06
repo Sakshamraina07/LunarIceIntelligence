@@ -75,6 +75,13 @@ FURNITURE = {
     "3": "section and limitation-item numbering",
     "4": "section and limitation-item numbering",
     "5": "section and limitation-item numbering",
+    # An HTTP status code is a fact about this server, not a figure about the
+    # Moon, and there is no artifact it could ever appear in. It is here because
+    # the front page now states what a host WITHOUT the rasters returns instead
+    # of a report -- see G16. Listed as furniture rather than smuggled past by
+    # spelling it "four-oh-nine", which would have hidden it from this gate and
+    # from a reader at the same time.
+    "409": "the HTTP status a host without the analysis artifacts returns (G16)",
 }
 
 # Sentences that must NOT appear. Each one is a defect this gate was written for.

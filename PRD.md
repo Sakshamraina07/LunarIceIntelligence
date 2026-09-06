@@ -1721,7 +1721,7 @@ the three outcomes above was observed.
 
 ## 6 · Definition of done
 
-The project is done when all seven statements are true and each is backed by a
+The project is done when all ten statements are true and each is backed by a
 number in a report:
 
 1. Every number rendered on `#mission` resolves to a raster read or an explicit
@@ -1777,3 +1777,14 @@ number in a report:
    **A PDF is the one artefact that leaves the browser without the provenance
    badge beside it**, which makes it the surface where a stale number does the
    most damage and the last one that had no gate.
+10. **A report is issued only on a host that holds the artifacts, and it names
+    the state it was issued under.** (Gate 16) The three backend states that the
+    screen must name apart — *unreachable*, *reachable but holding no rasters*,
+    *ok* — bind the report too. On a host in the middle state the loader raises
+    and `/report/pdf/{crater}` returns **409**; a thinner report rendered from
+    whatever happened to be present would be `np.zeros_like` in document form.
+    Every deployed host is in that state, because the 9 GB of Chandrayaan-2 and
+    LOLA products are gitignored, so **the PDF is verifiable locally only** — and
+    the live site's report control says the report needs an ingested host rather
+    than offering a button that 409s. A 409 is correct behaviour; a control that
+    hides it is not.

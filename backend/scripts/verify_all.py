@@ -5,13 +5,14 @@ verify_all.py -- every gate's evidence, in one command, mapped to the PRD.
 
 WHAT THIS IS FOR
 ----------------
-PRD section 6 lists six statements the project is done when all six are true,
+PRD section 6 lists the statements the project is done when all of them are
+true -- the count is READ from PRD.md, never spelled here,
 "and each is backed by a number in a report". Those numbers exist, but they were
 spread across eight scripts and a browser verifier, so "is the project done" was
 a question you answered by remembering where to look.
 
 This runs them, collects the verdicts, and prints ONE table whose rows are the
-six statements. It writes docs/verification.json.
+those statements. It writes docs/verification.json.
 
 IT ASSERTS NOTHING OF ITS OWN. Every verdict here is produced by the gate that
 owns it; this script's only job is to run them all and map each to the statement
@@ -22,6 +23,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import subprocess
 import sys
 import time
@@ -44,6 +46,23 @@ for _stream in (sys.stdout, sys.stderr):
 sys.path.insert(0, str(SCRIPTS))
 from stamp_methods import ARTIFACTS as _STAMPED  # noqa: E402
 _N_STAMPED = len(_STAMPED)
+
+
+def _prd_statement_count() -> int:
+    """How many statements PRD section 6 actually lists, read from the file.
+
+    It said "six" while the section listed nine, for the same reason METHODS
+    section 0's first pattern exists: a human wrote a count once and nothing
+    afterwards made it agree with the thing counted. Both of the other counts in
+    this file are read (the stamped artifacts, the gate rows); this one was the
+    last one spelled.
+    """
+    text = (BASE_DIR / "PRD.md").read_text(encoding="utf-8")
+    sec = text.split("## 6 · Definition of done", 1)
+    if len(sec) < 2:
+        return 0
+    body = re.split(r"\n## ", sec[1], maxsplit=1)[0]
+    return len(re.findall(r"^(\d+)\. ", body, flags=re.M))
 
 
 GATES = [
@@ -136,7 +155,36 @@ GATES = [
      "verify_production.mjs --all-states — the built bundle, all three backend states",
      ["node", str(BASE_DIR / "frontend" / "scripts" / "verify_production.mjs"),
       "--all-states"], True),
+
+    # The report is the one artefact that leaves the browser, and it must obey
+    # the same three-state rule the screen does: on a host that answers but
+    # holds no rasters, NO PDF IS ISSUED -- 409 -- and a PDF that IS issued says
+    # which state produced it. The deployed backend is in exactly that state, so
+    # this gate, and the PDF fix it guards, are VERIFIABLE LOCALLY ONLY.
+    ("G16", "A report is issued only on a host that holds the artifacts, and it "
+            "names the state it was issued under",
+     "assert_pdf_refuses_without_rasters.py — the loader, the 409, the rendered bytes",
+     [sys.executable, str(SCRIPTS / "assert_pdf_refuses_without_rasters.py")], False),
 ]
+
+# WHY THE SEQUENCE SKIPS G11 AND G14.
+#
+# It skips them because they were never allocated. No gate was written under
+# either number, no gate was deleted, and nothing was quietly dropped: G12 and
+# G13 were named as a pair when the two incidence defects were found, and G15
+# was named when the blank production page needed one. The numbers in between
+# were simply never used.
+#
+# This note exists because a gap in a numbered sequence of checks reads like a
+# check that used to pass and does not any more, which is the most misleading
+# shape a verification table can have. The gap is stated rather than closed:
+# renumbering would silently move G12, G13 and G15, which are cited by number in
+# METHODS, in docs/testing.md and in the commit history, and a citation that
+# resolves to a different gate is worse than a documented gap.
+_NEVER_ALLOCATED = ("G11", "G14")
+assert not {g[0] for g in GATES} & set(_NEVER_ALLOCATED), (
+    "G11/G14 are documented as never allocated; a gate now uses one of them, so "
+    "either the note is wrong or the number is")
 
 
 def main() -> int:
@@ -175,7 +223,8 @@ def main() -> int:
                 print(f"          {line}")
 
     print("\n" + "=" * 78)
-    print("PRD SECTION 6 — the six statements the project is done when true")
+    _n_prd = _prd_statement_count()
+    print(f"PRD SECTION 6 — the {_n_prd} statements the project is done when true")
     print("=" * 78)
     for r in rows:
         mark = {"PASS": "[x]", "FAIL": "[ ] FAILED", "SKIPPED": "[?] not run"}[r["verdict"]]

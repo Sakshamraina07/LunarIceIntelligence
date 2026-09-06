@@ -33,6 +33,23 @@ this project has spent long enough removing those.
 | G12 | `assert_incidence_geometry.py` | an incidence field in which any pixel sits below the look angle — an identity on a convex body — and any consumer that uses one |
 | G13 | (same script) | two consumers disagreeing about the look count of the one CPR field |
 | G15 | `verify_production.mjs --all-states` | a production bundle that does not mount, a map at zero size, zero site markers, a tripped error boundary, an application console error, or two rendered strings disagreeing about whether the backend is reachable — loaded in headless Chromium in **all three** backend states (unreachable / not-ingested / ok) |
+| G16 | `assert_pdf_refuses_without_rasters.py` | a PDF issued on a host that answers but holds no rasters — the loader must raise, the endpoint must return 409, and a report that *is* issued must name the host state it was issued under |
+
+**The sequence skips G11 and G14 because those numbers were never allocated** —
+no gate was written under either and none was deleted. G12 and G13 were named as
+a pair when the two incidence defects were found; G15 was named when the blank
+production page needed a gate. A gap in a numbered list of checks otherwise
+reads like a check that used to pass, so it is stated here rather than closed:
+renumbering would move G12, G13 and G15, which are cited by number in
+`METHODS.md` and in the commit history, and a citation resolving to a different
+gate is worse than a documented gap. `verify_all.py` asserts that neither number
+ever comes back into use.
+
+**G16 is verifiable locally only.** The deployed backend answers `NOT_INGESTED`
+for `faustini`, so `/report/pdf/faustini` returns 409 in production and no PDF
+exists there to check. That is the correct behaviour, not a limitation of the
+gate — but it means the report itself is only ever exercised on a host that
+holds the 9 GB of gitignored rasters, i.e. this one.
 
 `rebuild_all.py` runs G1, G5, G7, G8 and G9 on every rebuild, and **any non-zero exit
 stops the build**, so a rebuild that would ship an unlabelled number fails before
@@ -67,6 +84,16 @@ G4 straight-line invariant, G9 — `--inject` adds a fabricated landing site wit
 the deleted list's own numbers (slope 6.7°, illumination 0.02, score 37.1) and
 the gate names all six figures that are not in any artifact — and G10, whose
 `--inject` writes one unlabelled quotation of a bounded figure and is caught.
+
+G16's injection was **wrong on its first pass, and passed anyway**. It injected
+at the *generator* — handing it an empty bundle to see whether a PDF came out.
+None did, so the gate printed INJECTION CAUGHT; but the generator had raised a
+`KeyError` on the malformed dict, for a reason with nothing to do with the claim
+under test. An injection that fails for the wrong reason tests nothing, and it is
+the more dangerous kind of green light because it looks like one. The defect G16
+exists to catch is *a loader that tolerates absence*, so that is what is now
+injected: `report_data._read` is replaced by one that invents a document instead
+of raising, exactly as a `.get(key, default)` would.
 
 G10's own first version **failed on its own test fixture**: the injection payload
 was a string literal in the file, so the gate found an unlabelled occurrence in a

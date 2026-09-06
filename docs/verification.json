@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T20:48:42.206134+00:00",
+  "generated_utc": "2026-09-06T21:15:29.119854+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -8,7 +8,7 @@
       "gate": "emit_provenance.py \u2014 six assertions, each injection-tested",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.2
+      "seconds": 0.3
     },
     {
       "id": "G2",
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 37.1
+      "seconds": 42.2
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 29.2
+      "seconds": 30.2
     },
     {
       "id": "G4",
@@ -32,7 +32,7 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 32.8
+      "seconds": 37.2
     },
     {
       "id": "G5",
@@ -40,7 +40,7 @@
       "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 4.6
+      "seconds": 7.4
     },
     {
       "id": "G6",
@@ -48,7 +48,7 @@
       "gate": "hillshade_histogram.py + composite_contrast.py",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 3.3
+      "seconds": 3.5
     },
     {
       "id": "G6b",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 47.5
+      "seconds": 48.2
     },
     {
       "id": "G7",
@@ -64,7 +64,7 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 8.0
+      "seconds": 9.5
     },
     {
       "id": "G8",
@@ -72,7 +72,7 @@
       "gate": "stamp_methods.py --check \u2014 19 artifacts",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.2
+      "seconds": 0.4
     },
     {
       "id": "G9",
@@ -80,7 +80,7 @@
       "gate": "assert_pdf_agrees_with_analysis.py \u2014 the rendered bytes, not the inputs",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.9
+      "seconds": 0.8
     },
     {
       "id": "G10",
@@ -88,7 +88,7 @@
       "gate": "assert_upper_bounds_labelled.py \u2014 every occurrence, every tracked source",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.4
+      "seconds": 2.0
     },
     {
       "id": "G12",
@@ -112,7 +112,15 @@
       "gate": "verify_production.mjs --all-states \u2014 the built bundle, all three backend states",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 90.6
+      "seconds": 125.0
+    },
+    {
+      "id": "G16",
+      "statement": "A report is issued only on a host that holds the artifacts, and it names the state it was issued under",
+      "gate": "assert_pdf_refuses_without_rasters.py \u2014 the loader, the 409, the rendered bytes",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.8
     }
   ],
   "all_pass": true

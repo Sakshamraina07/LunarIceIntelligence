@@ -422,6 +422,21 @@ def generate_mission_pdf_report(bundle: Dict[str, Any]) -> bytes:
             "computed is printed as NO DATA and is never filled in.",
             limitation_style),
         Spacer(1, 6),
+        # WHICH HOST STATE ISSUED THIS. A report whose provenance depends on
+        # where it was generated, and does not record where that was, is a
+        # document a reader cannot place. The deployed host has none of the
+        # gitignored rasters and returns 409 rather than a thinner report; this
+        # one exists, so it was generated somewhere they are present.
+        Paragraph(
+            "<b>Issued state.</b> This report was generated on a host that holds the "
+            "ingested Chandrayaan-2 and LOLA products. A host without them &mdash; "
+            "which includes the deployed instance, where the ~9 GB of rasters are "
+            "gitignored &mdash; returns <b>HTTP 409</b> from "
+            "<i>/report/pdf/{crater}</i> and issues no document at all. The refusal "
+            "is the correct behaviour: a shorter report from a host with less data "
+            "would be the one thing this project refuses everywhere else.",
+            note_style),
+        Spacer(1, 5),
         Paragraph(
             "Rendered from: "
             + f"analysis {analysis['generated_utc'][:16].replace('T', ' ')} UTC"

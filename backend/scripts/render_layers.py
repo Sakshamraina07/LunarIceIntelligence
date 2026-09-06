@@ -29,7 +29,7 @@ heuristic (hillshade x normalised elevation), tagged
 provenance="modelled-from-measured-topography" so the UI cannot badge it as a
 PSR product. No true cold traps are computed anywhere in this build.
 
-The DEM is no longer synthetic. dem_native_synthetic.tif keeps its filename for
+The DEM is no longer synthetic. dem_native.tif keeps its filename for
 compatibility but now holds LOLA polar topography; the four terrain layers are
 tagged provenance="measured-topography" and every one of their descriptions
 states the LOLA product's NATIVE post spacing, which is coarser than the grid
@@ -405,7 +405,7 @@ def load_inputs() -> dict:
         "cpr": NATIVE_DIR / "cpr_native.tif",
         "dop": NATIVE_DIR / "dop_native.tif",
         "s0": NATIVE_DIR / "s0_native.tif",
-        "dem": NATIVE_DIR / "dem_native_synthetic.tif",
+        "dem": NATIVE_DIR / "dem_native.tif",
         "valid": NATIVE_DIR / "valid_native.tif",
     }
     missing = [str(p) for p in need.values() if not p.exists()]
@@ -543,12 +543,10 @@ def dem_provenance() -> dict:
 
 DEM_PROV = dem_provenance()
 DEM_NOTE = (
-    f"derived from data/pradan/native/dem_native_synthetic.tif, which despite its "
-    f"filename now holds {DEM_PROV['provenance']} — real LOLA topography. The "
-    f"filename is retained only so existing consumers keep working. Elevation was "
-    f"measured at {DEM_PROV['native_metres_per_pixel']:g} m posts and resampled to "
-    f"{DEM_PROV['output_metres_per_pixel']:g} m, so this layer carries no relief "
-    f"finer than {DEM_PROV['native_metres_per_pixel']:g} m."
+    f"derived from data/pradan/native/dem_native.tif: {DEM_PROV['provenance']}. "
+    f"Elevation was measured at {DEM_PROV['native_metres_per_pixel']:g} m posts and "
+    f"carried onto the {DEM_PROV['output_metres_per_pixel']:g} m grid, so this layer "
+    f"carries no relief finer than {DEM_PROV['native_metres_per_pixel']:g} m."
 )
 
 
@@ -565,19 +563,19 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
         {"id": "hillshade", "label": "Surface Relief", "data": hillshade, "mask": dense,
          "stretch": "linear", "colormap": "grayscale", "opaque_alpha": 255,
          "provenance": "measured-topography",
-         "sources": ["native/dem_native_synthetic.tif"],
+         "sources": ["native/dem_native.tif"],
          "detail": "Horn hillshade, sun 30 deg altitude / 315 deg azimuth; " + DEM_NOTE},
 
         {"id": "dem_elevation", "label": "Elevation (DEM)", "data": src["dem"], "mask": dense,
          "stretch": "linear", "colormap": "viridis", "opaque_alpha": 255,
          "provenance": "measured-topography",
-         "sources": ["native/dem_native_synthetic.tif"],
+         "sources": ["native/dem_native.tif"],
          "detail": f"Elevation in metres — {DEM_PROV['elevation_datum']} " + DEM_NOTE},
 
         {"id": "hazard_map", "label": "Terrain Hazards", "data": terrain["hazard"], "mask": dense,
          "stretch": "linear", "colormap": "magma", "opaque_alpha": 255,
          "provenance": "measured-topography",
-         "sources": ["native/dem_native_synthetic.tif"],
+         "sources": ["native/dem_native.tif"],
          "detail": "(0.50*clip(slope/20 deg) + 0.30*clip(roughness/50 m)) / 0.80 — the "
                    "SAME app/modules/module_d_terrain.compute_hazard_score that produces "
                    "the hazard figure in the stat panel, so the picture and the number "

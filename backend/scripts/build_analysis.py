@@ -25,13 +25,18 @@ from the CDN. No backend, no cold start, no DEMO path for the headline.
 WHAT CHANGED IN V10 -- THE DEM IS NO LONGER A PLACEHOLDER
 --------------------------------------------------------
 Every "MODELLED on the placeholder DEM" caveat in the previous revision of
-this file described a build in which `dem_native_synthetic.tif` really did
-hold Gaussians and sinusoids. It no longer does. Measured, not assumed:
+this file described a build in which the native DEM really did hold Gaussians
+and sinusoids. It no longer does. Measured, not assumed:
 
-    dem_native_synthetic.tif  vs  lola/ldem_frame_25m.tif
+    dem_native.tif  vs  lola/ldem_frame_25m.tif
     max|diff| 0.0 m   rms 0.0 m   bit-identical True   pearson r 1.000000000
 
-The file is byte-for-byte the LOLA crop. The FILENAME is a leftover, retained
+The file was called dem_native_synthetic.tif until Phase 6. It was renamed
+because a filename asserting "synthetic" over a real measurement is the same
+defect class as a plausible placeholder standing in for one -- and this
+project had already caught that twice, in shackleton_lola_dem.tif holding
+Faustini's bytes and *_ohrc_pan.tif holding a hillshade. The identity check
+below is unchanged and still fatal. The rest of this note is retained
 only so existing consumers keep working; `assert_dem_is_lola()` re-measures
 the identity on every run, so the name can never quietly become true again.
 
@@ -175,7 +180,7 @@ GRID_POST_M = float(DEM_PROV["output_metres_per_pixel"])
 
 DEM_NOTE = (
     f"Elevation is {DEM_PROV['provenance']}. Despite its filename, "
-    f"native/dem_native_synthetic.tif holds that measured LOLA topography "
+    f"native/dem_native.tif holds that measured LOLA topography "
     f"bit-for-bit (verified every run: max|diff| 0.0 m against "
     f"lola/ldem_frame_25m.tif); the name is retained only so existing consumers "
     f"keep working."
@@ -241,12 +246,18 @@ ROVER_ABSENT_REASON = (
 
 def assert_dem_is_lola(dem: np.ndarray) -> dict:
     """
-    Re-measure the claim the filename contradicts, on every run.
+    Re-measure the DEM's identity against the LOLA crop, on every run.
 
-    `dem_native_synthetic.tif` is byte-identical to the LOLA crop today. If a
-    future pipeline change ever makes the filename true again, every terrain
-    mark in this file silently becomes a lie. So the identity is a FATAL check
-    with a printed residual, not a comment.
+    `dem_native.tif` must be byte-identical to `lola/ldem_frame_25m.tif`. If a
+    future pipeline change ever makes it something else -- a placeholder, a
+    smoothed copy, a different product -- every terrain mark in this file
+    silently becomes a lie. So the identity is a FATAL check with a printed
+    residual, not a comment, and its tolerance is 0.0 and stays 0.0.
+
+    Regenerating the reference is NOT editing anything here: it is running the
+    ingest and then process_real_sar_pipeline.py, which reads ldem_frame_25m.tif
+    and writes dem_native.tif. A gate that gets relaxed the first time it is
+    inconvenient stops being a gate.
     """
     if not LOLA_CROP.is_file():
         raise SystemExit(
@@ -264,7 +275,7 @@ def assert_dem_is_lola(dem: np.ndarray) -> dict:
     b = lola.astype(np.float64)
     d = a - b
     rec = {
-        "compared": ["native/dem_native_synthetic.tif", "lola/ldem_frame_25m.tif"],
+        "compared": ["native/dem_native.tif", "lola/ldem_frame_25m.tif"],
         "max_abs_diff_m": float(np.abs(d).max()),
         "rms_diff_m": float(np.sqrt((d ** 2).mean())),
         "bit_identical": bool(np.array_equal(a, b)),
@@ -272,9 +283,9 @@ def assert_dem_is_lola(dem: np.ndarray) -> dict:
     }
     if rec["max_abs_diff_m"] > rec["tolerance_m"]:
         raise SystemExit(
-            "native/dem_native_synthetic.tif is NOT the LOLA crop "
+            "native/dem_native.tif is NOT the LOLA crop "
             f"(max|diff| {rec['max_abs_diff_m']:.6f} m). Either the ingest changed "
-            "or the filename became true again. No terrain number may be marked "
+            "or the two files were regenerated out of step. No terrain number may be marked "
             "MEASURED until this is resolved."
         )
     rec["verdict"] = "PASS"
@@ -356,7 +367,7 @@ def load_native() -> dict:
     need = {
         "cpr": NATIVE_DIR / "cpr_native.tif",
         "dop": NATIVE_DIR / "dop_native.tif",
-        "dem": NATIVE_DIR / "dem_native_synthetic.tif",
+        "dem": NATIVE_DIR / "dem_native.tif",
         "valid": NATIVE_DIR / "valid_native.tif",
         "footprint": NATIVE_DIR / "footprint_native.tif",
     }
@@ -1039,13 +1050,14 @@ def build(crater_id: str = "faustini") -> dict:
             "resolution_caveat": DEM_PROV.get("resolution_caveat"),
             "elevation_datum": DEM_PROV.get("elevation_datum"),
             "min_m": float(dem.min()), "max_m": float(dem.max()), "mean_m": float(dem.mean()),
-            "filename_is_a_misnomer": {
+            "dem_identity": {
                 "file": r["paths"]["dem"],
                 "verified_every_run": dem_identity,
-                "explanation": ("The file is named dem_native_synthetic.tif for historical reasons and "
-                                "holds measured LOLA topography bit-for-bit. The name is retained so "
-                                "existing consumers keep working; assert_dem_is_lola() fails the build "
-                                "if it ever stops being a misnomer."),
+                "explanation": ("Holds measured LOLA topography bit-for-bit, verified against "
+                                "lola/ldem_frame_25m.tif at tolerance 0.0 on every run by "
+                                "assert_dem_is_lola(). Called dem_native_synthetic.tif until "
+                                "Phase 6; renamed because a filename asserting 'synthetic' over "
+                                "a real measurement is a provenance defect, not a cosmetic one."),
             },
             "sidecar": str(LOLA_SIDECAR.relative_to(BASE_DIR)).replace("\\", "/"),
         },

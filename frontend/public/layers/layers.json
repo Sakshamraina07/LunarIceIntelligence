@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/layers-manifest/1",
-  "generated_utc": "2026-09-06T10:09:09+00:00",
+  "generated_utc": "2026-09-06T10:48:12+00:00",
   "generator": "backend/scripts/render_layers.py",
   "replaces": "backend/scripts/generate_tiles.py + backend/tiles/faustini/** (tile pyramid: ~331 tiles/layer, per-tile normalisation, visible seams)",
   "product_id": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",
@@ -1858,30 +1858,30 @@
       "sample": 25.0
     },
     "slope_deg_p50": {
-      "before": 0.9426,
-      "after": 9.343
+      "before": 0.9652,
+      "after": 9.5633
     },
     "hazard_p50": {
-      "before": 0.073,
-      "after": 0.3355
+      "before": 0.0748,
+      "after": 0.3436
     },
     "roughness_m_p50": {
-      "before": 5.8058,
-      "after": 5.8058
+      "before": 5.9477,
+      "after": 5.9477
     },
     "note": "roughness is spacing-invariant; before == after is correct, not a bug"
   },
   "hazard_single_source": {
     "old_formula": "clip(0.60*slope/25 + 0.40*roughness/40)",
     "new_formula": "module_d_terrain.compute_hazard_score(w_boulder=0.0)",
-    "old_mean": 0.3208,
-    "new_mean": 0.3647,
-    "old_p50": 0.2823,
-    "new_p50": 0.3355,
-    "old_p99": 0.9731,
-    "new_p99": 0.7874,
-    "old_frac_gt_0p5_pct": 19.684,
-    "new_frac_gt_0p5_pct": 29.478,
+    "old_mean": 0.3285,
+    "new_mean": 0.3726,
+    "old_p50": 0.2891,
+    "new_p50": 0.3436,
+    "old_p99": 0.9838,
+    "new_p99": 0.7882,
+    "old_frac_gt_0p5_pct": 20.461,
+    "new_frac_gt_0p5_pct": 30.215,
     "stat_panel_number_changed": false
   },
   "colormaps_note": "COLORMAP_JET is not used anywhere. Its lightness is non-monotonic, which manufactures edges in smooth data; on a hazard map that reads as a cliff that is not there.",
@@ -1893,26 +1893,26 @@
       "preview": "hillshade.preview.webp",
       "width": 6618,
       "height": 2258,
-      "bytes": 5183824,
-      "preview_bytes": 93746,
+      "bytes": 8705612,
+      "preview_bytes": 95146,
       "preview_width": 640,
       "preview_height": 218,
       "colormap": "grayscale",
       "stretch": {
         "mode": "linear",
-        "expression": "linear on [0.582932, 0.879736]  (p2..p98)",
+        "expression": "linear on [0.579505, 0.881329]  (p2..p98)",
         "fitted_over_pixels": 14943444,
         "fitted_over_fraction": 1.0
       },
-      "vmin": 0.58293241,
-      "vmax": 0.87973642,
+      "vmin": 0.57950473,
+      "vmax": 0.88132882,
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
       "source_rasters": [
-        "native/dem_native_synthetic.tif"
+        "native/dem_native.tif"
       ],
-      "description": "Horn hillshade, sun 30 deg altitude / 315 deg azimuth; derived from data/pradan/native/dem_native_synthetic.tif, which despite its filename now holds LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid \u2014 real LOLA topography. The filename is retained only so existing consumers keep working. Elevation was measured at 80 m posts and resampled to 25 m, so this layer carries no relief finer than 80 m."
+      "description": "Horn hillshade, sun 30 deg altitude / 315 deg azimuth; derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
     },
     {
       "id": "dem_elevation",
@@ -1921,26 +1921,26 @@
       "preview": "dem_elevation.preview.webp",
       "width": 6618,
       "height": 2258,
-      "bytes": 1394816,
-      "preview_bytes": 84854,
+      "bytes": 1602248,
+      "preview_bytes": 84896,
       "preview_width": 640,
       "preview_height": 218,
       "colormap": "viridis",
       "stretch": {
         "mode": "linear",
-        "expression": "linear on [-3881.47, 1131.1]  (p2..p98)",
+        "expression": "linear on [-3881.71, 1131.2]  (p2..p98)",
         "fitted_over_pixels": 14943444,
         "fitted_over_fraction": 1.0
       },
-      "vmin": -3881.46557617,
-      "vmax": 1131.10314941,
+      "vmin": -3881.70849609,
+      "vmax": 1131.19689941,
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
       "source_rasters": [
-        "native/dem_native_synthetic.tif"
+        "native/dem_native.tif"
       ],
-      "description": "Elevation in metres \u2014 heights above a sphere of radius 1,737,400.0 m (1737.4 km), the label's own A_AXIS_RADIUS. Not a geoid, not local mean terrain, and not a height above the LRO orbit. derived from data/pradan/native/dem_native_synthetic.tif, which despite its filename now holds LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid \u2014 real LOLA topography. The filename is retained only so existing consumers keep working. Elevation was measured at 80 m posts and resampled to 25 m, so this layer carries no relief finer than 80 m."
+      "description": "Elevation in metres \u2014 heights above a sphere of radius 1,737,400.0 m (1737.4 km), the label's own A_AXIS_RADIUS. Not a geoid, not local mean terrain, and not a height above the LRO orbit. derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
     },
     {
       "id": "hazard_map",
@@ -1949,26 +1949,26 @@
       "preview": "hazard_map.preview.webp",
       "width": 6618,
       "height": 2258,
-      "bytes": 10859320,
-      "preview_bytes": 279582,
+      "bytes": 13022184,
+      "preview_bytes": 283176,
       "preview_width": 640,
       "preview_height": 218,
       "colormap": "magma",
       "stretch": {
         "mode": "linear",
-        "expression": "linear on [0.0321152, 0.774201]  (p2..p98)",
+        "expression": "linear on [0.0394739, 0.774812]  (p2..p98)",
         "fitted_over_pixels": 14943444,
         "fitted_over_fraction": 1.0
       },
-      "vmin": 0.03211519,
-      "vmax": 0.77420098,
+      "vmin": 0.03947392,
+      "vmax": 0.7748124,
       "alpha_opaque": 255,
       "transparent_where": "nowhere -- this layer covers the whole frame",
       "provenance": "measured-topography",
       "source_rasters": [
-        "native/dem_native_synthetic.tif"
+        "native/dem_native.tif"
       ],
-      "description": "(0.50*clip(slope/20 deg) + 0.30*clip(roughness/50 m)) / 0.80 \u2014 the SAME app/modules/module_d_terrain.compute_hazard_score that produces the hazard figure in the stat panel, so the picture and the number have one definition. 20 deg is MAX_TRAVERSABLE_SLOPE_DEG, the rover tilt limit; the boulder term is weighted to zero because there is no OHRC product for this frame, so hazard is slope + roughness, renormalised. magma replaces the old JET colormap whose non-monotonic lightness invented false hazard edges. Slope is a 80 m-post quantity, so the roughness divisor is a display scaling, not a threshold validated against this terrain. derived from data/pradan/native/dem_native_synthetic.tif, which despite its filename now holds LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid \u2014 real LOLA topography. The filename is retained only so existing consumers keep working. Elevation was measured at 80 m posts and resampled to 25 m, so this layer carries no relief finer than 80 m."
+      "description": "(0.50*clip(slope/20 deg) + 0.30*clip(roughness/50 m)) / 0.80 \u2014 the SAME app/modules/module_d_terrain.compute_hazard_score that produces the hazard figure in the stat panel, so the picture and the number have one definition. 20 deg is MAX_TRAVERSABLE_SLOPE_DEG, the rover tilt limit; the boulder term is weighted to zero because there is no OHRC product for this frame, so hazard is slope + roughness, renormalised. magma replaces the old JET colormap whose non-monotonic lightness invented false hazard edges. Slope is a 20 m-post quantity, so the roughness divisor is a display scaling, not a threshold validated against this terrain. derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
     },
     {
       "id": "illumination",
@@ -1996,7 +1996,7 @@
       "source_rasters": [
         "LDEM_80S_80M.IMG"
       ],
-      "description": "Fraction of sampled sun states in which each point is lit, from a HORIZON COMPUTATION over the full 2533x2533 LOLA polar array at 240 m (80 m posts, 3x block mean), swept over 360 azimuths. For each azimuth the horizon is max over r of atan((h(p+r*u) - h(p))/r), and the solar elevation is computed PER PIXEL from its own latitude \u2014 a fixed elevation band is correct only at the pole and under-illuminates this frame by up to 4.4x. Black is permanent shadow: lit in no sampled state. REPLACES hillshade * normalised elevation^1.2, a shading heuristic with no horizon term, which this file rendered while build_analysis.py used a different invented expression for the same quantity. READ IT AS A 240 m PRODUCT however it is displayed \u2014 resampling onto the 25 m frame adds no shadow detail. derived from data/pradan/native/dem_native_synthetic.tif, which despite its filename now holds LOLA LDEM_80S_80M V2.0, 80 m/px native, bilinear to 25 m grid \u2014 real LOLA topography. The filename is retained only so existing consumers keep working. Elevation was measured at 80 m posts and resampled to 25 m, so this layer carries no relief finer than 80 m."
+      "description": "Fraction of sampled sun states in which each point is lit, from a HORIZON COMPUTATION over the full 2533x2533 LOLA polar array at 240 m (80 m posts, 3x block mean), swept over 360 azimuths. For each azimuth the horizon is max over r of atan((h(p+r*u) - h(p))/r), and the solar elevation is computed PER PIXEL from its own latitude \u2014 a fixed elevation band is correct only at the pole and under-illuminates this frame by up to 4.4x. Black is permanent shadow: lit in no sampled state. REPLACES hillshade * normalised elevation^1.2, a shading heuristic with no horizon term, which this file rendered while build_analysis.py used a different invented expression for the same quantity. READ IT AS A 240 m PRODUCT however it is displayed \u2014 resampling onto the 25 m frame adds no shadow detail. derived from data/pradan/native/dem_native.tif: LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid. Elevation was measured at 20 m posts and carried onto the 25 m grid, so this layer carries no relief finer than 20 m."
     },
     {
       "id": "cpr_heatmap",

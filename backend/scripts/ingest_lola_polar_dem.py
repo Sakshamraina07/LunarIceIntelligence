@@ -792,16 +792,41 @@ def resample_to_dfsar(g: LolaGrid, d: DfsarGrid, win: dict, block: int = 128) ->
     # rather than being averaged away. Mild at 1.25x, but real, and it lands
     # squarely in the slope and roughness fields this DEM exists to produce.
     #
-    # So low-pass first, with a Gaussian of sigma = f/2 source pixels -- the usual
-    # choice, and 0.625 px here. The 80 m path takes f < 1 and is NOT filtered, so
-    # this changes nothing about the currently-shipped DEM.
+    # So low-pass first. The STRENGTH IS MEASURED, not borrowed: the two library
+    # conventions fail in opposite directions at f = 1.25 and neither is usable.
+    # backend/scripts/choose_antialias_sigma.py compares each candidate against an
+    # IDEAL band-limited downsample on the same 25 m grid (brick-wall at the output
+    # Nyquist, so no cross-grid normalisation enters) over three windows of the
+    # real 20 m array:
+    #
+    #     sigma              passband loss (>=120 m)   alias excess (<=65 m)
+    #     (f-1)/2 = 0.125            0.000                    0.234
+    #     f/2     = 0.625            0.192                   -0.489
+    #     0.400  (shipped)           0.042                    0.031
+    #
+    # (f-1)/2 is indistinguishable from NO filter to four decimals -- scipy
+    # truncates it to a 3-tap kernel of centre weight ~0.9999 -- while the
+    # unfiltered control runs 23.4 % hot at Nyquist, so the aliasing is real and
+    # measured rather than assumed. f/2 removes 19.2 % of genuine terrain at 120 m
+    # and longer, which is the detail the 1.85 GB 20 m product was fetched for.
+    #
+    # The 80 m path takes f < 1 and is NOT filtered, so nothing about the
+    # previously-shipped DEM changes.
     f_down = float(d.px_x) / float(g.scale_m)
     aa = {"applied": False, "method": "none — output grid is finer than the source, "
                                       "so there is nothing to alias",
           "downsample_factor": round(f_down, 6), "sigma_source_px": 0.0}
     if f_down > 1.0 + 1e-9:
         from scipy.ndimage import gaussian_filter
-        sigma = f_down / 2.0
+        # 0.400 was measured for f = 1.25 specifically. At any other ratio it is
+        # not evidence, so fall back to the f/2 convention and SAY SO rather than
+        # carrying a number measured for a different problem.
+        if abs(f_down - 1.25) < 1e-6:
+            sigma, basis = 0.400, "measured (docs/antialias_sigma.json, f = 1.25)"
+        else:
+            sigma, basis = f_down / 2.0, (
+                f"f/2 convention -- 0.400 was measured for f = 1.25 and this "
+                f"resample is f = {f_down:.4f}, so the measurement does not apply")
         # Filter the validity weights with the SAME kernel, then divide, so a
         # post next to a MISSING_CONSTANT is not pulled toward the zero-fill.
         vm = valid.astype(np.float32)
@@ -809,14 +834,23 @@ def resample_to_dfsar(g: LolaGrid, d: DfsarGrid, win: dict, block: int = 128) ->
         den = gaussian_filter(vm, sigma, mode="nearest")
         elev = np.where(den > 1e-6, num / np.maximum(den, 1e-6), elev)
         aa = {"applied": True,
-              "method": (f"Gaussian low-pass, sigma = f/2 = {sigma:.4f} source "
-                         f"pixels, applied BEFORE bilinear sampling. Validity "
-                         f"weights filtered with the same kernel and divided out, "
-                         f"so no post is pulled toward MISSING_CONSTANT."),
+              "method": (f"Gaussian low-pass, sigma = {sigma:.4f} source pixels "
+                         f"({sigma * g.scale_m:.2f} m), applied BEFORE bilinear "
+                         f"sampling. Validity weights filtered with the same kernel "
+                         f"and divided out, so no post is pulled toward "
+                         f"MISSING_CONSTANT."),
+              "sigma_basis": basis,
+              "measured_passband_loss_ge_120m": 0.042 if "measured" in basis else None,
+              "measured_alias_excess_le_65m": 0.031 if "measured" in basis else None,
+              "rejected_conventions": {
+                  "(f-1)/2 = 0.125": "leaves 23.4 % excess amplitude at Nyquist; "
+                                     "numerically identical to no filter at f = 1.25",
+                  "f/2 = 0.625": "removes 19.2 % of real terrain at 120 m and longer",
+              } if "measured" in basis else None,
               "downsample_factor": round(f_down, 6),
               "sigma_source_px": round(sigma, 6)}
         print(f"  anti-alias: downsample f = {f_down:.4f}, Gaussian sigma "
-              f"{sigma:.4f} source px applied before sampling")
+              f"{sigma:.4f} source px ({sigma * g.scale_m:.2f} m) — {basis}")
     else:
         print(f"  anti-alias: none — f = {f_down:.4f} is an upsample, nothing to alias")
 
@@ -967,8 +1001,8 @@ def provenance_string(g: LolaGrid, d: DfsarGrid) -> str:
     """The one-line source description the UI shows under each derived layer.
 
     It has to name the product and its NATIVE resolution, because that is the number
-    a reader needs in order to judge the layer: 80 m posts upsampled to a 25 m grid
-    are still 80 m posts. It also has to avoid the six words MissionMap.tsx tests for
+    a reader needs in order to judge the layer: 20 m posts carried onto a 25 m grid
+    are still 20 m posts, and 80 m posts were still 80 m posts. It also has to avoid the six words MissionMap.tsx tests for
     (synthetic|placeholder|analytic|unknown|unavailable) or real LOLA data will keep
     being captioned as a placeholder. Every component is read from the label.
     """
@@ -982,7 +1016,13 @@ def provenance_string(g: LolaGrid, d: DfsarGrid) -> str:
     head = f"LOLA {pid}"
     if ver:
         head += f" {ver}" if ver.lower().startswith("v") else f" v{ver}"
-    return f"{head}, {scale_txt} m/px native, bilinear to {target} m grid"
+    # Name the resample HONESTLY. A downsample is not a plain bilinear: it is
+    # low-passed first (see resample_to_dfsar), and a caption that says
+    # "bilinear" for it would be describing a different computation from the one
+    # that produced the pixels -- the same class of drift PRD rule 5a covers.
+    how = ("low-passed and resampled to" if d.px_x > g.scale_m + 1e-9
+           else "bilinear to")
+    return f"{head}, {scale_txt} m/px native, {how} {target} m grid"
 
 
 BANNED_PROVENANCE_WORDS = ("synthetic", "placeholder", "analytic", "unknown",
@@ -1638,13 +1678,16 @@ def main(argv: list[str] | None = None) -> int:
     })
     rule("DONE")
     print(f"  provenance string: {prov}")
+    # The word is DERIVED, not hardcoded. It read "upsample" unconditionally and
+    # printed "0.80x upsample" the very first time a downsample went through it.
+    _dir = ("upsample" if ratio > 1.0 else "downsample" if ratio < 1.0 else "1:1")
     print(f"  native {g.scale_m:g} m/px -> output {dfsar.px_x:g} m/px "
-          f"({ratio:.2f}x upsample). The number a reader needs is "
+          f"({ratio:.2f}x {_dir}). The number a reader needs is "
           f"{g.scale_m:g}, not {dfsar.px_x:g}.")
-    print("\nEvery check passed. The frame above is measured topography; the four")
-    print("synthetic 'provenance' tags in frontend/public/layers/layers.json and the")
-    print("synthetic_placeholder_dem() call in process_real_sar_pipeline.py can now")
-    print("be replaced — that is step 4, and it is a separate edit.")
+    print("\nEvery check passed. The frame above is measured topography.")
+    print("Next: process_real_sar_pipeline.py, which reads this file and writes")
+    print("native/dem_native.tif — the reference assert_dem_is_lola() compares")
+    print("against. Both must be regenerated together, or that gate fires.")
     return 0
 
 

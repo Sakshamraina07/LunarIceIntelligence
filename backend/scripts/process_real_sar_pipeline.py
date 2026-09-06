@@ -56,7 +56,7 @@ What is still SYNTHETIC in here
     resampled onto. Slope, roughness and hazard here are 80 m quantities. They
     are labelled with the spacing they were differenced at, and the sidecar
     `data/pradan/lola/ldem_frame_25m.provenance.json` states both numbers.
-  * `native/dem_native_synthetic.tif` keeps its filename for backend
+  * `native/dem_native.tif` keeps its filename for backend
     compatibility only. Its contents are measured; see `product_provenance`.
 
 
@@ -461,7 +461,7 @@ def process_real_data(analysis_size: int = DEFAULT_ANALYSIS_SIZE,
         print(f"\nWriting native {frame.shape[0]}x{frame.shape[1]} products to {OUT_NATIVE_DIR}")
         for name, arr in (("cpr_native.tif", cpr), ("dop_native.tif", dop),
                           ("s0_native.tif", s0), ("sigma_sc_native.tif", sigma_sc),
-                          ("dem_native_synthetic.tif", dem_native)):
+                          ("dem_native.tif", dem_native)):
             _save(OUT_NATIVE_DIR / name, arr)
             print(f"  {name}")
         _save(OUT_NATIVE_DIR / "valid_native.tif", valid.astype(np.uint8) * 255)
@@ -633,7 +633,7 @@ def process_real_data(analysis_size: int = DEFAULT_ANALYSIS_SIZE,
             "dfsar/ch2_sar_cpr.tif", "dfsar/ch2_sar_dop.tif",
             "dfsar/faustini_dfsar_s0.tif", "dfsar/faustini_dfsar_s3.tif",
             "dfsar/shackleton_dfsar_s0.tif", "dfsar/shackleton_dfsar_s3.tif",
-            "native/dem_native_synthetic.tif",
+            "native/dem_native.tif",
             "dem/real_dem.tif", "dem/ch2_sar_dem.tif",
             "dem/faustini_lola_dem.tif", "dem/shackleton_lola_dem.tif",
         ],
@@ -666,8 +666,8 @@ def process_real_data(analysis_size: int = DEFAULT_ANALYSIS_SIZE,
             ),
         },
         "filename_caveats": [
-            "native/dem_native_synthetic.tif is LOLA-derived despite its name; the "
-            "filename is retained so existing consumers keep working.",
+            "native/dem_native.tif is LOLA-derived despite its name; the "
+            "renamed from dem_native_synthetic.tif in Phase 6.",
             "dem/*_lola_dem.tif now genuinely contain LOLA data. Before this "
             "revision the same filenames held analytic placeholder topography.",
             "'s3' in s3_real.tif / *_dfsar_s3.tif is sigma_sc (same-sense circular "

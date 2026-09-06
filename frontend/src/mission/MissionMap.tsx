@@ -1315,7 +1315,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
  * ingesting a real LOLA polar DEM, not on this file."
  *
  * That ingest has now happened. data/pradan/lola/ holds LDEM_80S_80M.IMG and a
- * verified 25 m crop, and data/pradan/native/dem_native_synthetic.tif is
+ * verified 25 m crop, and data/pradan/native/dem_native.tif is
  * bit-identical to it (max|diff| 0.000000 m, r = 1.0, asserted on every build by
  * build_analysis.assert_dem_is_lola — the filename is the only synthetic thing
  * left about it). So hillshade, dem_elevation and hazard_map are now measured

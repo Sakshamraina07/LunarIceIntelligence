@@ -96,7 +96,7 @@ def main() -> int:
     args = ap.parse_args()
 
     # ---------------------------------------------------------------- inputs
-    dem = tifffile.imread(str(NATIVE / "dem_native_synthetic.tif")).astype(np.float32)
+    dem = tifffile.imread(str(NATIVE / "dem_native.tif")).astype(np.float32)
     valid = tifffile.imread(str(NATIVE / "valid_native.tif")).astype(bool)
     lines, samples = dem.shape
     px_m = 25.0

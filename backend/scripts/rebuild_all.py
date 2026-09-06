@@ -96,24 +96,29 @@ def main() -> int:
                             [py, str(SCRIPTS / "process_real_sar_pipeline.py")])))
 
     timings.append(("3 · analysis",
-                    run("3/5 · build_analysis.py — the numbers",
+                    run("3/8 · build_analysis.py — the numbers",
                         [py, str(SCRIPTS / "build_analysis.py"), args.crater])))
     timings.append(("4 · layers",
-                    run("4/5 · render_layers.py — the pixels",
+                    run("4/8 · render_layers.py — the pixels",
                         [py, str(SCRIPTS / "render_layers.py")])))
-    timings.append(("5 · provenance gate",
-                    run("5/6 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
+    # Must precede the provenance gate: that gate now REFUSES to ship a detection
+    # area without its confidence interval, and this is what computes it.
+    timings.append(("5 · detection statistics",
+                    run("5/8 · detection_statistics.py — significance, and the CI",
+                        [py, str(SCRIPTS / "detection_statistics.py")])))
+    timings.append(("6 · provenance gate",
+                    run("6/8 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
                         [py, str(SCRIPTS / "emit_provenance.py"), args.crater])))
     # The API and the static analysis compute terrain by two paths that share no
     # code, and they have diverged twice. The second time the UI was correct and
     # only the PDF was wrong, which is the worst shape for a bug to have: looking
     # at the app does not reveal it.
-    timings.append(("6 · cross-path gate",
-                    run("6/7 · assert_paths_agree.py — API vs static analysis",
+    timings.append(("7 · cross-path gate",
+                    run("7/8 · assert_paths_agree.py — API vs static analysis",
                         [py, str(SCRIPTS / "assert_paths_agree.py"),
                          "--crater", args.crater])))
-    timings.append(("7 · METHODS staleness",
-                    run("7/7 · stamp_methods.py --check — METHODS vs its artifacts",
+    timings.append(("8 · METHODS staleness",
+                    run("8/8 · stamp_methods.py --check — METHODS vs its artifacts",
                         [py, str(SCRIPTS / "stamp_methods.py"), "--check"])))
 
     print("\n" + "=" * 78)

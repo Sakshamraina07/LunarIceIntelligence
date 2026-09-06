@@ -211,7 +211,56 @@ def assert_marks(doc: dict, crater: str) -> dict:
 
     assert_units(doc, crater)
     assert_amplitude_screen_is_empty(doc, crater)
+    assert_detection_area_has_interval(doc, crater)
     return counts
+
+
+def assert_detection_area_has_interval(doc: dict, crater: str) -> None:
+    """A REPORTED DETECTION AREA MUST CARRY ITS CONFIDENCE INTERVAL.
+
+    Phase 8's whole argument is that this literature reports areas without
+    uncertainty, so shipping one ourselves would be the thing we are objecting
+    to. This fails the build if `candidate_area_km2` reaches the UI without an
+    interval alongside it in docs/detection_statistics.json.
+
+    A MEASURED ZERO IS NOT EXEMPT. It is the case that most needs the interval:
+    a bare 0.00 km2 reads as "there is none", when what the data supports is
+    "none, and anything up to X would have looked the same". Exempting zero
+    would remove the interval from the only number this project actually
+    reports.
+    """
+    v = (doc.get("values") or {}).get("candidate_area_km2")
+    if v is None:
+        return
+    side = BASE_DIR / "docs" / "detection_statistics.json"
+    if not side.is_file():
+        raise SystemExit(
+            f"GATE FAIL [{crater}]: candidate_area_km2 = {v.get('value')} reaches the "
+            f"UI but docs/detection_statistics.json does not exist, so it carries no "
+            f"confidence interval. Run backend/scripts/detection_statistics.py.\n"
+            f"An area without an interval is the exact reporting practice Phase 8 "
+            f"objects to, and a measured zero needs it most.")
+    try:
+        ci = json.loads(side.read_text(encoding="utf-8"))["candidate_area"]
+        lo, hi = ci["ci_km2"]
+        area = float(ci["area_km2"])
+    except (ValueError, KeyError, TypeError) as exc:
+        raise SystemExit(
+            f"GATE FAIL [{crater}]: docs/detection_statistics.json has no usable "
+            f"candidate_area.ci_km2 ({exc}).")
+    if abs(area - float(v.get("value", -1))) > 1e-6:
+        raise SystemExit(
+            f"GATE FAIL [{crater}]: candidate_area_km2 in the analysis is "
+            f"{v.get('value')} but detection_statistics.json reports {area}. The "
+            f"area and its interval were computed from different runs.")
+    if not (lo <= area <= hi) or hi <= lo:
+        raise SystemExit(
+            f"GATE FAIL [{crater}]: the interval [{lo}, {hi}] does not bracket the "
+            f"reported area {area}, or has zero width. A zero-width interval on a "
+            f"measured zero is the normal approximation's [0, 0], which claims the "
+            f"observation carries no uncertainty at all.")
+    print(f"  candidate area {area:.4f} km² carries a "
+          f"{ci['confidence']:.0%} interval [{lo:.4f}, {hi:.4f}] km²  -> OK")
 
 
 def assert_units(doc: dict, crater: str) -> None:

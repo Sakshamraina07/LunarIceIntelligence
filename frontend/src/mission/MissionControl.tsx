@@ -137,7 +137,12 @@ function contextCells(a: Analysis): CtxCell[] {
       // array, is the collision this project keeps finding.
       k: 'Top 1% ch. imbal.',
       v: v.cpr_p99,
-      sub: 'ranking within this swath — not a detection',
+      // Not a surface property. METHODS 7.9.2: this quantity responds to the
+      // imbalance between the two receive channels and has zero sensitivity to
+      // the circular polarisation ratio, so a high value says something about
+      // the instrument's view, not about what the ground is made of. It becomes
+      // a surface measurement only if 5b lands real Stokes CPR.
+      sub: 'top-percentile channel imbalance — an instrument-frame ranking, not a surface property, not a detection',
       digits: 4,
     },
     { k: 'Candidate Area', v: v.candidate_area_km2, sub: 'km² passing both criteria', digits: 2 },

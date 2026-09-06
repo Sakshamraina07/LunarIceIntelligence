@@ -1055,7 +1055,21 @@ construction.**
 
 #### Phase order revision (v1.9) — 6 now runs BEFORE 3
 
-**Current order: `2 → 6 → 3 → 4 → 5a → 7 → 8 → 9 → 5b`.**
+**Current order: `2 → 6 → 3 → 4 → 5a → 8 → 7 → 9 → 5b`.**
+
+#### Phase order revision (v2.0) — 8 now runs BEFORE 7
+
+Phase 7 was specified as "write the documentation". It is no longer that job.
+`docs/METHODS.md` has been written continuously alongside the work and stands at
+ten sections with fourteen artifacts under a staleness stamp, so what remains of
+Phase 7 is *finalise*: consolidate the verifier, refresh the README and the stale
+`docs/*.md`, rehearse. **Doing that before Phase 8 means doing it twice**, because
+Phase 8's findings land in the same documents.
+
+Phase 8 is also far less risky than when it was first ordered.
+`cpr_significance.py`, the Monte Carlo validated against the swath, the ENL
+control and the F(2N,2N) machinery all exist. What remains is assembly, not
+construction.
 
 Reason, and it is a data dependency rather than a preference: **Phase 6 ingests
 `LDEM_80S_20M` and recomputes slope, roughness and hazard. Phase 3's site search

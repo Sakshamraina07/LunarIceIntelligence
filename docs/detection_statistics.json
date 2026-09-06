@@ -1,0 +1,141 @@
+{
+  "schema": "detection_statistics/1",
+  "generated_utc": "2026-09-06T14:28:42.251864+00:00",
+  "generator": "backend/scripts/detection_statistics.py",
+  "effective_looks": {
+    "screened_field": {
+      "lh": 13.72,
+      "lv": 19.77
+    },
+    "raw_product": {
+      "lh": 5.83,
+      "lv": 5.14
+    },
+    "provenance": "MEASURED \u2014 METHODS 7.3, 7.4, 7.6"
+  },
+  "per_pixel_significance": {
+    "confidence": 0.95,
+    "threshold": 1.0,
+    "floor_at_low_N": 1.8946,
+    "floor_at_high_N": 1.6981,
+    "swath_max": 0.053411,
+    "shortfall_factor": 35.5,
+    "raster": "data/pradan/native/cpr_significance.tif",
+    "caveat": "Our proxy is NOT F(2N,2N)-distributed \u2014 METHODS 7.9.2. This raster is the ratio of the measured value to the floor a true sigma_SC/sigma_OC would have to clear, not a p-value on our own quantity."
+  },
+  "candidate_area": {
+    "pixels": 0,
+    "measured_pixels": 2337086,
+    "area_km2": 0.0,
+    "confidence": 0.95,
+    "ci_km2": [
+      0.0,
+      0.002401
+    ],
+    "method": "Wilson score interval on the pass proportion",
+    "why_wilson": "The normal approximation gives [0, 0] at k = 0 and would report a measured zero as carrying no uncertainty.",
+    "provenance": "MEASURED"
+  },
+  "published_reanalysis": {
+    "rows": [
+      {
+        "feature": "F2",
+        "cpr": 1.95,
+        "source": "Sinha et al. 2026",
+        "mode": "full-pol L+S",
+        "looks_stated": null,
+        "clears_floor_at": {
+          "6": "no",
+          "9": "no",
+          "21": "yes",
+          "38": "yes",
+          "100": "yes"
+        },
+        "floors": {
+          "6": 2.687,
+          "9": 2.217,
+          "21": 1.671,
+          "38": 1.462,
+          "100": 1.263
+        }
+      },
+      {
+        "feature": "F3",
+        "cpr": 1.6,
+        "source": "Sinha et al. 2026",
+        "mode": "full-pol L+S",
+        "looks_stated": null,
+        "clears_floor_at": {
+          "6": "no",
+          "9": "no",
+          "21": "no",
+          "38": "yes",
+          "100": "yes"
+        },
+        "floors": {
+          "6": 2.687,
+          "9": 2.217,
+          "21": 1.671,
+          "38": 1.462,
+          "100": 1.263
+        }
+      },
+      {
+        "feature": "S1",
+        "cpr": 1.45,
+        "source": "Sinha et al. 2026",
+        "mode": "full-pol L+S",
+        "looks_stated": null,
+        "clears_floor_at": {
+          "6": "no",
+          "9": "no",
+          "21": "no",
+          "38": "no",
+          "100": "yes"
+        },
+        "floors": {
+          "6": 2.687,
+          "9": 2.217,
+          "21": 1.671,
+          "38": 1.462,
+          "100": 1.263
+        }
+      },
+      {
+        "feature": "H3",
+        "cpr": 1.3,
+        "source": "Sinha et al. 2026",
+        "mode": "full-pol L+S",
+        "looks_stated": null,
+        "clears_floor_at": {
+          "6": "no",
+          "9": "no",
+          "21": "no",
+          "38": "no",
+          "100": "yes"
+        },
+        "floors": {
+          "6": 2.687,
+          "9": 2.217,
+          "21": 1.671,
+          "38": 1.462,
+          "100": 1.263
+        }
+      }
+    ],
+    "assumptions": [
+      "Published CPR is sigma_SC/sigma_OC from the Stokes vector, so it is a ratio of two N-look intensities and distributed as CPR * F(2N,2N). This is stated in the source and is not our inference.",
+      "The look count for their product is NOT STATED in the open text. The table is therefore computed ACROSS a range of N rather than at one value, and no single detection floor is quoted for their data.",
+      "OUR measured ENL cannot be transferred to their product. Ours is a compact-pol sri product from one pass; theirs is full-polarimetric L- and S-band from a different acquisition and a different processing chain. The point is not that their N is ours -- it is that NOBODY HAS MEASURED THEIRS.",
+      "The floors below are for a SINGLE PIXEL at 95 % confidence. A detection averaged over many pixels has a lower floor, by roughly sqrt(n_eff) -- and n_eff, not n, because CPR pixels are correlated (METHODS 7.9.1 measures 61.5 px per independent sample in our own field).",
+      "No claim is made that any published detection is wrong. The claim is that the floor is not reported alongside it, so a reader cannot tell."
+    ],
+    "floors_by_N": {
+      "6": 2.6866,
+      "9": 2.2172,
+      "21": 1.671,
+      "38": 1.4619,
+      "100": 1.2626
+    }
+  }
+}

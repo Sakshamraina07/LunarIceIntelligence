@@ -1714,6 +1714,98 @@ path shorter than the Euclidean distance would mean the length accumulator or th
 grid mapping is wrong, and the number would look entirely plausible while being
 impossible.*
 
+## 11 · Detection statistics — the contribution
+
+### 11.1 Per-pixel significance, at a named look count
+
+Not *"is this value high"* but *"is it significantly above threshold"*, with the
+confidence stated and the effective look count **named rather than assumed**. The
+screened field carries **N = 13.72 (LH) to 19.77 (LV)** — measured in §7.3–7.6,
+where the raw product's 5.83/5.14 looks are multiplied by the 5 × 5 boxcar's
+**2.35–3.84×, not 25×**, because the pixels are correlated.
+
+| N | relative SD | bias E[R]/CPR | 95 % single-pixel floor |
+|---|---|---|---|
+| 13.72 | 0.405 | 1.079 | **1.895** |
+| 19.77 | 0.331 | 1.053 | **1.698** |
+
+**A single pixel must read above 1.70–1.90 to be significantly above a threshold
+of 1.00.** The swath's maximum is **0.0534** — short of the floor by a factor of
+**35**. Zero of 2,337,086 measured pixels reach it.
+
+*The raster is named for what it is.* Our proxy is **not** F(2N,2N)-distributed
+(§7.9.2), so `cpr_significance.tif` is the ratio of the measured value to the
+floor a **true** `σ_SC/σ_OC` would have to clear — not a p-value on our own
+quantity. Conflating the two would be the error this section exists to identify.
+
+### 11.2 Candidate area, with a confidence interval
+
+**As far as this project's literature sweep found, the first ice-candidate area
+in this literature reported with one.**
+
+| | |
+|---|---|
+| candidate pixels | **0** of 2,337,086 measured |
+| candidate area | **0.0000 km²** |
+| 95 % Wilson interval | **[0.0000, 0.0024] km²** |
+
+The measurement is zero, **and the data would not have distinguished anything up
+to 0.0024 km² from zero.** That is a stronger statement than a bare zero, and a
+more honest one: it says how large a real signal could have been and still
+produced this observation.
+
+**Wilson, not the normal approximation, and the reason matters.** At k = 0 the
+normal interval is exactly **[0, 0]** — it would report a measured zero as
+carrying *no uncertainty at all*, which is the single most misleading thing this
+table could say. The zero is the case that most needs its interval, not the case
+that can do without one.
+
+### 11.3 The published detections against their own floors
+
+Published CPR **is** `σ_SC/σ_OC`, a ratio of two N-look intensities, so it **is**
+F(2N,2N)-distributed and the F machinery applies to these values — and not to
+ours.
+
+| feature | CPR | N=6 | N=9 | N=21 | N=38 | N=100 |
+|---|---|---|---|---|---|---|
+| *95 % single-pixel floor* | | *2.69* | *2.22* | *1.67* | *1.46* | *1.26* |
+| F2 | 1.95 | no | no | **yes** | **yes** | **yes** |
+| F3 | 1.60 | no | no | no | **yes** | **yes** |
+| S1 | 1.45 | no | no | no | no | **yes** |
+| H3 | 1.30 | no | no | no | no | **yes** |
+
+**Read down a column, not across.** At N = 6 no published value clears a
+single-pixel 95 % floor; by N = 38 all four do. **The look count decides the
+answer, and it is not reported in the source.**
+
+**Every assumption this rests on, listed rather than buried:**
+
+1. Published CPR is `σ_SC/σ_OC` from the Stokes vector — stated in the source,
+   not our inference.
+2. **Their look count is not stated in the open text.** The table is therefore
+   computed *across* a range of N, and no single floor is quoted for their data.
+3. **Our measured ENL cannot be transferred to their product.** Ours is a
+   compact-pol `sri` product from one pass; theirs is full-polarimetric L- and
+   S-band from a different acquisition and processing chain. **The point is not
+   that their N is ours — it is that nobody has measured theirs.**
+4. These floors are for a **single pixel**. A detection averaged over many pixels
+   has a lower floor, by roughly √n_eff — and n_eff, not n, because CPR pixels
+   are correlated (§7.9.1 measures 61.5 px per independent sample in our field).
+5. **No claim is made that any published detection is wrong.** The claim is that
+   the floor is not reported alongside it, so a reader cannot tell.
+
+### 11.4 The gate
+
+`emit_provenance.assert_detection_area_has_interval` fails the build if
+`candidate_area_km2` reaches the UI without an interval computed in the same run.
+It checks that the interval exists, that it brackets the area, that it has
+non-zero width, and that the two came from the same run rather than two.
+
+**A measured zero is not exempt** — exempting it would remove the interval from
+the only number this project actually reports. Verified by injection: removing
+`docs/detection_statistics.json` fails the build with the reason, and restoring
+it passes.
+
 ---
 
 *Sections 9 (site search), 10 (traverse) and 11 (Stokes derivation) arrive with
@@ -1736,7 +1828,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `620c105`.
+Stamped at commit `3fbff2a`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -1744,6 +1836,7 @@ Stamped at commit `620c105`.
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
+| `docs/detection_statistics.json` | `6ba46058e1399689…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
 | `docs/landing_sites.json` | `6405581775517073…` | §9.6, §9.7 |
 | `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |

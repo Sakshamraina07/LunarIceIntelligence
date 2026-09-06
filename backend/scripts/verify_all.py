@@ -100,6 +100,13 @@ GATES = [
     ("G9", "The PDF report prints nothing the analysis artifacts do not contain",
      "assert_pdf_agrees_with_analysis.py — the rendered bytes, not the inputs",
      [sys.executable, str(SCRIPTS / "assert_pdf_agrees_with_analysis.py")], False),
+
+    # A figure that is an upper bound and a figure that is a rate are different
+    # claims, and the difference is one phrase -- exactly the kind of thing that
+    # survives one edit and is gone by the third.
+    ("G10", "A figure that is an upper bound is never quoted as if it were a rate",
+     "assert_upper_bounds_labelled.py — every occurrence, every tracked source",
+     [sys.executable, str(SCRIPTS / "assert_upper_bounds_labelled.py")], False),
 ]
 
 

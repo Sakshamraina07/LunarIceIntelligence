@@ -64,6 +64,7 @@ not reported, so a reader cannot tell. (§11.3)
 | **landing sites** | argmax of a six-criterion search over all **14,943,444** native 25 m pixels, each with per-criterion evidence and an interpolation verdict |
 | **traverse** | Dijkstra at a stated 100 m planning resolution, connectivity reported **before** any distance, `UNREACHABLE` an explicit state — all **177 waypoints** drawn on the map, each one hoverable |
 | **the probe** | click any point and read the **measured** CPR and DOP there against their thresholds and the detection floor — a 200 m block mean, labelled as one, with `NO DATA` where the radar returned nothing |
+| **incidence** | local incidence from the product's own raster plus measured LOLA slope and aspect — **62.58 %** of the measured swath falls below the 20° Bragg floor Putrevu et al. 2023 require, because this pass was flown at **19.998°** |
 
 ## Quick start
 
@@ -95,7 +96,7 @@ bytes and fails the build on any figure that is not in the artifacts.
 
 ## Verification
 
-`verify_all.py` runs ten gates and maps each to a statement in PRD section 6.
+`verify_all.py` runs eleven gates and maps each to a statement in PRD section 6.
 Five of them also run on every rebuild, and any non-zero exit stops the build.
 Each was verified by making it fail on purpose — including five cases where the
 verification apparatus itself turned out to be wrong (`docs/METHODS.md` §0).

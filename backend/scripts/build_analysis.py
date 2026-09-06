@@ -898,6 +898,22 @@ def build(crater_id: str = "faustini") -> dict:
             print(f"      th {row['threshold']:<10.6g} {row['candidate_px']:>10,d} px  "
                   f"{row['candidate_area_km2']:>12.4f} km2{flag}")
 
+    # ------------------------------------------------- Bragg-domain criterion
+    #
+    # Putrevu et al. 2023 (10.1029/2023JE007745) section 4 omits local incidence
+    # below 20 deg to stay inside the Bragg domain. We have the geometry, so the
+    # criterion is ADOPTED -- as a named row with its own pass fraction, going
+    # through the same non-discriminating gate as everything else. An external
+    # constraint does not get to skip the gate for being published.
+    #
+    # READ from incidence_mask.py's artifact, not recomputed here. Absent is a
+    # real state: the row then says the criterion could not be evaluated, which
+    # is different from saying nothing passed it.
+    _inc_doc = None
+    _inc_path = BASE_DIR / "docs" / "incidence_mask.json"
+    if _inc_path.exists():
+        _inc_doc = json.loads(_inc_path.read_text(encoding="utf-8"))
+
     # ------------------------------------------------------------- evidence rows
     # Each row carries the MEASURED value beside the ACTUAL threshold, so the
     # card can show *why* a criterion failed instead of a bare tick or cross.
@@ -949,6 +965,46 @@ def build(crater_id: str = "faustini") -> dict:
                      "dry regolith -- and this proxy does not measure depolarisation in the first "
                      "place. See METHODS 7.9.2."),
         },
+        # ── ADOPTED FROM THE LITERATURE, AND GATED LIKE EVERYTHING ELSE ──
+        ({
+            "criterion": "local_incidence_in_bragg_domain",
+            "label": "Local incidence in the Bragg domain",
+            "measured": round(_inc_doc["local_incidence_deg"]["p50"], 4),
+            "measured_label": "median local incidence",
+            "threshold": _inc_doc["criterion"]["min_deg"], "comparison": ">=",
+            "passed": bool(_inc_doc["local_incidence_deg"]["p50"]
+                           >= _inc_doc["criterion"]["min_deg"]),
+            "informative": bool(_inc_doc["informative"]),
+            "provenance": MEASURED,
+            "note": (
+                f"{_inc_doc['pass_fraction'] * 100:.2f} % of measured pixels have local "
+                f"incidence in {_inc_doc['criterion']['min_deg']:g}-"
+                f"{_inc_doc['criterion']['max_deg']:g} deg; "
+                f"{_inc_doc['removed_below_min_fraction'] * 100:.2f} % fall below the floor. "
+                f"Criterion adopted from {_inc_doc['source']}, which omits sub-20 deg local "
+                f"incidence so the polarimetric decomposition stays in the Bragg domain. "
+                f"THE SCENE IS BELOW THAT FLOOR AT NOMINAL: this pass was flown at "
+                f"{_inc_doc['product_geometry']['nominal_incidence_deg']:.2f} deg look angle, so "
+                f"every pixel that passes does so because TERRAIN tilts the surface toward the "
+                f"radar (median local {_inc_doc['local_incidence_deg']['p50']:.2f} deg against "
+                f"ellipsoid median {_inc_doc['ellipsoid_incidence_deg']['p50']:.2f} deg), not "
+                f"because the viewing geometry satisfies it. Local incidence is computed from "
+                f"the product's own incidence raster and the measured LOLA slope and aspect, "
+                f"with the look direction MEASURED from the sign of the incidence gradient."),
+        } if _inc_doc else {
+            "criterion": "local_incidence_in_bragg_domain",
+            "label": "Local incidence in the Bragg domain",
+            "measured": None, "measured_label": "median local incidence",
+            "threshold": 20.0, "comparison": ">=",
+            "passed": False, "informative": False,
+            "uninformative_reason": (
+                "docs/incidence_mask.json is not on this host, so the criterion "
+                "could not be evaluated. That is different from nothing passing it."),
+            "provenance": UNAVAILABLE,
+            "note": ("Run backend/scripts/incidence_mask.py. The criterion is adopted "
+                     "from Putrevu et al. 2023 section 4 and needs the product's "
+                     "incidence raster and the measured DEM."),
+        }),
         ({
             "criterion": "psr_cold_trap_overlap",
             "label": "Overlap with a shadowed cold trap",

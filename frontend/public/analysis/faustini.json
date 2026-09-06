@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-06T16:46:53.165987+00:00",
+  "generated_utc": "2026-09-06T18:33:46.319257+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -162,8 +162,8 @@
   "verdict": {
     "screening_status": "FAIL",
     "criteria_passed": 1,
-    "criteria_total": 5,
-    "criteria_evaluable": 5,
+    "criteria_total": 6,
+    "criteria_evaluable": 6,
     "criteria_withheld": 0,
     "criteria_informative_passed": 0,
     "criteria_uninformative_passed": 1,
@@ -173,7 +173,7 @@
         "reason": "Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock."
       }
     ],
-    "criteria_note": "0 of 5 evaluable criteria passed INFORMATIVELY. 1 further passed for a reason unrelated to ice and is shown as such rather than as a tick: Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock. The other 0 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.",
+    "criteria_note": "0 of 6 evaluable criteria passed INFORMATIVELY. 1 further passed for a reason unrelated to ice and is shown as such rather than as a tick: Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock. The other 0 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.",
     "label": "No radar ice signature in this swath",
     "sublabel": "0.00 km² of the 1,461 km² measured swath passed CPR > 1.00 and DOP < 0.13",
     "confidence": "Low",
@@ -334,7 +334,7 @@
       "value": 1,
       "unit": "",
       "provenance": "MEASURED",
-      "note": "Of 5 named criteria: CPR above CBOE threshold = FAIL, DOP depressed (volume scattering) = PASS, Overlap with a shadowed cold trap = FAIL, Overlap with a doubly-shadowed core = FAIL, Thermal stability expected = FAIL"
+      "note": "Of 6 named criteria: CPR above CBOE threshold = FAIL, DOP depressed (volume scattering) = PASS, Local incidence in the Bragg domain = FAIL, Overlap with a shadowed cold trap = FAIL, Overlap with a doubly-shadowed core = FAIL, Thermal stability expected = FAIL"
     },
     "p_ice_max": {
       "value": null,
@@ -569,6 +569,18 @@
       "uninformative_reason": "Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock.",
       "provenance": "MEASURED",
       "note": "92.7 % of measured pixels sit below 0.13. PASSES FOR A REASON THAT IS NOT ABOUT ICE: this build's DOP is |tanh(x/2)| with x = ln(LH/LV), so it measures channel imbalance, and balanced channels are what regolith normally gives. Depolarised returns are consistent with volume scattering, but on their own they do not discriminate ice from fine dry regolith -- and this proxy does not measure depolarisation in the first place. See METHODS 7.9.2."
+    },
+    {
+      "criterion": "local_incidence_in_bragg_domain",
+      "label": "Local incidence in the Bragg domain",
+      "measured": 17.7332,
+      "measured_label": "median local incidence",
+      "threshold": 20.0,
+      "comparison": ">=",
+      "passed": false,
+      "informative": true,
+      "provenance": "MEASURED",
+      "note": "37.40 % of measured pixels have local incidence in 20-50 deg; 62.58 % fall below the floor. Criterion adopted from Putrevu et al. 2023, 10.1029/2023JE007745, section 4, which omits sub-20 deg local incidence so the polarimetric decomposition stays in the Bragg domain. THE SCENE IS BELOW THAT FLOOR AT NOMINAL: this pass was flown at 20.00 deg look angle, so every pixel that passes does so because TERRAIN tilts the surface toward the radar (median local 17.73 deg against ellipsoid median 14.44 deg), not because the viewing geometry satisfies it. Local incidence is computed from the product's own incidence raster and the measured LOLA slope and aspect, with the look direction MEASURED from the sign of the incidence gradient."
     },
     {
       "criterion": "psr_cold_trap_overlap",

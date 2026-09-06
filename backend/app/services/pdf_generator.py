@@ -271,6 +271,31 @@ def generate_mission_pdf_report(bundle: Dict[str, Any]) -> bytes:
         story.append(Spacer(1, 4))
         story.append(Paragraph(ps["caveat"], note_style))
 
+    # THE CRITERION TABLE. Six named criteria, each with the measured value
+    # beside the threshold it was tested against, and each carrying whether it is
+    # INFORMATIVE -- a criterion satisfied for a reason unrelated to the question
+    # is a tick that means nothing, and the report says so rather than letting a
+    # green row do the arguing.
+    story.append(Spacer(1, 8))
+    ev_rows = [["Criterion", "Measured", "Test", "Result", "Evidence?", "Mark"]]
+    for e in analysis["evidence"]:
+        ev_rows.append([
+            Paragraph(e["label"], note_style),
+            "NO DATA" if e["measured"] is None else f"{e['measured']}",
+            "—" if e["threshold"] is None else f"{e['comparison']} {e['threshold']}",
+            "pass" if e["passed"] else "fail",
+            "yes" if e.get("informative", True) else "carries none",
+            _mark(e),
+        ])
+    story.append(table(ev_rows, [2.1 * inch, 1.0 * inch, 0.85 * inch, 0.65 * inch,
+                                 1.05 * inch, 0.85 * inch], header_bg='#334155'))
+    story.append(Spacer(1, 4))
+    _uninf = [e for e in analysis["evidence"] if not e.get("informative", True)]
+    if _uninf:
+        story.append(Paragraph(
+            " ".join(f"<b>{e['label']}:</b> {e.get('uninformative_reason', '')}"
+                     for e in _uninf), note_style))
+
     story.append(Spacer(1, 10))
 
     # ── 3. landing sites ─────────────────────────────────────────────────────

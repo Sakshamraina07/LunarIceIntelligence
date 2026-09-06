@@ -1,0 +1,188 @@
+{
+  "schema": "cpr_dispersion/1",
+  "generated_utc": "2026-09-06T18:29:17.457194+00:00",
+  "generator": "backend/scripts/cpr_dispersion.py",
+  "window_px": 15,
+  "windows_ranked": 9711,
+  "windows_selected": 20,
+  "selection": "lowest coefficient of variation of s0_native (backscatter), not of CPR \u2014 the selection quantity is independent of the statistic being measured",
+  "per_window": [
+    {
+      "s0_cv": 0.055160456760337866,
+      "cpr_mean": 0.002709961182424902,
+      "cpr_sd": 0.0018803069926642917,
+      "cpr_rel_sd": 0.6938501572859332
+    },
+    {
+      "s0_cv": 0.055300215811495794,
+      "cpr_mean": 0.004969887413795328,
+      "cpr_sd": 0.0034422943911271396,
+      "cpr_rel_sd": 0.6926302558830766
+    },
+    {
+      "s0_cv": 0.0627150340482535,
+      "cpr_mean": 0.002474268040734589,
+      "cpr_sd": 0.002137640641026188,
+      "cpr_rel_sd": 0.8639486934453314
+    },
+    {
+      "s0_cv": 0.06453529949174014,
+      "cpr_mean": 0.0011130897931656927,
+      "cpr_sd": 0.0012449865199599527,
+      "cpr_rel_sd": 1.1184960347351116
+    },
+    {
+      "s0_cv": 0.06499111015785604,
+      "cpr_mean": 0.0022030230789429023,
+      "cpr_sd": 0.0027055128383765945,
+      "cpr_rel_sd": 1.2280910101381266
+    },
+    {
+      "s0_cv": 0.06551908967819964,
+      "cpr_mean": 0.0004466504272217935,
+      "cpr_sd": 0.0006990277875277486,
+      "cpr_rel_sd": 1.5650444842866609
+    },
+    {
+      "s0_cv": 0.06623025109846604,
+      "cpr_mean": 0.004051612120521087,
+      "cpr_sd": 0.003039282307405372,
+      "cpr_rel_sd": 0.7501414787490771
+    },
+    {
+      "s0_cv": 0.06696276771672377,
+      "cpr_mean": 0.0020025914459472697,
+      "cpr_sd": 0.002256188853050014,
+      "cpr_rel_sd": 1.126634620164767
+    },
+    {
+      "s0_cv": 0.06814184435268095,
+      "cpr_mean": 0.0010082408480405762,
+      "cpr_sd": 0.00115106332047187,
+      "cpr_rel_sd": 1.14165511416132
+    },
+    {
+      "s0_cv": 0.0688855650766073,
+      "cpr_mean": 0.0016851397577786623,
+      "cpr_sd": 0.0014900831128063035,
+      "cpr_rel_sd": 0.8842489804943651
+    },
+    {
+      "s0_cv": 0.06916903812370653,
+      "cpr_mean": 0.0009711932329852146,
+      "cpr_sd": 0.0013455046709261599,
+      "cpr_rel_sd": 1.3854139683308972
+    },
+    {
+      "s0_cv": 0.07107591050989015,
+      "cpr_mean": 0.00035145109782473266,
+      "cpr_sd": 0.00037152605154260586,
+      "cpr_rel_sd": 1.0571201906669943
+    },
+    {
+      "s0_cv": 0.07123567790758703,
+      "cpr_mean": 0.0005671702696831302,
+      "cpr_sd": 0.0007038880769653665,
+      "cpr_rel_sd": 1.2410524926819924
+    },
+    {
+      "s0_cv": 0.07214315354731447,
+      "cpr_mean": 0.00460824823162208,
+      "cpr_sd": 0.0023102963011815726,
+      "cpr_rel_sd": 0.5013393777983093
+    },
+    {
+      "s0_cv": 0.072202337792684,
+      "cpr_mean": 0.005369839066022703,
+      "cpr_sd": 0.0037408220504136862,
+      "cpr_rel_sd": 0.6966357845030193
+    },
+    {
+      "s0_cv": 0.07359660429407332,
+      "cpr_mean": 0.0007463649389995193,
+      "cpr_sd": 0.0009184504191245687,
+      "cpr_rel_sd": 1.230564796298879
+    },
+    {
+      "s0_cv": 0.07389122680610194,
+      "cpr_mean": 0.0010251129505820832,
+      "cpr_sd": 0.00139368905854748,
+      "cpr_rel_sd": 1.359546826284958
+    },
+    {
+      "s0_cv": 0.07403268414267951,
+      "cpr_mean": 0.0012172170086572009,
+      "cpr_sd": 0.0015981973133402936,
+      "cpr_rel_sd": 1.3129929190714968
+    },
+    {
+      "s0_cv": 0.07482859705748768,
+      "cpr_mean": 0.0012167776742075553,
+      "cpr_sd": 0.000992132821982205,
+      "cpr_rel_sd": 0.8153772402409883
+    },
+    {
+      "s0_cv": 0.07495335728742028,
+      "cpr_mean": 0.0012692079525622073,
+      "cpr_sd": 0.001761052577404875,
+      "cpr_rel_sd": 1.3875209132197437
+    }
+  ],
+  "rel_sd_min_raw": 0.5013393777983093,
+  "rel_sd_median_raw": 1.1225653274499394,
+  "correlation_correction": {
+    "source": "docs/cpr_significance.json :: effective_samples.area_all_lags",
+    "correlation_area_px": 61.420749918170166,
+    "window_pixels": 225,
+    "independent_samples_in_window": 3.6632571288980307,
+    "rho_bar": 0.2697354907061168,
+    "sd_inflation_factor": 1.1701994852449662
+  },
+  "rel_sd_min_corrected": 0.5866670818326132,
+  "apparent_looks_if_independent": 7.4193341216946616,
+  "theory": {
+    "5.0": 0.7745966692414834,
+    "5.83": 0.6909473221068674,
+    "6.77": 0.6231537952442685,
+    "13.72": 0.40549907128243035,
+    "19.77": 0.33121409229331483
+  },
+  "reference_looks": 13.72,
+  "theory_at_reference": 0.40549907128243035,
+  "measured_over_theory": 1.4467778680163714,
+  "independent_model_overstates_spread": false,
+  "is_upper_bound": true,
+  "why_upper_bound": "residual terrain structure inside a window adds variance, so the minimum can only be too high; this experiment can falsify the independent-channel model and cannot confirm it",
+  "enl_source": "docs/enl.json",
+  "external_check": {
+    "source": "Putrevu et al. 2023, 10.1029/2023JE007745",
+    "provenance": "READ FROM THE PAPER \u2014 not measured by this project",
+    "feature": "Byrgius C interior, their Figure 4",
+    "cpr_mean": 1.07,
+    "cpr_sd": 0.17,
+    "cpr_rel_sd": 0.1588785046728972,
+    "slc_spacing_m": {
+      "azimuth": 0.55,
+      "slant_range": 9.6,
+      "nadir_deg": 26.0,
+      "output_pixel_m": 25.0
+    },
+    "ground_range_spacing_m": 21.89925151396665,
+    "max_samples_per_output_pixel": 51.8905240043889,
+    "brief_quoted_max_samples": 54.88,
+    "constraint": {
+      "N=51.89": {
+        "independent_floor": 0.19925235355955756,
+        "implied_intensity_correlation": 0.3641958365957112
+      },
+      "N=54.88": {
+        "independent_floor": 0.19358951191528986,
+        "implied_intensity_correlation": 0.3264549672627518
+      }
+    },
+    "implied_intensity_correlation_min": 0.3641958365957112,
+    "paper_states_looks": false,
+    "paper_only_statement": "'averaging several independent single-look coherency matrices' (Sec 3.1)",
+    "consequence": "correlated channels narrow the ratio, so F(2N,2N) with independent numerator and denominator is conservative and every false-positive rate from it is an upper bound"
+  }
+}

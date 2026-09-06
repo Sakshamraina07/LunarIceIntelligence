@@ -29,6 +29,7 @@ this project has spent long enough removing those.
 | G7 | `assert_paths_agree.py` | the API and the static analysis disagreeing on a terrain quantity |
 | G8 | `stamp_methods.py --check` | a figure in METHODS whose source artifact has moved since it was written |
 | G9 | `assert_pdf_agrees_with_analysis.py` | a figure in the PDF report that is not in the artifacts the report renders — read from the rendered bytes, not from the generator's inputs |
+| G10 | `assert_upper_bounds_labelled.py` | a bounded figure quoted as if it were a rate, anywhere in the tracked sources |
 
 `rebuild_all.py` runs G1, G5, G7, G8 and G9 on every rebuild, and **any non-zero exit
 stops the build**, so a rebuild that would ship an unlabelled number fails before
@@ -59,8 +60,15 @@ gate says a number on screen is real.
 
 Every assertion in G1 was verified by **making it fail on purpose** and checking
 it caught the thing. So were the G5 interval gate, the G8 staleness stamp, the
-G4 straight-line invariant, and G9 — `--inject` adds a fabricated landing site
-with the deleted list's own numbers (slope 6.7°, illumination 0.02, score 37.1)
-and the gate names all six figures that are not in any artifact. An assertion that has never failed is an
+G4 straight-line invariant, G9 — `--inject` adds a fabricated landing site with
+the deleted list's own numbers (slope 6.7°, illumination 0.02, score 37.1) and
+the gate names all six figures that are not in any artifact — and G10, whose
+`--inject` writes one unlabelled quotation of a bounded figure and is caught.
+
+G10's own first version **failed on its own test fixture**: the injection payload
+was a string literal in the file, so the gate found an unlabelled occurrence in a
+tracked source on every ordinary run. The payload is now constructed rather than
+spelled. A gate that cries wolf gets waved through, which is the failure mode
+that matters more than the one it was written for. An assertion that has never failed is an
 assertion nobody has tested — and this project found five cases where the
 verification apparatus itself was wrong (`METHODS.md` §0).

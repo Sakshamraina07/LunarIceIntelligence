@@ -16,36 +16,37 @@ So the ordering is expressed here rather than in a reviewer's memory:
 
     1. ingest_lola_polar_dem.py     LOLA polar DEM -> this frame's 25 m grid
     2. process_real_sar_pipeline.py DFSAR L2 -> native cpr / dop / valid / footprint
-    3. build_analysis.py            the numbers  -> public/analysis/<crater>.json
-    4. render_layers.py             the pixels   -> public/layers/*.webp + layers.json
-    5. detection_statistics.py      the floor and the confidence interval
-    6. emit_probe_grid.py           the measured field, readable point by point
-    7. emit_provenance.py           docs/PROVENANCE.md, AND the marks gate
-    8. assert_paths_agree.py        the API and the static analysis, compared
-    9. assert_pdf_agrees_with_analysis.py  the report vs the artifacts it renders
-   10. stamp_methods.py --check     METHODS against the artifacts it quotes
+    3. incidence_mask.py            local incidence -> the Bragg-domain criterion
+    4. build_analysis.py            the numbers  -> public/analysis/<crater>.json
+    5. render_layers.py             the pixels   -> public/layers/*.webp + layers.json
+    6. detection_statistics.py      the floor and the confidence interval
+    7. emit_probe_grid.py           the measured field, readable point by point
+    8. emit_provenance.py           docs/PROVENANCE.md, AND the marks gate
+    9. assert_paths_agree.py        the API and the static analysis, compared
+   10. assert_pdf_agrees_with_analysis.py  the report vs the artifacts it renders
+   11. stamp_methods.py --check     METHODS against the artifacts it quotes
 
 FIVE OF THESE ARE GATES, NOT REPORTS, and each exits non-zero rather than
 printing a warning:
 
-  * step 5 computes the interval step 7 refuses to ship a detection area without;
-  * step 7 fails if any value reaches the UI unmarked, marked MODELLED, or absent
+  * step 6 computes the interval step 8 refuses to ship a detection area without;
+  * step 8 fails if any value reaches the UI unmarked, marked MODELLED, or absent
     without a reason;
-  * step 8 fails if the API and the static analysis disagree on a terrain
+  * step 9 fails if the API and the static analysis disagree on a terrain
     quantity they both report -- they have diverged twice;
-  * step 9 fails if the PDF prints a figure the artifacts do not contain -- it
+  * step 10 fails if the PDF prints a figure the artifacts do not contain -- it
     printed five deleted landing sites and an invented rover energy for months,
     because nothing checked it;
-  * step 9 fails if an artifact moved after a figure was transcribed from it into
+  * step 11 fails if an artifact moved after a figure was transcribed from it into
     METHODS, and names which sections to re-read.
 
-Step 6 is here for the same reason step 4 is: it reads the same native rasters
-as step 3, so leaving it out would put an older copy of the measured field under
+Step 7 is here for the same reason step 5 is: it reads the same native rasters
+as step 4, so leaving it out would put an older copy of the measured field under
 a live map.
 
 STEPS 1 AND 2 ARE SKIPPABLE, AND USUALLY SHOULD BE. They read multi-gigabyte
-products and take minutes; steps 3-10 take seconds to a couple of minutes and are
-the ones that change when the analysis changes. `--skip-ingest` runs 3-10 only.
+products and take minutes; steps 3-11 take seconds to a couple of minutes and are
+the ones that change when the analysis changes. `--skip-ingest` runs 3-11 only.
 """
 from __future__ import annotations
 
@@ -107,50 +108,56 @@ def main() -> int:
               "are reused as-is.")
     else:
         timings.append(("1 · LOLA ingest",
-                        run("1/10 · ingest_lola_polar_dem.py",
+                        run("1/11 · ingest_lola_polar_dem.py",
                             [py, str(SCRIPTS / "ingest_lola_polar_dem.py")])))
         timings.append(("2 · DFSAR pipeline",
-                        run("2/10 · process_real_sar_pipeline.py",
+                        run("2/11 · process_real_sar_pipeline.py",
                             [py, str(SCRIPTS / "process_real_sar_pipeline.py")])))
 
-    timings.append(("3 · analysis",
-                    run("3/10 · build_analysis.py — the numbers",
+    # BEFORE the analysis, which reads its artifact to build the Bragg-domain
+    # criterion row. Running it after would leave the criterion describing the
+    # previous run's geometry.
+    timings.append(("3 · local incidence",
+                    run("3/11 · incidence_mask.py — the Bragg-domain criterion",
+                        [py, str(SCRIPTS / "incidence_mask.py")])))
+    timings.append(("4 · analysis",
+                    run("4/11 · build_analysis.py — the numbers",
                         [py, str(SCRIPTS / "build_analysis.py"), args.crater])))
-    timings.append(("4 · layers",
-                    run("4/10 · render_layers.py — the pixels",
+    timings.append(("5 · layers",
+                    run("5/11 · render_layers.py — the pixels",
                         [py, str(SCRIPTS / "render_layers.py")])))
     # Must precede the provenance gate: that gate now REFUSES to ship a detection
     # area without its confidence interval, and this is what computes it.
-    timings.append(("5 · detection statistics",
-                    run("5/10 · detection_statistics.py — significance, and the CI",
+    timings.append(("6 · detection statistics",
+                    run("6/11 · detection_statistics.py — significance, and the CI",
                         [py, str(SCRIPTS / "detection_statistics.py")])))
     # The probe reads the SAME native rasters the analysis does, at a stated
     # decimation. If it is not rebuilt here it becomes a second, older copy of
     # the measured field sitting under a live map -- which is precisely the
     # failure mode this file exists to prevent. It runs after detection
     # statistics because it copies the floor and the look count out of them.
-    timings.append(("6 · probe grid",
-                    run("6/10 · emit_probe_grid.py — the measured field, point by point",
+    timings.append(("7 · probe grid",
+                    run("7/11 · emit_probe_grid.py — the measured field, point by point",
                         [py, str(SCRIPTS / "emit_probe_grid.py")])))
-    timings.append(("7 · provenance gate",
-                    run("7/10 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
+    timings.append(("8 · provenance gate",
+                    run("8/11 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
                         [py, str(SCRIPTS / "emit_provenance.py"), args.crater])))
     # The API and the static analysis compute terrain by two paths that share no
     # code, and they have diverged twice. The second time the UI was correct and
     # only the PDF was wrong, which is the worst shape for a bug to have: looking
     # at the app does not reveal it.
-    timings.append(("8 · cross-path gate",
-                    run("8/10 · assert_paths_agree.py — API vs static analysis",
+    timings.append(("9 · cross-path gate",
+                    run("9/11 · assert_paths_agree.py — API vs static analysis",
                         [py, str(SCRIPTS / "assert_paths_agree.py"),
                          "--crater", args.crater])))
     # The report is a rendering of the artifacts just rebuilt, so it is checked
     # against them here rather than at tag time.
-    timings.append(("9 · PDF vs analysis",
-                    run("9/10 · assert_pdf_agrees_with_analysis.py — the report's figures",
+    timings.append(("10 · PDF vs analysis",
+                    run("10/11 · assert_pdf_agrees_with_analysis.py — the report's figures",
                         [py, str(SCRIPTS / "assert_pdf_agrees_with_analysis.py"),
                          "--crater", args.crater])))
-    timings.append(("10 · METHODS staleness",
-                    run("10/10 · stamp_methods.py --check — METHODS vs its artifacts",
+    timings.append(("11 · METHODS staleness",
+                    run("11/11 · stamp_methods.py --check — METHODS vs its artifacts",
                         [py, str(SCRIPTS / "stamp_methods.py"), "--check"])))
 
     print("\n" + "=" * 78)

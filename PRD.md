@@ -1736,6 +1736,14 @@ number in a report:
 5. CPR is either a Stokes-derived measurement or an explicitly-labelled
    amplitude-only ratio with the claim withdrawn — and `CANDIDATE AREA` is a
    measurement either way, including a measured zero. (Gate 5)
+
+   **And a figure that is an upper bound is never quoted as if it were a rate.**
+   (Gate 10) The false-positive rates in METHODS §7.7 assume the two circular
+   channels are independent; §7.10 shows from Putrevu et al. 2023's own Byrgius C
+   dispersion that they are correlated at |ρ|² ≥ 0.36, so every one of those
+   rates is a bound. "29 % of ordinary rock crosses the threshold" and "up to
+   29 % does" are different claims, and the difference is one phrase — the kind
+   that survives one edit and is gone by the third.
 6. The map's relief is real at 25 m (LOLA 20 m native), lit from more than one
    direction, and the base filter is set from a histogram rather than by eye.
    (Gate 6)

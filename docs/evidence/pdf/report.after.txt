@@ -8,7 +8,7 @@ Faustini Crater (Chandrayaan-2 SAR Swath)
  
 product 
 ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18
-Every figure is rendered from the precomputed analysis artifacts and carries its provenance mark. Generated 2026-09-06 16:46 UTC.
+Every figure is rendered from the precomputed analysis artifacts and carries its provenance mark. Generated 2026-09-06 18:33 UTC.
 1. HEADLINE RESULT
 This is a screening of one Chandrayaan-2 DFSAR pass over Faustini Crater (Chandrayaan-2 SAR Swath) for water-ice signatures,
 with a hazard-aware landing-site search and traverse plan over measured LOLA topography. 
@@ -80,6 +80,51 @@ at k = 0 and would report a measured zero as carrying no
 uncertainty.
 Our proxy is NOT F(2N,2N)-distributed  METHODS 7.9.2. This raster is the ratio of the measured value to the floor a true sigma_SC/sigma_OC would have
 to clear, not a p-value on our own quantity.
+Criterion
+Measured
+Test
+Result
+Evidence?
+Mark
+CPR above CBOE threshold
+0.053411
+> 1.0
+fail
+yes
+MEASURED
+DOP depressed (volume scattering)
+0.047532
+< 0.13
+pass
+carries none
+MEASURED
+Local incidence in the Bragg domain
+17.7332
+>= 20.0
+fail
+yes
+MEASURED
+Overlap with a shadowed cold trap
+0.0
+> 0.0
+fail
+yes
+MEASURED
+Overlap with a doubly-shadowed core
+0.0
+> 0.0
+fail
+yes
+DERIVED
+Thermal stability expected
+110.0
+< 110.0
+fail
+yes
+DERIVED
+DOP depressed (volume scattering):
+ Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are
+balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock.
 3. LANDING SITE SELECTION
 The argmax of a six-criterion search over all 
 14,943,444
@@ -229,8 +274,8 @@ Reproducibility:
 prints appears in those files, which is checked on every build by assert_pdf_agrees_with_analysis.py
 . Any quantity that could not be
 computed is printed as NO DATA and is never filled in.
-Rendered from: analysis 2026-09-06 16:46 UTC · landing sites 2026-09-06 18:06 UTC · traverse 2026-09-06 18:07 UTC · detection statistics 2026-09-06
-18:07 UTC
+Rendered from: analysis 2026-09-06 18:33 UTC · landing sites 2026-09-06 18:42 UTC · traverse 2026-09-06 18:42 UTC · detection statistics 2026-09-06
+18:42 UTC
 Source raster: native/cpr_native.tif
 Thresholds CPR > 1.00, DOP < 0.13  backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, MAX_TRAVERSABLE_SLOPE_DEG,
 CRITICAL_LANDING_SLOPE_DEG), not retuned.

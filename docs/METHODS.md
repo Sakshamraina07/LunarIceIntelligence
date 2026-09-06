@@ -1093,8 +1093,15 @@ coherence, including zero.
 
 **The pre-registered check earned its keep.** It was written to be capable of
 failing, it failed, and what it caught was a real omission in our own simulator
-rather than a problem with the data. Had the prediction been written afterwards,
-the coherence term would simply never have been noticed.
+rather than a problem with the data.
+
+> **Had the prediction been written afterwards, the coherence term would never
+> have been noticed.**
+
+That is the whole justification for the habit. A simulator that disagrees with
+the data by a factor of five is a discovery; a simulator tuned until it agrees,
+and then written up, is nothing at all — and from the inside the two feel
+identical unless the prediction was committed first.
 
 ---
 

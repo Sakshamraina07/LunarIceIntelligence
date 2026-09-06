@@ -47,7 +47,8 @@ already computes independently. Runs after Phase 7, before 5b. 8-12 h, skippable
 Gate 2 gains **external validation against LOLA's own published PSR and average-
 illumination products** (same PDS node, same label format) plus a citable sanity
 anchor, and a **domain-discipline rule** — a full-array PSR figure is a diagnostic,
-the UI value is PSR ∩ frame. Phase order changed: **6 and 7 now run before 5b**, so
+the UI value is PSR ∩ frame. Phase order changed: **6 now runs before 3** (it
+rewrites the terrain the site search consumes) and **6 and 7 run before 5b**, so
 the one phase that can fail is not standing between you and a finished product.
 
 **Revision v1.3** — after the Gate 1 report. Phase 1 closed. §2 rule 14 corrected
@@ -1041,6 +1042,24 @@ construction.**
    **collapses two independent physical observables onto one degree of freedom**,
    which is why their conjunction is empty. That is the sentence to say in the
    viva.
+
+#### Phase order revision (v1.9) — 6 now runs BEFORE 3
+
+**Current order: `2 → 6 → 3 → 4 → 5a → 7 → 8 → 9 → 5b`.**
+
+Reason, and it is a data dependency rather than a preference: **Phase 6 ingests
+`LDEM_80S_20M` and recomputes slope, roughness and hazard. Phase 3's site search
+consumes exactly those three rasters.** Running the search first means Phase 6
+changes the terrain underneath it and the whole search is invalidated — the
+ranking, the NMS, the per-criterion evidence and the suitability raster all have
+to be regenerated. Doing 6 first costs nothing extra and means the sites that
+finally ship were chosen on the final terrain.
+
+`LDEM_80S_20M.IMG` has been on disk and unused since Phase 0.7, so Phase 6 is
+unblocked now. Phase 6 must **not** change the 25 m analysis grid: only the
+source DEM changes, through one `--input`, down the same code path. The slope and
+hazard percentile tables are expected to MOVE — that is the measurement, not a
+regression.
 
 #### Phase order revision (v1.4) — 6 and 7 now run BEFORE 5b
 

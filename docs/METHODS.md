@@ -27,7 +27,7 @@ sentence; only a generator or a gate does.**
 
 ### The second pattern: the verification apparatus itself being wrong
 
-Four instances, and it is a distinct failure from the one above, because the
+Five instances, and it is a distinct failure from the one above, because the
 thing that has drifted is the thing meant to catch drift.
 
 1. **`verify_map.mjs` asserted a pane v8 had removed.** It exited 3 before
@@ -47,6 +47,12 @@ thing that has drifted is the thing meant to catch drift.
    hillshade**, while the landforms underneath were completely hidden: the
    structure being counted was the layer's own speckle. Adding a correlation test
    against the base's high-pass turned three PASSes into FAILs.
+
+5. **`roughness_vs_latitude.py` tested the wrong sign.** Latitude runs −90 at
+   the pole to −84.8 at the equatorward edge, so roughness falling equatorward is
+   a **negative** correlation. The check asked `corr > 0.6` and would have
+   reported "no artifact" for a perfect artifact. It measured −0.498 and printed
+   a clean bill of health.
 
 **The fourth is the only one found BY DESIGN rather than by accident.** It was
 caught because the number was implausible on its face — a composite cannot carry
@@ -1426,6 +1432,147 @@ gone. Walking brightness back with contrast held at 1.06:
 
 `brightness(0.98)` is the first value that clears both rules and is what ships.
 
+## 9 · Are the landing sites real terrain, or LOLA interpolation?
+
+Phase 3's five best sites came back with slopes of 0.05–0.55° against a frame
+median of 9.56°, hazards of 0.006–0.023 against 0.339, and roughnesses of
+0.55–2.29 m against 5.95 m. **A slope of 0.05° on a 25 m grid means the surface
+rises about 2 cm over 25 metres.** All five sit between −85.9° and −86.4°, the
+equatorward edge of a frame running to −89.26°.
+
+**There is a mechanism that would produce exactly that.** The DEM's own label
+says so: *"The ground tracks are interpolated using the Generic Mapping Tools
+programs `mapproject`, `blockmedian` and `surface`."* GMT `surface` is a
+minimum-curvature spline — **smooth by construction wherever tracks are sparse**
+— and LOLA track density falls away from the pole. **The product publishes no
+per-pixel track-density or quality band**, so nothing in the file distinguishes a
+measured cell from an interpolated one.
+
+So two hypotheses predict the same site list: those are the flattest places, or
+those are the emptiest places. Three tests separate them.
+
+### 9.1 Roughness against latitude — suggestive, not decisive
+
+| latitude | roughness p50 | slope p50 |
+|---|---|---|
+| −90.00 … −89.75 | 13.40 m | 20.75° |
+| −89.00 … −88.75 | 6.22 m | 10.03° |
+| −87.00 … −86.75 | 7.76 m | 12.24° |
+| **−86.25 … −86.00** | **7.59 m** | **12.18°** |
+| −85.25 … −85.00 | 2.49 m | 4.15° |
+
+Correlation of roughness with latitude across 21 bands: **−0.498**; equatorward
+of −86.5 the median roughness is 0.771× the poleward value. Latitude increases
+equatorward, so a *negative* correlation is the artifact direction, and a mild
+trend is present. **But it is not conclusive**: the poleward-most band is genuine
+Shackleton-area relief and drags the fit by itself, and the bands where the sites
+actually sit read 4.5–7.6 m — ordinary.
+
+### 9.2 Where the ultra-smooth pixels are — decisive, and it exonerates the sites
+
+Band medians answer "is the region smoother". The site list is built from
+individual *pixels*, so the question is where the ultra-smooth pixels live.
+Enrichment is the share of sub-1.2 m-roughness pixels in a band divided by that
+band's share of area; 1.0 means they are spread exactly like area.
+
+| latitude | enrichment |
+|---|---|
+| −85.25 … −85.00 | **3.65** |
+| −85.00 … −84.75 | **2.98** |
+| −88.50 … −88.25 | 1.87 |
+| **−86.50 … −85.75 (all five sites)** | **0.59** |
+
+**The artifact is real and it is not where the sites are.** The extreme
+equatorward bands are enriched 3–3.7× in ultra-smooth pixels — the interpolation
+signature, exactly as predicted. But in the band holding all five sites, smooth
+pixels are **under**-represented at 0.59×. The sites are not drawn from the
+suspect region.
+
+### 9.3 Planarity — the test that separates flat from empty
+
+A real crater floor carries metres of micro-relief about its mean plane over a
+kilometre. A spline drawn between distant tracks does not. Fitting a plane to
+each site's 2 km box, against 200 random boxes in the same frame (p05 **8.20 m**,
+p50 20.91 m):
+
+| site | latitude | plane-fit RMS | vs reference p05 | local rank |
+|---|---|---|---|---|
+| 1 | −86.2714 | 62.46 m | **7.62×** | 0.3 % |
+| 2 | −86.4434 | 36.02 m | **4.39×** | 0.1 % |
+| 3 | −86.0109 | 32.46 m | **3.96×** | 0.5 % |
+| 4 | −86.2995 | 51.17 m | **6.24×** | 0.2 % |
+| 5 | −85.8987 | 41.23 m | **5.03×** | 8.5 % |
+
+Every site's neighbourhood is **3.9–7.6× further from a plane** than the
+smoothest 5 % of the frame, and above the median. The *local rank* says the rest:
+each site is smoother than 99.5 % of its own 2 km box, whose median roughness is
+3.7–6.2 m. **These are small genuinely flat spots — crater floors — sitting
+inside ordinary rough terrain, not regions where the data ran out.**
+
+**Verdict: the sites are real.** The artifact exists in this product and is
+measurable, but it lives at −85.25 to −84.75 and the site list does not draw from
+there.
+
+### 9.4 The guard, because it was luck and not design
+
+Nothing in Phase 3 excluded the enriched bands — the other criteria happened to.
+So each site now carries an `interpolation_check`: its 2 km plane-fit RMS, the
+frame's reference p05, and a verdict. A site whose neighbourhood fits a plane
+*better* than 95 % of the frame is marked **SUSPECT**, with the terrain figures
+there called possibly unresolved rather than flat. **Marked, not dropped** — a
+site excluded silently is a claim about the Moon; a site marked is a statement
+about the data.
+
+### 9.5 Why all five cluster in 0.55° of latitude
+
+The physical cause is this project's own correction: max solar elevation is
+`1.54° + (90 − |φ|)`, so 5.29° at −86.3° against 2.29° at −89.25°. Measured, the
+illumination field follows it:
+
+| latitude | illumination p50 | max solar elevation |
+|---|---|---|
+| −90.0 … −89.5 | 0.0295 | 1.79° |
+| −88.5 … −88.0 | 0.0002 | 3.29° |
+| −87.0 … −86.5 | 0.0591 | 4.79° |
+| **−86.5 … −86.0** | **0.2677** | 5.29° |
+| **−86.0 … −85.5** | **0.3184** | 5.79° |
+| −85.0 … −84.5 | 0.1610 | 6.79° |
+
+Correlation of illumination with latitude: **+0.544**. The band the sites occupy
+is the illumination maximum of this frame — and it is a *local* maximum, not the
+edge, which is why the sites cluster at −86 rather than at −84.8.
+
+### 9.6 The score decomposition — the largest weight does the least work
+
+| site | safety (w 0.50) | power (w 0.31) | access (w 0.19) |
+|---|---|---|---|
+| 1 | 0.492 (53 %) | 0.279 (30 %) | 0.159 (17 %) |
+| 2 | 0.495 (54 %) | 0.278 (30 %) | 0.147 (16 %) |
+| 3 | 0.497 (54 %) | 0.249 (27 %) | 0.169 (18 %) |
+| 4 | 0.489 (54 %) | 0.280 (31 %) | 0.132 (15 %) |
+| 5 | 0.488 (54 %) | 0.237 (26 %) | 0.173 (19 %) |
+
+Safety carries the largest weight and **more than half of every score — and it
+does none of the ranking.** Across the top five its term value ranges only
+0.976–0.994, because `safety = 1 − hazard` and every candidate is already
+near-perfectly safe; the term is saturated. Power ranges 0.758–0.896 and access
+0.704–0.923. **The order of this list is decided by the two terms carrying
+together less than half its weight.**
+
+That is a finding about the weights, not something to tune away. It is reported
+because a composite that shows only its total would hide it.
+
+### 9.7 What "PSR km" does not mean
+
+Every site reports a distance to the nearest permanently shadowed region, and it
+will read as proximity to ice. It is not. **Candidate area in this frame is
+0.00 km² — no pixel passes the ice criteria at all** — so no site here is near
+detected ice, because nothing was detected. The figure is the distance to the
+nearest **modelled** cold trap, from the Phase 2 horizon computation at 240 m
+effective resolution. A cold trap is where ice *could* persist; that is a
+different claim from where ice *is*. Each site now carries that sentence in its
+own record.
+
 ---
 
 *Sections 9 (site search), 10 (traverse) and 11 (Stokes derivation) arrive with
@@ -1448,7 +1595,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `6dd25a3`.
+Stamped at commit `da0184a`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -1457,8 +1604,11 @@ Stamped at commit `6dd25a3`.
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/landing_sites.json` | `59eaae71c31d751f…` | §9.6, §9.7 |
 | `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
+| `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
+| `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `frontend/public/analysis/faustini.json` | `f84a892efe7ffaf3…` | §8.2, §8.3 |

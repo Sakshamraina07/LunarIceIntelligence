@@ -88,6 +88,30 @@ def _dem_prov() -> str:
         return "DEM provenance sidecar unreadable — SOURCE NOT VERIFIED"
 
 
+def _plane_rms(z):
+    """RMS residual after removing the best-fit plane from a DEM box.
+
+    THE INTERPOLATION GUARD. LOLA GDRs are gridded from laser tracks with GMT
+    `surface` -- a minimum-curvature spline, which is smooth BY CONSTRUCTION
+    wherever tracks are sparse -- and the product publishes no per-pixel
+    track-density or quality band, so nothing in the file distinguishes a
+    measured cell from an interpolated one.
+
+    That matters here because this search ranks SMOOTHNESS, and an interpolation
+    gap is the smoothest thing in any DEM. A real crater floor carries metres of
+    micro-relief about its mean plane over a kilometre; a spline drawn between
+    distant tracks does not. So each site reports how far its neighbourhood
+    departs from a plane, against the distribution of random boxes in this same
+    frame, and a site that is suspiciously planar is MARKED rather than dropped.
+    """
+    import numpy as _np
+    ny, nx = z.shape
+    yy, xx = _np.mgrid[0:ny, 0:nx]
+    A = _np.column_stack([xx.ravel(), yy.ravel(), _np.ones(z.size)])
+    coef, *_r = _np.linalg.lstsq(A, z.ravel(), rcond=None)
+    return float(_np.sqrt((((A @ coef) - z.ravel()) ** 2).mean()))
+
+
 def hr(t: str) -> None:
     print("\n" + "-" * 78)
     print(t)
@@ -237,12 +261,28 @@ def main() -> int:
     w_dist = float(cfg.WEIGHT_LANDING_DISTANCE)
     wsum = w_safe + w_illum + w_dist
     score = ((w_safe * safety + w_illum * power + w_dist * access) / wsum).astype(np.float32)
+    # Kept so each site can report WHICH TERM earned its rank.
+    _terms = {"safety": (safety, w_safe), "power": (power, w_illum),
+              "access": (access, w_dist)}
     score[~feasible] = 0.0
 
     tifffile.imwrite(str(HEATMAP), score)
     print(f"\n  suitability heatmap -> {HEATMAP.relative_to(BASE_DIR)} "
           f"({HEATMAP.stat().st_size / 1e6:.1f} MB) — the recommendation is visibly "
           f"the argmax of this")
+
+    # Reference distribution of plane-fit RMS over random 2 km boxes, so each
+    # site's planarity has something in this same frame to be compared against.
+    _rng = np.random.default_rng(20200808)
+    _B = 40
+    _ref = np.array([_plane_rms(dem[r0 - _B:r0 + _B, c0 - _B:c0 + _B])
+                     for r0, c0 in zip(_rng.integers(_B, dem.shape[0] - _B, 200),
+                                       _rng.integers(_B, dem.shape[1] - _B, 200))])
+    _ref_p05 = float(np.percentile(_ref, 5))
+    print(f"\n  interpolation guard: plane-fit RMS over 200 random 2 km boxes — "
+          f"p05 {_ref_p05:.2f} m, p50 {np.percentile(_ref, 50):.2f} m.")
+    print("  A site whose own 2 km box fits a plane BETTER than p05 is marked")
+    print("  SUSPECT: that is what a spline across a LOLA coverage gap looks like.")
 
     # ------------------------------------------------------------------- NMS
     hr(f"NON-MAXIMUM SUPPRESSION — minimum separation {args.nms_km:g} km")
@@ -260,6 +300,9 @@ def main() -> int:
             break
         li, si = divmod(idx, samples)
         lat, lon = frame.pixel_to_latlon(float(li), float(si))
+        _r0, _r1 = max(0, li - 40), min(dem.shape[0], li + 40)
+        _c0, _c1 = max(0, si - 40), min(dem.shape[1], si + 40)
+        _prms = _plane_rms(dem[_r0:_r1, _c0:_c1])
         sites.append({
             "rank": rank,
             "grid": {"line": int(li), "sample": int(si)},
@@ -269,6 +312,17 @@ def main() -> int:
             # THE TWO TENSION TERMS, UNREDUCED. Reported side by side because
             # collapsing them hides the trade-off that is the actual science.
             "ice_access": {
+                # NOT "distance to ice". CANDIDATE AREA IS 0.00 km2 -- no pixel
+                # in this frame passes the ice criteria -- so no site here is
+                # near detected ice, because nothing was detected. This is the
+                # distance to the nearest MODELLED permanently-shadowed region
+                # from the Phase 2 horizon computation at 240 m effective. A
+                # cold trap is where ice COULD persist; that is a different
+                # claim from where ice IS.
+                "means": ("distance to the nearest MODELLED cold trap (horizon "
+                          "computation, 240 m effective) — NOT to detected ice. "
+                          "No pixel in this frame passes the ice criteria, so "
+                          "no site here is near detected ice."),
                 "psr_distance_km": round(float(psr_dist_m[li, si]) / 1000.0, 3),
                 "threshold_km": args.rover_range_km,
                 "passed": bool(psr_dist_m[li, si] <= args.rover_range_km * 1000.0),
@@ -295,6 +349,32 @@ def main() -> int:
                     ("illumination_fraction", illum[li, si], args.min_illumination, ">=",
                      crit["illumination_above_minimum"][0]),
                 )
+            },
+            # WHICH TERM EARNED THE RANK. A composite that shows only its total
+            # hides the case where one term does all the work -- and with five
+            # sites inside 0.55 deg of latitude, that is exactly the question a
+            # reader should be able to ask of this list.
+            "score_decomposition": {
+                name: {
+                    "term_value": round(float(arr[li, si]), 4),
+                    "weight": round(w / wsum, 4),
+                    "contribution": round(float(arr[li, si]) * w / wsum, 4),
+                    "share_of_score": round(float(arr[li, si]) * w / wsum
+                                            / max(float(score[li, si]), 1e-9), 4),
+                } for name, (arr, w) in _terms.items()
+            },
+            "interpolation_check": {
+                "plane_rms_m": round(_prms, 2),
+                "frame_reference_p05_m": round(_ref_p05, 2),
+                "ratio_to_reference_p05": round(_prms / max(_ref_p05, 1e-9), 2),
+                "verdict": ("SUSPECT — this neighbourhood is closer to a plane than "
+                            "95 % of the frame, which is what a spline drawn across a "
+                            "gap in LOLA track coverage looks like. Treat the terrain "
+                            "figures here as possibly unresolved rather than flat."
+                            if _prms < _ref_p05 else
+                            "ordinary micro-relief — the 2 km neighbourhood departs "
+                            "from its best-fit plane like normal ground does, so this "
+                            "is a genuinely flat spot and not a coverage gap"),
             },
             "provenance": {
                 "slope/roughness/hazard": f"MEASURED — {_dem_prov()}",

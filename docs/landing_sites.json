@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/landing-sites/1",
-  "generated_utc": "2026-09-06T13:24:04.946051+00:00",
+  "generated_utc": "2026-09-06T13:46:28.468838+00:00",
   "generator": "backend/scripts/search_landing_sites.py",
   "search": {
     "pixels_evaluated": 14943444,
@@ -58,6 +58,7 @@
       "lon_deg": 82.64773,
       "suitability_score": 0.92901,
       "ice_access": {
+        "means": "distance to the nearest MODELLED cold trap (horizon computation, 240 m effective) \u2014 NOT to detected ice. No pixel in this frame passes the ice criteria, so no site here is near detected ice.",
         "psr_distance_km": 3.053,
         "threshold_km": 20.0,
         "passed": true
@@ -105,6 +106,32 @@
           "passed": true
         }
       },
+      "score_decomposition": {
+        "safety": {
+          "term_value": 0.9832,
+          "weight": 0.5,
+          "contribution": 0.4916,
+          "share_of_score": 0.5292
+        },
+        "power": {
+          "term_value": 0.8912,
+          "weight": 0.3125,
+          "contribution": 0.2785,
+          "share_of_score": 0.2998
+        },
+        "access": {
+          "term_value": 0.8473,
+          "weight": 0.1875,
+          "contribution": 0.1589,
+          "share_of_score": 0.171
+        }
+      },
+      "interpolation_check": {
+        "plane_rms_m": 62.46,
+        "frame_reference_p05_m": 8.2,
+        "ratio_to_reference_p05": 7.62,
+        "verdict": "ordinary micro-relief \u2014 the 2 km neighbourhood departs from its best-fit plane like normal ground does, so this is a genuinely flat spot and not a coverage gap"
+      },
       "provenance": {
         "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
         "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
@@ -122,6 +149,7 @@
       "lon_deg": 82.98586,
       "suitability_score": 0.91969,
       "ice_access": {
+        "means": "distance to the nearest MODELLED cold trap (horizon computation, 240 m effective) \u2014 NOT to detected ice. No pixel in this frame passes the ice criteria, so no site here is near detected ice.",
         "psr_distance_km": 4.341,
         "threshold_km": 20.0,
         "passed": true
@@ -169,6 +197,32 @@
           "passed": true
         }
       },
+      "score_decomposition": {
+        "safety": {
+          "term_value": 0.9897,
+          "weight": 0.5,
+          "contribution": 0.4948,
+          "share_of_score": 0.5381
+        },
+        "power": {
+          "term_value": 0.8897,
+          "weight": 0.3125,
+          "contribution": 0.278,
+          "share_of_score": 0.3023
+        },
+        "access": {
+          "term_value": 0.783,
+          "weight": 0.1875,
+          "contribution": 0.1468,
+          "share_of_score": 0.1596
+        }
+      },
+      "interpolation_check": {
+        "plane_rms_m": 36.02,
+        "frame_reference_p05_m": 8.2,
+        "ratio_to_reference_p05": 4.39,
+        "verdict": "ordinary micro-relief \u2014 the 2 km neighbourhood departs from its best-fit plane like normal ground does, so this is a genuinely flat spot and not a coverage gap"
+      },
       "provenance": {
         "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
         "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
@@ -186,6 +240,7 @@
       "lon_deg": 80.1392,
       "suitability_score": 0.91469,
       "ice_access": {
+        "means": "distance to the nearest MODELLED cold trap (horizon computation, 240 m effective) \u2014 NOT to detected ice. No pixel in this frame passes the ice criteria, so no site here is near detected ice.",
         "psr_distance_km": 2.031,
         "threshold_km": 20.0,
         "passed": true
@@ -233,6 +288,32 @@
           "passed": true
         }
       },
+      "score_decomposition": {
+        "safety": {
+          "term_value": 0.994,
+          "weight": 0.5,
+          "contribution": 0.497,
+          "share_of_score": 0.5434
+        },
+        "power": {
+          "term_value": 0.7975,
+          "weight": 0.3125,
+          "contribution": 0.2492,
+          "share_of_score": 0.2725
+        },
+        "access": {
+          "term_value": 0.8984,
+          "weight": 0.1875,
+          "contribution": 0.1685,
+          "share_of_score": 0.1842
+        }
+      },
+      "interpolation_check": {
+        "plane_rms_m": 32.46,
+        "frame_reference_p05_m": 8.2,
+        "ratio_to_reference_p05": 3.96,
+        "verdict": "ordinary micro-relief \u2014 the 2 km neighbourhood departs from its best-fit plane like normal ground does, so this is a genuinely flat spot and not a coverage gap"
+      },
       "provenance": {
         "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
         "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
@@ -250,6 +331,7 @@
       "lon_deg": 79.64655,
       "suitability_score": 0.90089,
       "ice_access": {
+        "means": "distance to the nearest MODELLED cold trap (horizon computation, 240 m effective) \u2014 NOT to detected ice. No pixel in this frame passes the ice criteria, so no site here is near detected ice.",
         "psr_distance_km": 5.913,
         "threshold_km": 20.0,
         "passed": true
@@ -297,6 +379,32 @@
           "passed": true
         }
       },
+      "score_decomposition": {
+        "safety": {
+          "term_value": 0.9777,
+          "weight": 0.5,
+          "contribution": 0.4888,
+          "share_of_score": 0.5426
+        },
+        "power": {
+          "term_value": 0.8959,
+          "weight": 0.3125,
+          "contribution": 0.28,
+          "share_of_score": 0.3108
+        },
+        "access": {
+          "term_value": 0.7044,
+          "weight": 0.1875,
+          "contribution": 0.1321,
+          "share_of_score": 0.1466
+        }
+      },
+      "interpolation_check": {
+        "plane_rms_m": 51.17,
+        "frame_reference_p05_m": 8.2,
+        "ratio_to_reference_p05": 6.24,
+        "verdict": "ordinary micro-relief \u2014 the 2 km neighbourhood departs from its best-fit plane like normal ground does, so this is a genuinely flat spot and not a coverage gap"
+      },
       "provenance": {
         "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",
         "illumination/psr_distance": "MEASURED \u2014 horizon computation at 240 m effective (3x from 80 m posts), 360 azimuths",
@@ -314,6 +422,7 @@
       "lon_deg": 78.05602,
       "suitability_score": 0.8986,
       "ice_access": {
+        "means": "distance to the nearest MODELLED cold trap (horizon computation, 240 m effective) \u2014 NOT to detected ice. No pixel in this frame passes the ice criteria, so no site here is near detected ice.",
         "psr_distance_km": 1.525,
         "threshold_km": 20.0,
         "passed": true
@@ -360,6 +469,32 @@
           "comparison": ">=",
           "passed": true
         }
+      },
+      "score_decomposition": {
+        "safety": {
+          "term_value": 0.9767,
+          "weight": 0.5,
+          "contribution": 0.4884,
+          "share_of_score": 0.5435
+        },
+        "power": {
+          "term_value": 0.7586,
+          "weight": 0.3125,
+          "contribution": 0.237,
+          "share_of_score": 0.2638
+        },
+        "access": {
+          "term_value": 0.9237,
+          "weight": 0.1875,
+          "contribution": 0.1732,
+          "share_of_score": 0.1927
+        }
+      },
+      "interpolation_check": {
+        "plane_rms_m": 41.23,
+        "frame_reference_p05_m": 8.2,
+        "ratio_to_reference_p05": 5.03,
+        "verdict": "ordinary micro-relief \u2014 the 2 km neighbourhood departs from its best-fit plane like normal ground does, so this is a genuinely flat spot and not a coverage gap"
       },
       "provenance": {
         "slope/roughness/hazard": "MEASURED \u2014 LOLA LDEM_80S_20M V2.0, 20 m/px native, low-passed and resampled to 25 m grid (20 m posts)",

@@ -136,6 +136,39 @@ def mlook_spatial(z: np.ndarray, n: int) -> np.ndarray:
     return i.reshape(rows // n, n, z.shape[1]).mean(axis=1)
 
 
+def subband_looks(z: np.ndarray, n: int, occupied: int, *, taper: bool,
+                  guard: int) -> np.ndarray:
+    """The n sub-band looks, kept SEPARATE, decimated by n. Shape (n, rows, cols).
+
+    Returning the looks rather than their mean is what lets the shortfall be
+    diagnosed instead of guessed: with the stack in hand we can compare a plain
+    average against an equalised one, and compute what ENL the measured per-look
+    powers predict.
+
+    `taper` applies a Hamming window across each sub-band and `guard` drops bins
+    at each sub-band edge, both of which suppress leakage between neighbouring
+    looks. A hard rectangular split is the `taper=False, guard=0` case.
+    """
+    rows = (z.shape[0] // n) * n
+    Z = np.fft.fft(z[:rows] - z[:rows].mean(axis=0), axis=0)
+    nfft = Z.shape[0]
+    psd = np.abs(Z).mean(axis=1)
+    centre = int(np.argmax(np.convolve(psd, np.ones(max(occupied, 1)), "same")))
+    half = max(occupied // 2, n)
+    band = (np.arange(centre - half, centre - half + 2 * half) % nfft)
+    width = len(band) // n
+    out = np.empty((n, rows // n, z.shape[1]), dtype=np.float64)
+    for k in range(n):
+        idx = band[k * width:(k + 1) * width]
+        if guard:
+            idx = idx[guard:len(idx) - guard]
+        sub = np.zeros_like(Z)
+        w = np.hamming(len(idx))[:, None] if taper else 1.0
+        sub[idx] = Z[idx] * w
+        out[k] = (np.abs(np.fft.ifft(sub, axis=0)) ** 2)[::n]
+    return out
+
+
 def mlook_subband(z: np.ndarray, n: int, occupied: int) -> np.ndarray:
     """Split the processed azimuth band into n non-overlapping sub-bands, image
     each separately, and average the n intensities. This is what a SAR processor
@@ -169,6 +202,8 @@ def main() -> int:
     ap.add_argument("--windows", type=int, default=6)
     ap.add_argument("--lines", type=int, default=8400, help="azimuth lines per window")
     ap.add_argument("--patch", type=int, default=16)
+    ap.add_argument("--guard", type=int, default=8,
+                    help="bins dropped at each sub-band edge in the tapered arm")
     ap.add_argument("--out", default="docs/slc_multilook_control.json")
     args = ap.parse_args()
 
@@ -214,16 +249,41 @@ def main() -> int:
         sp = mlook_spatial(z, AZIMUTH_LOOKS)
         enl_sp = mode_of(patch_ratios(sp, np.ones_like(sp, dtype=bool), args.patch))
 
-        sb = mlook_subband(z, AZIMUTH_LOOKS, osamp["occupied_bins"])
-        enl_sb = mode_of(patch_ratios(sb, np.ones_like(sb, dtype=bool), args.patch))
+        def enl_of(a):
+            return mode_of(patch_ratios(a, np.ones_like(a, dtype=bool), args.patch))
+
+        # Hard rectangular split (the original arm), then the two diagnoses.
+        looks = subband_looks(z, AZIMUTH_LOOKS, osamp["occupied_bins"],
+                              taper=False, guard=0)
+        enl_sb = enl_of(looks.mean(axis=0))
+        # Each sub-band carries a different share of the antenna/window-weighted
+        # azimuth spectrum. Averaging looks of UNEQUAL power cannot reach n: for
+        # independent looks with means mu_k the ceiling is (sum mu)^2 / sum mu^2.
+        mu = looks.reshape(AZIMUTH_LOOKS, -1).mean(axis=1)
+        enl_pred_unequal = float(mu.sum() ** 2 / (mu ** 2).sum())
+        enl_equalised = enl_of((looks / mu[:, None, None]).mean(axis=0))
+        del looks
+        # And the leakage hypothesis: taper each sub-band, guard its edges.
+        looks_t = subband_looks(z, AZIMUTH_LOOKS, osamp["occupied_bins"],
+                                taper=True, guard=max(args.guard, 0))
+        enl_tapered = enl_of(looks_t.mean(axis=0))
+        mu_t = looks_t.reshape(AZIMUTH_LOOKS, -1).mean(axis=1)
+        enl_tapered_eq = enl_of((looks_t / mu_t[:, None, None]).mean(axis=0))
+        del looks_t
 
         rows.append({"window": wi, "start_line": int(s0), **osamp,
                      "enl_single_look": enl_1look,
-                     "enl_spatial_21": enl_sp, "enl_subband_21": enl_sb})
-        beat(f"      bw {osamp['measured_bandwidth_hz']:7.1f} Hz "
-             f"(x{osamp['ratio_to_label']:.2f} label)  oversampling "
+                     "enl_spatial_21": enl_sp, "enl_subband_21": enl_sb,
+                     "enl_subband_unequal_power_ceiling": enl_pred_unequal,
+                     "enl_subband_equalised": enl_equalised,
+                     "enl_subband_tapered": enl_tapered,
+                     "enl_subband_tapered_equalised": enl_tapered_eq})
+        beat(f"      bw {osamp['measured_bandwidth_hz']:7.1f} Hz  osamp "
              f"{osamp['oversampling_factor']:.2f}  ENL: 1-look {enl_1look:5.2f}  "
-             f"spatial21 {enl_sp:5.2f}  subband21 {enl_sb:5.2f}")
+             f"spatial21 {enl_sp:5.2f}  subband21 {enl_sb:5.2f}  "
+             f"(unequal-power ceiling {enl_pred_unequal:5.2f}  equalised "
+             f"{enl_equalised:5.2f}  tapered {enl_tapered:5.2f}  "
+             f"tapered+eq {enl_tapered_eq:5.2f})")
 
     if not rows:
         print("\nNo usable window. Nothing measured.")
@@ -245,6 +305,14 @@ def main() -> int:
           f"{med('max_looks_from_spatial_average'):>12.2f}")
     print(f"  {'ENL, 21 looks by SUB-BAND split':>38}  {med('enl_subband_21'):>10.2f}  "
           f"{float(AZIMUTH_LOOKS):>12.2f}")
+    print(f"  {'  ceiling from UNEQUAL sub-band power':>38}  "
+          f"{med('enl_subband_unequal_power_ceiling'):>10.2f}  {float(AZIMUTH_LOOKS):>12.2f}")
+    print(f"  {'  sub-band, powers EQUALISED':>38}  "
+          f"{med('enl_subband_equalised'):>10.2f}  {float(AZIMUTH_LOOKS):>12.2f}")
+    print(f"  {'  sub-band, TAPERED + guard bands':>38}  "
+          f"{med('enl_subband_tapered'):>10.2f}  {float(AZIMUTH_LOOKS):>12.2f}")
+    print(f"  {'  sub-band, tapered AND equalised':>38}  "
+          f"{med('enl_subband_tapered_equalised'):>10.2f}  {float(AZIMUTH_LOOKS):>12.2f}")
     print(f"  {'ENL of the DELIVERED sri product':>38}  {'5–6':>10}  "
           f"{'21 (nominal)':>12}")
 
@@ -271,7 +339,10 @@ def main() -> int:
         json.dumps({"windows": rows, "medians": {
             k: med(k) for k in ("measured_bandwidth_hz", "oversampling_factor",
                                 "enl_single_look", "enl_spatial_21",
-                                "enl_subband_21")}}, indent=2), encoding="utf-8")
+                                "enl_subband_21", "enl_subband_unequal_power_ceiling",
+                                "enl_subband_equalised", "enl_subband_tapered",
+                                "enl_subband_tapered_equalised")}}, indent=2),
+        encoding="utf-8")
     print(f"\nwrote {args.out}")
     return 0
 

@@ -252,6 +252,14 @@ These never relax. They are the working rules from the old
    hand-maintained frontend config that nothing forced to agree with the
    renderer. A caption is a claim about provenance and gets the same discipline
    as a number.
+5b. **A criterion that admits everything is not a criterion.** Any filter, gate
+   or screening term that passes more than 99 % or less than 1 % of its domain
+   must be reported as NON-DISCRIMINATING at the point of use, with the fraction
+   printed. Reporting "six criteria" when one of them selects 100 % of the frame
+   overstates how constrained the answer is, in exactly the way a plausible
+   placeholder overstates a measurement. Such a criterion may be kept when it is
+   a real mission constraint that a different frame would bind on -- but it must
+   never be counted as evidence of selectivity.
 
 **Engineering**
 

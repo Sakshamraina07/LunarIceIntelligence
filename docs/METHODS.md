@@ -793,12 +793,34 @@ the spatial-average figure and its 6.8 ceiling, not with the sub-band figure.
 
 **The operative number for everything downstream is therefore N ≈ 5, not 21.**
 
-*Caveats kept in view: one window of nine (the last, at the very end of the
-pass) is a clear outlier at 1.50 / 4.03 and the medians above are taken over
-all nine regardless. The sub-band figure of 9.95 falls short of its own 21
-ceiling, most likely spectral leakage from a hard band split; that gap is not
-explained here, and it does not affect the conclusion, which rests on the
-spatial arm matching the delivered product.*
+*One window of nine (the last, at the very end of the pass) is a clear outlier
+at 1.50 / 4.03, and the medians above are taken over all nine regardless.*
+
+**The sub-band arm falls short of its own ceiling, and three hypotheses failed
+to explain it.** At 8.8–9.9 against a ceiling of 21, the obvious suspect was
+spectral leakage from a hard rectangular band split. It was tested:
+
+| sub-band variant | measured ENL |
+|---|---|
+| hard rectangular split | 8.76 |
+| Hamming taper + 8-bin guard bands | **8.37** |
+| powers equalised across looks | 9.39 |
+| tapered *and* equalised | 6.96 |
+| *ceiling implied by the measured per-look powers* | *12.81* |
+
+**Tapering does not climb — it falls slightly. The leakage diagnosis is
+rejected.** Equalising the looks recovers little, so unequal sub-band power is
+not the main term either, even though the measured per-look powers cap the
+achievable figure at 12.8 rather than 21. The residual gap between about 9 and
+21 is **unexplained**, and no attempt is made here to explain it away.
+
+Two things follow, and the second matters more than the first. **We have not
+demonstrated that 21 independent looks are achievable on this data**, so no
+claim to that effect is made anywhere. And **the conclusion does not depend on
+it**: it rests on the spatial arm (4.4–4.5) matching the delivered product
+(5.3–6.5) and its independently derived 6.77 ceiling, and on the sub-band arm
+being roughly twice the spatial arm on identical grids, identical patches and
+identical terrain — a gap that texture cannot produce.
 
 ### 7.5 Neighbouring pixels are not independent
 
@@ -875,9 +897,16 @@ standard deviation is `sqrt((2N-1) / (N(N-2)))`:
 | 6 | 0.4082 | 0.6770 | 1.66× |
 
 **(b) It is computed from nominal looks.** §7.3–7.4 measure ENL on a DFSAR
-product — as far as this project's literature sweep found, the first time that
-has been done for this instrument — and find it 3–4× below nominal. Combined
-with (a), a published bar of ±0.16 may understate the true figure by roughly 3×.
+product and find it 3–4× below nominal. Combined with (a), a published bar of
+±0.16 may understate the true figure by roughly 3×.
+
+*Calibration of this claim.* **ENL falling below nominal looks because of
+azimuth oversampling is textbook in terrestrial SAR and is not presented here as
+a discovered phenomenon.** What is ours is narrower and survives that: the first
+measurement of ENL on a DFSAR product; a controlled experiment on the
+single-look complex from the same pass that isolates the mechanism and rules out
+texture; and the quantified consequence for a live scientific dispute. The verb
+throughout is **measure and quantify**, never *discover*.
 
 **(c) There is an uncorrected positive bias.** `E[R] = CPR · N/(N−1)`, because
 the denominator is a random variable and `E[1/Y] > 1/E[Y]`. That is **+25 % at
@@ -895,6 +924,95 @@ chain, different look configuration — and no statement here does so. The point
 is narrower and harder to dismiss: **nobody has measured it for theirs either**,
 so the uncertainty on a published lunar CPR detection is presently unknown
 rather than small.
+
+### 7.9 Two corrections to how these numbers may be used
+
+Both of these constrain *our own* claims, not the literature's.
+
+#### 7.9.1 A crater does not hold as many independent samples as it holds pixels
+
+Any "the peak over an ice-free crater would reach X" argument is a
+multiple-comparisons calculation, and computing it from raw pixel counts assumes
+the pixels are independent. §7.5 shows they are not, and the field that is
+actually thresholded is a 5 × 5 boxcar of σ⁰ on top of that. So the effective
+count is measured, by integrating the two-dimensional autocorrelation of
+`cpr_real.tif` itself over patches lying wholly inside the valid mask:
+
+**A = 61.5 pixels per independent sample.** F2's **1,520 pixels of CPR are
+therefore about 25 independent samples**, not 1,520.
+
+Patches are mean-removed before the ACF, which suppresses the DC terrain level
+and biases A slightly *low* — that is, biases the independent count *high*, so
+the penalty derived from it errs against our own argument rather than for it.
+
+Median peak over an ice-free F2, true CPR 0.7, as the median of the maximum of
+*n* draws of `CPR · F(2N,2N)`:
+
+| N | from 1,520 raw pixels | from 25 effective samples |
+|---|---|---|
+| 5 | 7.38 | **2.52** |
+| 6 | 5.77 | **2.23** |
+| 9 | 3.71 | **1.78** |
+| 21 | 2.00 | **1.27** |
+
+**The raw-pixel column overstates the penalty by roughly 3×, and quoting it
+would be precisely the error this project exists to avoid.** Only the
+right-hand column may be used.
+
+#### 7.9.2 The F(2N,2N) machinery does not describe our own CPR values
+
+`R ~ CPR · F(2N, 2N)` holds for a ratio of two independent N-look **intensities**
+— which is what published CPR, `σ_SC/σ_OC` from the Stokes vector, is. The
+critique in §7.8 is aimed at those values and stands. **It is not what this
+build computes.** Our amplitude proxy,
+
+```
+proxy = ((√LH − √LV) / (√LH + √LV))²
+```
+
+is a different functional form with a different sampling distribution, and
+applying F(2N,2N) to it would be the same class of error the critique is about.
+
+So its distribution is obtained by Monte Carlo instead
+(`backend/scripts/cpr_significance.py`): circular complex Gaussian draws at N
+looks, with the population CPR set through the H–V correlation and the
+population channel imbalance set through the diagonal, independently. N = 5,
+60,000 trials per row.
+
+| true CPR | imbalance | Stokes median | p5 | p95 | proxy median | proxy p95 | proxy population |
+|---|---|---|---|---|---|---|---|
+| 0.30 | 0 dB | **0.301** | 0.101 | 0.894 | 0.0084 | 0.076 | 0 |
+| 0.70 | 0 dB | **0.703** | 0.236 | 2.099 | 0.0115 | 0.096 | 0 |
+| 1.00 | 0 dB | **1.001** | 0.337 | 2.990 | 0.0121 | 0.102 | 0 |
+| 1.50 | 0 dB | **1.506** | 0.504 | 4.497 | 0.0115 | 0.097 | 0 |
+| 0.70 | 1 dB | 0.700 | 0.236 | 2.082 | 0.0132 | 0.108 | 0.0033 |
+| 0.70 | 3 dB | 0.699 | 0.250 | 1.949 | **0.0316** | 0.172 | 0.0292 |
+
+**The simulator validates itself where the answer is known.** The Stokes
+estimator's median lands on the true CPR to three decimals in every row, and its
+p5/p95 reproduce the analytic F(10,10) quantiles (0.336, 2.978). That is what
+licenses trusting it for the proxy, where no closed form exists.
+
+**The result.** Across a true CPR range of 0.3 to 1.5 — a factor of five — the
+proxy's median moves by **0.0036**. It is not a weak estimator of CPR; it is not
+an estimator of CPR at all. At equal channel powers its population value is
+**exactly zero whatever the CPR is**, because it is a function of LH/LV alone
+and the circular polarisation ratio lives in the H–V *phase*, which taking
+magnitudes discards. Add 3 dB of channel imbalance at unchanged CPR and it moves
+by an order of magnitude, because imbalance is the only thing it can see.
+
+Its non-zero median at zero imbalance is a pure **speckle noise floor**: LH and
+LV differ by chance at finite looks and the proxy squares that difference, so the
+floor is positive-definite and biased upward. This is the same fact as the
+0.0042610 ceiling recorded in §1, reached from the sampling distribution instead
+of from the algebra — two independent routes to one conclusion.
+
+*Open, and for Phase 8: the proxy's simulated p95 at N = 5 is ~0.10, above the
+0.0534 maximum actually observed across the swath. The screening field is
+boxcar-smoothed, which §7.6 measures as worth 2.35–3.84× more looks, so the
+effective N for that field is nearer 12–19 and the simulated floor should fall
+accordingly. Checking that the observed distribution matches the simulation at
+the measured effective N is a validation this project has not yet run.*
 
 ---
 

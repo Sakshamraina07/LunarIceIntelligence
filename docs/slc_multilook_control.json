@@ -12,24 +12,14 @@
       "max_looks_from_spatial_average": 6.772500000000001,
       "enl_single_look": 1.0537392303437747,
       "enl_spatial_21": 5.441739525201779,
-      "enl_subband_21": 9.95251789007943
+      "enl_subband_21": 9.95251789007943,
+      "enl_subband_unequal_power_ceiling": 12.83788491573723,
+      "enl_subband_equalised": 9.446997741292735,
+      "enl_subband_tapered": 10.351362019992282,
+      "enl_subband_tapered_equalised": 10.213025646576034
     },
     {
       "window": 1,
-      "start_line": 43420,
-      "occupied_bins": 2709,
-      "total_bins": 8400,
-      "measured_bandwidth_hz": 1071.22927281,
-      "label_bandwidth_hz": 1071.335975,
-      "ratio_to_label": 0.9999004026818012,
-      "oversampling_factor": 3.1007751937984493,
-      "max_looks_from_spatial_average": 6.772500000000001,
-      "enl_single_look": 1.0839831776600706,
-      "enl_spatial_21": 4.524020841500781,
-      "enl_subband_21": 10.731187273638946
-    },
-    {
-      "window": 2,
       "start_line": 86841,
       "occupied_bins": 2709,
       "total_bins": 8400,
@@ -40,24 +30,14 @@
       "max_looks_from_spatial_average": 6.772500000000001,
       "enl_single_look": 0.9567475284291302,
       "enl_spatial_21": 4.3356743629021555,
-      "enl_subband_21": 6.769235056718523
+      "enl_subband_21": 6.769235056718523,
+      "enl_subband_unequal_power_ceiling": 12.20311974046689,
+      "enl_subband_equalised": 4.061921824112261,
+      "enl_subband_tapered": 8.369944780446001,
+      "enl_subband_tapered_equalised": 6.955779608912244
     },
     {
-      "window": 3,
-      "start_line": 130262,
-      "occupied_bins": 2709,
-      "total_bins": 8400,
-      "measured_bandwidth_hz": 1071.22927281,
-      "label_bandwidth_hz": 1071.335975,
-      "ratio_to_label": 0.9999004026818012,
-      "oversampling_factor": 3.1007751937984493,
-      "max_looks_from_spatial_average": 6.772500000000001,
-      "enl_single_look": 1.0312457503000736,
-      "enl_spatial_21": 5.056966367498587,
-      "enl_subband_21": 10.520178732560712
-    },
-    {
-      "window": 4,
+      "window": 2,
       "start_line": 173683,
       "occupied_bins": 2710,
       "total_bins": 8400,
@@ -68,24 +48,14 @@
       "max_looks_from_spatial_average": 6.775,
       "enl_single_look": 1.0439270941691363,
       "enl_spatial_21": 5.751905029003023,
-      "enl_subband_21": 10.24656193273837
+      "enl_subband_21": 10.24656193273837,
+      "enl_subband_unequal_power_ceiling": 12.977597675968122,
+      "enl_subband_equalised": 10.003211312978262,
+      "enl_subband_tapered": 10.111162377633384,
+      "enl_subband_tapered_equalised": 11.655588360205712
     },
     {
-      "window": 5,
-      "start_line": 217104,
-      "occupied_bins": 2710,
-      "total_bins": 8400,
-      "measured_bandwidth_hz": 1071.6247062809525,
-      "label_bandwidth_hz": 1071.335975,
-      "ratio_to_label": 1.0002695058204805,
-      "oversampling_factor": 3.099630996309963,
-      "max_looks_from_spatial_average": 6.775,
-      "enl_single_look": 1.0919282767178442,
-      "enl_spatial_21": 5.57292852005973,
-      "enl_subband_21": 11.082313379943121
-    },
-    {
-      "window": 6,
+      "window": 3,
       "start_line": 260525,
       "occupied_bins": 2709,
       "total_bins": 8400,
@@ -96,24 +66,14 @@
       "max_looks_from_spatial_average": 6.772500000000001,
       "enl_single_look": 1.1174815817354526,
       "enl_spatial_21": 4.414371309771785,
-      "enl_subband_21": 8.764903975330567
+      "enl_subband_21": 8.764903975330567,
+      "enl_subband_unequal_power_ceiling": 12.813644460284092,
+      "enl_subband_equalised": 9.388249762241008,
+      "enl_subband_tapered": 7.11040843533346,
+      "enl_subband_tapered_equalised": 6.483193922651724
     },
     {
-      "window": 7,
-      "start_line": 303946,
-      "occupied_bins": 2709,
-      "total_bins": 8400,
-      "measured_bandwidth_hz": 1071.22927281,
-      "label_bandwidth_hz": 1071.335975,
-      "ratio_to_label": 0.9999004026818012,
-      "oversampling_factor": 3.1007751937984493,
-      "max_looks_from_spatial_average": 6.772500000000001,
-      "enl_single_look": 0.9311323269870798,
-      "enl_spatial_21": 4.332907460137556,
-      "enl_subband_21": 9.092931035958408
-    },
-    {
-      "window": 8,
+      "window": 4,
       "start_line": 347367,
       "occupied_bins": 2709,
       "total_bins": 8400,
@@ -124,14 +84,22 @@
       "max_looks_from_spatial_average": 6.772500000000001,
       "enl_single_look": 0.9542096007070227,
       "enl_spatial_21": 1.5025167194156661,
-      "enl_subband_21": 4.028088901698708
+      "enl_subband_21": 4.028088901698708,
+      "enl_subband_unequal_power_ceiling": 12.390830461300398,
+      "enl_subband_equalised": 4.1069680386776675,
+      "enl_subband_tapered": 1.8958133111622104,
+      "enl_subband_tapered_equalised": 3.959752106111881
     }
   ],
   "medians": {
     "measured_bandwidth_hz": 1071.22927281,
     "oversampling_factor": 3.1007751937984493,
     "enl_single_look": 1.0439270941691363,
-    "enl_spatial_21": 4.524020841500781,
-    "enl_subband_21": 9.95251789007943
+    "enl_spatial_21": 4.414371309771785,
+    "enl_subband_21": 8.764903975330567,
+    "enl_subband_unequal_power_ceiling": 12.813644460284092,
+    "enl_subband_equalised": 9.388249762241008,
+    "enl_subband_tapered": 8.369944780446001,
+    "enl_subband_tapered_equalised": 6.955779608912244
   }
 }

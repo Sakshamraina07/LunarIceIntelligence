@@ -1,0 +1,167 @@
+{
+  "effective_samples": {
+    "patch": 64,
+    "n_patches": 80,
+    "lag_window": 24,
+    "area_all_lags": 61.420749918170166,
+    "area_positive_lags_only": 68.69081464172315,
+    "rho_lag1_axis0": 0.8844250707622416,
+    "rho_lag1_axis1": 0.5090421470848477,
+    "rho_lag2_axis0": 0.6765265904294944,
+    "rho_lag2_axis1": 0.17239393450072255,
+    "f2_pixels": 1520,
+    "f2_effective_samples": 24.747337048555586
+  },
+  "f2_peak_cpr": {
+    "5": {
+      "raw": 7.380808004093906,
+      "effective": 2.523386879191488
+    },
+    "6": {
+      "raw": 5.771500775394687,
+      "effective": 2.232127024151357
+    },
+    "9": {
+      "raw": 3.711113008324334,
+      "effective": 1.7780158129353585
+    },
+    "21": {
+      "raw": 2.004981486440907,
+      "effective": 1.274842529247089
+    }
+  },
+  "monte_carlo": [
+    {
+      "n_looks": 5,
+      "cpr_true": 0.3,
+      "imbalance_db": 0.0,
+      "stokes_cpr": {
+        "true": 0.3,
+        "mean": 0.37576112404663026,
+        "median": 0.30143325542792887,
+        "p5": 0.1009482408314143,
+        "p95": 0.8937452396681045,
+        "bias_mean_over_true": 1.2525370801554343
+      },
+      "amplitude_proxy": {
+        "true": null,
+        "mean": 0.01945842619051877,
+        "median": 0.00841868069628587,
+        "p5": 7.487390726140245e-05,
+        "p95": 0.07617758957596615,
+        "bias_mean_over_true": null
+      },
+      "proxy_population_value": 0.0
+    },
+    {
+      "n_looks": 5,
+      "cpr_true": 0.7,
+      "imbalance_db": 0.0,
+      "stokes_cpr": {
+        "true": 0.7,
+        "mean": 0.8775248830183022,
+        "median": 0.7029534468044691,
+        "p5": 0.23613205539579277,
+        "p95": 2.099428358330496,
+        "bias_mean_over_true": 1.2536069757404318
+      },
+      "amplitude_proxy": {
+        "true": null,
+        "mean": 0.02532151787093136,
+        "median": 0.011512699836345173,
+        "p5": 0.00010496443525697653,
+        "p95": 0.09634474345476463,
+        "bias_mean_over_true": null
+      },
+      "proxy_population_value": 0.0
+    },
+    {
+      "n_looks": 5,
+      "cpr_true": 1.0,
+      "imbalance_db": 0.0,
+      "stokes_cpr": {
+        "true": 1.0,
+        "mean": 1.2507598743402173,
+        "median": 1.0006697938010192,
+        "p5": 0.3371793061479791,
+        "p95": 2.989992054420888,
+        "bias_mean_over_true": 1.2507598743402173
+      },
+      "amplitude_proxy": {
+        "true": null,
+        "mean": 0.026462748312150206,
+        "median": 0.012093859260373756,
+        "p5": 0.00010567426267762357,
+        "p95": 0.10160152161421818,
+        "bias_mean_over_true": null
+      },
+      "proxy_population_value": 0.0
+    },
+    {
+      "n_looks": 5,
+      "cpr_true": 1.5,
+      "imbalance_db": 0.0,
+      "stokes_cpr": {
+        "true": 1.5,
+        "mean": 1.8828645312015118,
+        "median": 1.506065801568739,
+        "p5": 0.5038870451512703,
+        "p95": 4.4970965244384375,
+        "bias_mean_over_true": 1.255243020801008
+      },
+      "amplitude_proxy": {
+        "true": null,
+        "mean": 0.02528223187580818,
+        "median": 0.011498772531897699,
+        "p5": 9.815873611065532e-05,
+        "p95": 0.09726689391883174,
+        "bias_mean_over_true": null
+      },
+      "proxy_population_value": 0.0
+    },
+    {
+      "n_looks": 5,
+      "cpr_true": 0.7,
+      "imbalance_db": 1.0,
+      "stokes_cpr": {
+        "true": 0.7,
+        "mean": 0.8739584577781037,
+        "median": 0.6997073852656623,
+        "p5": 0.23618196644301548,
+        "p95": 2.082121998159664,
+        "bias_mean_over_true": 1.2485120825401481
+      },
+      "amplitude_proxy": {
+        "true": 0.003306379696493678,
+        "mean": 0.028373358149933182,
+        "median": 0.013170340677676397,
+        "p5": 0.00010927055417138832,
+        "p95": 0.10827127441906459,
+        "bias_mean_over_true": 8.581397405755402
+      },
+      "proxy_population_value": 0.003306379696493678
+    },
+    {
+      "n_looks": 5,
+      "cpr_true": 0.7,
+      "imbalance_db": 3.0,
+      "stokes_cpr": {
+        "true": 0.7,
+        "mean": 0.85204685751481,
+        "median": 0.6989293064654092,
+        "p5": 0.25038656430620454,
+        "p95": 1.949453391649436,
+        "bias_mean_over_true": 1.2172097964497286
+      },
+      "amplitude_proxy": {
+        "true": 0.029240096218501346,
+        "mean": 0.05187776316415748,
+        "median": 0.031644136284342414,
+        "p5": 0.0003537498659009237,
+        "p95": 0.17154643651995846,
+        "bias_mean_over_true": 1.7741994683086029
+      },
+      "proxy_population_value": 0.029240096218501346
+    }
+  ]
+}

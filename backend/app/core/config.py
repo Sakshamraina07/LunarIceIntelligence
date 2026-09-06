@@ -80,6 +80,13 @@ class Settings(BaseModel):
     MAX_TRAVERSABLE_SLOPE_DEG: float = 20.0
     CRITICAL_LANDING_SLOPE_DEG: float = 12.0
 
+    # Landing-site feasibility limits. These were literals inside
+    # search_landing_sites.py, under a heading claiming every threshold came
+    # from config -- which made the heading false for two of the six criteria.
+    # Values are unchanged from that first run; they are moved, not retuned.
+    CRITICAL_LANDING_ROUGHNESS_M: float = 10.0
+    CRITICAL_LANDING_HAZARD: float = 0.50
+
     # Landing Site Selection Criteria Weights
     WEIGHT_LANDING_SAFETY: float = 0.40
     WEIGHT_LANDING_ILLUM: float = 0.25

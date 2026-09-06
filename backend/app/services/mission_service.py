@@ -270,7 +270,25 @@ class MissionPipelineService:
                     data_mode,
                 )
 
-            dem_dict = process_real_dem(str(dem_pradan_path), spacing_m=spacing_tuple)
+            # SCORE ON THE NATIVE FRAME WHEN IT IS AVAILABLE.
+            #
+            # data/pradan/dem/*_lola_dem.tif is a 2048^2 raster: 27.56 m per line
+            # but 80.79 m per sample, so a 5x5 roughness window on it spans ~404 m
+            # and measures regional relief. native/dem_native.tif is the same
+            # extent at its true 2258 x 6618 / 25 m posts. Terrain is scored there
+            # and the bounded fields are area-averaged onto the serving grid, so
+            # the API and the static analysis compute the same quantity.
+            _native_dem = PRADAN_ROOT / "native" / "dem_native.tif"
+            if _native_dem.is_file():
+                _terrain_src, _src_spacing = str(_native_dem), (25.0, 25.0)
+            else:
+                # No silent 25 m: derive the file's real spacing from the frame.
+                _terrain_src = str(dem_pradan_path)
+                _probe = read_raster_file(_terrain_src)
+                _src_spacing = (frame.shape[0] * frame.pixel_size_m[1] / _probe.shape[0],
+                                frame.shape[1] * frame.pixel_size_m[0] / _probe.shape[1])                     if frame is not None else (25.0, 25.0)
+            dem_dict = process_real_dem(_terrain_src, spacing_m=spacing_tuple,
+                                        source_spacing_m=_src_spacing)
             dem = dem_dict["dem"]
             spacing_m = dem_dict["spacing_m"]
             illumination = dem_dict["illumination"]
@@ -374,7 +392,13 @@ class MissionPipelineService:
             boulder_risk=boulder_risk,
             spacing_m=spacing_m,
             w_boulder=None if boulder_available else 0.0,
-            data_mode=effective_data_mode
+            data_mode=effective_data_mode,
+            # Scored at 25 m and area-averaged onto this grid by
+            # process_real_dem. Passing them stops this module re-deriving
+            # terrain from a DEM that has already been downsampled.
+            prescored={k: dem_dict[k] for k in
+                       ("slope_deg", "aspect_deg", "roughness", "hazard")
+                       if k in dem_dict},
         )
 
         # Step 5: Module C - the measured CRITERIA SCREEN.

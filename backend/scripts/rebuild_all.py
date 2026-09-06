@@ -102,8 +102,16 @@ def main() -> int:
                     run("4/5 · render_layers.py — the pixels",
                         [py, str(SCRIPTS / "render_layers.py")])))
     timings.append(("5 · provenance gate",
-                    run("5/5 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
+                    run("5/6 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
                         [py, str(SCRIPTS / "emit_provenance.py"), args.crater])))
+    # The API and the static analysis compute terrain by two paths that share no
+    # code, and they have diverged twice. The second time the UI was correct and
+    # only the PDF was wrong, which is the worst shape for a bug to have: looking
+    # at the app does not reveal it.
+    timings.append(("6 · cross-path gate",
+                    run("6/6 · assert_paths_agree.py — API vs static analysis",
+                        [py, str(SCRIPTS / "assert_paths_agree.py"),
+                         "--crater", args.crater])))
 
     print("\n" + "=" * 78)
     print("  REBUILD COMPLETE — the imagery and the numbers describe the same data")

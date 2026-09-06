@@ -173,15 +173,19 @@ def simulate_grazing_illumination(
     return np.clip(hill * (elev_norm ** 1.3), 0.0, 1.0).astype(np.float32)
 
 
-#: The DFSAR frame's own post spacing. Terrain is scored here and only
-#: then averaged onto whatever grid is being served.
+#: The DFSAR frame's own post spacing, for callers that want the default.
+#: NOTHING assumes the file on disk is at this spacing -- see process_real_dem's
+#: source_spacing_m, which is required precisely because assuming it was wrong:
+#: data/pradan/dem/*_lola_dem.tif is a 2048^2 raster at 27.56 x 80.79 m, and
+#: scoring it as though it were 25 m overstated every API slope by ~2x.
 NATIVE_POST_M = 25.0
 
 
 def process_real_dem(
     dem_path: str,
     spacing_m: Tuple[float, float],
-    target_shape: Tuple[int, int] = (100, 100)
+    target_shape: Tuple[int, int] = (100, 100),
+    source_spacing_m: Optional[Tuple[float, float]] = None,
 ) -> Dict[str, np.ndarray]:
     """
     Processes real LOLA / TMC-2 DEM:
@@ -215,7 +219,11 @@ def process_real_dem(
     # slope_max_deg is carried BESIDE hazard_mean because an average hides the
     # thing a lander cares about: a cell that averages safe can still hold a
     # single impassable face.
-    native_spacing = (NATIVE_POST_M, NATIVE_POST_M)
+    # The spacing of the FILE, which is not necessarily 25 m and must not be
+    # guessed. When the caller does not say, fall back to the DFSAR post
+    # spacing and record what was used so a reader can tell.
+    native_spacing = tuple(source_spacing_m) if source_spacing_m else (NATIVE_POST_M,
+                                                                      NATIVE_POST_M)
     slope_n, aspect_n, rough_n = compute_terrain_metrics(dem_raw, native_spacing)
     hazard_n = compute_hazard_score(slope_n, rough_n,
                                     np.zeros_like(dem_raw, dtype=np.float32))
@@ -261,7 +269,8 @@ def process_real_dem(
         # Every terrain field above was computed at NATIVE_POST_M and averaged
         # onto this grid. A consumer that reports them as though they were
         # measured at `spacing_m` is overstating the resolution.
-        "terrain_scored_at_m": NATIVE_POST_M,
+        "terrain_scored_at_m": list(native_spacing),
+        "terrain_source_shape": list(dem_raw.shape),
         "terrain_order": "scored natively, then area-averaged to the serving grid",
     }
 

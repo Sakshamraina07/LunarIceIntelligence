@@ -1192,7 +1192,15 @@ pins at 1.0 and slope stops contributing to hazard at all.
 `build_analysis.py` and `render_layers.py` — everything the UI reads — score on
 the native 2258 × 6618 frame at 25 m and were never affected. But
 `pradan_pipeline.process_real_dem`, which `mission_service` and the PDF use,
-resized the DEM to the serving grid **first** and scored there:
+resized the DEM to the serving grid **first** and scored there.
+
+**The precise statement is worth getting right, because it is a better sentence
+than the loose one.** The bug existed and *could not reach the screen*. Phase 1
+moved the UI onto the static analysis JSON, so the visible surface carried the
+native, unsaturated numbers throughout — but the PDF report and any API consumer
+were served saturated hazard, and would have been until someone looked. "The bug
+existed" and "the bug existed and could not reach the screen" are different
+claims, and only the second one is true here:
 
 | hazard | p50 | p90 | p95 | p99 | pinned at 1.0 |
 |---|---|---|---|---|---|

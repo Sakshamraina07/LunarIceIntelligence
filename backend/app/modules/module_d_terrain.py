@@ -106,6 +106,7 @@ def analyze_terrain_safety(
     w_boulder: Optional[float] = None,
     *,
     data_mode: str,
+    prescored: Optional[Dict[str, np.ndarray]] = None,
 ) -> Tuple[TerrainAnalysisResult, Dict[str, np.ndarray]]:
     """
     Performs terrain safety analysis, classifying safe vs critical hazard zones.
@@ -115,8 +116,28 @@ def analyze_terrain_safety(
     and build_analysis.py both use compute_hazard_score so the rendered picture
     and the reported number cannot drift apart.
     """
-    slope_deg, aspect_deg, roughness = compute_terrain_metrics(dem, spacing_m)
-    hazard = compute_hazard_score(slope_deg, roughness, boulder_risk, w_slope, w_roughness, w_boulder)
+    # PRESCORED WINS, AND THAT IS THE WHOLE POINT.
+    #
+    # Recomputing terrain from `dem` scores it on whatever grid `dem` is served
+    # on. For the 100x100 serving grid that is ~565 x 1654 m cells, so the 5x5
+    # roughness window spans kilometres and measures REGIONAL RELIEF -- it read
+    # 268.48 m mean roughness where the native frame reads 6.87 m, and hazard
+    # 0.635 against 0.373. clip(roughness/50) is pinned at 1.0 throughout, so
+    # slope stops contributing at all.
+    #
+    # pradan_pipeline.process_real_dem already scores at 25 m and area-averages
+    # the bounded fields down. Recomputing here threw that away, which is why
+    # fixing process_real_dem alone did not move a single API number. When the
+    # caller supplies prescored rasters they are USED, not re-derived.
+    if prescored and all(k in prescored for k in ("slope_deg", "roughness", "hazard")):
+        slope_deg = prescored["slope_deg"]
+        roughness = prescored["roughness"]
+        aspect_deg = prescored.get("aspect_deg", np.zeros_like(slope_deg))
+        hazard = prescored["hazard"]
+    else:
+        slope_deg, aspect_deg, roughness = compute_terrain_metrics(dem, spacing_m)
+        hazard = compute_hazard_score(slope_deg, roughness, boulder_risk,
+                                      w_slope, w_roughness, w_boulder)
 
     cell_area_km2 = (spacing_m[0] / 1000.0) * (spacing_m[1] / 1000.0)
     total_cells = dem.size

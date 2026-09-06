@@ -1606,6 +1606,114 @@ effective resolution. A cold trap is where ice *could* persist; that is a
 different claim from where ice *is*. Each site now carries that sentence in its
 own record.
 
+## 10 · Traverse planning, and connectivity before distance
+
+### 10.1 Connectivity is reported first, and that ordering is the point
+
+A planning cell is impassable if **any** 25 m face inside it exceeds
+`MAX_TRAVERSABLE_SLOPE_DEG` = 20°. That is the conservative rule and the correct
+one — a rover meets the worst face in a cell, not its average — but `slope_max`
+rises fast with cell size (p50 already 18.15° at 0.55 km cells), so at a coarse
+planning resolution the graph can fragment on single steep faces.
+
+**If it did, every `UNREACHABLE` would be reporting the cell size rather than the
+Moon** — the same shape as the hazard saturation of §8.3, one level up. So
+connectivity is measured and printed before a single route is computed, at two
+resolutions:
+
+| planning res | cells | passable | components | largest | sites inside it |
+|---|---|---|---|---|---|
+| 100 m | 932,856 | 81.32 % | 1,717 | 746,975 | **5 / 5** |
+| 50 m | 3,735,861 | 85.92 % | 6,507 | 3,167,476 | **5 / 5** |
+
+**The graph does not fragment.** All five sites lie in one component at both
+resolutions, and that component holds 98.5 % of all passable cells at 100 m — the
+other 1,716 components are small pockets walled in by steep ground. The passable
+fraction moves 81.32 % → 85.92 % between the two resolutions, which is the
+aggregation effect made visible rather than assumed away.
+
+**The slope limit was not relaxed to reconnect anything**, because nothing needed
+reconnecting; had it fragmented, the finer figures are what a reader would use to
+tell terrain from quantisation.
+
+### 10.2 What is quantised, and by how much
+
+Planning runs at **100 m**. Every reported length is a multiple of 100 m, or
+141.4 m diagonally, so a route reported as 4,180 m is **4,180 ± 50 m**. The
+planner cannot resolve finer than one cell and does not pretend to.
+
+Graph: 758,637 nodes, 5,806,726 directed edges, 8-connected, Dijkstra via
+`scipy.sparse.csgraph`. Edge cost is ground length × (1 + 2 × mean hazard).
+**Cost and length are tracked separately**: a cost is a planning quantity, a
+length is a claim about the Moon.
+
+### 10.3 The primary deliverable — and what the rover is driving to
+
+**Candidate ice area in this frame is 0.00 km².** There is no measured ice target
+anywhere here, so a traverse "to the ice" would be a route to something this
+project did not find. The primary result is instead the route from each site to
+the nearest **modelled cold trap** boundary — 206,967 cold-trap cells, 142,888 of
+them passable — carrying the same caveat the site records do.
+
+| site | length | climb | energy (J/kg) | cells | status |
+|---|---|---|---|---|---|
+| 1 | 3,273 m | 0.0 m | 1,330 | 30 | REACHABLE |
+| 2 | 4,663 m | 46.9 m | 1,970 | 41 | REACHABLE |
+| 3 | 2,207 m | 0.2 m | 897 | 21 | REACHABLE |
+| 4 | 7,280 m | 47.6 m | 3,035 | 68 | REACHABLE |
+| 5 | 1,641 m | 44.0 m | 738 | 17 | REACHABLE |
+
+**This is the mission chain the project set out to demonstrate** — land here,
+drive this far, spend this much — and it is honest only because the target's
+status is stated: *a cold trap at 240 m effective resolution is where ice could
+persist, not where ice is, and no radar detection supports it.*
+
+The energy figure is marked **DERIVED** and is reported **per kilogram**, so no
+rover mass is invented: `g_moon × (μ_roll × length + positive climb)` with
+`g = 1.625 m/s²` and an **assumed** rolling resistance `μ_roll = 0.25`. That
+coefficient is a stated assumption, not a measurement.
+
+### 10.4 The pairwise matrix is the result; the tour is a demonstration
+
+The site-to-site matrix shows the planner works between arbitrary pairs. **It is
+not a mission plan.** Neither is the tour: no lander visits five sites, a lander
+goes to one. The shortest tour (order 1 → 4 → 2 → 3 → 5, 76,025 m) is computed by
+**exact enumeration** of all 4! permutations with the first site fixed — not a
+heuristic, not annealing; for n ≤ 8 the optimum is cheap to prove. It is labelled
+in the output and in `traverse.json` as a capability demonstration so nobody reads
+it as a proposed concept of operations.
+
+`UNREACHABLE` is an explicit state and never a distance of 0. A zero would read
+as "no travel needed", which is the opposite of what it means.
+
+### 10.5 The detour ratio, which is where the information is
+
+A raw length says little. The ratio of route length to straight-line separation
+says what the terrain does:
+
+| pair | straight | route | ratio |
+|---|---|---|---|
+| 1–2 | 5,263 m | 5,638 m | **1.07** |
+| 1–4 | 5,963 m | 6,404 m | **1.07** |
+| 2–4 | 7,760 m | 8,408 m | **1.08** |
+| 3–5 | 5,613 m | 6,153 m | **1.10** |
+| 2–5 | 19,307 m | 59,877 m | **3.10** |
+| 1–5 | 14,776 m | 58,923 m | **3.99** |
+| 4–5 | 12,600 m | 65,327 m | **5.18** |
+| 1–3 | 9,422 m | 54,106 m | **5.74** |
+| 3–4 | 8,817 m | 60,510 m | **6.86** |
+
+**The five sites are not one neighbourhood.** They fall into two groups — {1, 2,
+4} and {3, 5} — internally connected at ratios of 1.07–1.10, and separated from
+each other by 3.1–6.9×. Sites 1 and 3 are 9.4 km apart in a straight line and
+54 km apart by rover. **A table of raw lengths would not show that**; the ratio
+does, and it is a fact about this frame rather than about the planner.
+
+*Asserted, not assumed: every route is at least its straight-line separation. A
+path shorter than the Euclidean distance would mean the length accumulator or the
+grid mapping is wrong, and the number would look entirely plausible while being
+impossible.*
+
 ---
 
 *Sections 9 (site search), 10 (traverse) and 11 (Stokes derivation) arrive with
@@ -1628,7 +1736,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `2c56ad0`.
+Stamped at commit `620c105`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -1644,6 +1752,7 @@ Stamped at commit `2c56ad0`.
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
+| `docs/traverse.json` | `3ecb39c817f0a618…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `f84a892efe7ffaf3…` | §8.2, §8.3 |
 
 <!-- END GENERATED STAMP -->

@@ -62,6 +62,7 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/cpr_significance.json": ["7.7", "7.9.1", "7.9.2", "7.9.3"],
     "docs/rover_coverage.json": ["6.5"],
     "docs/landing_sites.json": ["9.6", "9.7"],
+    "docs/traverse.json": ["10.1", "10.2", "10.3", "10.4", "10.5"],
     "docs/roughness_vs_latitude.json": ["9.1", "9.2"],
     "docs/site_inspection.json": ["9.3"],
     "docs/psr_validation.json": ["5.10"],

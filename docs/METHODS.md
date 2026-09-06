@@ -9,6 +9,9 @@ and `PROVENANCE.md` names the phase that will compute it.
 
 ## 0 · The recurring defect in this project
 
+*Three patterns, twelve instances. The first two are below in full; the third —
+one transform written twice — follows them.*
+
 **Five instances so far of one failure: a caption, a name or a summary that
 stopped tracking the computation it describes.** The illumination layer's
 `MODEL OUTPUT` badge over a real horizon computation; a `StepUnavailable`
@@ -78,6 +81,73 @@ and `stamp_methods.py` digests artifacts rather than quoting them:
 > **A verifier must READ the value the application uses. It must never restate
 > it.** A verifier that restates the thing it verifies is not a verifier — it is
 > a second copy of the same assumption, and it will agree with itself.
+
+### The third pattern: one transform, written twice
+
+Two instances, both found while drawing the Phase 4 routes on the map for the
+first time, and both are the closing rule of the second pattern applied to
+something that is not a verifier.
+
+1. **`plan_traverse.py` re-derived the inverse projection and got the longitude
+   backwards.** Rather than calling `frame.pixel_to_latlon`, it computed
+   `lat` and `lon` inline and used `arctan2(x, -y)` — the `y_away_lam0`
+   convention of the LOLA polar product
+   (`ingest_lola_polar_dem.py:272`) — against a DFSAR frame whose transform is
+   `arctan2(x, y)` (`sar_geometry.py:198`, validated against ISRO's 937,296-node
+   geolocation grid to 13.2 mm). **Latitude was unaffected.** Longitude came out
+   as `180° − lon`: route 1 started at 97.33971° where the frame puts site 1 at
+   82.64773°, and 177 waypoint longitudes across five routes were written wrong.
+
+   Nothing caught it because nothing compared the two files that have to agree.
+   Every existing check on this script looks at length, climb, energy,
+   connectivity or the detour ratio — quantities the longitude does not enter,
+   all of which were correct. The fix is one line plus a gate: the first waypoint
+   of a route *is* its site, so it must plot within one planning cell of that
+   site's own `lat_deg`/`lon_deg` in `landing_sites.json`. It now measures
+   **25.0–55.8 m** against a 150 m tolerance, and says so on every run.
+
+   Re-running the planner changed **177 longitudes and nothing else**: 0
+   latitudes, 0 lengths, 0 climbs, 0 energies, 0 cell counts, 0 connectivity
+   figures, 0 detour ratios. Verified by walking both JSON documents scalar by
+   scalar, which is also the evidence that §10 needed no revision.
+
+2. **`MissionMap.tsx` plotted the Phase 3 sites through the coarse-grid
+   transform.** `gridToPixel` maps the backend's 0–100 grid; the searched sites
+   are in native raster pixels. Passing `(line 965, sample 5026)` through a
+   function that divides by 100 placed site 1 at CRS `(−755, 12867)` on an
+   `87 × 256` extent — off the raster by two orders of magnitude, in both axes,
+   for all five sites.
+
+   **It was invisible for two reasons, and the second is the interesting one.**
+   Leaflet clips an off-view path to `M0 0` rather than erroring, so the markers
+   existed in the DOM with plausible attributes. And the console line underneath
+   already read *"5/5 outside the measured amplitude ribbon"* — a sentence
+   written for the API's hardcoded offsets, which genuinely were outside. **The
+   new symptom arrived wearing the old symptom's label**, and a log line that is
+   expected to say something is not a check.
+
+   The gate that closes it does not compare the map to a sentence. It compares
+   the map to the search's own verdict: `in_amplitude_mask` is a hard criterion
+   of Phase 3, so a site carrying it passed is inside the measured ribbon by
+   construction, and a map that plots it elsewhere is wrong. Before the fix the
+   console read `#1 outside … #5 outside`; after it, `#1 amplitude … #5
+   amplitude`, matching all five records.
+
+**Both are the same defect as the five in the second pattern, one step
+upstream.** There, a *verifier* restated the value it was meant to check. Here a
+*producer* and a *consumer* each restated a transform that already existed
+elsewhere in the repository — and, as always, the second copy agreed with the
+first until it did not. The rule generalises without amendment:
+
+> **One transform, one implementation, called from everywhere.** Where two
+> artifacts must describe the same point, make one of them check the other; a
+> quantity nothing compares is a quantity nothing is testing.
+
+The second instance also carries its own smaller lesson. The five landing sites
+had been on that map, in the wrong place, since Phase 3 shipped. They were never
+noticed because **nobody had drawn a route between them** — the traverse existed
+only in `traverse.json`. Rendering a deliverable is not only presentation; it is
+the first time two computations are made to agree on a screen.
 
 ---
 
@@ -1714,6 +1784,44 @@ path shorter than the Euclidean distance would mean the length accumulator or th
 grid mapping is wrong, and the number would look entirely plausible while being
 impossible.*
 
+### 10.6 The routes are drawn, and the drawing is a gate
+
+Until this pass the five routes existed only in `traverse.json`; the map showed
+the API's demo-target path instead. They are now drawn from the artifact — every
+one of the **177 waypoints**, at the planning cell centre, converted to the 25 m
+raster grid by `planning.resolution_m / native_metres` read from the file rather
+than written as `4`. Selecting a route flies the map to it, because five routes
+spread over a 165 km frame do not fit the 40 km opening window and a route
+off-screen answers nothing.
+
+Three things are asserted at draw time, and each one exists because the quantity
+it compares had no comparator before:
+
+1. **The drawn route and the reported length are the same route.** The polyline
+   is re-summed in the browser — `resolution_m` per orthogonal step,
+   `resolution_m·√2` per diagonal — and must agree with `length_m` to 1 m. Two
+   independent sums of one route is how the traverse coverage figure came to
+   disagree with itself earlier in this project.
+2. **The route starts where the site is.** Enforced in `plan_traverse.py` against
+   `landing_sites.json`, to within one planning cell of great-circle distance —
+   the check that would have caught the longitude convention error of §0, and
+   did not exist until it had already happened. Measured: 25.0–55.8 m against a
+   150 m tolerance.
+3. **A site that passed `in_amplitude_mask` plots inside the measured ribbon.**
+   Enforced in the map against the search's own per-criterion record.
+
+**`UNREACHABLE` is drawn as nothing.** Not a faint line, not a dashed one: a
+route that does not exist gets no geometry, and the panel prints the word.
+
+The rover itself is an **illustration and carries no measurement**. There is no
+rover mass, wheel geometry, speed or duty cycle anywhere in this project — which
+is exactly why the energy figure is per kilogram — so the vehicle is a drawing
+placed on a computed path, the traverse runs at a fixed 22 s end to end
+regardless of length, and the panel says so beside the marker. Its position is
+interpolated by **distance**, not by vertex index, because diagonal steps are
+1.414× longer than orthogonal ones and index interpolation would put the marker
+out of step with the odometer beside it.
+
 ## 11 · Detection statistics — the contribution
 
 > **Read down a column: at N = 6 nothing clears the floor, by N = 38 everything
@@ -1813,10 +1921,55 @@ the only number this project actually reports. Verified by injection: removing
 `docs/detection_statistics.json` fails the build with the reason, and restoring
 it passes.
 
+### 11.5 The probe — the null result made checkable rather than assertable
+
+`0.0000 km²` is a claim a reader has to take on trust. The **criteria probe**
+turns it into something they can check anywhere: click any point on the map and
+it reports the measured CPR and DOP there, each against its own threshold, the
+margin in both directions, and how far the reading falls below the §11.1
+detection floor.
+
+It was asked for as a way to "predict where ice spots exactly are", and **that
+tool cannot honestly be built here** — there is nothing to predict, and §1 shows
+the screen is empty *by construction* rather than by chance. A panel that output
+"ice is here" would fabricate the single number this project exists not to
+fabricate. What it does instead is stronger: it lets the emptiness be inspected
+point by point instead of asserted once.
+
+Four properties make it a measurement rather than a picture of one:
+
+- **The values are shipped as values.** The rendered layers are colourised,
+  clipped and lossy `.webp`; the colour map is not injective, so reading pixels
+  back off the canvas would produce a number that looked measured and was not.
+  `emit_probe_grid.py` writes float32 instead.
+- **The decimation is stated in the header and repeated in the readout.** Every
+  value is a block mean over 8×8 native 25 m pixels — a **200 m cell**, outlined
+  on the map at the size the number actually covers, because a crosshair on the
+  click point would imply the value belongs to that spot.
+- **Absent is absent.** A cell with no measured radar reads `NaN`, and the panel
+  prints `NO DATA — they are not zero and they are not low; they are absent`.
+  All three coverage states are distinguished: measured radar, *pointed and
+  returned integer zero* (56.11 % of ISRO's own swath mask), and never observed.
+  Collapsing the middle case into either end would discard the two-mask model.
+- **Nothing is restated.** The thresholds come from `config.py`, the floor and
+  the look count from `detection_statistics.json`, and the algebraic ceiling is
+  recomputed from the configured DOP threshold as `tanh²(artanh(d)/2)` rather
+  than pasted as `0.0042610` — so if anyone moves the gate, the bound moves with
+  it instead of quoting the old one beside the new one.
+
+A representative reading inside the ribbon, at −86.3039°, 83.1289°:
+`CPR 2.684 × 10⁻⁴` against a threshold of 1.00 — **3.7 × 10³ below it** — with
+`DOP 0.0263` passing, and the panel explaining at that point, with that point's
+own numbers, that DOP passing is precisely what caps CPR at 0.0042611. The same
+cell is **7.1 × 10³ below** the 1.8946 detection floor.
+
+
 ---
 
-*Sections 9 (site search), 10 (traverse) and 11 (Stokes derivation) arrive with
-Phases 3, 4 and 5b.*
+*Sections 9, 10 and 11 are written: the site search, the traverse, and the
+detection statistics. The Stokes derivation is Phase 5b and is not written,
+because it is not computed — the complex `sli` products are on disk and not
+ingested, and §1 states exactly what having them would change.*
 
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
@@ -1835,7 +1988,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `68ae42b`.
+Stamped at commit `d1485f4`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -1852,7 +2005,8 @@ Stamped at commit `68ae42b`.
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
-| `docs/traverse.json` | `3ecb39c817f0a618…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
+| `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `f84a892efe7ffaf3…` | §8.2, §8.3 |
+| `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
 
 <!-- END GENERATED STAMP -->

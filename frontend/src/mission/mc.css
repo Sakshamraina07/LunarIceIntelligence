@@ -622,6 +622,57 @@
 }
 
 .mc-legend-mid { color: var(--mc-text-mute); font-size: 0.58rem; }
+/* The one line that stays visible: what this layer was measured at. */
+.mc-legend-one {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.6rem; color: var(--mc-text-mute);
+  margin: 0.15rem 0 0.45rem;
+}
+
+/* PROGRESSIVE DISCLOSURE. Nothing here is deleted -- the detail is the whole
+   discipline of this project. It is moved so it stops competing with the map,
+   and it is always exactly one click away. */
+.mc-disclose { margin-top: 0.5rem; }
+.mc-disclose-head {
+  display: flex; align-items: center; gap: 0.35rem;
+  width: 100%; text-align: left;
+  background: none; border: 0; padding: 0.25rem 0; cursor: pointer;
+  color: var(--mc-text-mute); font-size: 0.62rem; line-height: 1.35;
+}
+.mc-disclose-head:hover { color: var(--mc-text); }
+.mc-disclose-ico { flex: 0 0 auto; opacity: 0.75; }
+.mc-disclose-sum { flex: 1 1 auto; }
+.mc-disclose-chev { flex: 0 0 auto; transition: transform 0.15s ease; opacity: 0.7; }
+.mc-disclose--open .mc-disclose-chev { transform: rotate(180deg); }
+.mc-disclose-body {
+  font-size: 0.62rem; line-height: 1.5;
+  color: var(--mc-text-mute);
+  margin-top: 0.3rem; padding-left: 0.55rem;
+  border-left: 1px solid var(--mc-line);
+  max-height: 16rem; overflow-y: auto; scrollbar-width: thin;
+}
+
+/* WHAT WAS MEASURED — the panel's new opening. Four real figures, so the first
+   thing read is what the project did rather than the one value it did not find. */
+.mc-measured {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0.55rem;
+  margin: 0.5rem 0 0.2rem;
+}
+.mc-measured-cell {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--mc-line);
+  border-radius: 3px; padding: 0.45rem 0.55rem;
+}
+.mc-measured-v {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.98rem; color: var(--mc-text); line-height: 1.15;
+}
+.mc-measured-v small { font-size: 0.6rem; color: var(--mc-text-mute); }
+.mc-measured-k {
+  font-size: 0.58rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--mc-accent); margin-top: 0.2rem;
+}
+.mc-measured-s { font-size: 0.56rem; color: var(--mc-text-mute); margin-top: 0.1rem; }
 .mc-legend-warn {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.56rem;
@@ -879,3 +930,292 @@
   color: var(--mc-text-mute);
   text-transform: none;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * THE CRITERIA PROBE AND THE PHASE 4 TRAVERSE
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * Both live in one right-hand stack, inboard of the zoom column, so they cannot
+ * cover the layer switcher (top-left) or the legend (bottom-left). The stack
+ * scrolls rather than growing: a long readout must not push the traverse panel
+ * off the bottom of the map.
+ */
+.mc-mapstack {
+  position: absolute;
+  top: 1rem;
+  right: 4.1rem;
+  z-index: 500;
+  width: 21rem;
+  max-width: calc(100% - 18rem);
+  max-height: calc(100% - 2rem);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  pointer-events: none;
+}
+.mc-mapstack > * { pointer-events: auto; }
+.mc-mapstack::-webkit-scrollbar { width: 4px; }
+.mc-mapstack::-webkit-scrollbar-thumb {
+  background: rgba(120, 140, 160, 0.3); border-radius: 2px;
+}
+
+.mc-probe, .mc-traversectl { position: static; width: 100%; padding: 0.6rem 0.7rem; }
+/* Capped and scrolled, not allowed to grow. A full probe readout is taller than
+ * the traverse panel below it, and an instrument that pushes the other one off
+ * the map has made the map smaller for nothing. */
+.mc-probe { max-height: 58vh; overflow-y: auto; scrollbar-width: thin; flex: 0 0 auto; }
+.mc-probe::-webkit-scrollbar { width: 4px; }
+.mc-probe::-webkit-scrollbar-thumb { background: rgba(120,140,160,0.3); border-radius: 2px; }
+
+.mc-probe-head {
+  display: flex; align-items: center; gap: 0.4rem;
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.09em;
+  text-transform: uppercase; color: var(--mc-text-mute);
+  padding-bottom: 0.4rem; margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--mc-line);
+}
+.mc-probe-ico { color: var(--mc-accent); }
+.mc-probe-x {
+  margin-left: auto; background: none; border: none; cursor: pointer;
+  color: var(--mc-text-mute); display: flex; padding: 0.1rem;
+}
+.mc-probe-x:hover { color: var(--mc-text); }
+
+/* Said before any number, not after it. */
+.mc-probe-not {
+  font-size: 0.63rem; line-height: 1.5; color: var(--mc-text-dim);
+  padding: 0.35rem 0.5rem; margin-bottom: 0.5rem;
+  background: rgba(79, 209, 230, 0.05);
+  border-left: 2px solid rgba(79, 209, 230, 0.45);
+  border-radius: 0 3px 3px 0;
+}
+.mc-probe-not b { color: var(--mc-text); }
+
+.mc-probe-empty {
+  font-size: 0.68rem; line-height: 1.55; color: var(--mc-text-mute);
+  padding: 0.5rem 0.1rem;
+}
+.mc-probe-empty--absent { color: var(--mc-warn); }
+.mc-probe-empty code {
+  display: block; margin-top: 0.4rem; font-size: 0.62rem;
+  font-family: 'JetBrains Mono', monospace; color: var(--mc-text-dim);
+}
+.mc-probe-hint {
+  display: block; margin-top: 0.4rem; font-size: 0.6rem;
+  line-height: 1.5; color: var(--mc-text-mute); opacity: 0.85;
+}
+
+/* The three coverage states get three colours, because they are three different
+ * claims and the middle one — pointed, no return — is the one a single
+ * "no data" would erase. */
+.mc-probe-cov {
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.05em;
+  line-height: 1.45; padding: 0.3rem 0.45rem; border-radius: 3px;
+  margin-bottom: 0.45rem;
+}
+.mc-probe-cov--measured {
+  color: #7fe3f2; background: rgba(79, 209, 230, 0.1);
+  border: 1px solid rgba(79, 209, 230, 0.3);
+}
+.mc-probe-cov--pointed-no-return {
+  color: var(--mc-warn); background: rgba(242, 193, 78, 0.08);
+  border: 1px solid rgba(242, 193, 78, 0.3);
+}
+.mc-probe-cov--never-observed {
+  color: var(--mc-text-mute); background: rgba(120, 140, 160, 0.07);
+  border: 1px solid rgba(120, 140, 160, 0.22);
+}
+
+.mc-probe-pos {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+  color: var(--mc-text-dim); margin-bottom: 0.5rem; line-height: 1.5;
+}
+.mc-probe-pos span { color: var(--mc-text-mute); }
+
+.mc-probe-row {
+  display: grid; grid-template-columns: 4.6rem 1fr; column-gap: 0.5rem;
+  align-items: baseline; padding: 0.28rem 0;
+  border-top: 1px solid rgba(120, 140, 160, 0.1);
+}
+.mc-probe-row:first-child { border-top: none; }
+.mc-probe-k {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--mc-text-mute);
+}
+.mc-probe-v {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+  font-weight: 700; color: var(--mc-text); display: flex;
+  align-items: center; gap: 0.35rem;
+}
+.mc-probe-pass { color: var(--mc-accent); font-size: 0.8rem; }
+.mc-probe-fail { color: var(--mc-warn); font-size: 0.8rem; }
+.mc-probe-sub {
+  grid-column: 2; font-size: 0.6rem; line-height: 1.45;
+  color: var(--mc-text-mute); margin-top: 0.1rem;
+}
+
+.mc-probe-why, .mc-probe-floor, .mc-probe-nodata {
+  font-size: 0.62rem; line-height: 1.55; color: var(--mc-text-dim);
+  margin-top: 0.5rem; padding: 0.4rem 0.5rem; border-radius: 3px;
+}
+.mc-probe-why { background: rgba(120, 140, 160, 0.07); }
+.mc-probe-floor {
+  background: rgba(79, 209, 230, 0.06);
+  border-left: 2px solid rgba(79, 209, 230, 0.45);
+}
+.mc-probe-nodata {
+  background: rgba(242, 193, 78, 0.06);
+  border-left: 2px solid rgba(242, 193, 78, 0.5);
+}
+.mc-probe-why b, .mc-probe-floor b, .mc-probe-nodata b { color: var(--mc-text); }
+.mc-probe-why code, .mc-probe-floor code {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
+  color: var(--mc-text); background: rgba(0, 0, 0, 0.25);
+  padding: 0.05rem 0.2rem; border-radius: 2px;
+}
+
+.mc-probe-terrain {
+  margin-top: 0.55rem; padding-top: 0.45rem;
+  border-top: 1px solid var(--mc-line);
+}
+.mc-probe-terrain .mc-probe-v { font-size: 0.72rem; }
+.mc-probe-cell-note {
+  margin-top: 0.5rem; padding-top: 0.4rem;
+  border-top: 1px solid var(--mc-line);
+  font-size: 0.56rem; line-height: 1.5; color: var(--mc-text-mute);
+}
+
+/* The probed cell, outlined on the map at the size the value actually covers. */
+.mc-probe-cell { filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.8)); }
+
+/* ── traverse panel ── */
+.mc-trv-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--mc-accent); box-shadow: 0 0 6px var(--mc-accent);
+}
+.mc-trv-res {
+  margin-left: auto; font-size: 0.55rem; letter-spacing: 0.05em;
+  color: var(--mc-text-mute); font-weight: 500;
+}
+.mc-trv-conn {
+  font-size: 0.6rem; line-height: 1.5; color: var(--mc-text-mute);
+  margin-bottom: 0.5rem;
+}
+.mc-trv-list { display: flex; flex-direction: column; gap: 1px; }
+.mc-trv-item {
+  display: flex; align-items: center; gap: 0.45rem; width: 100%;
+  padding: 0.32rem 0.4rem; border: 1px solid transparent; border-radius: 3px;
+  background: none; cursor: pointer; text-align: left; color: var(--mc-text-dim);
+  font-size: 0.68rem;
+}
+.mc-trv-item:hover { background: rgba(120, 140, 160, 0.08); }
+.mc-trv-item--on {
+  background: rgba(79, 209, 230, 0.1);
+  border-color: rgba(79, 209, 230, 0.35); color: var(--mc-text);
+}
+.mc-trv-item--un { cursor: default; opacity: 0.55; }
+.mc-trv-item--un:hover { background: none; }
+.mc-trv-sw { width: 12px; height: 3px; border-radius: 2px; flex: 0 0 auto; }
+.mc-trv-name { flex: 1 1 auto; }
+.mc-trv-km {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; font-weight: 600;
+}
+.mc-trv-item--un .mc-trv-km { color: var(--mc-warn); font-size: 0.56rem; }
+.mc-trv-wp {
+  font-size: 0.56rem; color: var(--mc-text-mute); width: 3.2rem; text-align: right;
+}
+
+.mc-trv-scrub {
+  display: flex; align-items: center; gap: 0.45rem; margin-top: 0.6rem;
+}
+.mc-trv-scrub input { flex: 1 1 auto; min-width: 0; accent-color: var(--mc-accent); }
+.mc-trv-play {
+  display: flex; align-items: center; justify-content: center;
+  width: 1.35rem; height: 1.35rem; flex: 0 0 auto;
+  border: 1px solid var(--mc-line); border-radius: 3px;
+  background: rgba(120, 140, 160, 0.08); color: var(--mc-accent); cursor: pointer;
+}
+.mc-trv-play:hover { background: rgba(79, 209, 230, 0.15); }
+.mc-trv-odo {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+  color: var(--mc-text-mute); margin-top: 0.35rem;
+}
+.mc-trv-odo b { font-size: 0.8rem; color: var(--mc-text); }
+
+.mc-trv-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.3rem;
+  margin-top: 0.55rem; padding-top: 0.45rem; border-top: 1px solid var(--mc-line);
+}
+.mc-trv-sk {
+  display: block; font-size: 0.53rem; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--mc-text-mute);
+}
+.mc-trv-sv {
+  display: block; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.72rem; font-weight: 700; color: var(--mc-text); margin-top: 0.1rem;
+}
+.mc-trv-note, .mc-trv-target {
+  font-size: 0.6rem; line-height: 1.5; color: var(--mc-text-mute);
+  margin-top: 0.5rem; padding: 0.35rem 0.45rem; border-radius: 3px;
+}
+.mc-trv-note { background: rgba(120, 140, 160, 0.07); }
+.mc-trv-note b { color: var(--mc-text-dim); }
+.mc-trv-prov {
+  display: inline-block; margin-left: 0.3rem; font-size: 0.5rem;
+  font-weight: 700; letter-spacing: 0.08em; color: var(--mc-warn);
+}
+/* The destination caveat. Amber, because it IS the caveat: the path is computed
+ * and the target is modelled, and a reader must not take the second for the
+ * first. */
+.mc-trv-target {
+  background: rgba(242, 193, 78, 0.06);
+  border-left: 2px solid rgba(242, 193, 78, 0.5);
+  color: var(--mc-text-dim);
+}
+
+/* ── the drawn traverse ── */
+.mc-rover-icon { background: none; border: none; }
+.mc-rover-icon svg {
+  display: block; transform-origin: 50% 50%;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.85));
+}
+.mc-traverse-wp { filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.9)); }
+.mc-wp-label { background: none; border: none; pointer-events: none; }
+.mc-wp-label span {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; font-weight: 600;
+  color: #cfe9f2; text-shadow: 0 0 3px #04131a, 0 0 3px #04131a, 0 0 3px #04131a;
+  white-space: nowrap;
+}
+.mc-route-end { background: none; border: none; }
+.mc-route-end span {
+  display: flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700;
+  color: #04131a; background: var(--c); border: 2px solid #04131a;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+}
+/* The goal is a ring, not a disc: it is a MODELLED cold trap and it must not
+ * look like the same kind of object as a searched landing site. */
+.mc-route-end--goal span {
+  background: rgba(4, 19, 26, 0.85); border: 3px double var(--c);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.8), inset 0 0 0 2px rgba(4, 19, 26, 0.9);
+}
+.mc-route-end--sel span { width: 24px; height: 24px; font-size: 0.7rem; }
+
+/* The probe offered on the panel that states the null. A conclusion is worth
+ * more when the instrument behind it is one click away. */
+.mc-probe-cta {
+  display: flex; align-items: flex-start; gap: 0.5rem; width: 100%;
+  margin-top: 0.8rem; padding: 0.55rem 0.65rem; text-align: left; cursor: pointer;
+  border: 1px solid rgba(79, 209, 230, 0.3); border-radius: 4px;
+  background: rgba(79, 209, 230, 0.06); color: var(--mc-text-mute);
+  font-size: 0.66rem; line-height: 1.5;
+}
+.mc-probe-cta:hover { background: rgba(79, 209, 230, 0.12); }
+.mc-probe-cta--on {
+  border-color: var(--mc-accent); background: rgba(79, 209, 230, 0.14);
+}
+.mc-probe-cta svg { flex: 0 0 auto; margin-top: 0.1rem; color: var(--mc-accent); }
+.mc-probe-cta b { display: block; color: var(--mc-text); margin-bottom: 0.15rem; }

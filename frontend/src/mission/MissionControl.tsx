@@ -25,13 +25,18 @@ import { fetchCraters, fetchMissionState, getReportPdfUrl } from '../services/ap
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
 import { MissionMap, type MissionMapHandle, type LayerManifestEntry, groundResolutionLabel, loadManifest } from './MissionMap';
 import { loadSearchedSites, type SearchedSites } from './analysis';
+import { Disclose } from './VerdictCard';
 import { VerdictCard } from './VerdictCard';
 import { StepPanel } from './StepPanel';
 import { STEPS, LAYERS, LAYER_MAP } from './config';
 import type { LayerDef } from './config';
 import { loadAnalysis, PROV_MARK, isMissing, showValue } from './analysis';
 import type { Analysis, AnalysisValue, Provenance } from './analysis';
-import { Download, ZoomIn, ZoomOut, Maximize2, MapPin, Check } from 'lucide-react';
+import { ProbeReadout } from './ProbeReadout';
+import { TraversePanel } from './TraversePanel';
+import { loadProbeGrid, type ProbeGrid, type ProbeSample } from './probe';
+import { loadTraverse, type Traverse } from './traverse';
+import { Download, ZoomIn, ZoomOut, Maximize2, MapPin, Check, Crosshair, Route } from 'lucide-react';
 import './mc.css';
 
 const STEP_LAYER: Record<number, string> = {
@@ -201,6 +206,38 @@ export default function MissionControl() {
    *  search has been run on this host -- an absent state, not an empty list. */
   const [searched, setSearched] = useState<SearchedSites | null>(null);
   useEffect(() => { loadSearchedSites().then(setSearched); }, []);
+  /* ── the criteria probe ──────────────────────────────────────────────────
+   * Off by default and its 6.5 MB of float32 is fetched only when it is first
+   * switched on, so a reader who never opens it never pays for it. `probeSettled`
+   * keeps "still loading" and "not generated on this host" distinct: collapsing
+   * them would let a slow fetch look like an absent measurement. */
+  const [probeOn, setProbeOn] = useState(false);
+  const [probeGrid, setProbeGrid] = useState<ProbeGrid | null>(null);
+  const [probeSettled, setProbeSettled] = useState(false);
+  const [probe, setProbe] = useState<ProbeSample | null>(null);
+
+  /* ── the Phase 4 traverse ────────────────────────────────────────────────
+   * Planned in Phase 4 and, until now, drawn nowhere. ON by default: it is a
+   * deliverable, it is cheap (a few hundred vertices), and the request that
+   * produced this was that the route be obvious rather than hidden. */
+  const [traverse, setTraverse] = useState<Traverse | null>(null);
+  const [traverseSettled, setTraverseSettled] = useState(false);
+  const [showTraverse, setShowTraverse] = useState(true);
+  const [selectedRoute, setSelectedRoute] = useState<number | null>(1);
+  const [roverFraction, setRoverFraction] = useState(0);
+  const [roverPlaying, setRoverPlaying] = useState(false);
+
+  /** Select a route, park the rover at its start, and go and look at it. The
+   *  five routes are spread over a 165 km frame, so most of them are outside the
+   *  40 km opening window; selecting one and not moving there would answer
+   *  "which points does the rover pass through" with an empty panel. */
+  const pickRoute = (r: number) => {
+    setSelectedRoute(r);
+    setRoverFraction(0);
+    setRoverPlaying(false);
+    mapRef.current?.focusRoute(r);
+  };
+
   const [coords, setCoords] = useState('Hover the map for coordinates');
   const [zoom, setZoom] = useState(1);
 
@@ -236,6 +273,58 @@ export default function MissionControl() {
       }] as const)));
     });
   }, []);
+
+  // The traverse plan. Small, and the map needs it as soon as it can paint.
+  useEffect(() => {
+    let live = true;
+    loadTraverse().then((t) => {
+      if (!live) return;
+      setTraverse(t);
+      setTraverseSettled(true);
+      // Select the first REACHABLE route rather than assuming rank 1 is one.
+      const first = t?.primary_site_to_cold_trap.find((r) => r.status === 'REACHABLE');
+      setSelectedRoute(first ? first.rank : null);
+    });
+    return () => { live = false; };
+  }, []);
+
+  // The probe grid, fetched on first use only.
+  useEffect(() => {
+    if (!probeOn || probeSettled) return;
+    let live = true;
+    loadProbeGrid().then((g) => {
+      if (!live) return;
+      setProbeGrid(g);
+      setProbeSettled(true);
+    });
+    return () => { live = false; };
+  }, [probeOn, probeSettled]);
+
+  /* Drive the rover. 22 s end to end regardless of route length, because this is
+   * a reading aid and not a simulation: there is no rover, no speed and no
+   * duty cycle anywhere in this project, so a "realistic" pace would be an
+   * invented number dressed as a measurement. The odometer beside it counts
+   * real metres off the planned route. */
+  useEffect(() => {
+    if (!roverPlaying) return;
+    let raf = 0;
+    let last = performance.now();
+    const tick = (now: number) => {
+      const dt = (now - last) / 1000;
+      last = now;
+      setRoverFraction((f) => Math.min(1, f + dt / 22));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [roverPlaying]);
+
+  // Stop at the goal. Separately, because setting one piece of state from inside
+  // another's updater runs twice under StrictMode and is not what an updater is
+  // for.
+  useEffect(() => {
+    if (roverFraction >= 1 && roverPlaying) setRoverPlaying(false);
+  }, [roverFraction, roverPlaying]);
 
   const mapRef = useRef<MissionMapHandle>(null);
   useEffect(() => {
@@ -347,6 +436,13 @@ export default function MissionControl() {
             showLandingSites={showLandingSites}
             scienceOpacity={scienceOpacity}
             searchedSites={searched?.sites ?? null}
+            traverse={showTraverse ? traverse : null}
+            selectedRoute={selectedRoute}
+            onSelectRoute={pickRoute}
+            roverFraction={roverFraction}
+            probeGrid={probeGrid}
+            probeOn={probeOn}
+            onProbe={setProbe}
             activeRoverStrategies={activeRoutes}
             selectedLandingSite={selectedSite}
             onSelectLandingSite={setSelectedSite}
@@ -373,8 +469,33 @@ export default function MissionControl() {
               <MapPin size={11} style={{ color: 'var(--mc-accent)' }} /> Landing Sites
               <Check size={13} className="mc-layer-check" />
             </button>
+            {/* PHASE 4 — the measured plan. Listed above the demo path, because
+                two things called "rover route" on one screen is exactly the
+                confusion this panel is here to end, and this is the one with a
+                computation behind it. */}
+            <button className={`mc-layer ${showTraverse ? 'mc-layer--on' : ''}`} onClick={() => setShowTraverse((v) => !v)}>
+              <Route size={11} style={{ color: '#4fd1e6' }} /> Traverse + Rover
+              <span className="mc-layer-tag" title={
+                'Dijkstra at a stated 100 m planning resolution over measured slope, '
+                + 'roughness and hazard, with connectivity established before any '
+                + 'distance is quoted. Every waypoint is drawn. The destination is a '
+                + 'MODELLED cold trap — where ice could persist, not where ice is. '
+                + 'Phase 4, docs/traverse.json.'
+              }>PHASE 4</span>
+              <Check size={13} className="mc-layer-check" />
+            </button>
+            <button className={`mc-layer ${probeOn ? 'mc-layer--on' : ''}`} onClick={() => { setProbeOn((v) => !v); setProbe(null); }}>
+              <Crosshair size={11} style={{ color: '#4fd1e6' }} /> Criteria Probe
+              <span className="mc-layer-tag" title={
+                'Click anywhere and read the MEASURED CPR and DOP there, each against '
+                + 'its threshold, and the Phase 8 detection floor. It does not locate '
+                + 'ice: candidate area is 0.00 km2 and METHODS section 1 shows the '
+                + 'screen is empty by construction.'
+              }>MEASURE</span>
+              <Check size={13} className="mc-layer-check" />
+            </button>
             <button className={`mc-layer ${showRoute ? 'mc-layer--on' : ''}`} onClick={() => setShowRoute((v) => !v)}>
-              <span className="mc-layer-sw" style={{ background: '#4fd1e6' }} /> Rover Route
+              <span className="mc-layer-sw" style={{ background: '#f2c14e' }} /> API Route
               <span className="mc-layer-tag" title={
                 'Dijkstra over measured slope, roughness, hazard and illumination — '
                 + 'but the target is a hardcoded grid centre, because the screen found '
@@ -383,12 +504,39 @@ export default function MissionControl() {
               }>DEMO TARGET</span>
               <Check size={13} className="mc-layer-check" />
             </button>
+            </div>
           </div>
+
+          {/* The right-hand instrument stack, inboard of the zoom column. Both
+              panels are opt-in and neither one is rendered when its toggle is
+              off, so the map is never smaller than it has to be. */}
+          {(probeOn || showTraverse) && (
+            <div className="mc-mapstack">
+              {probeOn && (
+                <ProbeReadout grid={probeGrid} settled={probeSettled} sample={probe}
+                              onClose={() => { setProbeOn(false); setProbe(null); }} />
+              )}
+              {showTraverse && (
+                <TraversePanel
+                  traverse={traverse} settled={traverseSettled}
+                  selected={selectedRoute}
+                  onSelect={pickRoute}
+                  fraction={roverFraction} onFraction={setRoverFraction}
+                  playing={roverPlaying}
+                  onPlaying={(pl) => {
+                    // Pressing play at the goal restarts from the site. The
+                    // alternative is a button that visibly does nothing.
+                    if (pl && roverFraction >= 1) setRoverFraction(0);
+                    setRoverPlaying(pl);
+                  }}
+                />
+              )}
+            </div>
+          )}
 
           {/* map tools */}
           <div className="mc-map-overlay mc-map-tools">
             <button className="mc-tool" onClick={() => mapRef.current?.zoomIn()} title="Zoom in"><ZoomIn size={15} /></button>
-            </div>
             <button className="mc-tool" onClick={() => mapRef.current?.zoomOut()} title="Zoom out"><ZoomOut size={15} /></button>
             <button className="mc-tool" onClick={() => mapRef.current?.reset()} title="Reset view"><Maximize2 size={14} /></button>
             <div className="mc-tool mc-north" title="North">N</div>
@@ -403,6 +551,16 @@ export default function MissionControl() {
                   {provBadge(legend, layerProv[activeLayer])}
                 </span>
               </div>
+              {/* The default line: mark + resolution, in plain words. */}
+              {layerRes[activeLayer] && (
+                <div className="mc-legend-one">
+                  {layerRes[activeLayer].native_metres_per_pixel} m native
+                  {' → '}
+                  {layerRes[activeLayer].effective_metres_per_pixel} m on this grid
+                  {(layerRes[activeLayer].decimation_factor ?? 1) > 1
+                    && ` · ${layerRes[activeLayer].decimation_factor}× block mean`}
+                </div>
+              )}
               <div className="mc-legend-bar" style={{ background: legend.gradient }} />
               {/* REAL UNITS AND THE ACTUAL vmin/vmax, read from layers.json.
                   config.ts's "Darker"/"Brighter" said nothing a reader could
@@ -440,17 +598,18 @@ export default function MissionControl() {
                   Stated per layer because they now differ on the same map: 20 m
                   terrain under an 80 m shadow mask. A viewer comparing the two
                   has to be told, and a paragraph of caption is not enough. */}
-              {layerRes[activeLayer] && (
-                <div className="mc-legend-res">
-                  {layerRes[activeLayer].native_metres_per_pixel} m native
-                  {layerRes[activeLayer].effective_metres_per_pixel
-                    !== layerRes[activeLayer].native_metres_per_pixel
-                    && ` · ${layerRes[activeLayer].effective_metres_per_pixel} m effective`}
-                  {(layerRes[activeLayer].decimation_factor ?? 1) > 1
-                    && ` · ${layerRes[activeLayer].decimation_factor}× block mean`}
-                </div>
+              {/* The decimation detail moved into the disclosure above; the
+                  native -> effective line is now the always-visible one. */}
+              {/* PROGRESSIVE DISCLOSURE. The provenance paragraph is ~60 words
+                  and was on screen at all times, competing with the map. It is
+                  MOVED, not shortened: every word is still here, one click away.
+                  What stays visible by default is the one line a reader needs to
+                  know what they are looking at -- the mark and the resolution --
+                  plus the colour bar, the scale ends and the opacity slider. */}
+              {layerCopy[activeLayer] && (
+                <Disclose summary="provenance, resolution and what this layer is"
+                          detail={layerCopy[activeLayer]} />
               )}
-              {layerCopy[activeLayer] && <div className="mc-legend-hint">{layerCopy[activeLayer]}</div>}
             </div>
           )}
 
@@ -495,6 +654,8 @@ export default function MissionControl() {
           )}
 
           <StepPanel
+              probeOn={probeOn}
+              onProbe={(on) => { setProbeOn(on); if (!on) setProbe(null); }}
               step={step}
               analysis={analysis}
               mission={mission}

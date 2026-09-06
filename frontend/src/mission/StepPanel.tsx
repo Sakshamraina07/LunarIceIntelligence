@@ -41,7 +41,7 @@ import type { Analysis, SweepAxis } from './analysis';
 import { showValue, showPercent, stepStatus } from './analysis';
 import { Figure, Pv, StepUnavailable } from './Prov';
 import { getReportPdfUrl } from '../services/api';
-import { Check, X, Minus, Download } from 'lucide-react';
+import { Check, X, Minus, Download, Crosshair } from 'lucide-react';
 
 interface Props {
   step: number;
@@ -58,6 +58,12 @@ interface Props {
   setRoverAlgo: (a: string) => void;
   cprTh: number; dopTh: number; iceDepth: number; iceFrac: number;
   onUpdateParams: (p: Record<string, number>) => void;
+  /** Turn on the criteria probe and let the reader check this screen's verdict
+   *  anywhere on the map. Offered HERE because this is the panel that states
+   *  the null, and a conclusion is worth more when the instrument behind it is
+   *  one click away rather than buried in a layer list. */
+  probeOn: boolean;
+  onProbe: (on: boolean) => void;
 }
 
 function Head({ eyebrow, title, desc }: { eyebrow: string; title: string; desc: string }) {
@@ -297,6 +303,23 @@ export function StepPanel(props: Props) {
           </strong>{' '}
           {analysis.verdict.criteria_note}
         </div>
+
+        {/* DON'T TAKE IT ON TRUST — CHECK IT.
+            This panel asserts a verdict over a whole frame. The probe lets a
+            reader point at any spot and read the same two criteria there, with
+            the measured values and the margins. It is not a predictor and there
+            is nothing to predict: the button says what it does. */}
+        <button
+          className={`mc-probe-cta ${props.probeOn ? 'mc-probe-cta--on' : ''}`}
+          onClick={() => props.onProbe(!props.probeOn)}
+        >
+          <Crosshair size={13} />
+          <span>
+            <b>{props.probeOn ? 'Probe is on — click the map' : 'Check this anywhere on the map'}</b>
+            Reads the measured CPR and DOP at any point, against these same
+            thresholds and the detection floor. It does not locate ice.
+          </span>
+        </button>
         <div className="mc-details">
           <div className="mc-details-k">P(ice) — withdrawn</div>
           <div className="mc-na">

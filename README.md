@@ -22,6 +22,12 @@ strictly increasing function of DOP, so `CPR > 1.00 AND DOP < 0.13` is
 arithmetically empty. That is not a failure to find ice. It is a measurement of
 what this product can decide.
 
+**And you do not have to take that on trust.** The map carries a probe: click
+anywhere and it reports the measured CPR and DOP at that point, each against its
+threshold, and how far below the detection floor the reading falls. It is not a
+predictor — there is nothing to predict — but it turns the null from something
+asserted into something checkable, everywhere in the frame.
+
 ## Three findings about detection limits
 
 **1. The quantity everyone calls CPR, computed from amplitude, is not CPR.**
@@ -56,7 +62,8 @@ not reported, so a reader cannot tell. (§11.3)
 | **terrain** | LOLA `LDEM_80S_20M`, 20 m native, low-passed with a **measured** anti-alias σ and carried onto the 25 m DFSAR grid |
 | **radar** | Chandrayaan-2 DFSAR L-band compact-pol, one pass, **15.64 %** of the frame returned amplitude |
 | **landing sites** | argmax of a six-criterion search over all **14,943,444** native 25 m pixels, each with per-criterion evidence and an interpolation verdict |
-| **traverse** | Dijkstra at a stated 100 m planning resolution, connectivity reported **before** any distance, `UNREACHABLE` an explicit state |
+| **traverse** | Dijkstra at a stated 100 m planning resolution, connectivity reported **before** any distance, `UNREACHABLE` an explicit state — all **177 waypoints** drawn on the map, each one hoverable |
+| **the probe** | click any point and read the **measured** CPR and DOP there against their thresholds and the detection floor — a 200 m block mean, labelled as one, with `NO DATA` where the radar returned nothing |
 
 ## Quick start
 
@@ -83,7 +90,7 @@ verification apparatus itself turned out to be wrong (`docs/METHODS.md` §0).
 
 | document | what it holds |
 |---|---|
-| [`docs/METHODS.md`](docs/METHODS.md) | **the single methodological record** — 11 sections, every measured figure under a staleness stamp over 15 artifacts |
+| [`docs/METHODS.md`](docs/METHODS.md) | **the single methodological record** — 11 sections, every measured figure under a staleness stamp over 16 artifacts |
 | [`docs/PROVENANCE.md`](docs/PROVENANCE.md) | generated, not written: every value, its mark, its source raster and the line that produced it |
 | [`docs/assumptions.md`](docs/assumptions.md) | the register of what is **not** measured |
 | [`docs/testing.md`](docs/testing.md) | the gates, and what each refuses to let ship |

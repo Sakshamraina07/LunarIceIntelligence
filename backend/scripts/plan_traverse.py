@@ -264,13 +264,25 @@ def main() -> int:
         .reshape(passable.shape[0], use["k"], passable.shape[1], use["k"]).mean(axis=(1, 3))
 
     def latlon(li, si):
-        gx2, gy2 = frame.pixel_to_xy(np.array([[li * use["k"] + use["k"] / 2]]),
-                                     np.array([[si * use["k"] + use["k"] / 2]]))
-        x = float(np.asarray(gx2).ravel()[0])
-        y = float(np.asarray(gy2).ravel()[0])
-        rho = float(np.hypot(x, y))
-        lat = -(90.0 - np.degrees(2.0 * np.arctan(rho / (2.0 * 1737400.0))))
-        return round(lat, 5), round(float(np.degrees(np.arctan2(x, -y))), 5)
+        """Planning cell (li, si) -> selenodetic lat/lon at the CELL CENTRE.
+
+        CALLS THE FRAME, DOES NOT RESTATE IT. This function previously
+        re-derived the inverse projection by hand and used
+        `arctan2(x, -y)` -- the `y_away_lam0` convention of the LOLA polar
+        product (ingest_lola_polar_dem.py:272) -- against a DFSAR frame whose
+        transform is `arctan2(x, y)` (sar_geometry.py:198). Latitude was
+        unaffected, so every check that looked at latitude passed. Longitude
+        came out as 180 - lon: site 1 was written at 97.33971 deg where the
+        frame, validated against ISRO's 937,296-node geolocation grid to
+        13.2 mm, puts it at 82.64773 deg.
+
+        This is METHODS section 0's first pattern in a producer rather than a
+        verifier: a second copy of a transform, which agreed with the first
+        until it did not. There is now one copy.
+        """
+        lat, lon = frame.pixel_to_latlon(li * use["k"] + use["k"] / 2,
+                                         si * use["k"] + use["k"] / 2)
+        return round(float(np.asarray(lat).ravel()[0]), 5),                round(float(np.asarray(lon).ravel()[0]), 5)
 
     def route(src_node, dst_nodes):
         """Dijkstra from one node to a SET; returns the cheapest reachable one."""
@@ -300,11 +312,11 @@ def main() -> int:
                 "energy_J_per_kg": round(G_MOON * (MU_ROLL * length_m + climb), 1)}
 
     return _report(args, sites, conn, use, eff, nodes, route, psr_c, passable,
-                   idx, latlon, sites_doc)
+                   idx, latlon, sites_doc, frame)
 
 
 def _report(args, sites, conn, use, eff, nodes, route, psr_c, passable, idx,
-            latlon, sites_doc) -> int:
+            latlon, sites_doc, frame) -> int:
     # ---------------------------------------------- PRIMARY: site -> cold trap
     hr("PRIMARY DELIVERABLE — each site to its nearest MODELLED cold trap")
     print("  Candidate ice area in this frame is 0.00 km2. There is no measured ice")
@@ -340,6 +352,29 @@ def _report(args, sites, conn, use, eff, nodes, route, psr_c, passable, idx,
         })
         print(f"  {s['rank']:>5}{r['length_m']:>11,.0f}{r['climb_m']:>10.1f}"
               f"{r['energy_J_per_kg']:>10,.0f}{len(r['cells']):>8}  REACHABLE")
+
+    # ---- GATE: the first waypoint IS the site, so it must plot where the site
+    # plots. This file wrote longitudes as 180 - lon for five routes and every
+    # existing check passed, because they all looked at length, climb and
+    # connectivity -- quantities the longitude does not enter. The only thing
+    # that would have caught it is comparing the two files that must agree.
+    # Tolerance is one planning cell of great-circle distance: the route starts
+    # at the CELL CENTRE and the site is a native 25 m pixel inside that cell,
+    # so they are not required to be equal, only to be in the same cell.
+    for rec, s in zip(to_trap, sites):
+        if rec["status"] != "REACHABLE":
+            continue
+        lat0, lon0 = rec["polyline_latlon"][0]
+        d = frame.great_circle_m(s["lat_deg"], s["lon_deg"], lat0, lon0)
+        if d > eff * 1.5:
+            raise AssertionError(
+                f"route {rec['rank']} starts {d:,.0f} m from site {rec['rank']} "
+                f"({s['lat_deg']:.5f}, {s['lon_deg']:.5f}) vs "
+                f"({lat0:.5f}, {lon0:.5f}) — more than one {eff:g} m planning "
+                f"cell. The route polyline and docs/landing_sites.json disagree "
+                f"about where the same point is.")
+        print(f"        route {rec['rank']} starts {d:6.1f} m from site "
+              f"{rec['rank']} (tolerance {eff * 1.5:g} m) — files agree")
 
     # ------------------------------------------------ CAPABILITY: pairwise
     hr("CAPABILITY RESULT — pairwise site-to-site matrix")

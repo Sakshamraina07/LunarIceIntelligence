@@ -113,10 +113,11 @@
  */
 import { useEffect, useImperativeHandle, useRef, useState, forwardRef } from 'react';
 import type { SearchedSite } from './analysis';
+import { probeAt, type ProbeGrid, type ProbeSample } from './probe';
+import { cumulativeMetres, planningScale, type Traverse, type TraverseRoute } from './traverse';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { MissionState, CandidateLandingSite } from '../types/mission';
-import { LAYER_MAP } from './config';
 
 /** Static assets, served by the frontend host — never by the science backend. */
 const LAYERS_BASE = `${import.meta.env.BASE_URL}layers`;
@@ -261,6 +262,11 @@ interface MapGeometry {
   metresPerNativePx: number;
   acrossKm: number;
   alongKm: number;
+  /** The native raster shape, so a CRS position can be turned back into
+   *  (line, sample) without going through the 0-100 grid — which rounds to
+   *  +/-500 m and is far too coarse to read a 200 m probe cell with. */
+  nativeLines: number;
+  nativeSamples: number;
   /** measured amplitude ribbon in CRS units, [lat, lng] */
   ring: [number, number][];
   /** ISRO's pointed swath in CRS units — outline only, may be empty */
@@ -380,6 +386,7 @@ function buildGeometry(mf: LayersManifest | null): MapGeometry {
       boundH: 100, boundW: 100, bounds: [[0, 0], [100, 100]],
       metresPerUnit: 0, nativeZoom: 0, metresPerNativePx: 0,
       acrossKm: 0, alongKm: 0,
+      nativeLines: 0, nativeSamples: 0,
       ring: [], swathRing: [], frame: [[0, 0], [0, 100], [100, 100], [100, 0]],
       ribbonCentre: [50, 50],
       // Degraded means there is no scale to place a 40 km window on, so home is
@@ -426,6 +433,8 @@ function buildGeometry(mf: LayersManifest | null): MapGeometry {
     metresPerNativePx: mf.native.metres_per_pixel.sample,
     acrossKm: mf.native.extent_km.across_track,
     alongKm: mf.native.extent_km.along_track,
+    nativeLines: mf.native.lines,
+    nativeSamples: mf.native.samples,
     ring,
     swathRing,
     frame: [[0, 0], [0, boundW], [boundH, boundW], [boundH, 0]],
@@ -570,6 +579,82 @@ const gridToPixel = (geom: MapGeometry, gx: number, gy: number): [number, number
 ];
 
 /**
+ * Native raster (line, sample) → CRS.Simple [lat, lng].
+ *
+ * Phase 3 sites and Phase 4 routes are both located in raster pixels, not on the
+ * 0-100 grid, so they place through this rather than through gridToPixel — the
+ * whole point of the native search being that the answer is better than +/-500 m.
+ */
+const pixelToCrs = (geom: MapGeometry, line: number, sample: number): [number, number] => [
+  geom.boundH * (1 - line / geom.nativeLines),
+  geom.boundW * (sample / geom.nativeSamples),
+];
+
+/** Per-rank route colour. Distinct hues, because five routes on one frame are
+ *  otherwise five identical cyan threads and the reader cannot tell which one
+ *  belongs to which site. */
+const ROUTE_COLOUR = ['#4fd1e6', '#6ee7a8', '#f2c14e', '#c084fc', '#fb7185'];
+
+/**
+ * The rover, drawn as a rover.
+ *
+ * A plain dot cannot show which way the vehicle is facing, and heading is most
+ * of what makes a traverse readable — the whole request was that it be obvious
+ * where the rover goes. The mast is at the FRONT, and the icon is rotated to the
+ * bearing of the segment it is on, so the direction of travel reads at a glance.
+ *
+ * This is an ILLUSTRATION and carries no measurement. There is no rover, no
+ * mass, no wheel geometry and no vehicle model anywhere in this project: the
+ * energy figure is reported per kilogram precisely so that none of that has to
+ * be invented. The panel beside it says so.
+ */
+function roverIcon(headingDeg: number): L.DivIcon {
+  return L.divIcon({
+    className: 'mc-rover-icon',
+    iconSize: [38, 46],
+    iconAnchor: [19, 23],
+    html: `<svg viewBox="0 0 40 48" width="38" height="46" style="transform:rotate(${headingDeg.toFixed(1)}deg)">
+      <ellipse cx="20" cy="24" rx="19" ry="22" fill="#4fd1e6" opacity="0.13"/>
+      <g fill="#08131b" stroke="#7fe3f2" stroke-width="1.3">
+        <rect x="1.5" y="10" width="7" height="9" rx="2.6"/>
+        <rect x="1.5" y="20" width="7" height="9" rx="2.6"/>
+        <rect x="1.5" y="30" width="7" height="9" rx="2.6"/>
+        <rect x="31.5" y="10" width="7" height="9" rx="2.6"/>
+        <rect x="31.5" y="20" width="7" height="9" rx="2.6"/>
+        <rect x="31.5" y="30" width="7" height="9" rx="2.6"/>
+      </g>
+      <rect x="8" y="8" width="24" height="33" rx="4" fill="#0e2a34" stroke="#4fd1e6" stroke-width="1.6"/>
+      <rect x="11" y="14" width="18" height="20" rx="1.5" fill="#1d5a6b" stroke="#7fe3f2" stroke-width="0.8"/>
+      <g stroke="#08131b" stroke-width="0.8" opacity="0.85">
+        <line x1="20" y1="14" x2="20" y2="34"/>
+        <line x1="11" y1="20.7" x2="29" y2="20.7"/>
+        <line x1="11" y1="27.3" x2="29" y2="27.3"/>
+      </g>
+      <circle cx="20" cy="7" r="3.4" fill="#08131b" stroke="#4fd1e6" stroke-width="1.5"/>
+      <path d="M13 5.2 L20 1 L27 5.2" fill="none" stroke="#7fe3f2" stroke-width="1.3"
+            stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>`,
+  });
+}
+
+/**
+ * CRS.Simple [lat, lng] -> fractional native raster (line, sample).
+ *
+ * The exact inverse of the mapping buildGeometry uses to place the imagery: the
+ * raster fills the whole extent and row 0 sits at lat = boundH. Returns
+ * fractional pixels, NOT the rounded 0-100 grid the coordinate readout uses —
+ * that grid quantises to about 500 m, which is more than twice the probe's own
+ * 200 m cell, so reading a probe through it would report the wrong cell and
+ * never say so.
+ */
+function crsToPixel(geom: MapGeometry, lat: number, lng: number): { line: number; sample: number } {
+  return {
+    line: (1 - lat / geom.boundH) * geom.nativeLines,
+    sample: (lng / geom.boundW) * geom.nativeSamples,
+  };
+}
+
+/**
  * The frame's projection, lifted verbatim from layers.json.geodetic_frame.
  *
  * This is a port of `sar_geometry.SarFrame`, not a new derivation: the same
@@ -648,6 +733,18 @@ export interface MissionMapHandle {
   zoomIn: () => void;
   zoomOut: () => void;
   reset: () => void;
+  /**
+   * Fly to one traverse route, filling the panel with it.
+   *
+   * The home window is a fixed 40 km square on the ribbon centroid, and the five
+   * routes are spread over a 165 km frame, so most of them open off-screen. That
+   * is correct for the DEFAULT view — it is panel-independent and shows a crater
+   * as a crater — but it is useless the moment someone asks which points the
+   * rover passes through. Selecting a route answers that by going there. It is
+   * an explicit action and never happens on load, so the opening view keeps
+   * meaning what it meant.
+   */
+  focusRoute: (rank: number) => void;
 }
 
 interface Props {
@@ -671,6 +768,20 @@ interface Props {
    *  100 x 100 grid, located to +/-500 m, and all five fell outside the measured
    *  amplitude ribbon. Null means no search has been run on this host. */
   searchedSites: SearchedSite[] | null;
+  /**
+   * Phase 4. Null means no traverse has been planned on this host, and the map
+   * draws nothing rather than a plausible line — same rule as everywhere else.
+   */
+  traverse: Traverse | null;
+  /** Which route (by site rank) is highlighted and carries the rover. */
+  selectedRoute: number | null;
+  onSelectRoute: (rank: number) => void;
+  /** Position of the rover along the selected route, 0..1 of its LENGTH. */
+  roverFraction: number;
+  /** The probe: when on, a click reads the measured field at that point. */
+  probeGrid: ProbeGrid | null;
+  probeOn: boolean;
+  onProbe: (s: ProbeSample | null) => void;
   activeRoverStrategies: string[];
   selectedLandingSite: CandidateLandingSite | null;
   onSelectLandingSite: (s: CandidateLandingSite) => void;
@@ -679,7 +790,10 @@ interface Props {
 }
 
 export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMap(
-  { mission, activeLayer, scienceOpacity, showLandingSites, searchedSites, activeRoverStrategies, selectedLandingSite, onSelectLandingSite, onCoords, onZoom },
+  { mission, activeLayer, scienceOpacity, showLandingSites, searchedSites,
+    traverse, selectedRoute, onSelectRoute, roverFraction,
+    probeGrid, probeOn, onProbe,
+    activeRoverStrategies, selectedLandingSite, onSelectLandingSite, onCoords, onZoom },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -689,6 +803,20 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
   const overlayRef = useRef<L.Layer | null>(null);
   const sitesRef = useRef<L.LayerGroup | null>(null);
   const routesRef = useRef<L.LayerGroup | null>(null);
+  const traverseRef = useRef<L.LayerGroup | null>(null);
+  /** rank -> the drawn route's own bounds, filled by the traverse effect. */
+  const routeBoundsRef = useRef<Record<number, L.LatLngBounds>>({});
+  const roverRef = useRef<L.Marker | null>(null);
+  const probeMarkRef = useRef<L.LayerGroup | null>(null);
+  // The click handler is bound once, when the map is built, so it reads the
+  // current probe state through refs rather than closing over whichever values
+  // happened to be current at build time.
+  const probeGridRef = useRef<ProbeGrid | null>(probeGrid);
+  const probeOnRef = useRef(probeOn);
+  const onProbeRef = useRef(onProbe);
+  probeGridRef.current = probeGrid;
+  probeOnRef.current = probeOn;
+  onProbeRef.current = onProbe;
   const targetRef = useRef<L.CircleMarker | null>(null);
   const gridRef = useRef<L.LayerGroup | null>(null);
   const [ready, setReady] = useState(false);
@@ -703,6 +831,28 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
   useImperativeHandle(ref, () => ({
     zoomIn: () => mapRef.current?.zoomIn(),
     zoomOut: () => mapRef.current?.zoomOut(),
+    focusRoute: (rank: number) => {
+      const b = routeBoundsRef.current[rank];
+      const map = mapRef.current;
+      // No bounds means the route was not drawn — UNREACHABLE, or the layer is
+      // off. Do nothing rather than flying somewhere arbitrary.
+      if (!b || !map) return;
+      // Fit into the VISIBLE map, not the whole panel. The layer switcher sits
+      // over the left edge and the traverse/probe stack over the right, so a
+      // symmetric padding centres the route underneath one of them — which is
+      // the same as not going there. Both widths are measured off the DOM rather
+      // than restated as constants, so the fit follows the CSS.
+      const wrap = map.getContainer().parentElement;
+      const w = (sel: string) => {
+        const el = wrap?.querySelector(sel) as HTMLElement | null;
+        return el ? el.getBoundingClientRect().width + 24 : 24;
+      };
+      map.flyToBounds(b, {
+        paddingTopLeft: [w('.mc-layerctl'), 40],
+        paddingBottomRight: [w('.mc-mapstack'), 60],
+        duration: 0.7, maxZoom: 7,
+      });
+    },
     // Reset returns to the 40 km home window, NOT the full extent. Flying to
     // geom.bounds put the reviewer back in a 1:2.93 letterbox where the craters
     // and the traverse were a hairline — which made the button that is supposed to
@@ -879,6 +1029,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       if (hasSwath) {
         L.polygon(geom.swathRing, {
           pane: 'mc-frame', fill: false, color: '#8aa0b4', weight: 1, opacity: 0.55,
+          className: 'mc-swath-outline',
         }).addTo(map).bindTooltip(
           `Chandrayaan-2 DFSAR beam footprint — ISRO sri_ma mask, ` +
           `${(geom.swathFraction * 100).toFixed(1)}% of this frame, ` +
@@ -900,7 +1051,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
 
       L.polygon(geom.ring, {
         pane: 'mc-frame', fill: false, color: '#4fd1e6', weight: 1.2, opacity: 0.75,
-        dashArray: '5 6',
+        dashArray: '5 6', className: 'mc-amplitude-outline',
       }).addTo(map).bindTooltip(
         `Chandrayaan-2 DFSAR amplitude footprint — 2020-08-08 pass, ` +
         `${(geom.validFraction * 100).toFixed(1)}% of this frame, ` +
@@ -948,8 +1099,17 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       L.polyline([[0, x], [geom.boundH, x]], style).addTo(grid);
     }
 
+    // Traverse above the frame vectors, rover above the traverse, probe mark on
+    // top of everything — the reading must never end up under a route line.
+    map.createPane('mc-route');
+    map.getPane('mc-route')!.style.zIndex = '430';
+    map.createPane('mc-rover');
+    map.getPane('mc-rover')!.style.zIndex = '470';
+
     sitesRef.current = L.layerGroup().addTo(map);
     routesRef.current = L.layerGroup().addTo(map);
+    traverseRef.current = L.layerGroup().addTo(map);
+    probeMarkRef.current = L.layerGroup().addTo(map);
 
     // Dynamic scale bar. CRS.Simple lat/lng ARE map units, and one unit is
     // exactly metres_per_unit on the ground because the extent is cut at the
@@ -994,6 +1154,47 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
           ? `GRID ${gx},${gy}  ·  ${ll.lat.toFixed(4)}° ${ll.lon.toFixed(4)}°`
           : `GRID ${gx},${gy}  ·  coordinates unavailable (layers.json carries no geodetic_frame)`,
       );
+    });
+
+    // ── the probe ────────────────────────────────────────────────────────
+    //
+    // Click anywhere and read what was MEASURED there. This is not a predictor
+    // and there is nothing to predict: candidate area in this frame is 0.00 km2
+    // and METHODS section 1 proves that screen is empty by construction. What it
+    // does is let the emptiness be inspected point by point instead of taken on
+    // trust — including in the 84 % of the frame where the radar returned
+    // nothing, which the readout names as an absent state rather than a zero.
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      if (!probeOnRef.current) return;
+      const marks = probeMarkRef.current;
+      const g = probeGridRef.current;
+      if (!marks) return;
+      marks.clearLayers();
+      const { line, sample } = crsToPixel(geom, e.latlng.lat, e.latlng.lng);
+      const ll = geom.proj ? pixelToLatLon(geom.proj, line, sample) : null;
+      const sampleRead = g ? probeAt(g, line, sample, ll) : null;
+      onProbeRef.current(sampleRead);
+      if (!sampleRead) return;
+
+      // The crosshair is drawn at the CELL the value came from, not at the
+      // pixel that was clicked. A marker on the click point would imply the
+      // number belongs to that spot; it belongs to a 200 m square, and the
+      // square is what gets outlined.
+      const k = g!.header.decimation;
+      const c = sampleRead.cell;
+      const [y0, x0] = pixelToCrs(geom, c.gy * k, c.gx * k);
+      const [y1, x1] = pixelToCrs(geom, (c.gy + 1) * k, (c.gx + 1) * k);
+      L.rectangle([[y0, x0], [y1, x1]], {
+        pane: 'mc-rover', color: '#ffffff', weight: 1.4, opacity: 0.95,
+        fill: true, fillColor: '#ffffff', fillOpacity: 0.08,
+        className: 'mc-probe-cell', interactive: false,
+      }).addTo(marks);
+      const mid: [number, number] = [(y0 + y1) / 2, (x0 + x1) / 2];
+      L.circleMarker(mid, {
+        pane: 'mc-rover', radius: 2.5, color: '#ffffff', weight: 1.5,
+        fillColor: '#ffffff', fillOpacity: 1, interactive: false,
+        className: 'mc-probe-dot',
+      }).addTo(marks);
     });
 
     return () => {
@@ -1158,10 +1359,35 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     // would put two different answers to one question on the same map.
     if (searchedSites && searchedSites.length) {
       const inRibbon: string[] = [];
+      const disagree: string[] = [];
       searchedSites.forEach((s2) => {
-        const [py, px] = gridToPixel(geom, s2.grid.sample, s2.grid.line);
+        // NATIVE PIXELS, NOT THE 0-100 GRID.
+        //
+        // This read `gridToPixel(geom, s2.grid.sample, s2.grid.line)`, which
+        // divides by 100 — the backend's coarse grid convention. Phase 3
+        // searched native 25 m pixels, so `grid` here holds values like
+        // (line 965, sample 5026), and dividing those by 100 put site 1 at
+        // CRS (-755, 12867) on a 87 x 256 extent: off the raster by two orders
+        // of magnitude, in every direction, for all five sites.
+        //
+        // It was invisible because Leaflet clips an off-view path to "M0 0"
+        // rather than erroring, and because the console line beneath already
+        // said "5/5 outside the measured amplitude ribbon" — a sentence written
+        // for the API's hardcoded offsets, which really were outside. The new
+        // symptom arrived wearing the old symptom's label. Hence the gate below,
+        // which compares the map against the search's OWN verdict instead of
+        // against a sentence.
+        const [py, px] = pixelToCrs(geom, s2.grid.line, s2.grid.sample);
         const cov = coverageAt(geom, py, px);
         inRibbon.push(`#${s2.rank} ${cov}`);
+        // `in_amplitude_mask` is a hard criterion of the search: a site carrying
+        // it passed is INSIDE the measured ribbon by construction, so the map
+        // placing it outside means the map and docs/landing_sites.json disagree
+        // about where the same point is. That is a defect, not a caveat.
+        if (s2.criteria.in_amplitude_mask?.passed && cov !== 'amplitude') {
+          disagree.push(`#${s2.rank} (line ${s2.grid.line}, sample ${s2.grid.sample}) `
+            + `plots as "${cov}"`);
+        }
         const suspect = /SUSPECT/i.test(s2.interpolation_check.verdict);
         const marker = L.circleMarker([py, px], {
           pane: 'mc-frame',
@@ -1192,8 +1418,14 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
         );
         marker.addTo(group);
       });
-      console.info('[MissionMap] Phase 3 searched sites drawn (API sites suppressed): '
-        + inRibbon.join(', '));
+      console.info('[MissionMap] Phase 3 searched sites drawn at native raster '
+        + 'coordinates (API sites suppressed): ' + inRibbon.join(', '));
+      if (disagree.length) {
+        console.error('[MissionMap] SITE PLACEMENT DISAGREES WITH THE SEARCH. These '
+          + 'sites passed in_amplitude_mask in docs/landing_sites.json but plot '
+          + 'outside the measured ribbon on this map, so one of the two is wrong '
+          + `about where they are: ${disagree.join('; ')}`);
+      }
       return;
     }
 
@@ -1317,6 +1549,204 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       })));
     }
   }, [mission, activeRoverStrategies, ready]);
+
+  // ── Phase 4 traverse: the routes, their waypoints, and the rover ────────
+  //
+  // These were computed in Phase 4 and, until now, were never drawn: the map
+  // still showed only the API's demo-target routes. The request that produced
+  // this was "it is highly unclear the rover passes through which points", and
+  // it was correct — the points existed in traverse.json and nothing rendered
+  // them.
+  //
+  // Every vertex is drawn. A traverse is a sequence of decisions on a 100 m
+  // grid, and a smooth line hides both the decisions and the quantisation; the
+  // dots ARE the answer to the question that was asked.
+  useEffect(() => {
+    const group = traverseRef.current;
+    const geom = geomRef.current;
+    if (!group || !geom) return;
+    group.clearLayers();
+    if (roverRef.current) { roverRef.current.remove(); roverRef.current = null; }
+    if (!traverse) return;
+
+    const resM = traverse.planning.resolution_m;
+    // Read from the file. A hardcoded 4 would draw every route at a quarter
+    // scale, in the wrong place, and report nothing, the day the planner is
+    // re-run at 50 m — which it already supports and already reports on.
+    const k = planningScale(traverse, geom.metresPerNativePx);
+
+    const rows: Record<string, unknown>[] = [];
+
+    traverse.primary_site_to_cold_trap.forEach((r: TraverseRoute) => {
+      // UNREACHABLE is a state, not a short route. Nothing is drawn for it and
+      // the panel says why; a faint line to nowhere would be an invented path.
+      if (r.status !== 'REACHABLE' || !r.polyline_grid?.length) {
+        rows.push({ site: r.rank, status: r.status, drawn: false });
+        return;
+      }
+      const sel = selectedRoute === r.rank;
+      const colour = ROUTE_COLOUR[(r.rank - 1) % ROUTE_COLOUR.length];
+      const pts = r.polyline_grid.map(([li, si]) =>
+        pixelToCrs(geom, (li + 0.5) * k, (si + 0.5) * k));
+      const cum = cumulativeMetres(r, resM);
+
+      // The two lengths must agree. plan_traverse.py sums this route the same
+      // way; if the numbers ever diverge, one of the two files is describing a
+      // different route and the console says so rather than the screen quietly
+      // showing the wrong one.
+      const endM = cum[cum.length - 1];
+      if (r.length_m !== null && Math.abs(endM - r.length_m) > 1.0) {
+        console.error(`[MissionMap] route ${r.rank}: polyline sums to ${endM.toFixed(1)} m `
+          + `but traverse.json reports length_m ${r.length_m}. The drawn route and the `
+          + 'reported length are not the same route.');
+      }
+
+      routeBoundsRef.current[r.rank] = L.latLngBounds(pts);
+
+      const covs = pts.map(([py, px]) => coverageAt(geom, py, px));
+      const amp = covs.filter((c) => c === 'amplitude').length;
+      rows.push({
+        site: r.rank, status: r.status, km: (r.length_m ?? 0) / 1000,
+        waypoints: pts.length, climb_m: r.climb_m, J_per_kg: r.energy_J_per_kg,
+        in_amplitude_ribbon: `${amp}/${pts.length}`, selected: sel, drawn: true,
+      });
+
+      const tip = `<b>Site ${r.rank} &rarr; cold trap</b><br/>`
+        + `${(r.length_m ?? 0).toLocaleString()} m over ${pts.length} waypoints `
+        + `at ${resM} m<br/>`
+        + `climb ${r.climb_m} m &middot; ${r.energy_J_per_kg?.toLocaleString()} J/kg `
+        + `<span style="opacity:.7">DERIVED</span><br/>`
+        + `<hr style="opacity:.3;margin:.3rem 0"/>${r.target ?? ''}`;
+
+      // Dark casing under the colour, so a route stays legible over the bright
+      // end of the hypsometric ramp as well as over shadow.
+      L.polyline(pts, {
+        pane: 'mc-route', color: '#04131a', weight: (sel ? 5.5 : 3.5) + 3,
+        opacity: 0.55, lineJoin: 'round', lineCap: 'round', interactive: false,
+        className: 'mc-traverse-casing',
+      }).addTo(group);
+      L.polyline(pts, {
+        pane: 'mc-route', color: colour, weight: sel ? 5.5 : 3.5,
+        opacity: sel ? 1 : 0.75, lineJoin: 'round', lineCap: 'round',
+        className: 'mc-traverse',
+      }).addTo(group).bindTooltip(tip, { sticky: true, className: 'mc-tip' })
+        .on('click', () => onSelectRoute(r.rank));
+
+      // EVERY vertex. This is the part that was asked for: a reader can now see
+      // exactly which cells the plan passes through, and each one says how far
+      // along it is and where it is on the Moon.
+      pts.forEach((pt, i) => {
+        const last = i === pts.length - 1;
+        const first = i === 0;
+        const dot = L.circleMarker(pt, {
+          pane: 'mc-route',
+          radius: first || last ? 0 : sel ? 3.4 : 2.2,
+          color: '#04131a', weight: 1,
+          fillColor: colour, fillOpacity: 1,
+          className: 'mc-traverse-wp',
+        }).addTo(group);
+        if (first || last) return;
+        const ll = r.polyline_latlon?.[i];
+        dot.bindTooltip(
+          `<b>Site ${r.rank} &middot; waypoint ${i + 1} of ${pts.length}</b><br/>`
+          + `${(cum[i] / 1000).toFixed(2)} km along &middot; `
+          + `${(100 * cum[i] / endM).toFixed(0)} % of the route<br/>`
+          + (ll ? `${ll[0].toFixed(4)}&deg;, ${ll[1].toFixed(4)}&deg;<br/>` : '')
+          + `<span style="opacity:.7">planning cell `
+          + `${r.polyline_grid![i][0]}, ${r.polyline_grid![i][1]} at ${resM} m &mdash; `
+          + `this position is quantised to &plusmn;${resM / 2} m</span>`,
+          { direction: 'top', className: 'mc-tip', opacity: 1 },
+        );
+        // A distance tick every fifth waypoint on the selected route only. On
+        // all five at once it is unreadable, and on none of them the reader has
+        // to hover every dot to find out how long anything is.
+        if (sel && i % 5 === 0) {
+          L.marker(pt, {
+            pane: 'mc-route', interactive: false,
+            icon: L.divIcon({
+              className: 'mc-wp-label', iconSize: [46, 14], iconAnchor: [-6, 7],
+              html: `<span>${(cum[i] / 1000).toFixed(1)} km</span>`,
+            }),
+          }).addTo(group);
+        }
+      });
+
+      // The two ends, named. Start is the searched landing site; end is a
+      // MODELLED cold trap and is labelled as one everywhere it appears.
+      const start = pts[0];
+      const end = pts[pts.length - 1];
+      L.marker(start, {
+        pane: 'mc-route',
+        icon: L.divIcon({
+          className: `mc-route-end mc-route-end--start${sel ? ' mc-route-end--sel' : ''}`,
+          iconSize: [22, 22], iconAnchor: [11, 11],
+          html: `<span style="--c:${colour}">${r.rank}</span>`,
+        }),
+      }).addTo(group)
+        .bindTooltip(`<b>START &mdash; landing site ${r.rank}</b><br/>`
+          + 'Searched over all 14,943,444 native 25 m pixels.',
+          { direction: 'top', className: 'mc-tip' })
+        .on('click', () => onSelectRoute(r.rank));
+      L.marker(end, {
+        pane: 'mc-route',
+        icon: L.divIcon({
+          className: `mc-route-end mc-route-end--goal${sel ? ' mc-route-end--sel' : ''}`,
+          iconSize: [22, 22], iconAnchor: [11, 11],
+          html: `<span style="--c:${colour}"></span>`,
+        }),
+      }).addTo(group)
+        .bindTooltip(`<b>GOAL &mdash; MODELLED cold trap</b><br/>${r.target ?? ''}`,
+          { direction: 'top', className: 'mc-tip' })
+        .on('click', () => onSelectRoute(r.rank));
+    });
+
+    // ── the rover ──────────────────────────────────────────────────────────
+    const r = traverse.primary_site_to_cold_trap
+      .find((x) => x.rank === selectedRoute && x.status === 'REACHABLE');
+    if (r?.polyline_grid?.length && r.polyline_grid.length > 1) {
+      const pts = r.polyline_grid.map(([li, si]) =>
+        pixelToCrs(geom, (li + 0.5) * k, (si + 0.5) * k));
+      const cum = cumulativeMetres(r, resM);
+      const total = cum[cum.length - 1];
+      // Interpolate by DISTANCE, not by vertex index. The route has diagonal
+      // steps 1.414x longer than orthogonal ones, so stepping through indices
+      // would make the rover speed up and slow down for no physical reason and
+      // put the "km travelled" readout out of step with the marker.
+      const want = Math.max(0, Math.min(1, roverFraction)) * total;
+      let i = 0;
+      while (i + 1 < cum.length - 1 && cum[i + 1] < want) i++;
+      const span = cum[i + 1] - cum[i];
+      const f = span > 0 ? (want - cum[i]) / span : 0;
+      const pos: [number, number] = [
+        pts[i][0] + f * (pts[i + 1][0] - pts[i][0]),
+        pts[i][1] + f * (pts[i + 1][1] - pts[i][1]),
+      ];
+      // Screen-clockwise-from-up: CRS lat increases upward, so the heading of
+      // (dlat, dlng) is atan2(dlng, dlat).
+      const heading = Math.atan2(pts[i + 1][1] - pts[i][1], pts[i + 1][0] - pts[i][0])
+        * (180 / Math.PI);
+      roverRef.current = L.marker(pos, {
+        pane: 'mc-rover', icon: roverIcon(heading), interactive: true,
+        zIndexOffset: 1000,
+      }).addTo(group)
+        .bindTooltip(
+          `<b>Rover &mdash; site ${r.rank} route</b><br/>`
+          + `${(want / 1000).toFixed(2)} of ${(total / 1000).toFixed(2)} km<br/>`
+          + `<hr style="opacity:.3;margin:.3rem 0"/>`
+          + 'The vehicle is an ILLUSTRATION. No rover mass, wheel geometry or '
+          + 'vehicle model exists in this project &mdash; the energy figure is '
+          + 'reported per kilogram so that none of it has to be invented. '
+          + 'The PATH is computed; the vehicle on it is a drawing.',
+          { direction: 'top', className: 'mc-tip', offset: [0, -18] },
+        );
+    }
+
+    if (rows.length) {
+      console.info(`[MissionMap] Phase 4 traverse drawn at ${resM} m planning `
+        + `resolution (x${k} to the ${geom.metresPerNativePx} m raster grid):`);
+      console.table(rows);
+    }
+  }, [traverse, selectedRoute, roverFraction, onSelectRoute, ready]);
 
   return <div ref={containerRef} className="mc-map" />;
 });

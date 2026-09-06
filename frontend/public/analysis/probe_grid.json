@@ -1,0 +1,57 @@
+{
+  "schema": "probe_grid/1",
+  "generated_utc": "2026-09-06T15:41:17.857561+00:00",
+  "generator": "backend/scripts/emit_probe_grid.py",
+  "shape": [
+    282,
+    827
+  ],
+  "channels": [
+    "cpr",
+    "dop",
+    "amplitude_fraction",
+    "pointed_fraction",
+    "psr_fraction",
+    "illumination",
+    "elevation_m"
+  ],
+  "dtype": "float32-le",
+  "decimation": 8,
+  "cell_metres": 200.0,
+  "native_metres": 25.0,
+  "native_shape": [
+    2258,
+    6618
+  ],
+  "nan_means": "no measured radar in this cell \u2014 an absent state, not a zero",
+  "decimation_note": "Every value is the MEAN over a 8x8 block of 25 m pixels (200 m cell), taken over measured pixels only. It is not a pixel value and the readout says so.",
+  "thresholds": {
+    "cpr": 1.0,
+    "dop": 0.13
+  },
+  "algebraic_ceiling": {
+    "cpr_cap": 0.004261082862785302,
+    "under_dop_below": 0.13,
+    "identity": "CPR_amp = tanh^2(x/4), DOP_amp = |tanh(x/2)|, x = ln(LH/LV)",
+    "note": "One degree of freedom, not two. The screening rule pushes |x| up and down on the same axis, so satisfying DOP bounds CPR from above and the pass set is empty for any terrain.",
+    "source": "METHODS.md section 1"
+  },
+  "not_a_predictor": "This is a readout of MEASURED values, not a prediction of where ice is. Candidate area in this frame is 0.0000 km2 and the screen is empty BY CONSTRUCTION: with CPR from amplitude alone, DOP < 0.13 caps CPR at 0.0042610, so no pixel can satisfy both criteria whatever the terrain. See METHODS.md section 1.",
+  "detection_floor": {
+    "value": 1.8946,
+    "confidence": 0.95,
+    "looks": 13.72,
+    "source": "docs/detection_statistics.json :: per_pixel_significance",
+    "note": "A single pixel must read above this to be significantly above the CPR threshold of 1.0 at the measured look count (N = 13.72). METHODS.md section 11.1.",
+    "caveat": "Our proxy is NOT F(2N,2N)-distributed \u2014 METHODS 7.9.2. This raster is the ratio of the measured value to the floor a true sigma_SC/sigma_OC would have to clear, not a p-value on our own quantity."
+  },
+  "candidate_area": {
+    "area_km2": 0.0,
+    "ci_km2": [
+      0.0,
+      0.002401
+    ],
+    "confidence": 0.95,
+    "method": "Wilson score interval on the pass proportion"
+  }
+}

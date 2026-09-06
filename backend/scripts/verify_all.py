@@ -38,6 +38,14 @@ for _stream in (sys.stdout, sys.stderr):
         pass
 
 #: (id, PRD statement, the gate that backs it, argv, slow?)
+# The stamped-artifact count is READ from the registry, never written here. It
+# was "15 artifacts" and went stale the moment a sixteenth was added -- METHODS
+# section 0, first pattern, inside the file whose job is to catch it.
+sys.path.insert(0, str(SCRIPTS))
+from stamp_methods import ARTIFACTS as _STAMPED  # noqa: E402
+_N_STAMPED = len(_STAMPED)
+
+
 GATES = [
     ("G1", "Every number on #mission carries a mark and resolves to a raster "
            "read or an explicit absent state",
@@ -81,7 +89,7 @@ GATES = [
 
     ("G8", "Every measured figure quoted in METHODS.md still matches the "
            "artifact it was transcribed from",
-     "stamp_methods.py --check — 15 artifacts",
+     f"stamp_methods.py --check — {_N_STAMPED} artifacts",
      [sys.executable, str(SCRIPTS / "stamp_methods.py"), "--check"], False),
 ]
 

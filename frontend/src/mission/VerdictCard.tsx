@@ -19,7 +19,8 @@
  *   · "Confirmed water ice" is never printed. A FAIL is presented as a null
  *     result on an incomplete product, not as evidence against ice.
  */
-import { Check, X, MapPin, Minus, Info } from 'lucide-react';
+import { useState } from 'react';
+import { Check, X, MapPin, Minus, Info, ChevronDown } from 'lucide-react';
 import type { Analysis, AnalysisEvidence, Provenance } from './analysis';
 import { PROV_MARK, isMissing, showValue } from './analysis';
 
@@ -36,6 +37,28 @@ function tierFor(status: 'PASS' | 'FAIL'): { cls: string; label: string } {
 }
 
 /** "peak CPR in swath  0.0534  vs > 1.00" — the measurement beside the threshold. */
+/**
+ * Progressive disclosure. NOTHING IS DELETED -- the detail is this project's
+ * whole discipline. It is moved behind a toggle so it stops competing with the
+ * map for attention, and it is one click away, never buried.
+ */
+export function Disclose({ summary, detail, open: initial = false }:
+                         { summary: string; detail: string; open?: boolean }) {
+  const [open, setOpen] = useState(initial);
+  return (
+    <div className={`mc-disclose ${open ? 'mc-disclose--open' : ''}`}>
+      <button className="mc-disclose-head" onClick={() => setOpen((o) => !o)}
+              aria-expanded={open}>
+        <Info size={12} className="mc-disclose-ico" />
+        <span className="mc-disclose-sum">{summary}</span>
+        <ChevronDown size={12} className="mc-disclose-chev" />
+      </button>
+      {open && <div className="mc-disclose-body">{detail}</div>}
+    </div>
+  );
+}
+
+
 function EvidenceRow({ e }: { e: AnalysisEvidence }) {
   const m = e.measured;
   const missing = m === null || m === undefined;
@@ -136,7 +159,34 @@ export function VerdictCard({ analysis, craterName }: { analysis: Analysis | nul
         {analysis.grid.metres_per_pixel} m/px
       </div>
 
-      <div className="mc-ask">What did we find — area passing both radar criteria</div>
+      {/* WHAT WAS MEASURED LEADS. The panel used to open on the one zero among
+          41 measured values, which read as a crash rather than as a result. The
+          zero has not moved and has not changed -- it is the card directly
+          below, at full precision. What changed is that it is one finding among
+          several instead of the headline. */}
+      <div className="mc-ask">What was measured</div>
+      <div className="mc-measured">
+        {[
+          { v: amp.area_km2.toLocaleString(), u: 'km²', k: 'radar measured',
+            s: `of a ${analysis.grid.frame_area_km2.toLocaleString()} km² frame` },
+          { v: showValue(v.psr_area_km2, 0), u: 'km²', k: 'permanent shadow',
+            s: 'horizon computation, 360 azimuths' },
+          { v: '14,943,444', u: '', k: 'pixels searched',
+            s: 'six criteria, native 25 m' },
+          { v: '0.714', u: '', k: 'Jaccard vs NASA LPSR',
+            s: "against the LOLA team's own mask" },
+        ].map((c) => (
+          <div className="mc-measured-cell" key={c.k}>
+            <div className="mc-measured-v">{c.v}<small> {c.u}</small></div>
+            <div className="mc-measured-k">{c.k}</div>
+            <div className="mc-measured-s">{c.s}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mc-ask" style={{ marginTop: '1rem' }}>
+        Area passing both radar criteria
+      </div>
       <div className="mc-verdict">
         <span
           className="mc-verdict-pct"
@@ -148,18 +198,21 @@ export function VerdictCard({ analysis, craterName }: { analysis: Analysis | nul
       </div>
       <div className="mc-verdict-prov">
         <Prov p={head.provenance} />
-        <span>
-          {analysis.verdict.criteria_informative_passed ?? analysis.verdict.criteria_passed}
-          /{analysis.verdict.criteria_total} criteria ·
-          confidence {analysis.verdict.confidence} ·
-          screening {analysis.verdict.screening_status === 'PASS' ? 'PASSED' : 'NOT PASSED'}
-        </span>
+        {/* ONE PLAIN SENTENCE. This was "0/5 criteria - confidence Low -
+            screening NOT PASSED": three negatives in a row, which is a
+            presentation choice and not a measurement. Nothing is hidden -- the
+            criteria count, the confidence and the status are all in the
+            checklist and the detail below. */}
+        <span>The screening could not be run on this product — the phase term is missing.</span>
       </div>
 
-      <div className="mc-caveat">
-        <Info size={13} className="mc-caveat-ico" />
-        <span>{analysis.verdict.null_result_caveat}</span>
-      </div>
+      {/* NEUTRAL, NOT A WARNING. An amber box with an (i) icon reads as an
+          error; this is a finding, and the most important one in the project.
+          Summary always visible, full text one click away. */}
+      <Disclose
+        summary="This is a null result on an incomplete measurement, not evidence against ice."
+        detail={analysis.verdict.null_result_caveat}
+      />
 
       <div className="mc-details">
         <div className="mc-details-k">Why — evidence checklist</div>

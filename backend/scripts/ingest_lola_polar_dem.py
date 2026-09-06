@@ -782,6 +782,44 @@ def resample_to_dfsar(g: LolaGrid, d: DfsarGrid, win: dict, block: int = 128) ->
     if not valid.all():
         elev = np.where(valid, elev, 0.0)        # keep the kernel finite; mask below
 
+    # ---- ANTI-ALIASING, and only when the resample is a DOWNSAMPLE ----------
+    # map_coordinates POINT-SAMPLES: order=1 interpolates between neighbours, it
+    # does not average over the area an output pixel covers. That is correct when
+    # the output grid is FINER than the source (80 m -> 25 m, f = 0.31), where
+    # there is nothing between the posts to alias. It is wrong when the output is
+    # COARSER (20 m -> 25 m, f = 1.25): content with wavelengths between 40 m and
+    # 50 m has no representation on the output grid and folds back as aliasing
+    # rather than being averaged away. Mild at 1.25x, but real, and it lands
+    # squarely in the slope and roughness fields this DEM exists to produce.
+    #
+    # So low-pass first, with a Gaussian of sigma = f/2 source pixels -- the usual
+    # choice, and 0.625 px here. The 80 m path takes f < 1 and is NOT filtered, so
+    # this changes nothing about the currently-shipped DEM.
+    f_down = float(d.px_x) / float(g.scale_m)
+    aa = {"applied": False, "method": "none — output grid is finer than the source, "
+                                      "so there is nothing to alias",
+          "downsample_factor": round(f_down, 6), "sigma_source_px": 0.0}
+    if f_down > 1.0 + 1e-9:
+        from scipy.ndimage import gaussian_filter
+        sigma = f_down / 2.0
+        # Filter the validity weights with the SAME kernel, then divide, so a
+        # post next to a MISSING_CONSTANT is not pulled toward the zero-fill.
+        vm = valid.astype(np.float32)
+        num = gaussian_filter(elev.astype(np.float32), sigma, mode="nearest")
+        den = gaussian_filter(vm, sigma, mode="nearest")
+        elev = np.where(den > 1e-6, num / np.maximum(den, 1e-6), elev)
+        aa = {"applied": True,
+              "method": (f"Gaussian low-pass, sigma = f/2 = {sigma:.4f} source "
+                         f"pixels, applied BEFORE bilinear sampling. Validity "
+                         f"weights filtered with the same kernel and divided out, "
+                         f"so no post is pulled toward MISSING_CONSTANT."),
+              "downsample_factor": round(f_down, 6),
+              "sigma_source_px": round(sigma, 6)}
+        print(f"  anti-alias: downsample f = {f_down:.4f}, Gaussian sigma "
+              f"{sigma:.4f} source px applied before sampling")
+    else:
+        print(f"  anti-alias: none — f = {f_down:.4f} is an upsample, nothing to alias")
+
     out = np.full((d.lines, d.samples), np.nan, dtype=np.float32)
     wsum = np.zeros((d.lines, d.samples), dtype=np.float32)
     vmask = valid.astype(np.float64)
@@ -818,7 +856,7 @@ def resample_to_dfsar(g: LolaGrid, d: DfsarGrid, win: dict, block: int = 128) ->
             "p01_m": float(np.percentile(v, 1)), "p50_m": float(np.percentile(v, 50)),
             "p99_m": float(np.percentile(v, 99)),
         })
-    return {"array": out, "stats": stats}
+    return {"array": out, "stats": stats, "anti_alias": aa}
 
 
 # ── reporting ──────────────────────────────────────────────────────────────────
@@ -1499,10 +1537,18 @@ def main(argv: list[str] | None = None) -> int:
             "geoid, not local mean terrain, and not a height above the LRO orbit."
         ),
         "resample_ratio": round(ratio, 6),
+        "native_metres_per_pixel": g.scale_m,
+        "output_metres_per_pixel": dfsar.px_x,
+        "anti_alias": res.get("anti_alias", {"applied": False, "method": "not recorded"}),
         "resample_direction": ("upsample — the output grid is finer than the "
                                "measurement, so it carries no detail below "
                                f"{g.scale_m:g} m") if ratio > 1.0 else (
-                              "downsample" if ratio < 1.0 else "1:1"),
+                              (f"DOWNSAMPLE — the output grid is COARSER than the "
+                               f"{g.scale_m:g} m measurement, so content between "
+                               f"{2 * g.scale_m:g} m and {2 * dfsar.px_x:g} m wavelength "
+                               f"cannot be represented and is low-passed away before "
+                               f"sampling rather than allowed to alias")
+                              if ratio < 1.0 else "1:1"),
         "resolution_caveat": (
             f"Native post spacing is {g.scale_m:g} m. Any slope, roughness or hazard "
             f"quantity derived from this raster is a {g.scale_m:g} m quantity resampled "

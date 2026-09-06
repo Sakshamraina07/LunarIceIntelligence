@@ -99,6 +99,15 @@ LOLA_DIR = BASE_DIR / "data" / "pradan" / "lola"
 LOLA_IMG = LOLA_DIR / "LDEM_80S_80M.IMG"
 LOLA_LBL = LOLA_DIR / "LDEM_80S_80M.LBL"
 
+#: Angular RADIUS of the Sun seen from the Moon: half of ~0.53 deg. Large next
+#: to a +/-1.54 deg subsolar band at grazing incidence, which is why it changes
+#: the answer. Mazarico et al. (2011, Icarus 211, 1066) -- the paper LPSR's own
+#: label cites for its method -- state "If the Sun was considered a point source,
+#: a grid element would be in sunlight if its horizon elevation is lower than the
+#: Sun location", and then model the finite solar disk instead. So the reference
+#: product we validate against uses the disc, and a point Sun is a known bias.
+SOLAR_ANGULAR_RADIUS_DEG = 0.25
+
 #: The Moon's obliquity to the ecliptic: the SUBSOLAR LATITUDE stays within this
 #: band. It is NOT a bound on the solar elevation seen from a site, except
 #: exactly at the pole — see solar_elevation_sin() for why that distinction
@@ -219,8 +228,10 @@ def solar_elevation_sin(sin_phi, cos_phi, sin_dec: float, cos_dec: float,
     The DFSAR frame spans -89.26 to -84.83, so the naive model under-illuminates
     it by 1.6x to 4.4x. Measured consequence, before and after this correction:
     the naive model reported 65,398 km2 of PSR over the 80S array against a
-    published ~13,000 km2 south of 80S (Mazarico et al. 2011) -- a 5x
-    overstatement that would have been the headline number of this phase.
+    published 16,055 km2 for the SOUTH polar region (Mazarico et al. 2011,
+    Icarus 211, 1066; their 12,866 km2 figure is the NORTH pole, which an earlier
+    revision of this comment quoted by mistake) -- a 4x overstatement that would
+    have been the headline number of this phase.
 
     AZIMUTH. Near the pole the solar azimuth measured from north is -H to within
     a fraction of a degree. The exact expression is
@@ -254,7 +265,8 @@ def block_mean(a: np.ndarray, k: int) -> np.ndarray:
 
 
 def sweep(dem: np.ndarray, dx: float, n_az: int, dec_deg: np.ndarray,
-          lat_rad: np.ndarray, progress_every: int = 20) -> dict:
+          lat_rad: np.ndarray, solar_radii_deg=(0.0, SOLAR_ANGULAR_RADIUS_DEG),
+          progress_every: int = 20) -> dict:
     """
     Sweep the Sun over `n_az` azimuths and the given elevations.
 
@@ -278,8 +290,15 @@ def sweep(dem: np.ndarray, dx: float, n_az: int, dec_deg: np.ndarray,
     sin_lo, cos_lo = float(np.sin(dec_lo)), float(np.cos(dec_lo))
     sin_hi, cos_hi = float(np.sin(dec_hi)), float(np.cos(dec_hi))
 
+    # BOTH SUN MODELS IN ONE PASS. The horizon is identical for every solar
+    # radius -- only the threshold it is compared against moves -- so running
+    # point-Sun and finite-disc as two separate sweeps would burn an extra 25
+    # minutes AND leave open the question of whether the two horizons were
+    # bit-identical. They are, by construction, because there is only one.
+    radii = [float(r) for r in solar_radii_deg]
     shape = dem.shape
-    lit = np.zeros(shape, dtype=np.float32)          # count of lit sun states
+    lit_by_radius = {r: np.zeros(shape, dtype=np.float32) for r in radii}
+    lit = lit_by_radius[radii[0]]                    # count of lit sun states
     h_min = np.full(shape, np.inf, dtype=np.float32)  # easiest direction
     h_max = np.full(shape, -np.inf, dtype=np.float32)  # hardest direction
     svf_acc = np.zeros(shape, dtype=np.float32)       # sum of cos^2(horizon)
@@ -310,29 +329,65 @@ def sweep(dem: np.ndarray, dx: float, n_az: int, dec_deg: np.ndarray,
         np.minimum(h_min, hz, out=h_min)
         np.maximum(h_max, hz, out=h_max)
 
-        # The horizon as a sine, to compare against sin(el) directly. Floored at
-        # zero because a horizon below the local horizontal does not help: the
-        # Sun still has to be above the horizontal to light anything.
+        # The horizon as a sine, to compare against sin(el) directly.
+        #
+        # THE SOLAR DISC ENTERS HERE, AND ONLY HERE. A point Sun lights a pixel
+        # when el > H. A disc of angular radius rho lights it when ANY part of
+        # the disc clears the horizon, i.e. when el > H - rho. So the threshold
+        # is sin(H - rho), which expands without an arctan:
+        #
+        #     sin(H) = hz/sqrt(1+hz^2),  cos(H) = 1/sqrt(1+hz^2)
+        #     sin(H - rho) = (hz*cos(rho) - sin(rho)) / sqrt(1+hz^2)
+        #
+        # rho = 0 reduces this to hz/sqrt(1+hz^2) exactly, so the point model is
+        # the same code path with one parameter zeroed -- not a separate branch
+        # that could drift.
+        #
+        # NO FLOOR AT ZERO. The previous version clamped the threshold to >= 0 on
+        # the reasoning that the Sun must be above the local horizontal. With a
+        # finite disc that is wrong: where terrain falls away and the horizon is
+        # BELOW horizontal, the upper limb clears it while the centre is still
+        # below. Removing the floor also changes the point model very slightly,
+        # so both models here are computed the same way and the A/B stays exact.
+        # hz = -inf marks a cell with NOTHING AHEAD along this ray -- the last
+        # column of the rotated scan, or a no-data cell. `-inf * 0` is nan, so it
+        # has to be resolved explicitly, and the direction matters: nothing ahead
+        # means nothing OCCLUDING, so such a cell is LIT, not shadowed. An earlier
+        # revision mapped it to sin(H) = 1 (horizon at the zenith, never lit),
+        # which contradicted horizon.py's own documented policy that an unknown
+        # cell never occludes anything.
+        #
+        # Measured impact: 12,659 cells of 6,416,089 on the polar grid (0.197 %),
+        # all at the array edge, and ZERO within the DFSAR frame -- so this
+        # corrects the full-array diagnostic and cannot move any published value.
+        # np.where evaluates BOTH branches, so hz*inv is computed even where it is
+        # about to be discarded — -inf * 0 = nan, which warns. The errstate covers
+        # the whole block rather than one line of it; the values are overwritten.
+        nothing_ahead = ~np.isfinite(hz)
         with np.errstate(invalid="ignore", divide="ignore"):
-            s_thr = hz / np.sqrt(1.0 + hz * hz)
-        s_thr = np.maximum(np.nan_to_num(s_thr, nan=1.0, posinf=1.0, neginf=0.0), 0.0)
+            inv = 1.0 / np.sqrt(1.0 + hz * hz)
+            sin_h = np.where(nothing_ahead, -1.0,
+                             np.nan_to_num(hz * inv, nan=-1.0, posinf=1.0, neginf=-1.0))
+            cos_h = np.where(nothing_ahead, 0.0,
+                             np.nan_to_num(inv, nan=0.0, posinf=0.0, neginf=0.0))
 
         e0 = solar_elevation_sin(sin_phi, cos_phi, sin_lo, cos_lo, cos_H)
         e1 = solar_elevation_sin(sin_phi, cos_phi, sin_hi, cos_hi, cos_H)
-
         d = e1 - e0
-        with np.errstate(invalid="ignore", divide="ignore"):
-            x = (s_thr - e0) / d                      # crossing, in band units
-        # Where the endpoints are equal the whole band sits on one side.
         flat = np.abs(d) < 1e-12
-        frac = np.where(d > 0, 1.0 - x, x)
-        frac = np.where(flat, (e0 > s_thr).astype(np.float32), frac)
-        frac = np.clip(np.nan_to_num(frac, nan=0.0), 0.0, 1.0)
 
-        # np.add(..., out=) rather than `+=`: an augmented assignment to a name
-        # in an enclosing scope would rebind it as a local and shadow the
-        # accumulator entirely.
-        np.add(lit, frac.astype(np.float32), out=lit)
+        for r in radii:
+            cr, sr = np.cos(np.deg2rad(r)), np.sin(np.deg2rad(r))
+            s_thr = sin_h * cr - cos_h * sr        # sin(H - rho)
+            with np.errstate(invalid="ignore", divide="ignore"):
+                x = (s_thr - e0) / d               # crossing, in band units
+            frac = np.where(d > 0, 1.0 - x, x)
+            frac = np.where(flat, (e0 > s_thr).astype(np.float32), frac)
+            frac = np.clip(np.nan_to_num(frac, nan=0.0), 0.0, 1.0)
+            # np.add(..., out=) rather than `+=`: an augmented assignment to a
+            # name in an enclosing scope would rebind it as a local and shadow
+            # the accumulator entirely.
+            np.add(lit_by_radius[r], frac.astype(np.float32), out=lit_by_radius[r])
         # Sky-view contribution for a horizontal surface: cos^2(H) = 1/(1+tan^2 H),
         # with a horizon below the local horizontal contributing a full 1.
         pos = np.maximum(hz, 0.0)
@@ -367,14 +422,24 @@ def sweep(dem: np.ndarray, dx: float, n_az: int, dec_deg: np.ndarray,
             del f, b
         if (i + 1) % progress_every == 0 or i + 1 == n_rot:
             el = time.time() - t0
-            print("    %3d/%d rotations  %6.1f s elapsed  ~%5.1f s remaining"
-                  % (i + 1, n_rot, el, el / (i + 1) * (n_rot - i - 1)), flush=True)
+            # WALL CLOCK, not just elapsed. Ten hours of this project were lost
+            # to a machine sleeping mid-sweep: the log's last line looked like
+            # ordinary progress, and only `tasklist` distinguished "slow" from
+            # "dead". A timestamp on every heartbeat makes the log self-
+            # sufficient -- compare it to now and you know which one it is.
+            print("    %3d/%d rotations  [%s]  %6.1f s elapsed  ~%5.1f s remaining"
+                  % (i + 1, n_rot, time.strftime("%Y-%m-%d %H:%M:%S"), el,
+                     el / (i + 1) * (n_rot - i - 1)), flush=True)
 
     # `lit` now holds a sum of continuous band fractions, one per azimuth, so
     # the normaliser is the azimuth count alone.
     n_states = float(n_az)
+    out_by_radius = {r: (a / n_states).astype(np.float32)
+                     for r, a in lit_by_radius.items()}
     return {
-        "illumination_fraction": (lit / n_states).astype(np.float32),
+        "solar_radii_deg": radii,
+        "illumination_by_radius": out_by_radius,
+        "illumination_fraction": out_by_radius[radii[-1]],
         "horizon_min_tan": h_min,
         "horizon_max_tan": h_max,
         "sky_view_factor": (svf_acc / n_az).astype(np.float32),
@@ -451,8 +516,14 @@ def sweep_doubly(dem: np.ndarray, psr: np.ndarray, dx: float, n_az: int,
             del rp, fi, bi
         if (i + 1) % progress_every == 0 or i + 1 == n_rot:
             el = time.time() - t0
-            print("    %3d/%d rotations  %6.1f s elapsed  ~%5.1f s remaining"
-                  % (i + 1, n_rot, el, el / (i + 1) * (n_rot - i - 1)), flush=True)
+            # WALL CLOCK, not just elapsed. Ten hours of this project were lost
+            # to a machine sleeping mid-sweep: the log's last line looked like
+            # ordinary progress, and only `tasklist` distinguished "slow" from
+            # "dead". A timestamp on every heartbeat makes the log self-
+            # sufficient -- compare it to now and you know which one it is.
+            print("    %3d/%d rotations  [%s]  %6.1f s elapsed  ~%5.1f s remaining"
+                  % (i + 1, n_rot, time.strftime("%Y-%m-%d %H:%M:%S"), el,
+                     el / (i + 1) * (n_rot - i - 1)), flush=True)
 
     return {
         "lit_crest_fraction": (lit_crest / float(n_az)).astype(np.float32),
@@ -528,9 +599,36 @@ def main() -> int:
     n_az = args.azimuths if not args.limit else args.limit * 2
     res = sweep(dem_d, eff, n_az, decs, lat)
 
-    illum = res["illumination_fraction"]
+    illum = res["illumination_fraction"]          # the finite-disc model
     psr = illum == 0.0
     cell_km2 = (eff / 1000.0) ** 2
+
+    # A/B: every sun model swept, side by side, off ONE horizon.
+    hr("SOLAR DISC A/B — point Sun vs finite disc, same horizon, same pass")
+    print(f"  Mazarico et al. 2011 (Icarus 211, 1066), the method LPSR's own label")
+    print(f"  cites, models the finite solar disk. A point Sun is therefore a known")
+    print(f"  bias against the product we validate against, in the direction of MORE")
+    print(f"  shadow: a pixel whose horizon the disc's upper limb clears is lit.")
+    print()
+    print(f"  {'solar radius':>14}  {'PSR px':>12}  {'PSR km²':>12}  {'% of array':>11}  "
+          f"{'mean illum':>11}")
+    ab = {}
+    for r in res["solar_radii_deg"]:
+        f = res["illumination_by_radius"][r]
+        m = f == 0.0
+        ab[f"{r:g}"] = {"solar_radius_deg": r,
+                        "psr_pixels": int(m.sum()),
+                        "psr_area_km2_full_array": float(m.sum() * cell_km2),
+                        "psr_fraction_of_array": float(m.mean()),
+                        "mean_illumination_fraction": float(f.mean())}
+        print(f"  {r:>11.2f}°  {int(m.sum()):>12,}  {m.sum() * cell_km2:>12,.1f}  "
+              f"{m.mean() * 100:>10.3f}%  {f.mean():>11.4f}")
+    _rs = res["solar_radii_deg"]
+    if len(_rs) > 1:
+        a0 = ab[f"{_rs[0]:g}"]["psr_pixels"]
+        a1 = ab[f"{_rs[-1]:g}"]["psr_pixels"]
+        print(f"\n  the disc sheds {a0 - a1:,} shadow pixels — "
+              f"{(a0 - a1) / max(a0, 1) * 100:.1f} % of the point-Sun mask")
 
     hr("RESULT")
     print(f"  swept       {res['n_sun_states']:.0f} sun states in {res['seconds']:.1f} s")
@@ -545,6 +643,12 @@ def main() -> int:
     arrays = {
         "illumination_fraction": illum,
         "psr_mask": psr,
+        # Both models kept, so the A/B can be re-measured from the product
+        # itself rather than re-run. The primary arrays above are the DISC.
+        **{f"illumination_fraction_r{r:g}": f
+           for r, f in res["illumination_by_radius"].items()},
+        **{f"psr_mask_r{r:g}": (f == 0.0)
+           for r, f in res["illumination_by_radius"].items()},
         "horizon_min_tan": res["horizon_min_tan"],
         "horizon_max_tan": res["horizon_max_tan"],
         "sky_view_factor": res["sky_view_factor"],
@@ -650,6 +754,16 @@ def main() -> int:
             "to 1.7e-06 on white, smooth, spiky and monotone profiles"
         ),
         "seconds": round(res["seconds"], 1),
+        "solar_model": {
+            "primary": "finite disc",
+            "solar_angular_radius_deg": SOLAR_ANGULAR_RADIUS_DEG,
+            "lit_condition": "el > horizon - solar_angular_radius (any part of the disc clears)",
+            "why": ("Mazarico et al. 2011 (Icarus 211, 1066) — the method LPSR_75S_120M's own "
+                    "label cites — models the finite solar disk. A point Sun is a known bias "
+                    "toward more shadow relative to that product."),
+            "radii_swept_deg": res["solar_radii_deg"],
+            "ab": ab,
+        },
         "psr_pixels": int(psr.sum()),
         "psr_area_km2": float(psr.sum() * cell_km2),
         "doubly_shadowed": doubly_block,

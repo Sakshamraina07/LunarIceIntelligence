@@ -65,11 +65,23 @@ consumer left. G15 followed it **both** times: it clicks to stage 12, asserts th
 badge and explanation render there, and asserts stage 09 shows none —
 `--inject staleststage`.
 
+**A fourth time, in the move itself.** The badge's explanation was carried to
+stage 12 verbatim, and its closing sentence — *"the two sweep tables below are
+static artifacts"* — described stage 09. On stage 12 there are no sweep tables.
+The text was moved without being reread, which is the drift in its purest form:
+not a computation changing under a description, but a description changing
+location while claiming the same surroundings. It was caught by loading the
+deployed page and reading it, not by any check, and the check now exists: G15
+extracts the block's card and asserts that a "sweep tables below" claim is only
+made on a card that contains a sweep table, and a "report below" claim only on
+one that contains a report control (`--inject wrongstage`).
+
 > **The fix that removes a dependency has to carry the sentence describing it.**
-> Three revisions of one sentence, each correct when written, each falsified by a
-> later improvement. This is not a sentence that keeps being written carelessly;
-> it is a sentence with no generator, which is why it needed a gate reading the
-> rendered text rather than a resolution to be more careful.
+> Four revisions of one passage, each correct when written, each falsified by a
+> later improvement — and the last two falsified by the commits that were fixing
+> the previous ones. This is not a sentence written carelessly; it is a sentence
+> with no generator. That is why it needed a gate reading the rendered text
+> against the rendered DOM, rather than a resolution to be more careful.
 
 ### The second pattern: the verification apparatus itself being wrong
 
@@ -2760,7 +2772,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `0057c46`.
+Stamped at commit `1296d7d`.
 
 | artifact | sha256 | sections |
 |---|---|---|

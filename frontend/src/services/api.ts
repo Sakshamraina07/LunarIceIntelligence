@@ -40,25 +40,28 @@ export const BACKEND_COPY: Record<BackendState, { badge: string; heading: string
 };
 
 /**
- * WHAT THE ON-DEMAND BACKEND IS ACTUALLY FOR, measured rather than assumed.
+ * WHAT THE ON-DEMAND BACKEND IS ACTUALLY FOR.
  *
- * The banner used to say "the sensitivity studio, the stage panels and the PDF"
- * need it. That was written before `/api/sensitivity/{param}` was changed to
- * read the committed analysis artifact, and it stopped being true then: the
- * sweep TABLES in stage 09 are static and render on a host with no rasters. The
- * only things that genuinely re-run a pipeline are the four sliders beside them
- * and the PDF.
+ * `NEEDS_BACKEND` WAS HERE AND HAS NO CONSUMER LEFT, WHICH IS THE RESULT.
  *
- * A sentence naming more than is broken is the same defect as one naming less.
+ * It existed because one sentence naming what a no-raster host costs had been
+ * wrong four times: it claimed the landing sites and rover routes (static), then
+ * "the sensitivity studio, the stage panels and the PDF" (the sweep tables were
+ * static too), then "the four re-query sliders in stage 09, and the PDF" --
+ * falsified by the commit that precomputed those sliders -- and finally it was
+ * carried to stage 12 still describing stage 09's surroundings.
  *
- * THIRD REVISION, AND THE REASON IS THE POINT. It said "the four re-query
- * sliders in stage 09, and the PDF" until `emit_sweep_grid.py` precomputed the
- * joint screen and those sliders stopped querying anything. The dependency was
- * removed and the sentence describing it would have survived the same commit --
- * the drift this constant exists to stop, committed by the change that made it
- * false. One export, one place to fix, and a gate that reads the rendered text.
+ * The constant was the right response to a sentence with no generator. It is
+ * removed now for the right reason: after the sweep grid, NOTHING on the map
+ * screen needs the on-demand host, so there is no list to keep. The single
+ * remaining consumer is the PDF, and the control that offers it names its own
+ * state in its own words, where a reader is looking at it.
+ *
+ * If something on a screen ever needs the host again, it says so itself, beside
+ * itself. A shared sentence describing other components' health is a description
+ * with no computation behind it, and this project has now watched that exact
+ * shape fail four times in a row.
  */
-export const NEEDS_BACKEND = 'the PDF report in stage 12';
 const API_BASE_URL = `${API_ORIGIN}/api`;
 
 export async function fetchHealthCheck() {

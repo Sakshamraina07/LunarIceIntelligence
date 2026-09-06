@@ -41,7 +41,7 @@ import type { Analysis, SweepAxis, SearchedSites } from './analysis';
 import type { Traverse } from './traverse';
 import { showValue, showPercent, stepStatus } from './analysis';
 import { Figure, Pv, StepUnavailable } from './Prov';
-import { getReportPdfUrl, API_ORIGIN, BACKEND_COPY, NEEDS_BACKEND,
+import { getReportPdfUrl, API_ORIGIN, BACKEND_COPY,
          type BackendState } from '../services/api';
 import { readSweep, nearestIndex, type SweepGrid } from './sweep';
 import { Check, X, Minus, Download, Crosshair } from 'lucide-react';
@@ -1007,13 +1007,22 @@ export function StepPanel(props: Props) {
               'The backend answered, but reports its payload is generated rather '
               + 'than measured, so the sliders below re-run a simulation and not '
               + 'this product. '}
+            {/* WRITTEN FOR THE STAGE IT IS ON. The first version of this text was
+                written for stage 09 and moved here verbatim, where it went on
+                saying "the two sweep tables below are static artifacts" — on a
+                stage that has no sweep tables. The same drift, a fourth time,
+                caused by the move that was fixing the third. A sentence about
+                what is on the screen has to be checked against the screen, which
+                is now a G15 assertion rather than a resolution to be careful. */}
             {props.backend === 'ok'
-              ? 'The sliders below re-run the pipeline against them.'
-              : <>The only things on this screen that need it are {NEEDS_BACKEND}.
-                  <strong> The two sweep tables below are static artifacts and are
-                  measured, not degraded</strong> — they are read from the committed
-                  analysis, the same file the verdict is read from, so every number
-                  in them is the same number a host with the rasters would print.</>}
+              ? 'The report below is rendered from them.'
+              : <>The report below is the only thing on any screen that needs it.
+                  <strong> Everything else is a static artifact — measured, not
+                  degraded</strong> — including the verdict, the rasters, the
+                  searched landing sites, the Phase 4 traverse, the criteria probe
+                  and stage 09's precomputed sweep, all read from the committed
+                  analysis. Every number in them is the number a host with the
+                  rasters would print.</>}
           </div>
         </div>
 

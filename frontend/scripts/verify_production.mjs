@@ -341,6 +341,11 @@ async function main() {
       // would have caused the exact defect this file exists to prevent.
       headerBadges: [...document.querySelectorAll('.mc-topbar .mc-badge')]
         .map(e => e.innerText).join(' | '),
+      // Anything drawn ON the map that talks about host state. The map is the
+      // product; a caveat over it has to be about the map, and after the sweep
+      // grid nothing on this screen needs the on-demand host at all.
+      mapOverlayText: [...document.querySelectorAll('.mc-map-overlay')]
+        .map(e => e.innerText).join(' | '),
     };
   })()`);
 
@@ -364,10 +369,25 @@ async function main() {
     await sleep(1200);
     return ev(`(() => {
       const el = document.querySelector('.mc-hoststate');
+      const card = el ? el.closest('.mc-card') : null;
       return {
         present: !!el,
         text: el ? el.innerText : '',
         panelText: (document.querySelector('.mc-rail')?.innerText) || '',
+        // Does the card the block sits in actually CONTAIN a sweep table? The
+        // block's text was written for stage 09 and moved to stage 12 verbatim,
+        // where it went on saying "the two sweep tables below" on a stage that
+        // has none. A sentence about what is on the screen is checkable against
+        // the screen, so it is checked.
+        hasSweepTable: !!(card && /CPR threshold sweep|DOP threshold sweep/
+          .test(card.innerText)),
+        // STRUCTURAL, not a phrase list. The first version matched the words
+        // the not_ingested branch happens to use, and failed in unreachable,
+        // where the same control correctly says something else. A check that
+        // enumerates the wordings of a control will fail every time the control
+        // gains a state -- which is the defect this whole file is about.
+        hasReport: !!(card && (card.querySelector('a[href*="/report/pdf"]')
+                               || card.querySelector('.mc-na'))),
       };
     })()`);
   };
@@ -442,6 +462,35 @@ async function main() {
     problems.push(`the host-state block is ${hostStage.text.trim().length} chars; `
       + 'the explanation did not come with the badge');
   }
+  // 5c-bis. THE BLOCK'S TEXT MUST DESCRIBE THE CARD IT IS IN.
+  //     It claimed "the two sweep tables below are static artifacts" after being
+  //     moved to a stage with no sweep tables — the same drift as the sentence
+  //     it was moved to fix, one commit later. Any "below" claim is checked
+  //     against the card's own content.
+  const saysTables = /sweep tables? below|tables below/i.test(
+    INJECT === 'wrongstage' ? hostStage.text + ' the two sweep tables below' : hostStage.text);
+  if (saysTables && !hostStage.hasSweepTable) {
+    problems.push('the host-state block says "sweep tables below" on a card that '
+      + 'contains no sweep table — the text was moved without being reread');
+  }
+  const saysReport = /report below/i.test(hostStage.text);
+  if (saysReport && !hostStage.hasReport) {
+    problems.push('the host-state block says "report below" on a card that '
+      + 'contains no report control');
+  }
+
+  // 5c-ter. NOTHING ON THE MAP ANNOUNCES HOST STATE.
+  //     A banner over the product said a subsystem was unavailable on a screen
+  //     where everything it covered was present: relief, science layers, sites,
+  //     traverse, probe and verdict are all static. After the sweep grid it was
+  //     announcing a loss that existed nowhere in view.
+  const mapText = INJECT === 'maphostbanner'
+    ? state.mapOverlayText + ' NO RASTERS ON HOST' : state.mapOverlayText;
+  if (/NO RASTERS ON HOST|BACKEND UNREACHABLE|STUDIO ·|CHECKING HOST/.test(mapText)) {
+    problems.push('a host-state banner is drawn over the map; nothing on that '
+      + 'screen depends on the on-demand host');
+  }
+
   // 5d. AND IT LEFT STAGE 09. A host-state badge on a stage with no host
   //     dependency is the same defect as one in the global header, one scope
   //     smaller — it tells a reader something is degraded that is not.

@@ -22,8 +22,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { fetchCraters, fetchMissionState, getReportPdfUrl, API_ORIGIN,
-         BACKEND_COPY, NEEDS_BACKEND, MissionUnavailable,
-         type BackendState } from '../services/api';
+         MissionUnavailable, type BackendState } from '../services/api';
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
 import { MissionMap, type MissionMapHandle, type LayerManifestEntry, groundResolutionLabel, loadManifest } from './MissionMap';
 import { loadSearchedSites, type SearchedSites } from './analysis';
@@ -769,43 +768,23 @@ export default function MissionControl() {
             </div>
           </div>
 
-          {/* The terrain and the analysis are different states and must look
-              different. The map painting while the vectors are absent is not a
-              failure, and it must not be dressed as a spinner over a blank panel. */}
-          {!mission && (
-            <div className="mc-map-overlay mc-map-panel mc-map-vectorstate">
-              TERRAIN LOADED · {BACKEND_COPY[backend].heading}
-              {/* THIS SENTENCE NAMES WHAT IS ACTUALLY MISSING, AND IT HAS BEEN
-                  WRONG TWICE IN THE SAME DIRECTION.
-                  First it said landing sites and rover routes need the backend;
-                  both had become static artifacts drawn above this very banner.
-                  Then it said "the sensitivity studio, the stage panels and the
-                  PDF" -- but /api/sensitivity/{param} was changed to read the
-                  committed analysis artifact, so stage 09's sweep TABLES are
-                  static too and render fine here.
-                  What is left is the four re-query sliders and the PDF. A
-                  sentence naming more than is broken is the same defect as one
-                  naming less, and this one drifted pessimistic twice. */}
-              {/* ONE SENTENCE PER STATE, AND THEY DO NOT OVERLAP.
-                  This said "which is not reachable" on the same screen as the
-                  panel below saying "is reachable but reports NOT_INGESTED",
-                  under a badge reading OFFLINE, while the backend was answering.
-                  Three claims from one boolean; two of them were false. */}
-              <div className="mc-map-vectorstate-sub">
-                {backend === 'unreachable' &&
-                  `Nothing answered at ${API_ORIGIN}. `}
-                {backend === 'not_ingested' &&
-                  'The backend answered and reports it holds no ingested rasters for '
-                  + 'this crater — it is reachable, and it has nothing to serve. '}
-                {backend === 'pending' &&
-                  'Waiting for the analysis backend. '}
-                The only things that need it are {NEEDS_BACKEND}. The verdict, the
-                rasters, the searched landing sites, the Phase 4 traverse, the
-                criteria probe and stage 09's sweep tables are static artifacts and
-                are unaffected.
-              </div>
-            </div>
-          )}
+          {/* THE HOST-STATE BANNER OVER THE MAP IS GONE, AND ITS TEXT IS NOT
+              LOST — the same words, corrected for their location, are in stage
+              12 beside the report control they describe.
+
+              It was a panel over the product announcing that a subsystem was
+              unavailable, on a screen where NOTHING it covered was unavailable:
+              the relief, the science layers, the searched landing sites, the
+              Phase 4 traverse, the criteria probe and the verdict are all static
+              artifacts and all render on a host with no rasters. Once the sweep
+              grid was precomputed, the last thing on this screen that needed the
+              on-demand host was gone, and the banner was announcing a loss that
+              no longer existed anywhere in view.
+
+              THE MAP IS THE PRODUCT. A caveat drawn on top of it has to be about
+              the map. This one never was, and after the sweep grid it was not
+              about anything on the screen at all. The one control that genuinely
+              loses something — Report, in the top bar — still says so itself. */}
           {error && <div className="mc-error">{error}</div>}
         </div>
 

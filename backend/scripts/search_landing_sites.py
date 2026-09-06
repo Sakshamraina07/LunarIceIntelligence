@@ -463,6 +463,13 @@ def main() -> int:
                         "source": "backend/app/core/config.py"},
         },
         "criteria_coverage": {name: float(m.mean()) for name, (m, _) in crit.items()},
+        # NAMED FOR THE SET THEY BELONG TO. "all_six" alone was ambiguous on a
+        # screen that also carries six ICE-SCREENING criteria; these are the six
+        # LANDING-SITE criteria — slope, roughness, hazard, amplitude mask,
+        # cold-trap distance, illumination. The old keys are kept beside the new
+        # ones because docs and artifacts already reference them.
+        "all_six_landing_criteria_fraction": float(feasible.mean()),
+        "all_six_landing_criteria_area_km2": float(feasible.sum() * cell_km2),
         "all_six_fraction": float(feasible.mean()),
         "all_six_area_km2": float(feasible.sum() * cell_km2),
         "hazard_correction": {

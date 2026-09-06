@@ -262,7 +262,7 @@ export function StepPanel(props: Props) {
     return (
       <div className="mc-card mc-fadein">
         <Head eyebrow="Stage 04 · Screen" title="Ice Criteria Screen"
-          desc="Five named criteria, each with its measured value beside the threshold it is tested against. This is a screen, not a probability — there is no classifier in this pipeline." />
+          desc="The ice-screening criteria, each with its measured value beside the threshold it is tested against. This is a screen, not a probability — there is no classifier in this pipeline. They are a different set from the six landing-site criteria in stage 06." />
         <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
           <Figure k="Candidate Area" v={v.candidate_area_km2} digits={2}
             sub={`${showPercent(v.screening_pass_fraction)} % of the measured swath`} />
@@ -403,8 +403,11 @@ export function StepPanel(props: Props) {
       <div className="mc-card mc-fadein">
         <Head eyebrow="Stage 06 · Landing" title="Landing Site Ranking"
           desc={searched
-            ? 'The argmax of a six-criterion search over every native 25 m pixel in the frame, '
-              + 'with non-maximum suppression so the five are five places and not five pixels of one.'
+            ? 'The argmax of a search on six LANDING-SITE criteria — slope, roughness, '
+              + 'hazard, amplitude mask, cold-trap distance and illumination — over every '
+              + 'native 25 m pixel in the frame, with non-maximum suppression so the five '
+              + 'are five places and not five pixels of one. These are not the six '
+              + 'ice-screening criteria on the verdict card.'
             : 'A landing site should be the argmax of a search over the frame. These are not that yet.'} />
 
         {/* THE SEARCH RESULT, FROM THE SEARCH'S OWN FILE.

@@ -21,7 +21,8 @@
  * the verdict card and the context bar cannot read the backend at all.
  */
 import { useEffect, useRef, useState } from 'react';
-import { fetchCraters, fetchMissionState, getReportPdfUrl } from '../services/api';
+import { fetchCraters, fetchMissionState, getReportPdfUrl, API_ORIGIN,
+         BACKEND_COPY, MissionUnavailable, type BackendState } from '../services/api';
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
 import { MissionMap, type MissionMapHandle, type LayerManifestEntry, groundResolutionLabel, loadManifest } from './MissionMap';
 import { loadSearchedSites, type SearchedSites } from './analysis';
@@ -181,8 +182,15 @@ export default function MissionControl() {
   const [craters, setCraters] = useState<Record<string, CraterInfo>>({});
   const [craterId, setCraterId] = useState('faustini');
   const [mission, setMission] = useState<MissionState | null>(null);
-  const [loading, setLoading] = useState(true);
+  /* `loading` was a second name for `backend === 'pending'`. Two names for one
+     condition is the shape of every defect in this file's history — the badge
+     said OFFLINE from `error`, the banner said UNAVAILABLE from `error`, and the
+     panel below said NOT_INGESTED from the payload. There is one state now. */
   const [error, setError] = useState<string | null>(null);
+  /** Which of the three backend states we are actually in. Never inferred from
+   *  `error != null`, which cannot tell "nothing answered" from "it answered
+   *  and said it has nothing". */
+  const [backend, setBackend] = useState<BackendState>('pending');
 
   // Precomputed measured analysis — the ONLY source for the verdict + context bar.
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
@@ -349,7 +357,7 @@ export default function MissionControl() {
 
   useEffect(() => {
     fetchCraters().then(setCraters).catch(() =>
-      setError('Cannot reach the Lunar Intelligence backend on port 8000.'));
+      setError(`Cannot reach the analysis backend at ${API_ORIGIN}.`));
   }, []);
 
   // The verdict. Static asset, no backend involved. `null` means "not
@@ -369,12 +377,15 @@ export default function MissionControl() {
   // The backend. Drives the stage panels, the sensitivity studio and the PDF.
   // Allowed to fail without touching the verdict above.
   useEffect(() => {
-    setLoading(true);
     setError(null);
+    setBackend('pending');
     const dataMode = (import.meta.env.VITE_DATA_MODE as string) ?? 'REAL';
     fetchMissionState(craterId, { dataMode, cprThreshold: cprTh, dopThreshold: dopTh, iceDepthM: iceDepth, iceFraction: iceFrac, algorithm: roverAlgo })
-      .then((d) => { setMission(d); setSelectedSite(d.recommended_landing_site); setLoading(false); })
-      .catch((e) => { setError(e.message || 'Mission execution error'); setLoading(false); });
+      .then((d) => { setMission(d); setSelectedSite(d.recommended_landing_site); setBackend('ok'); })
+      .catch((e) => {
+        setError(e?.message || 'Mission execution error');
+        setBackend(e instanceof MissionUnavailable ? e.state : 'unreachable');
+      });
   }, [craterId, cprTh, dopTh, iceDepth, iceFrac, roverAlgo]);
 
   /**
@@ -478,16 +489,43 @@ export default function MissionControl() {
           </span>
           {/* on-demand backend source, named separately so it cannot borrow the above */}
           <span
-            className={`mc-badge ${backendReal ? 'mc-badge--real' : 'mc-badge--demo'}`}
-            title="Powers the stage panels, sensitivity studio and PDF only. Never the verdict."
+            className={`mc-badge ${backend === 'ok' && backendReal ? 'mc-badge--real' : 'mc-badge--demo'}`}
+            title={'Powers the stage panels, sensitivity studio and PDF only. Never '
+              + 'the verdict.' + (error ? ` — ${error}` : '')}
           >
             <span className="mc-badge-dot" />
-            STUDIO · {mission ? (backendReal ? 'REAL' : 'SIMULATED') : error ? 'OFFLINE' : '…'}
+            {/* OFFLINE WHILE THE BACKEND WAS ANSWERING was the same defect as the
+                banner beside it, in three words instead of twenty. The badge is
+                now a function of the observed state. */}
+            {backend === 'ok' && !backendReal
+              ? 'STUDIO · SIMULATED'
+              : BACKEND_COPY[backend].badge}
           </span>
-          {mission && (
-            <a className="mc-btn mc-btn--solid" href={getReportPdfUrl(craterId)} target="_blank" rel="noopener noreferrer">
+          {/* THE REPORT CONTROL IS A FUNCTION OF THE SAME THREE STATES.
+              `/report/pdf/{crater}` returns 409 unless the host has the ingested
+              rasters, which the deployed host does not — the 409 is correct
+              behaviour, and a button that quietly produces one is not. So the
+              control says which state it is in instead of vanishing or lying. */}
+          {backend === 'ok' ? (
+            <a className="mc-btn mc-btn--solid" href={getReportPdfUrl(craterId)}
+               target="_blank" rel="noopener noreferrer">
               <Download size={13} /> Report
             </a>
+          ) : (
+            <span className="mc-btn mc-btn--off" title={
+              backend === 'not_ingested'
+                ? 'The backend is reachable and holds no ingested rasters for this '
+                  + 'crater, so /report/pdf returns 409. The report is a rendering of '
+                  + 'the analysis artifacts and is generated on a host that has them.'
+                : backend === 'unreachable'
+                  ? `Nothing answered at ${API_ORIGIN}, so no report can be requested.`
+                  : 'Waiting for the analysis backend.'
+            }>
+              <Download size={13} /> Report<span className="mc-btn-na">
+                {backend === 'not_ingested' ? 'needs an ingested host'
+                  : backend === 'unreachable' ? 'backend unreachable' : '…'}
+              </span>
+            </span>
           )}
         </div>
       </div>
@@ -724,7 +762,7 @@ export default function MissionControl() {
               failure, and it must not be dressed as a spinner over a blank panel. */}
           {!mission && (
             <div className="mc-map-overlay mc-map-panel mc-map-vectorstate">
-              TERRAIN LOADED · {error ? 'STUDIO UNAVAILABLE' : loading ? 'STUDIO PENDING' : 'NO STUDIO'}
+              TERRAIN LOADED · {BACKEND_COPY[backend].heading}
               {/* THIS SENTENCE NAMES WHAT IS ACTUALLY MISSING.
                   It used to say landing sites and rover routes need the backend.
                   Both are now static artifacts — the Phase 3 sites from
@@ -733,14 +771,23 @@ export default function MissionControl() {
                   so the sentence had stopped describing the screen it sits on.
                   What genuinely needs the backend is the sensitivity studio, the
                   stage panels and the PDF, and those are what it names. */}
+              {/* ONE SENTENCE PER STATE, AND THEY DO NOT OVERLAP.
+                  This said "which is not reachable" on the same screen as the
+                  panel below saying "is reachable but reports NOT_INGESTED",
+                  under a badge reading OFFLINE, while the backend was answering.
+                  Three claims from one boolean; two of them were false. */}
               <div className="mc-map-vectorstate-sub">
-                {error
-                  ? 'The sensitivity studio, the stage panels and the PDF need the on-demand '
-                    + 'backend, which is not reachable. The verdict, the rasters, the searched '
-                    + 'landing sites, the Phase 4 traverse and the criteria probe are all '
-                    + 'static artifacts and are unaffected.'
-                  : 'Rasters, sites and the traverse are static and already drawn. The '
-                    + 'sensitivity studio and the stage panels follow when the backend responds.'}
+                {backend === 'unreachable' &&
+                  `Nothing answered at ${API_ORIGIN}. `}
+                {backend === 'not_ingested' &&
+                  'The backend answered and reports it holds no ingested rasters for '
+                  + 'this crater — it is reachable, and it has nothing to serve. '}
+                {backend === 'pending' &&
+                  'Waiting for the analysis backend. '}
+                The sensitivity studio, the stage panels and the PDF are the only
+                things that need it. The verdict, the rasters, the searched landing
+                sites, the Phase 4 traverse and the criteria probe are static
+                artifacts and are unaffected.
               </div>
             </div>
           )}

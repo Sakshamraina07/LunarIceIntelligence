@@ -1253,3 +1253,16 @@
   margin-top: 0.4rem; font-size: var(--fs-caption); line-height: 1.5;
   color: var(--mc-text-mute);
 }
+
+/* A control that cannot act, saying why. Not hidden: an examiner who cannot find
+ * the report button learns nothing; one who reads "needs an ingested host"
+ * learns the thing that is actually true. */
+.mc-btn--off {
+  opacity: 0.6; cursor: default;
+  border-style: dashed;
+  display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.mc-btn-na {
+  font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--mc-warn); margin-left: 0.15rem;
+}

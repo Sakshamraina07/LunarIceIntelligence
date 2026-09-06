@@ -181,6 +181,31 @@ the map's child effects, so the bounds being fitted to are already drawn. The fi
 also now logs what it fitted, or why it did not, so a silent no-op cannot happen
 again undetected.
 
+#### The sub-kind: a TYPE that stopped tracking the wire
+
+Every instance above is a description drifting from a computation. This one is a
+description drifting from a **protocol**, and it is worse because a type is
+supposed to be the check.
+
+`MissionState` declared every field non-optional. The backend has **two** wire
+shapes: a full payload, and a `status: "NOT_INGESTED"` document carrying
+`selected_crater`, `data_mode`, `gate`, `status` and nothing else — which is what
+the deployed instance returns, being reachable and holding none of the gitignored
+rasters. So `tsc` **proved** that `mission.target_coordinates.x` was safe, and in
+production it was `.x` of undefined: one uncaught throw inside a React effect,
+the whole tree unmounted, a blank page with every asset at 200.
+
+> **A type that cannot represent a shape the wire produces is not a check. It is
+> a second copy of an assumption, wearing a compiler's authority.**
+
+Two guards were then drafted for one condition — a `missionHasData` flag in the
+map beside the boundary check in the fetch layer — and one was deleted. Two names
+for one condition is how the defect was born: the badge derived "OFFLINE" from
+`error`, the banner derived "not reachable" from `error`, and the panel beside
+them derived "reachable but NOT_INGESTED" from the payload. Three sentences, one
+boolean, two of them false, all on one screen. There is now one `BackendState`
+with three values and one place that words them.
+
 **Instance three of this pattern is one error appearing twice, in our own
 geometry and in our reading of someone else's.** The nadir (look) angle was used
 where the incidence angle belongs — once in `incidence_mask.py`, which treated
@@ -2083,6 +2108,23 @@ Correlation of illumination with latitude: **+0.544**. The band the sites occupy
 is the illumination maximum of this frame — and it is a *local* maximum, not the
 edge, which is why the sites cluster at −86 rather than at −84.8.
 
+### 9.5b Two different sets of six, and why they are now named apart
+
+**`all_six_fraction` and `all_six_area_km2` in `landing_sites.json` are the six
+LANDING-SITE criteria** — slope, roughness, hazard, amplitude mask, cold-trap
+distance, illumination. They are **not** the six ice-screening criteria of §1.
+
+Both sixes were on one screen: the verdict card's checklist listed six
+ice-screening criteria (five evaluable since §7.12 withheld the Bragg row), and
+directly under it a cell read *"14,943,444 pixels searched — six criteria, native
+25 m"*, counting the landing-site set. A reader was entitled to take them for the
+same six and conclude the withdrawn row had been searched anyway. Every surface
+now says which set it means — the card, the stage panels, the report, and the
+artifact keys, which gained
+`all_six_landing_criteria_fraction` / `all_six_landing_criteria_area_km2`
+alongside the originals rather than replacing them, because documents already
+reference the old names.
+
 ### 9.6 The score decomposition — the largest weight does the least work
 
 | site | safety (w 0.50) | power (w 0.31) | access (w 0.19) |
@@ -2564,7 +2606,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `94eb084`.
+Stamped at commit `dd5a4cc`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -2577,7 +2619,7 @@ Stamped at commit `94eb084`.
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
 | `docs/incidence_audit.json` | `75a568d239760cf4…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
-| `docs/landing_sites.json` | `6405581775517073…` | §9.6, §9.7 |
+| `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
 | `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |

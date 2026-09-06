@@ -32,7 +32,7 @@ this project has spent long enough removing those.
 | G10 | `assert_upper_bounds_labelled.py` | a bounded figure quoted as if it were a rate, anywhere in the tracked sources |
 | G12 | `assert_incidence_geometry.py` | an incidence field in which any pixel sits below the look angle — an identity on a convex body — and any consumer that uses one |
 | G13 | (same script) | two consumers disagreeing about the look count of the one CPR field |
-| G15 | `verify_production.mjs` | a production bundle that does not mount, a map that renders at zero size, zero site markers, a tripped error boundary, or a single console error — loaded in headless Chromium against a stub returning the exact degraded payload the deployed backend returns |
+| G15 | `verify_production.mjs --all-states` | a production bundle that does not mount, a map at zero size, zero site markers, a tripped error boundary, an application console error, or two rendered strings disagreeing about whether the backend is reachable — loaded in headless Chromium in **all three** backend states (unreachable / not-ingested / ok) |
 
 `rebuild_all.py` runs G1, G5, G7, G8 and G9 on every rebuild, and **any non-zero exit
 stops the build**, so a rebuild that would ship an unlabelled number fails before

@@ -277,7 +277,13 @@ def generate_mission_pdf_report(bundle: Dict[str, Any]) -> bytes:
     # is a tick that means nothing, and the report says so rather than letting a
     # green row do the arguing.
     story.append(Spacer(1, 8))
-    ev_rows = [["Criterion", "Measured", "Test", "Result", "Evidence?", "Mark"]]
+    story.append(Paragraph(
+        "<b>The six ICE-SCREENING criteria.</b> Not the six landing-site criteria "
+        "in section 3 — slope, roughness, hazard, amplitude mask, cold-trap "
+        "distance and illumination — which are a different set over the same "
+        "pixels.", note_style))
+    story.append(Spacer(1, 3))
+    ev_rows = [["Ice-screening criterion", "Measured", "Test", "Result", "Evidence?", "Mark"]]
     for e in analysis["evidence"]:
         ev_rows.append([
             Paragraph(e["label"], note_style),
@@ -305,11 +311,14 @@ def generate_mission_pdf_report(bundle: Dict[str, Any]) -> bytes:
     else:
         search = sites_doc["search"]
         story.append(Paragraph(
-            f"The argmax of a six-criterion search over all "
-            f"<b>{search['pixels_evaluated']:,}</b> native {search['metres_per_pixel']:g} m "
-            f"pixels, with {search['nms_separation_km']:g} km non-maximum suppression so the "
-            f"five are five places and not five pixels of one. Every criterion is evaluated "
-            f"per site and its threshold is printed beside it.",
+            f"The argmax of a search on six <b>landing-site</b> criteria &mdash; slope, "
+            f"roughness, hazard, amplitude mask, cold-trap distance and illumination "
+            f"&mdash; over all <b>{search['pixels_evaluated']:,}</b> native "
+            f"{search['metres_per_pixel']:g} m pixels, with "
+            f"{search['nms_separation_km']:g} km non-maximum suppression so the five are "
+            f"five places and not five pixels of one. Every criterion is evaluated per "
+            f"site and its threshold is printed beside it. <b>These are not the six "
+            f"ice-screening criteria in section 2.</b>",
             body_style))
         story.append(Spacer(1, 5))
         site_rows = [["Rank", "Latitude", "Longitude", "Slope", "Hazard", "Illum.",

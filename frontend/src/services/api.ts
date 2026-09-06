@@ -3,6 +3,41 @@ import type { MissionState, CraterInfo, SensitivityAnalysisResult } from '../typ
 // Backend origin. In production set VITE_API_BASE (e.g. https://lunariceintelligence.onrender.com)
 // on Vercel; falls back to the local FastAPI dev server otherwise.
 export const API_ORIGIN = (import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8000').replace(/\/$/, '');
+
+/**
+ * THE THREE BACKEND STATES, NAMED ONCE.
+ *
+ * The screen carried two of these at the same time and contradicted itself: a
+ * panel saying the backend "is not reachable" beside one saying it "is reachable
+ * but reports NOT_INGESTED", under a badge reading OFFLINE, while the backend
+ * was answering. Three different sentences derived from `error != null`, which
+ * cannot distinguish them.
+ *
+ *   'unreachable'  nothing answered — DNS, refused, CORS, mixed content
+ *   'not_ingested' it answered, and said it holds no rasters for this crater
+ *   'ok'           it answered with a full payload
+ *
+ * Every badge, banner and sentence about backend state reads THIS. A UI that
+ * derives three states from one boolean will get one of them wrong, and it did.
+ */
+export type BackendState = 'pending' | 'unreachable' | 'not_ingested' | 'ok';
+
+export class MissionUnavailable extends Error {
+  readonly state: Exclude<BackendState, 'pending' | 'ok'>;
+  constructor(state: Exclude<BackendState, 'pending' | 'ok'>, message: string) {
+    super(message);
+    this.name = 'MissionUnavailable';
+    this.state = state;
+  }
+}
+
+/** One place decides how each state is worded. */
+export const BACKEND_COPY: Record<BackendState, { badge: string; heading: string }> = {
+  pending: { badge: 'STUDIO · …', heading: 'STUDIO PENDING' },
+  unreachable: { badge: 'STUDIO · UNREACHABLE', heading: 'STUDIO UNREACHABLE' },
+  not_ingested: { badge: 'STUDIO · NO RASTERS', heading: 'STUDIO HAS NO RASTERS' },
+  ok: { badge: 'STUDIO · REAL', heading: 'STUDIO LIVE' },
+};
 const API_BASE_URL = `${API_ORIGIN}/api`;
 
 export async function fetchHealthCheck() {
@@ -36,10 +71,22 @@ export async function fetchMissionState(
   if (options.iceFraction !== undefined) params.append('ice_fraction', options.iceFraction.toString());
   if (options.algorithm) params.append('algorithm', options.algorithm);
 
-  const res = await fetch(`${API_BASE_URL}/mission/${craterId}?${params.toString()}`);
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE_URL}/mission/${craterId}?${params.toString()}`);
+  } catch (e) {
+    // A rejected fetch is the network layer: DNS, refused connection, CORS,
+    // mixed content. NOTHING ANSWERED. That is a different fact from a backend
+    // that answered and said it holds no rasters, and the UI is required to say
+    // which one it is.
+    throw new MissionUnavailable('unreachable',
+      `No response from ${API_ORIGIN}: ${e instanceof Error ? e.message : String(e)}`);
+  }
   if (!res.ok) {
-    const err = await res.json().catch(() => ({ message: 'Network error' }));
-    throw new Error(err.message || 'Failed to fetch mission state');
+    const err = await res.json().catch(() => ({ message: `HTTP ${res.status}` }));
+    // An HTTP error IS a response, so the backend is reachable.
+    throw new MissionUnavailable('not_ingested',
+      err.message || err?.detail?.message || `The backend answered HTTP ${res.status}`);
   }
   const doc = await res.json();
 
@@ -60,10 +107,8 @@ export async function fetchMissionState(
   // mistake pointed the other way.
   if (doc && typeof doc.status === 'string' && doc.status !== 'OK') {
     const why = doc?.gate?.reason ?? doc?.gate?.message ?? doc.status;
-    throw new Error(
-      `The mission backend is reachable but reports ${doc.status}: ${why}. `
-      + 'The verdict, the map rasters, the searched landing sites and the Phase 4 '
-      + 'traverse are static artifacts and are unaffected.');
+    throw new MissionUnavailable('not_ingested',
+      `The mission backend is reachable but reports ${doc.status}: ${why}`);
   }
   return doc as MissionState;
 }

@@ -172,7 +172,13 @@ export function VerdictCard({ analysis, craterName }: { analysis: Analysis | nul
           { v: showValue(v.psr_area_km2, 0), u: 'km²', k: 'permanent shadow',
             s: 'horizon computation, 360 azimuths' },
           { v: '14,943,444', u: '', k: 'pixels searched',
-            s: 'six criteria, native 25 m' },
+            // TWO DIFFERENT SETS OF SIX SAT ON ONE SCREEN. The screening table
+            // above lists six ICE criteria (five evaluable, the Bragg row
+            // withheld); this cell counted the six LANDING-SITE criteria — slope,
+            // roughness, hazard, amplitude mask, cold-trap distance, illumination.
+            // A reader was entitled to take them for the same six and conclude the
+            // withdrawn row had been searched anyway.
+            s: 'six landing-site criteria, native 25 m' },
           { v: '0.714', u: '', k: 'Jaccard vs NASA LPSR',
             s: "against the LOLA team's own mask" },
         ].map((c) => (
@@ -215,7 +221,9 @@ export function VerdictCard({ analysis, craterName }: { analysis: Analysis | nul
       />
 
       <div className="mc-details">
-        <div className="mc-details-k">Why — evidence checklist</div>
+        <div className="mc-details-k">
+          Why — the six ice-screening criteria
+        </div>
         <ul className="mc-why mc-why--ev">
           {analysis.evidence.map((e) => <EvidenceRow key={e.criterion} e={e} />)}
         </ul>

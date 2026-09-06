@@ -133,8 +133,9 @@ GATES = [
     # page or a single console error.
     ("G15", "The production build mounts and renders against a backend that "
             "answers 200 and says it has no data",
-     "verify_production.mjs — the built bundle, in headless Chromium",
-     ["node", str(BASE_DIR / "frontend" / "scripts" / "verify_production.mjs")], True),
+     "verify_production.mjs --all-states — the built bundle, all three backend states",
+     ["node", str(BASE_DIR / "frontend" / "scripts" / "verify_production.mjs"),
+      "--all-states"], True),
 ]
 
 

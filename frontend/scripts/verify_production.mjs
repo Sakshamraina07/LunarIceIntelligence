@@ -54,6 +54,9 @@ const API_PORT = 4320;
 
 const injectIdx = process.argv.indexOf('--inject');
 const INJECT = injectIdx > -1 ? process.argv[injectIdx + 1] : null;
+const stateIdx = process.argv.indexOf('--state');
+/** Which backend state to put the stub in. Production's is not_ingested. */
+const STATE = stateIdx > -1 ? process.argv[stateIdx + 1] : 'not_ingested';
 
 const log = (...a) => console.log(...a);
 const fail = (m) => { console.error(`\n  verify_production: ${m}\n`); process.exit(2); };
@@ -87,7 +90,20 @@ function staticServer() {
   }).listen(PORT);
 }
 
-function apiServer() {
+/**
+ * The stub, in whichever of the three backend states the run is testing.
+ *
+ *   'not_ingested' answers 200 with the degraded document the deployed instance
+ *                  returns. This is production's state and the default.
+ *   'unreachable'  refuses the connection outright, so `fetch` rejects.
+ *   'ok'           answers with a payload carrying the fields the UI reads.
+ *
+ * The UI must name these three apart. It used to derive all three from
+ * `error != null`, which cannot, and put "is not reachable" on the same screen
+ * as "is reachable but reports NOT_INGESTED" under a badge reading OFFLINE.
+ */
+function apiServer(state) {
+  if (state === 'unreachable') return null;          // nothing listening
   return createServer((req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Content-Type', 'application/json');
@@ -95,11 +111,59 @@ function apiServer() {
       res.end(JSON.stringify({ faustini: DEGRADED.selected_crater }));
       return;
     }
-    // Every other endpoint answers 200 with the degraded document, exactly as
-    // the deployed instance does. A 200 is not a payload.
+    if (state === 'ok') { res.end(JSON.stringify(OK_PAYLOAD)); return; }
     res.end(JSON.stringify(DEGRADED));
   }).listen(API_PORT);
 }
+
+/**
+ * A payload complete enough for the UI's OK path. Only the fields MissionMap and
+ * MissionControl actually read; anything absent here would be a field the UI
+ * must already tolerate.
+ */
+const OK_PAYLOAD = {
+  ...DEGRADED,
+  status: 'OK',
+  data_mode: 'REAL',
+  target_coordinates: { x: 50, y: 50 },
+  landing_sites: [],
+  recommended_landing_site: null,
+  rover_routes: {},
+  grid_dimensions: { width: 100, height: 100, pixel_scale_m: 25 },
+  raster_layers: {},
+};
+
+/**
+ * Assertion 5: no two rendered strings make opposite claims about reachability,
+ * and the badge matches the state the fetch layer observed.
+ *
+ * Phrases are matched on the RENDERED TEXT, not the source, because the defect
+ * was two sentences that were each individually defensible and jointly false.
+ */
+function contradictions(text, state) {
+  const said = {
+    unreachable: /not reachable|unreachable|nothing answered|no response/i.test(text),
+    reachable: /is reachable|backend answered|answered and reports|reachable and holds/i.test(text),
+  };
+  const problems = [];
+  if (said.unreachable && said.reachable) {
+    problems.push('the page claims the backend is BOTH reachable and not reachable');
+  }
+  const badge = (text.match(/STUDIO\s*[·.]\s*[A-Z ]+/i) || [])[0] || '(no STUDIO badge)';
+  const expect = { ok: /REAL|SIMULATED/i, not_ingested: /NO RASTERS/i,
+                   unreachable: /UNREACHABLE/i }[state];
+  if (expect && !expect.test(badge)) {
+    problems.push(`badge reads "${badge.trim()}" in state ${state}`);
+  }
+  if (state === 'not_ingested' && said.unreachable) {
+    problems.push('the backend answered, and the page says it is not reachable');
+  }
+  if (state === 'unreachable' && said.reachable) {
+    problems.push('nothing answered, and the page says the backend is reachable');
+  }
+  return { problems, badge };
+}
+
 
 const BROWSERS = [
   process.env.VERIFY_BROWSER,
@@ -204,7 +268,7 @@ function branchesMutuallyExclusive() {
 
 async function main() {
   log('='.repeat(78));
-  log('G15 — the PRODUCTION build, loaded, against a degraded backend');
+  log(`G15 — the PRODUCTION build, loaded, backend state: ${STATE}`);
   log('='.repeat(78));
 
   // ── 3. source structure, before anything is built ────────────────────────
@@ -224,7 +288,7 @@ async function main() {
   log(`  built ${bundle}`);
 
   const web = staticServer();
-  const api = apiServer();
+  const api = apiServer(STATE);
   const { proc, profile, bin } = launchBrowser();
   log(`  browser: ${bin}`);
   const cdp = await CDP.connect(await devtoolsUrl(profile, proc));
@@ -258,6 +322,7 @@ async function main() {
       siteMarkersDrawn: drawn('.mc-site--searched'),
       boundariesTripped: document.querySelectorAll('.mc-boundary').length,
       bodyChars: document.body.innerText.trim().length,
+      text: document.body.innerText,
     };
   })()`);
 
@@ -267,7 +332,24 @@ async function main() {
     e.method === 'Runtime.exceptionThrown'
     || (e.method === 'Runtime.consoleAPICalled' && e.params.type === 'error')
     || (e.method === 'Log.entryAdded' && e.params.entry.level === 'error'));
-  const errText = errors.map((e) =>
+  // A REFUSED CONNECTION IS THE STATE UNDER TEST, NOT AN APP ERROR. In
+  // `--state unreachable` the browser logs `net::ERR_CONNECTION_REFUSED` for
+  // each API request, at network level, because nothing is listening — that is
+  // the condition being asserted, and failing on it would make the state
+  // untestable. The exclusion is deliberately narrow: only network-level
+  // resource-load failures, only in that state. Anything the APPLICATION logs
+  // through console.error, and any uncaught exception, still fails in every
+  // state.
+  const isExpectedNetworkNoise = (e) =>
+    STATE === 'unreachable'
+    && e.method === 'Log.entryAdded'
+    && e.params.entry.source === 'network'
+    && /ERR_(CONNECTION_REFUSED|FAILED|NAME_NOT_RESOLVED)/.test(e.params.entry.text);
+
+  const appErrors = errors.filter((e) => !isExpectedNetworkNoise(e));
+  const excluded = errors.length - appErrors.length;
+  if (excluded) log(`  (${excluded} network-level refusal(s) excluded — that is the state under test)`);
+  const errText = appErrors.map((e) =>
     e.method === 'Runtime.exceptionThrown'
       ? (e.params.exceptionDetails.exception?.description
          ?? e.params.exceptionDetails.text)
@@ -276,7 +358,7 @@ async function main() {
         : (e.params.args || []).map((a) => a.description ?? a.value).join(' '));
 
   await S('Target.closeTarget', { targetId });
-  proc.kill(); web.close(); api.close();
+  proc.kill(); web.close(); if (api) api.close();
 
   log('');
   log(`  root mounted        ${state.rootMounted}`);
@@ -284,7 +366,7 @@ async function main() {
   log(`  site markers        ${state.siteMarkers} in DOM, ${state.siteMarkersDrawn} drawn`);
   log(`  boundaries tripped  ${state.boundariesTripped}`);
   log(`  body text           ${state.bodyChars} chars`);
-  log(`  console errors      ${errText.length}`);
+  log(`  console errors      ${errText.length} (application-level)`);
   errText.forEach((t) => log(`    ${String(t).split('\n')[0].slice(0, 150)}`));
 
   const problems = [...structural];
@@ -293,6 +375,13 @@ async function main() {
   if (state.mapW < 100 || state.mapH < 100) problems.push(`the map container is ${state.mapW}x${state.mapH}`);
   if (state.siteMarkers < 1 || inj('markers')) problems.push(`${state.siteMarkers} site markers in the DOM, expected > 0`);
   if (state.boundariesTripped > 0) problems.push(`${state.boundariesTripped} error boundary(ies) tripped — a panel threw`);
+
+  // ── 5. the three backend states, named apart ────────────────────────────
+  const c = contradictions(INJECT === 'contradictstate'
+    ? state.text + ' the backend is not reachable and is reachable'
+    : state.text, STATE);
+  log(`  backend state       ${STATE}, badge "${c.badge.trim()}"`);
+  problems.push(...c.problems);
   if (errText.length > 0 || inj('console')) {
     problems.push(`${errText.length || 1} console error(s): ${errText[0] ?? '(injected)'}`);
   }
@@ -308,10 +397,36 @@ async function main() {
     problems.forEach((p) => console.error(`    - ${p}`));
     return 1;
   }
-  log('  GATE PASS — the production bundle mounts, the map renders at size, the');
-  log('  site markers are in the DOM, no boundary tripped, and the console is');
-  log('  clean, against a backend that answers 200 and says it has no data.');
+  log(`  GATE PASS — in backend state "${STATE}" the production bundle mounts, the`);
+  log('  map renders at size, the site markers are in the DOM, no boundary tripped,');
+  log('  the console is clean of application errors, and no two rendered strings');
+  log('  disagree about whether the backend is reachable.');
   return 0;
+}
+
+/**
+ * `--all-states` runs the three backend states in sequence, as separate
+ * processes.
+ *
+ * Separate processes rather than a loop inside one: each state needs its own
+ * browser, its own stub and its own listening port, and a leaked handle from one
+ * state would make the next one's result depend on the previous one's cleanup.
+ * The cost is two extra builds of a bundle that takes seven seconds.
+ */
+if (process.argv.includes('--all-states')) {
+  const states = ['not_ingested', 'unreachable', 'ok'];
+  let bad = 0;
+  for (const st of states) {
+    const r = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--state', st],
+                        { stdio: 'inherit' });
+    if (r.status !== 0) bad++;
+  }
+  console.log(bad
+    ? `
+  ${bad} of ${states.length} backend states FAILED.`
+    : `
+  all ${states.length} backend states pass: ${states.join(', ')}.`);
+  process.exit(bad ? 1 : 0);
 }
 
 main().then((c) => process.exit(c)).catch((e) => fail(e.stack ?? String(e)));

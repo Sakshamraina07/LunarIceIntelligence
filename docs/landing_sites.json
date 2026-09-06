@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/landing-sites/1",
-  "generated_utc": "2026-09-06T20:19:44.001606+00:00",
+  "generated_utc": "2026-09-06T20:45:32.902371+00:00",
   "generator": "backend/scripts/search_landing_sites.py",
   "search": {
     "pixels_evaluated": 14943444,
@@ -25,6 +25,8 @@
     "psr_within_rover_range": 1.0,
     "illumination_above_minimum": 0.5888153360095572
   },
+  "all_six_landing_criteria_fraction": 0.05860549950868087,
+  "all_six_landing_criteria_area_km2": 547.3550000000001,
   "all_six_fraction": 0.05860549950868087,
   "all_six_area_km2": 547.3550000000001,
   "hazard_correction": {

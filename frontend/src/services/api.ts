@@ -147,6 +147,53 @@ export function getReportPdfUrl(craterId: string): string {
   return `${API_BASE_URL}/report/pdf/${craterId}`;
 }
 
+/** Whether a report can actually be obtained, asked of the report endpoint. */
+export type ReportState = 'pending' | 'available' | 'no_artifacts' | 'unreachable';
+
+/**
+ * ASK THE REPORT ENDPOINT WHETHER THERE IS A REPORT.
+ *
+ * The control used to derive this from `backend === 'ok'` -- the state of
+ * `/api/mission/{crater}`. Those are two different capabilities and they do not
+ * agree: the mission endpoint recomputes and needs the 9 GB of rasters, so on the
+ * deployed host it answers NOT_INGESTED; the report is a RENDERING of committed
+ * artifacts that live in the git checkout, so the same host serves it with 200.
+ *
+ * The result was a control reading REPORT — NEEDS AN INGESTED HOST directly above
+ * a working download. One boolean standing in for two capabilities, which is the
+ * defect this project keeps finding; here it hid a feature rather than inventing
+ * one, which is why nobody noticed.
+ *
+ * NOT `HEAD` ON THE PDF ROUTE. That was the first implementation and it was
+ * wrong: FastAPI registers GET only and answers HEAD with 405, so the probe
+ * would have classified a perfectly good report as unavailable -- reintroducing
+ * the exact bug it exists to fix, in the code fixing it. Caught by asking the
+ * deployed host instead of assuming Starlette's behaviour.
+ *
+ * `/report/status/{crater}` calls the loader and discards the bundle, so this
+ * costs no typesetting.
+ */
+export async function fetchReportState(craterId: string): Promise<ReportState> {
+  try {
+    const r = await fetch(`${API_BASE_URL}/report/status/${craterId}`);
+    if (r.ok) {
+      const d = await r.json();
+      return d?.available === true ? 'available' : 'no_artifacts';
+    }
+    // A host still running a build without this route answers 404. Falling back
+    // to the PDF itself is more expensive and always correct, and it keeps the
+    // control honest across the window where frontend and backend deploys have
+    // not yet met.
+    if (r.status === 404) {
+      const p = await fetch(getReportPdfUrl(craterId));
+      return p.ok ? 'available' : 'no_artifacts';
+    }
+    return 'no_artifacts';
+  } catch {
+    return 'unreachable';
+  }
+}
+
 export async function askAICopilot(
   prompt: string,
   craterId: string,

@@ -42,7 +42,7 @@ import type { Traverse } from './traverse';
 import { showValue, showPercent, stepStatus } from './analysis';
 import { Figure, Pv, StepUnavailable } from './Prov';
 import { getReportPdfUrl, API_ORIGIN, BACKEND_COPY,
-         type BackendState } from '../services/api';
+         type BackendState, type ReportState } from '../services/api';
 import { readSweep, nearestIndex, type SweepGrid } from './sweep';
 import { Check, X, Minus, Download, Crosshair } from 'lucide-react';
 
@@ -60,6 +60,9 @@ interface Props {
    *  stage 09 then shows its tables and withholds the interactive grid rather
    *  than indexing into something that is not there. */
   sweepGrid: SweepGrid | null;
+  /** The REPORT's own availability, measured at /report/status. Not derived from
+   *  `backend`, which is the mission endpoint and a different capability. */
+  reportState: ReportState;
   /** The measured producer. `null` means no analysis exists for this crater. */
   analysis: Analysis | null;
   /** On-demand backend. Optional: the panel must render without it. */
@@ -1016,13 +1019,15 @@ export function StepPanel(props: Props) {
                 is now a G15 assertion rather than a resolution to be careful. */}
             {props.backend === 'ok'
               ? 'The report below is rendered from them.'
-              : <>The report below is the only thing on any screen that needs it.
-                  <strong> Everything else is a static artifact — measured, not
-                  degraded</strong> — including the verdict, the rasters, the
+              : <>This describes <strong>the mission endpoint</strong>, which
+                  recomputes and needs the rasters. It does <strong>not</strong>
+                  describe the report below: that is a rendering of the committed
+                  analysis artifacts, needs no rasters, and is issued by this host.
+                  Nothing on any screen is degraded — the verdict, the rasters, the
                   searched landing sites, the Phase 4 traverse, the criteria probe
-                  and stage 09's precomputed sweep, all read from the committed
-                  analysis. Every number in them is the number a host with the
-                  rasters would print.</>}
+                  and stage 09's precomputed sweep are all static artifacts, and
+                  every number in them is the number a host with the rasters would
+                  print.</>}
           </div>
         </div>
 
@@ -1032,7 +1037,10 @@ export function StepPanel(props: Props) {
             badge and banner were fixed for, surviving one stage further down
             because nothing had looked at stage 12. It is now a function of the
             observed state, like every other sentence about the host. */}
-        {props.backend === 'ok' ? (
+        {/* THE REPORT'S OWN STATE, not the mission endpoint's. This read
+            `props.backend === 'ok'` and so hid a working download behind the
+            NOT_INGESTED state of a different endpoint. */}
+        {props.reportState === 'available' ? (
           <a className="mc-btn mc-btn--solid" style={{ marginTop: '0.9rem', width: '100%', justifyContent: 'center' }}
             href={getReportPdfUrl(props.craterId)} target="_blank" rel="noopener noreferrer">
             <Download size={14} /> Download PDF Report
@@ -1041,14 +1049,15 @@ export function StepPanel(props: Props) {
           <div className="mc-na" style={{ marginTop: '0.9rem' }}>
             <span className="mc-na-dash">—</span>
             <span>
-              {props.backend === 'not_ingested'
-                ? 'The backend answered and holds no ingested rasters for this '
-                  + 'crater, so /report/pdf returns 409 and no document is issued. '
-                  + 'A report rendered from a host with less data would be a '
-                  + 'thinner document presented as the same one.'
-                : props.backend === 'unreachable'
+              {props.reportState === 'no_artifacts'
+                ? 'The report endpoint answered and this host does not carry the '
+                  + 'committed analysis artifacts the report renders, so it returns '
+                  + '409 and no document is issued. A report rendered from a host '
+                  + 'with less data would be a thinner document presented as the '
+                  + 'same one.'
+                : props.reportState === 'unreachable'
                   ? `Nothing answered at ${API_ORIGIN}, so no report can be requested.`
-                  : 'Waiting for the analysis backend.'}
+                  : 'Asking the report endpoint.'}
               {' '}The measured analysis above is unaffected — it is a static asset.
               <Pv p="UNAVAILABLE" />
             </span>

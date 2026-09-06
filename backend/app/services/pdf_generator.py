@@ -424,17 +424,34 @@ def generate_mission_pdf_report(bundle: Dict[str, Any]) -> bytes:
         Spacer(1, 6),
         # WHICH HOST STATE ISSUED THIS. A report whose provenance depends on
         # where it was generated, and does not record where that was, is a
-        # document a reader cannot place. The deployed host has none of the
-        # gitignored rasters and returns 409 rather than a thinner report; this
-        # one exists, so it was generated somewhere they are present.
+        # THIS PARAGRAPH WAS FALSE ABOUT THE DOCUMENT IT IS PRINTED ON.
+        #
+        # It said the report is generated only on a host holding the ~9 GB of
+        # Chandrayaan-2 and LOLA rasters, and that the deployed instance returns
+        # 409 instead. The deployed instance was, at that moment, serving this
+        # very report with HTTP 200 -- because the report had already been
+        # restructured into a RENDERING OF THE COMMITTED ANALYSIS ARTIFACTS, and
+        # those are in the git checkout, so every host has them. The rasters
+        # stopped being a precondition the moment the report stopped computing.
+        #
+        # The premise was inherited from the mission endpoint, which genuinely
+        # does need the rasters and genuinely does answer NOT_INGESTED. Two
+        # endpoints, two capabilities, one assumption -- the same shape as every
+        # other defect in METHODS section 0.
+        #
+        # What is true, and is what it now says: this renders four committed
+        # artifacts; a host missing THOSE returns 409 (which is what G16 tests);
+        # and no host substitutes a thinner document for a missing one.
         Paragraph(
-            "<b>Issued state.</b> This report was generated on a host that holds the "
-            "ingested Chandrayaan-2 and LOLA products. A host without them &mdash; "
-            "which includes the deployed instance, where the ~9 GB of rasters are "
-            "gitignored &mdash; returns <b>HTTP 409</b> from "
-            "<i>/report/pdf/{crater}</i> and issues no document at all. The refusal "
-            "is the correct behaviour: a shorter report from a host with less data "
-            "would be the one thing this project refuses everywhere else.",
+            "<b>Issued state.</b> This report is a rendering of the four committed "
+            "analysis artifacts named below, so it is issued identically by any host "
+            "that has them &mdash; including the deployed instance, which does "
+            "<i>not</i> hold the ~9 GB of Chandrayaan-2 and LOLA rasters and does not "
+            "need them: nothing here is recomputed. A host missing those artifacts "
+            "returns <b>HTTP 409</b> from <i>/report/pdf/{crater}</i> and issues no "
+            "document at all, rather than a thinner one. Every figure below is "
+            "reproducible from the artifacts alone; the rasters are required only to "
+            "regenerate the artifacts themselves.",
             note_style),
         Spacer(1, 5),
         Paragraph(

@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T22:34:06.440969+00:00",
+  "generated_utc": "2026-09-06T22:49:10.505562+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 33.2
+      "seconds": 35.3
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 24.4
+      "seconds": 27.4
     },
     {
       "id": "G4",
@@ -32,7 +32,7 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 31.1
+      "seconds": 45.0
     },
     {
       "id": "G5",
@@ -40,7 +40,7 @@
       "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 4.0
+      "seconds": 5.0
     },
     {
       "id": "G6",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 44.4
+      "seconds": 43.1
     },
     {
       "id": "G7",
@@ -64,7 +64,7 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 9.1
+      "seconds": 7.1
     },
     {
       "id": "G8",
@@ -96,7 +96,7 @@
       "gate": "assert_incidence_geometry.py --only g12 \u2014 the identity, and every consumer",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.1
+      "seconds": 0.2
     },
     {
       "id": "G13",
@@ -112,7 +112,7 @@
       "gate": "verify_production.mjs --all-states \u2014 the built bundle, all three backend states",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 91.1
+      "seconds": 98.9
     },
     {
       "id": "G16",
@@ -129,6 +129,14 @@
       "verdict": "PASS",
       "returncode": 0,
       "seconds": 0.7
+    },
+    {
+      "id": "G18",
+      "statement": "The report's availability is measured at its own endpoint and never inferred from the mission endpoint's state",
+      "gate": "assert_report_state_is_its_own.py - independent, not derived, honest doc, probe works",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 8.5
     }
   ],
   "all_pass": true

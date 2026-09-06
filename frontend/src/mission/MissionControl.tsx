@@ -22,7 +22,8 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { fetchCraters, fetchMissionState, getReportPdfUrl, API_ORIGIN,
-         MissionUnavailable, type BackendState } from '../services/api';
+         MissionUnavailable, fetchReportState,
+         type BackendState, type ReportState } from '../services/api';
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
 import { MissionMap, type MissionMapHandle, type LayerManifestEntry, groundResolutionLabel, loadManifest } from './MissionMap';
 import { loadSearchedSites, type SearchedSites } from './analysis';
@@ -235,6 +236,12 @@ export default function MissionControl() {
   // re-querying a host that does not hold the rasters.
   const [sweepGrid, setSweepGrid] = useState<SweepGrid | null>(null);
   useEffect(() => { loadSweepGrid().then(setSweepGrid); }, []);
+  // The report's OWN availability. Not `backend === 'ok'` -- that is the mission
+  // endpoint, which recomputes and needs the rasters. The report renders
+  // committed artifacts and is served by hosts the mission endpoint refuses.
+  const [reportState, setReportState] = useState<ReportState>('pending');
+  useEffect(() => { setReportState('pending'); fetchReportState(craterId).then(setReportState); },
+            [craterId]);
   /* ── the criteria probe ──────────────────────────────────────────────────
    * Off by default and its 6.5 MB of float32 is fetched only when it is first
    * switched on, so a reader who never opens it never pays for it. `probeSettled`
@@ -517,24 +524,27 @@ export default function MissionControl() {
               rasters, which the deployed host does not — the 409 is correct
               behaviour, and a button that quietly produces one is not. So the
               control says which state it is in instead of vanishing or lying. */}
-          {backend === 'ok' ? (
+          {reportState === 'available' ? (
             <a className="mc-btn mc-btn--solid" href={getReportPdfUrl(craterId)}
-               target="_blank" rel="noopener noreferrer">
+               target="_blank" rel="noopener noreferrer"
+               title={'A rendering of the committed analysis artifacts. It needs no '
+                 + 'rasters, which is why it is served by a host the mission '
+                 + 'endpoint reports NOT_INGESTED for.'}>
               <Download size={13} /> Report
             </a>
           ) : (
             <span className="mc-btn mc-btn--off" title={
-              backend === 'not_ingested'
-                ? 'The backend is reachable and holds no ingested rasters for this '
-                  + 'crater, so /report/pdf returns 409. The report is a rendering of '
-                  + 'the analysis artifacts and is generated on a host that has them.'
-                : backend === 'unreachable'
+              reportState === 'no_artifacts'
+                ? 'The report endpoint answered, and this host does not carry the '
+                  + 'committed analysis artifacts the report renders, so it returns '
+                  + '409 rather than a thinner document.'
+                : reportState === 'unreachable'
                   ? `Nothing answered at ${API_ORIGIN}, so no report can be requested.`
-                  : 'Waiting for the analysis backend.'
+                  : 'Asking the report endpoint.'
             }>
               <Download size={13} /> Report<span className="mc-btn-na">
-                {backend === 'not_ingested' ? 'needs an ingested host'
-                  : backend === 'unreachable' ? 'backend unreachable' : '…'}
+                {reportState === 'no_artifacts' ? 'host has no analysis artifacts'
+                  : reportState === 'unreachable' ? 'backend unreachable' : '…'}
               </span>
             </span>
           )}
@@ -837,6 +847,7 @@ export default function MissionControl() {
               backend={backend}
               backendReal={backendReal}
               sweepGrid={sweepGrid}
+              reportState={reportState}
               analysis={analysis}
               mission={mission}
               craterId={craterId}

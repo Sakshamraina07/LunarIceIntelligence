@@ -132,6 +132,46 @@ def get_sensitivity_analysis(
     }
 
 
+@router.get("/report/status/{crater_id}")
+def mission_report_status(crater_id: str):
+    """Whether a report can be issued from THIS host, without rendering one.
+
+    WHY THIS EXISTS. The UI's Report control used to derive its state from
+    `/api/mission/{crater}`, and those are two different capabilities. The
+    mission endpoint recomputes and needs the ~9 GB of Chandrayaan-2 and LOLA
+    rasters, so a deployed host answers NOT_INGESTED. The report is a RENDERING
+    of four committed analysis artifacts that live in the git checkout, so the
+    same host serves it with 200. The control therefore read "REPORT - NEEDS AN
+    INGESTED HOST" directly above a report the host was happily issuing.
+
+    HEAD on /report/pdf would have answered this, but FastAPI registers GET only
+    and returns 405, and a probe that mistakes 405 for "no report" reintroduces
+    the bug it was written to fix. So the question is asked directly.
+
+    This calls the loader and discards the bundle. It does not typeset anything,
+    which is the point: a status check that rendered a PDF would make every page
+    load pay for a document nobody asked for.
+    """
+    try:
+        load_report_bundle(crater_id)
+    except ReportArtifactsMissing as exc:
+        return {"available": False, "reason": "NO_ANALYSIS_ARTIFACT",
+                "message": str(exc), "crater_id": crater_id}
+    except Exception as exc:  # noqa: BLE001 - a status must not 500
+        return {"available": False, "reason": "LOADER_ERROR",
+                "message": str(exc), "crater_id": crater_id}
+    return {
+        "available": True,
+        "crater_id": crater_id,
+        "renders_from": ["<crater>.json", "landing_sites.json", "traverse.json",
+                         "detection_statistics.json"],
+        "requires_rasters": False,
+        "note": ("The report renders committed artifacts and recomputes nothing, so "
+                 "the rasters are not a precondition for issuing it. They are "
+                 "required only to regenerate the artifacts themselves."),
+    }
+
+
 @router.get("/report/pdf/{crater_id}")
 def download_mission_report_pdf(crater_id: str):
     """The report, rendered from the artifacts the mission screen reads.

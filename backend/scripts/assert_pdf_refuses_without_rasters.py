@@ -5,21 +5,39 @@ assert_pdf_refuses_without_rasters.py -- G16. A report is issued, or it is not.
 
 WHY
 ---
-`/report/pdf/{crater}` renders the analysis artifacts. On a host that does not
-have them -- which is every deployed host, since the 9 GB of Chandrayaan-2 and
-LOLA products are gitignored -- it must REFUSE with 409 rather than issue a
-thinner report. That is the same rule the rest of this project follows for an
-absent measurement, applied to the one artefact that leaves the browser.
+`/report/pdf/{crater}` renders four committed analysis artifacts. On a host that
+does not have THOSE it must REFUSE with 409 rather than issue a thinner report.
+That is the same rule the rest of this project follows for an absent measurement,
+applied to the one artefact that leaves the browser.
 
-**The PDF is therefore verifiable LOCALLY ONLY**, and the report says so on its
-own front page rather than leaving a reader to wonder why the deployed site
-offers no download.
+THE PRECONDITION IS THE ARTIFACTS, NOT THE RASTERS -- AND THIS FILE SAID
+OTHERWISE
+--------------------------------------------------------------------------
+An earlier version of this docstring, of the gate's own assertion, of METHODS and
+of PRD statement 10 all claimed the deployed host returns 409 and that the PDF
+was "verifiable LOCALLY ONLY", because the 9 GB of rasters are gitignored. That
+was false, and the deployed endpoint was answering HTTP 200 with a complete
+report while every one of those documents said it could not.
+
+The premise was inherited from `/api/mission/{crater}`, which genuinely does need
+the rasters and genuinely does answer NOT_INGESTED. But the report had already
+been restructured into a rendering of committed artifacts, and those live in the
+git checkout -- so the rasters stopped being a precondition at the moment the
+report stopped computing, and nothing updated the sentences that assumed they
+were. Two endpoints, two capabilities, one assumption.
+
+The rasters are needed to REGENERATE the artifacts. They are not needed to render
+them, and a report issued from them is byte-comparable wherever it is produced.
 
 THE THREE STATES APPLY HERE TOO
 -------------------------------
-  (a) unreachable            no endpoint answers; nothing to check
-  (b) reachable, NOT_INGESTED 409, and NO PDF MAY BE ISSUED
-  (c) reachable, OK           a PDF, stamped with the state it was issued under
+  (a) unreachable             no endpoint answers; nothing to check
+  (b) reachable, artifacts absent   409, and NO PDF MAY BE ISSUED
+  (c) reachable, artifacts present  a PDF, stating what it was rendered from
+
+  Note (b) is about the ANALYSIS ARTIFACTS, not the rasters, and it is therefore
+  NOT the state the deployed host is in for the report -- though it IS the state
+  that host is in for /api/mission. The two must not be collapsed again.
 
 This asserts (b) and (c): the loader raises when an artifact is missing, the
 endpoint turns that into 409, and a rendered report names the host state and the
@@ -134,8 +152,11 @@ def main() -> int:
         text = extract_text(pdf)
         print(f"  rendered {len(pdf):,} bytes")
         required = [
-            ("generated on a host that holds", "the host state it was issued under"),
-            ("409", "what a host without the rasters returns instead"),
+            ("rendering of the four committed analysis artifacts",
+             "what it is rendered from, which is the thing it depends on"),
+            ("409", "what a host without those artifacts returns instead"),
+            ("does not need them",
+             "that the rasters are not a precondition for issuing it"),
         ]
         for needle, what in required:
             if needle.lower() not in text.lower():

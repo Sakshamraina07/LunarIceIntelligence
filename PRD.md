@@ -1783,11 +1783,14 @@ number in a report:
     *ok* — bind the report too. On a host in the middle state the loader raises
     and `/report/pdf/{crater}` returns **409**; a thinner report rendered from
     whatever happened to be present would be `np.zeros_like` in document form.
-    Every deployed host is in that state, because the 9 GB of Chandrayaan-2 and
-    LOLA products are gitignored, so **the PDF is verifiable locally only** — and
-    the live site's report control says the report needs an ingested host rather
-    than offering a button that 409s. A 409 is correct behaviour; a control that
-    hides it is not.
+    The precondition is **the artifacts, not the rasters**: the report renders
+    four committed files and recomputes nothing, so every checkout can issue it,
+    including the deployed one — `GET /report/pdf/faustini` returns 200 there.
+    An earlier version of this statement said the opposite, on a premise borrowed
+    from `/api/mission/{crater}`, which does need the rasters. The control now
+    reads `/report/status/{crater}`, its own capability. A 409 is correct
+    behaviour when the artifacts are absent; a control that reports one when they
+    are present is not.
 11. **The precomputed sweep discriminates, over a range set by the data.**
     (Gate 17) Stage 09's sliders read a static grid instead of re-querying a host
     that holds no rasters. A CPR axis spanning the published criterion would read

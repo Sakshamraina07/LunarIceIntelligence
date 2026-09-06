@@ -176,6 +176,18 @@ GATES = [
             "from the measured field, and it agrees with the analysis",
      "assert_sweep_grid_discriminates.py - agreement, measured axes, it moves, the crossing",
      [sys.executable, str(SCRIPTS / "assert_sweep_grid_discriminates.py")], False),
+
+    # The Report control said "NEEDS AN INGESTED HOST" while the host it named was
+    # serving that report with HTTP 200. It derived its state from the MISSION
+    # endpoint, which recomputes and needs the rasters; the report renders
+    # committed artifacts and needs none. One boolean, two capabilities -- and the
+    # same false premise reached the report's own front page, METHODS and PRD.
+    # It survived because it made the project look WORSE than it is, and nothing
+    # here is tuned to notice modesty.
+    ("G18", "The report's availability is measured at its own endpoint and never "
+            "inferred from the mission endpoint's state",
+     "assert_report_state_is_its_own.py - independent, not derived, honest doc, probe works",
+     [sys.executable, str(SCRIPTS / "assert_report_state_is_its_own.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

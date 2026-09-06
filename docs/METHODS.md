@@ -421,16 +421,39 @@ reader. So absence refuses rather than degrades. **G16 —
 raises with the analysis directory absent, the router maps that to 409, and an
 issued report states its own host state.
 
-**THE PDF FIX IS VERIFIABLE LOCALLY ONLY, AND THAT IS NOT A GAP IN THE GATE.**
-The deployed backend answers `NOT_INGESTED` for `faustini` — the 9 GB of
-Chandrayaan-2 and LOLA products are gitignored and no deployed host holds them —
-so `/report/pdf/faustini` returns **409 in production**, by design. There is no
-PDF on the deployed site to check, and there should not be. G16 therefore
-exercises the issued-report leg only on a host that holds the artifacts, which is
-a development machine. What the live site *is* checked on is the other half of
-the same rule: its report control says plainly that the report **needs an
-ingested host** instead of offering a button that 409s, because a control that
-hides a correct refusal is not itself correct.
+**THAT PARAGRAPH USED TO SAY THE PDF WAS "VERIFIABLE LOCALLY ONLY". IT WAS
+FALSE, AND THE DEPLOYED SITE WAS DISPROVING IT AT THE TIME.**
+
+The claim was that the deployed backend answers `NOT_INGESTED`, therefore
+`/report/pdf/faustini` returns 409 in production, therefore there is no PDF to
+check. Every step after the first was wrong. `GET /api/report/pdf/faustini` on
+the deployed host returns **HTTP 200 and a 12,356-byte report**, containing the
+measured `0.0000 km²`, the `1,460.68 km²` radar area and the NO DATA marks — the
+genuine document.
+
+**The precondition is the ARTIFACTS, not the rasters.** The moment the report was
+restructured into a *rendering* of `<crater>.json`, `landing_sites.json`,
+`traverse.json` and `detection_statistics.json`, it stopped needing the rasters —
+and those four files are committed, so they are in every checkout, including
+Render's. The rasters are needed to *regenerate* the artifacts, never to render
+them.
+
+The false premise was inherited from `/api/mission/{crater}`, which genuinely does
+recompute, genuinely does need the rasters, and genuinely does answer
+`NOT_INGESTED`. Two endpoints, two capabilities, one assumption — and it
+propagated into the UI control, the report's own front page, this section and PRD
+statement 10 before anything checked it against the endpoint.
+
+> **It hid a working feature rather than inventing a missing one, which is why it
+> survived.** Every other instance in §0 was caught because a number looked too
+> good; this one made the project look *worse* than it was, and nothing in the
+> discipline is tuned to notice modesty. The check that found it was `curl`.
+
+The report control now reads `/api/report/status/{crater}` — a route that calls
+the loader and discards the bundle — instead of deriving its state from the
+mission endpoint. The document's own "Issued state" paragraph says what it is
+rendered from and that the rasters are not a precondition. G16 asserts all three
+of those strings, and G18 asserts the two endpoints are never again collapsed.
 
 The gate's own injection was **wrong on its first pass and passed anyway** — it
 injected at the generator, which raised a `KeyError` on a malformed dict, so the
@@ -2772,7 +2795,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `1296d7d`.
+Stamped at commit `7c444fd`.
 
 | artifact | sha256 | sections |
 |---|---|---|

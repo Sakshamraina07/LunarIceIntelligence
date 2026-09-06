@@ -65,6 +65,29 @@ consumer left. G15 followed it **both** times: it clicks to stage 12, asserts th
 badge and explanation render there, and asserts stage 09 shows none —
 `--inject staleststage`.
 
+**And a fifth, in red.** The mission endpoint's `NOT_INGESTED` message was
+rendered as an `.mc-error` banner across the top of the map — after the host-state
+overlay had been removed from that same screen for saying less than this one did.
+The text itself is accurate and is the clearest writing in the app about what a
+served host has: it names the product id, names the missing rasters, and says why
+a served host reports absence rather than substituting generated data. But it is
+not an *error*. After the sweep grid and the report-status fix, nothing on that
+screen depends on the mission endpoint at all — the relief, the science layers,
+the sites, the traverse, the probe, the verdict, stage 09's sweep and the PDF all
+work without it.
+
+> **Red is a claim.** Reserving it for conditions that actually break something is
+> the entire value of having it. Painting a working screen red does not make the
+> project look careful; it makes the one genuine failure indistinguishable from
+> six harmless states.
+
+The text is kept verbatim, in stage 12's host-state block, under *"What the
+mission endpoint reports"* — moved, not summarised. G15 asserts both halves:
+no host-state condition may be painted as an error on the main screen
+(`--inject hosterror`), **and** the endpoint's own reason must still render on the
+stage that owns host state (`--inject hostreason`), because "move it, delete
+nothing" is only true if the destination renders it.
+
 **A fourth time, in the move itself.** The badge's explanation was carried to
 stage 12 verbatim, and its closing sentence — *"the two sweep tables below are
 static artifacts"* — described stage 09. On stage 12 there are no sweep tables.
@@ -2795,7 +2818,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `7c444fd`.
+Stamped at commit `a479f57`.
 
 | artifact | sha256 | sections |
 |---|---|---|

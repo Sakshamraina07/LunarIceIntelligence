@@ -63,6 +63,10 @@ interface Props {
   /** The REPORT's own availability, measured at /report/status. Not derived from
    *  `backend`, which is the mission endpoint and a different capability. */
   reportState: ReportState;
+  /** The mission endpoint's own words for why it is in the state it is in —
+   *  the product id, the missing rasters, and why a served host reports absence
+   *  rather than substituting. Shown in full, never summarised away. */
+  backendReason: string | null;
   /** The measured producer. `null` means no analysis exists for this crater. */
   analysis: Analysis | null;
   /** On-demand backend. Optional: the panel must render without it. */
@@ -1029,6 +1033,19 @@ export function StepPanel(props: Props) {
                   every number in them is the number a host with the rasters would
                   print.</>}
           </div>
+          {/* THE ENDPOINT'S OWN WORDS, VERBATIM. This is the text that used to
+              be a red error banner across the top of the map. It is the clearest
+              writing in the app about what a served host does and does not have,
+              and it is kept in full — moved, not summarised, and not styled as a
+              failure, because it describes one endpoint's state and not a fault. */}
+          {props.backendReason && props.backend !== 'ok' && (
+            <div className="mc-hoststate-reason">
+              <span className="mc-hoststate-reason-k">
+                What the mission endpoint reports
+              </span>
+              {props.backendReason}
+            </div>
+          )}
         </div>
 
         {/* THIS WAS THE LAST `mission ? … : …` STANDING IN FOR THREE STATES.

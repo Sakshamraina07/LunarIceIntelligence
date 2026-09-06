@@ -346,6 +346,11 @@ async function main() {
       // grid nothing on this screen needs the on-demand host at all.
       mapOverlayText: [...document.querySelectorAll('.mc-map-overlay')]
         .map(e => e.innerText).join(' | '),
+      // Anything styled as a FAILURE on the main screen. Red is a claim that
+      // something is broken; the mission endpoint's NOT_INGESTED state breaks
+      // nothing here, and it was being painted across the top of the map.
+      errorBanners: [...document.querySelectorAll('.mc-error')]
+        .map(e => e.innerText).join(' | '),
     };
   })()`);
 
@@ -489,6 +494,27 @@ async function main() {
   if (/NO RASTERS ON HOST|BACKEND UNREACHABLE|STUDIO ·|CHECKING HOST/.test(mapText)) {
     problems.push('a host-state banner is drawn over the map; nothing on that '
       + 'screen depends on the on-demand host');
+  }
+
+  // 5c-quater. NO HOST-STATE CONDITION IS PAINTED AS AN ERROR.
+  const hostErrText = INJECT === 'hosterror'
+    ? state.errorBanners + ' reports NOT_INGESTED' : state.errorBanners;
+  if (/NOT_INGESTED|no ingested raster|not reachable|unreachable/i.test(hostErrText)) {
+    problems.push('a host-state condition is rendered as an error banner on the '
+      + 'main screen; nothing there depends on the mission endpoint');
+  }
+
+  // 5c-quinquies. AND ITS TEXT SURVIVED THE MOVE.
+  //     "Move it, delete nothing" is only true if the destination renders it.
+  //     The endpoint's own words -- the product id and the missing rasters --
+  //     are the clearest writing in the app and must stay reachable in full.
+  if (STATE === 'not_ingested') {
+    const kept = /NOT_INGESTED|ingested raster/i.test(
+      INJECT === 'hostreason' ? '' : hostStage.text);
+    if (!kept) {
+      problems.push("the mission endpoint's own reason is not rendered anywhere on "
+        + 'the stage that owns host state; it was dropped rather than moved');
+    }
   }
 
   // 5d. AND IT LEFT STAGE 09. A host-state badge on a stage with no host

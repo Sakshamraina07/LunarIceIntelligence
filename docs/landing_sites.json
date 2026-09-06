@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/landing-sites/1",
-  "generated_utc": "2026-09-06T22:45:35.905432+00:00",
+  "generated_utc": "2026-09-06T22:58:58.188711+00:00",
   "generator": "backend/scripts/search_landing_sites.py",
   "search": {
     "pixels_evaluated": 14943444,

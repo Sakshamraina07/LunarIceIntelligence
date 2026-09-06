@@ -795,7 +795,22 @@ export default function MissionControl() {
               the map. This one never was, and after the sweep grid it was not
               about anything on the screen at all. The one control that genuinely
               loses something — Report, in the top bar — still says so itself. */}
-          {error && <div className="mc-error">{error}</div>}
+          {/* THE RED ERROR BANNER IS GONE FROM THE MAP, AND ITS TEXT IS NOT.
+              It rendered the mission endpoint's NOT_INGESTED message as an
+              ERROR across the top of the product. That message is accurate and
+              well written — it names the product id, names the missing rasters
+              and says why a served host reports absence rather than
+              substituting generated data — but it is not an error, and after
+              the sweep grid and the report-status fix it describes a condition
+              that costs this screen nothing at all: the relief, the science
+              layers, the sites, the traverse, the probe, the verdict, stage
+              09's sweep and the PDF all work without it.
+
+              Red is a claim. Reserving it for conditions that actually break
+              something is the whole point of having it, and this one broke
+              nothing. The full text now sits in stage 12's host-state block,
+              beside the only control that ever cared, one click away and
+              verbatim. See StepPanel step 12 and G15's `hostreason` assertion. */}
         </div>
 
         {/* intelligence rail */}
@@ -848,6 +863,7 @@ export default function MissionControl() {
               backendReal={backendReal}
               sweepGrid={sweepGrid}
               reportState={reportState}
+              backendReason={error}
               analysis={analysis}
               mission={mission}
               craterId={craterId}

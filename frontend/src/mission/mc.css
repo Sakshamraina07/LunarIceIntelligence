@@ -1299,3 +1299,24 @@
 /* `ok` is the only state that is not a caveat, so it is the only one tinted. */
 .mc-hoststate--ok { border-left-color: var(--mc-accent); }
 .mc-hoststate--ok .mc-hoststate-badge { color: var(--mc-accent); }
+
+/* The mission endpoint's own words, kept verbatim where they belong.
+   Not `.mc-error`: red is a claim that something is broken, and this describes
+   one endpoint's state on a screen where nothing depends on it. */
+.mc-hoststate-reason {
+  margin-top: 0.55rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--mc-line);
+  font-size: 0.68rem;
+  line-height: 1.5;
+  color: var(--mc-text-mute);
+}
+.mc-hoststate-reason-k {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mc-text-dim, var(--mc-text-mute));
+}

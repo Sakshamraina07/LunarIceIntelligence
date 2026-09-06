@@ -68,6 +68,24 @@ const MANIFEST_BADGE: Record<string, string> = {
 /** The six words the map treats as "this is not a measurement". */
 const PLACEHOLDER_PROVENANCE = /synthetic|placeholder|analytic|unknown|unavailable/i;
 
+/** Units per layer, so a legend end reads as a quantity rather than a bare
+ *  float. Keyed by layer id because the manifest carries the numbers but not
+ *  what they are of. */
+const LAYER_UNITS: Record<string, { unit: string; digits: number }> = {
+  dem_elevation: { unit: ' m', digits: 0 },
+  hazard_map: { unit: '', digits: 2 },
+  illumination: { unit: ' lit frac', digits: 3 },
+  cpr_heatmap: { unit: '', digits: 4 },
+  dop_heatmap: { unit: '', digits: 3 },
+  hillshade: { unit: '', digits: 2 },
+};
+
+function fmtScale(v: number, id: string): string {
+  const u = LAYER_UNITS[id] ?? { unit: '', digits: 3 };
+  if (!Number.isFinite(v)) return '—';
+  return `${v.toFixed(u.digits)}${u.unit}`;
+}
+
 function provBadge(l: LayerDef, manifestProv?: string): string {
   if (manifestProv) {
     if (PLACEHOLDER_PROVENANCE.test(manifestProv)) return 'PLACEHOLDER';
@@ -154,6 +172,19 @@ export default function MissionControl() {
   // number disagreement this project keeps catching. The layer stays available,
   // because the cost surface IS measured and worth showing, but it is opt-in and
   // it says what it is.
+  // Opacity of the active science layer over the hillshade. MEASURED, not
+  // chosen: backend/scripts/composite_contrast.py composites each layer over the
+  // filtered hillshade and asks whether the terrain's relief survives -- both
+  // that enough high-frequency structure remains (retention >= 0.25) AND that
+  // the surviving structure still CORRELATES with the base (>= 0.30), because a
+  // speckly layer raises the first while destroying the second.
+  //
+  // The binding layer is the radar one: correlation 0.13 at 0.72, 0.29 at 0.50,
+  // 0.34 at 0.45. 0.45 is the highest value at which all five layers clear both
+  // floors. Numbers in docs/composite_contrast.json. The slider is there because
+  // a single blend that suits every layer does not exist -- a reader who wants
+  // to read the data rather than the landform should push it up.
+  const [scienceOpacity, setScienceOpacity] = useState(0.45);
   const [showRoute, setShowRoute] = useState(false);
   const [selectedSite, setSelectedSite] = useState<CandidateLandingSite | null>(null);
   const [coords, setCoords] = useState('Hover the map for coordinates');
@@ -171,6 +202,13 @@ export default function MissionControl() {
   const [layerCopy, setLayerCopy] = useState<Record<string, string>>({});
   const [layerProv, setLayerProv] = useState<Record<string, string>>({});
   const [layerRes, setLayerRes] = useState<Record<string, NonNullable<LayerManifestEntry['resolution']>>>({});
+  /** vmin/vmax and the stretch, straight out of layers.json, so the legend's
+   *  numbers are the ones the pixels were made with rather than a second copy
+   *  maintained by hand in config.ts. */
+  const [layerScale, setLayerScale] = useState<Record<string, {
+    vmin: number; vmax: number; stretch?: LayerManifestEntry['stretch'];
+    display: Record<string, unknown> | null; contours: number | null;
+  }>>({});
   useEffect(() => {
     loadManifest().then((m) => {
       if (!m) return;
@@ -178,6 +216,10 @@ export default function MissionControl() {
       setLayerProv(Object.fromEntries(m.layers.map((l) => [l.id, l.provenance])));
       setLayerRes(Object.fromEntries(m.layers.flatMap((l) =>
         l.resolution ? [[l.id, l.resolution] as const] : [])));
+      setLayerScale(Object.fromEntries(m.layers.map((l) => [l.id, {
+        vmin: l.vmin, vmax: l.vmax, stretch: l.stretch,
+        display: l.display_choices ?? null, contours: l.contours_m ?? null,
+      }] as const)));
     });
   }, []);
 
@@ -289,6 +331,7 @@ export default function MissionControl() {
             mission={mission}
             activeLayer={activeLayer}
             showLandingSites={showLandingSites}
+            scienceOpacity={scienceOpacity}
             activeRoverStrategies={activeRoutes}
             selectedLandingSite={selectedSite}
             onSelectLandingSite={setSelectedSite}
@@ -341,7 +384,35 @@ export default function MissionControl() {
                 </span>
               </div>
               <div className="mc-legend-bar" style={{ background: legend.gradient }} />
-              <div className="mc-legend-ends"><span>{legend.low}</span><span>{legend.high}</span></div>
+              {/* REAL UNITS AND THE ACTUAL vmin/vmax, read from layers.json.
+                  config.ts's "Darker"/"Brighter" said nothing a reader could
+                  check against the map. A legend that cannot be checked against
+                  the pixels is decoration. */}
+              {layerScale[activeLayer] ? (
+                <div className="mc-legend-ends">
+                  <span>{fmtScale(layerScale[activeLayer].vmin, legend.id)}</span>
+                  <span className="mc-legend-mid">{legend.low} → {legend.high}</span>
+                  <span>{fmtScale(layerScale[activeLayer].vmax, legend.id)}</span>
+                </div>
+              ) : (
+                <div className="mc-legend-ends"><span>{legend.low}</span><span>{legend.high}</span></div>
+              )}
+              {layerScale[activeLayer]?.stretch?.linear_in_value === false && (
+                <div className="mc-legend-warn">
+                  colour scale is NOT linear in value — percentile breakpoints
+                  {layerScale[activeLayer].contours
+                    ? `, contours every ${layerScale[activeLayer].contours} m` : ''}
+                </div>
+              )}
+              {activeLayer !== 'hillshade' && (
+                <label className="mc-legend-op">
+                  <span>over relief</span>
+                  <input type="range" min={0} max={100} step={1}
+                    value={Math.round(scienceOpacity * 100)}
+                    onChange={(e) => setScienceOpacity(Number(e.target.value) / 100)} />
+                  <span className="mc-legend-op-v">{Math.round(scienceOpacity * 100)}%</span>
+                </label>
+              )}
               {/* From layers.json, not from config.ts. The manifest is written by
                   the same script that renders the pixels, so this caption cannot
                   describe a different formula than the image it sits under. */}

@@ -25,6 +25,35 @@ is what PRD rules 5a–5c, `emit_provenance.py`, `assert_paths_agree.py` and
 `stamp_methods.py` exist to do. **Provenance discipline does not catch a stale
 sentence; only a generator or a gate does.**
 
+### The second pattern: the verification apparatus itself being wrong
+
+Three instances, and it is a distinct failure from the one above, because the
+thing that has drifted is the thing meant to catch drift.
+
+1. **`verify_map.mjs` asserted a pane v8 had removed.** It exited 3 before
+   producing any evidence at all — a true negative reported as a tool failure.
+   Deleted in Phase 1F.
+2. **`routes_visible` flagged the Science-Aware route's own emphasis glow as an
+   invisible route**, failing the gate on every run for a style that was correct.
+   Fixed by making the glow distinguishable, not by lowering the opacity floor.
+3. **The hillshade histogram check tested `contrast(1.14) brightness(1.16)` while
+   `mc.css` shipped `1.06 / 1.10`** — restated as literals under a comment that
+   said "what mc.css says today".
+
+**The third is the worst of the three**, and it is worth being precise about why.
+The first two *failed* — noisily, uselessly, but visibly. The third *passed*, on
+a filter the application does not apply. A gate that validates something other
+than what ships does not merely fail to catch a problem; **it certifies the wrong
+thing**, and its green light is then evidence for a claim nobody checked. Two of
+these three were found by accident rather than by any process.
+
+The rule now applied, and the reason `hillshade_histogram.py` parses `mc.css`
+and `stamp_methods.py` digests artifacts rather than quoting them:
+
+> **A verifier must READ the value the application uses. It must never restate
+> it.** A verifier that restates the thing it verifies is not a verifier — it is
+> a second copy of the same assumption, and it will agree with itself.
+
 ---
 
 ## 1 · The polarimetric ice screen, and why it is empty by construction
@@ -1305,6 +1334,84 @@ published value, and p01 sits inside the band. The check that *can* fail is the
 label-range reproduction in step 3.1, which passed with **residual 0** against a
 0.5 m tolerance; this one cannot discriminate, because the old synthetic array
 passed it too.
+
+### 8.6 Evenly-spaced multi-azimuth hillshading degenerates to a slope map
+
+A single-azimuth hillshade has a known weakness: faces pointing away from the
+light shade identically to the flat ground beside them, so ridges running along
+the light direction disappear. The standard remedy is to average several
+azimuths. **Averaging *evenly-spaced* azimuths does not fix it — it destroys the
+relief entirely, and this can be shown in one line.**
+
+Horn's hillshade is
+
+```
+h(az) = cos(z)·cos(slope) + sin(z)·sin(slope)·cos(az − aspect)
+```
+
+Only the last term carries direction. Summing it over four azimuths 90° apart,
+writing `a = −aspect`:
+
+```
+cos(0°+a) + cos(90°+a) + cos(180°+a) + cos(270°+a)
+    = cos a + (−sin a) + (−cos a) + sin a
+    = 0        exactly, for every aspect
+```
+
+The directional term vanishes identically. What survives is `cos(z)·cos(slope)`
+— **a pure function of slope, with no aspect information at all.** The averaged
+"hillshade" is a slope map wearing a hillshade's name.
+
+Measured on this frame, at 100 m posts, against slope alone:
+
+| scheme | contrast (std) | correlation with slope-only |
+|---|---|---|
+| single 315° | 0.0668 | −0.124 |
+| **four evenly spaced, 315/45/135/225** | **0.0075** | **−0.950** |
+| four across a 135° arc, 270/315/0/45 *(shipped)* | 0.0420 | −0.128 |
+| ESRI-like 225/270/315/360, weights 3/3/1/3 | 0.0430 | −0.248 |
+
+**−0.950 is the identity showing up in the data**, and the residual 0.0075 of
+contrast is what is left after `cos(slope)` is stretched across the display
+range. Nine times less contrast than the single sun it was meant to improve on.
+
+The failure is also visible without any of this: the rendered layer's luminance
+median went to **228 of 255 with 4.6 % pure white**, because a near-constant
+field stretched to p2–p98 amplifies its own noise. The histogram check in §8.7
+caught it as a brightness problem; the cause was three steps upstream.
+
+**What ships is four azimuths across a 135° arc.** Confining them to less than a
+half-turn leaves the directional sum non-zero, so the scheme keeps a single sun's
+directional information (−0.128, identical) while filling the faces a single sun
+leaves black. The single-azimuth path is kept behind
+`render_layers.py --hillshade-azimuths 315`.
+
+*This is a display choice and is recorded as one in `layers.json`. It says nothing
+about where the Sun actually is: the real Sun here is within 1.54° of the horizon
+and lights almost none of this frame, which is the Solar Illumination layer,
+computed from horizons, and a different thing entirely.*
+
+### 8.7 The base-map filter, measured on the rendered pixels
+
+`mc.css` applies a CSS filter to the hillshade. Its setting is measured rather
+than chosen: `backend/scripts/hillshade_histogram.py` reads the declaration out
+of `mc.css`, applies it to the exported `hillshade.webp`, and reports the
+luminance histogram. The rule is a post-filter median at or below ~190 and no
+more than 1 % of pixels clipped at 255.
+
+At the shipped `brightness(1.10)` the median was fine at 163, but **7.197 % of
+the frame clipped to pure white** — a fourteenth of the map with its relief
+gone. Walking brightness back with contrast held at 1.06:
+
+| brightness | post-filter median | clipped at 255 |
+|---|---|---|
+| 1.10 | 163 | 7.197 % |
+| 1.08 | 160 | 6.300 % |
+| 1.04 | 154 | 4.472 % |
+| 1.00 | 148 | 2.960 % |
+| **0.98** | **145** | **0.000 %** |
+
+`brightness(0.98)` is the first value that clears both rules and is what ships.
 
 ---
 

@@ -48,15 +48,21 @@ const VIEWS = [
   { name: 'detail', centre: [43.7, 128.0], zoom: 4.5 },
 ];
 
-/** The six raster layers, by their button label. */
-const LAYERS = [
-  'Surface Relief',
-  'Elevation (DEM)',
-  'Solar Illumination',
-  'Terrain Hazards',
-  'Radar Signals (CPR)',
-  'Degree of Polarisation',
-];
+/**
+ * The raster layers, READ FROM layers.json rather than restated here.
+ *
+ * They were a hardcoded list of button LABELS, and the first rename broke it:
+ * "Radar Signals (CPR)" became "Channel imbalance (CPR proxy)" and the after
+ * pass silently skipped that layer. Same rule as everywhere else in this
+ * project -- a script must read the value the application uses, never restate
+ * it. Files are named by layer ID, so a future rename cannot break the pairing
+ * between a before shot and its after.
+ */
+async function readLayers() {
+  const manifest = JSON.parse(
+    readFileSync(path.resolve(ROOT, 'frontend/public/layers/layers.json'), 'utf8'));
+  return manifest.layers.map((l) => ({ id: l.id, label: l.label }));
+}
 
 const BROWSERS = [
   process.env.VERIFY_BROWSER,
@@ -188,15 +194,26 @@ async function main() {
   const manifest = { tag: CFG.tag, url: CFG.url, viewport: [CFG.width, CFG.height],
                      views: VIEWS, captured: [], generated_utc: new Date().toISOString() };
 
+  const layers = await readLayers();
+  log(`  layers ${layers.length} from layers.json: `
+    + layers.map((l) => l.id).join(', ') + '\n');
   for (const view of VIEWS) {
-    for (const label of LAYERS) {
+    for (const { id, label } of layers) {
       const clicked = await ev(`(function(){
         const b = [...document.querySelectorAll('button')]
           .find(e => e.textContent.trim() === ${JSON.stringify(label)});
         if (b) b.click();
         return !!b;
       })()`);
-      if (!clicked) { log(`  SKIP  ${view.name}/${label} — no such layer button`); continue; }
+      // A layer in the manifest with no button is a real inconsistency between
+      // the renderer and the UI, not something to skip past quietly.
+      if (!clicked) {
+        console.error(
+          "\n  capture_layers: layers.json lists \"" + id + "\" (" + label
+          + ") but no button carries that label. The manifest and the layer"
+          + " switch disagree.\n");
+        process.exit(3);
+      }
       await sleep(900);
 
       // Set the view AFTER selecting the layer: switching layers can refit.
@@ -209,11 +226,10 @@ async function main() {
       })()`);
       await sleep(1400);
 
-      const slug = label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-      const file = `${CFG.tag}.${view.name}.${slug}.png`;
+      const file = `${CFG.tag}.${view.name}.${id}.png`;
       const shot = await S('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
       writeFileSync(path.join(CFG.out, file), Buffer.from(shot.data, 'base64'));
-      manifest.captured.push({ view: view.name, layer: label, file, state });
+      manifest.captured.push({ view: view.name, id, layer: label, file, state });
       log(`  ${file}   zoom ${state ? state.zoom.toFixed(3) : '?'}  centre `
         + `${state ? state.centre.map((v) => v.toFixed(2)).join(',') : '?'}`);
     }

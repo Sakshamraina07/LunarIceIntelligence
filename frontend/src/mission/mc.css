@@ -594,6 +594,28 @@
   border-radius: 2px;
 }
 
+.mc-legend-mid { color: var(--mc-text-mute); font-size: 0.58rem; }
+.mc-legend-warn {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.56rem;
+  color: var(--mc-warn);
+  margin-top: 0.3rem;
+  letter-spacing: 0.02em;
+}
+/* The science layer sits OVER the hillshade with normal alpha. Never
+   mix-blend-mode: M5 measured that blend modes destroy the CPR ribbon, which
+   covers 15.6 % of the raster and came out a barely-tinted grey smear. */
+.mc-legend-op {
+  display: flex; align-items: center; gap: 0.4rem;
+  margin-top: 0.45rem;
+  font-size: 0.6rem; color: var(--mc-text-mute);
+}
+.mc-legend-op input[type="range"] { flex: 1; accent-color: var(--mc-accent); height: 2px; }
+.mc-legend-op-v {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.58rem; min-width: 2.4rem; text-align: right;
+}
+
 .mc-legend-res {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.62rem;

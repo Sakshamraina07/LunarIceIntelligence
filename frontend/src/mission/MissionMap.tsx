@@ -149,7 +149,19 @@ export interface LayerManifestEntry {
   bytes: number;
   preview_bytes: number;
   colormap: string;
-  stretch: { mode: string; expression: string; fitted_over_fraction: number };
+  stretch: {
+    mode: string; expression: string; fitted_over_fraction: number;
+    /** Present and false when the colour scale is NOT linear in the value —
+     *  the hypsometric tint uses percentile breakpoints. The legend must say so,
+     *  because a ramp whose spacing implies metres it does not represent is a
+     *  caption that stopped tracking its own computation. */
+    linear_in_value?: boolean;
+    percentiles?: number[];
+    knots?: number[];
+  };
+  /** Choices made for LEGIBILITY rather than measurement, named by the renderer. */
+  display_choices?: Record<string, unknown> | null;
+  contours_m?: number | null;
   vmin: number;
   vmax: number;
   alpha_opaque: number;
@@ -647,6 +659,11 @@ interface Props {
    */
   mission: MissionState | null;
   activeLayer: string;
+  /** Opacity of the ACTIVE SCIENCE LAYER over the hillshade base, 0..1.
+   *  Normal alpha compositing, never mix-blend-mode: M5 established that blend
+   *  modes destroy the CPR ribbon, which covers 15.6 % of the raster and came
+   *  out a barely-tinted grey smear. */
+  scienceOpacity: number;
   showLandingSites: boolean;
   activeRoverStrategies: string[];
   selectedLandingSite: CandidateLandingSite | null;
@@ -656,7 +673,7 @@ interface Props {
 }
 
 export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMap(
-  { mission, activeLayer, showLandingSites, activeRoverStrategies, selectedLandingSite, onSelectLandingSite, onCoords, onZoom },
+  { mission, activeLayer, scienceOpacity, showLandingSites, activeRoverStrategies, selectedLandingSite, onSelectLandingSite, onCoords, onZoom },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -1008,9 +1025,15 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     if (overlayRef.current) { map.removeLayer(overlayRef.current); overlayRef.current = null; }
     if (activeLayer === 'hillshade') return;   // already the base
 
-    const def = LAYER_MAP[activeLayer];
-    const opacity = def?.provenance === 'measured' ? 1 : 0.9;
+    // COMPOSITED OVER THE HILLSHADE, not drawn instead of it. This used to be
+    // 1.0 for anything marked `measured`, which meant every terrain and radar
+    // layer completely hid the relief underneath and each one read as a flat
+    // field of colour with no landform in it. The base is always mounted in the
+    // mc-terrain pane; the only thing that stopped it contributing was this
+    // number. It is now user-controlled, and the default is measured against the
+    // composite rather than guessed -- see docs/composite_contrast.json.
     const entry = geom.byId[activeLayer];
+    const opacity = Math.max(0, Math.min(1, scienceOpacity));
 
     if (entry) {
       overlayRef.current = attachRaster(map, entry, geom, {
@@ -1031,7 +1054,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
         'Run: python backend/scripts/render_layers.py',
       );
     }
-  }, [activeLayer, ready]);
+  }, [activeLayer, ready, scienceOpacity]);
 
   // ── smooth fly-to when the crater / target changes ─────────────
   //

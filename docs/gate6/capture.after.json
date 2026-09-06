@@ -1,5 +1,5 @@
 {
-  "tag": "before",
+  "tag": "after",
   "url": "http://localhost:3000/",
   "viewport": [
     1600,
@@ -26,8 +26,9 @@
   "captured": [
     {
       "view": "full",
+      "id": "hillshade",
       "layer": "Surface Relief",
-      "file": "before.full.hillshade.png",
+      "file": "after.full.hillshade.png",
       "state": {
         "zoom": 2.166163082646113,
         "centre": [
@@ -35,13 +36,13 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "hillshade"
+      }
     },
     {
       "view": "full",
+      "id": "dem_elevation",
       "layer": "Elevation (DEM)",
-      "file": "before.full.dem_elevation.png",
+      "file": "after.full.dem_elevation.png",
       "state": {
         "zoom": 2.166163082646113,
         "centre": [
@@ -49,27 +50,13 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "dem_elevation"
+      }
     },
     {
       "view": "full",
-      "layer": "Solar Illumination",
-      "file": "before.full.illumination.png",
-      "state": {
-        "zoom": 2.166163082646113,
-        "centre": [
-          43.7,
-          128
-        ],
-        "minZoom": 2.166163082646113
-      },
-      "id": "illumination"
-    },
-    {
-      "view": "full",
+      "id": "hazard_map",
       "layer": "Terrain Hazards",
-      "file": "before.full.hazard_map.png",
+      "file": "after.full.hazard_map.png",
       "state": {
         "zoom": 2.166163082646113,
         "centre": [
@@ -77,13 +64,13 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "hazard_map"
+      }
     },
     {
       "view": "full",
-      "layer": "Radar Signals (CPR)",
-      "file": "before.full.cpr_heatmap.png",
+      "id": "illumination",
+      "layer": "Solar Illumination",
+      "file": "after.full.illumination.png",
       "state": {
         "zoom": 2.166163082646113,
         "centre": [
@@ -91,13 +78,27 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "cpr_heatmap"
+      }
     },
     {
       "view": "full",
+      "id": "cpr_heatmap",
+      "layer": "Channel imbalance (CPR proxy)",
+      "file": "after.full.cpr_heatmap.png",
+      "state": {
+        "zoom": 2.166163082646113,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "full",
+      "id": "dop_heatmap",
       "layer": "Degree of Polarisation",
-      "file": "before.full.dop_heatmap.png",
+      "file": "after.full.dop_heatmap.png",
       "state": {
         "zoom": 2.166163082646113,
         "centre": [
@@ -105,13 +106,13 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "dop_heatmap"
+      }
     },
     {
       "view": "detail",
+      "id": "hillshade",
       "layer": "Surface Relief",
-      "file": "before.detail.hillshade.png",
+      "file": "after.detail.hillshade.png",
       "state": {
         "zoom": 4.5,
         "centre": [
@@ -119,13 +120,13 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "hillshade"
+      }
     },
     {
       "view": "detail",
+      "id": "dem_elevation",
       "layer": "Elevation (DEM)",
-      "file": "before.detail.dem_elevation.png",
+      "file": "after.detail.dem_elevation.png",
       "state": {
         "zoom": 4.5,
         "centre": [
@@ -133,27 +134,13 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "dem_elevation"
+      }
     },
     {
       "view": "detail",
-      "layer": "Solar Illumination",
-      "file": "before.detail.illumination.png",
-      "state": {
-        "zoom": 4.5,
-        "centre": [
-          43.7,
-          128
-        ],
-        "minZoom": 2.166163082646113
-      },
-      "id": "illumination"
-    },
-    {
-      "view": "detail",
+      "id": "hazard_map",
       "layer": "Terrain Hazards",
-      "file": "before.detail.hazard_map.png",
+      "file": "after.detail.hazard_map.png",
       "state": {
         "zoom": 4.5,
         "centre": [
@@ -161,13 +148,13 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "hazard_map"
+      }
     },
     {
       "view": "detail",
-      "layer": "Radar Signals (CPR)",
-      "file": "before.detail.cpr_heatmap.png",
+      "id": "illumination",
+      "layer": "Solar Illumination",
+      "file": "after.detail.illumination.png",
       "state": {
         "zoom": 4.5,
         "centre": [
@@ -175,13 +162,27 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "cpr_heatmap"
+      }
     },
     {
       "view": "detail",
+      "id": "cpr_heatmap",
+      "layer": "Channel imbalance (CPR proxy)",
+      "file": "after.detail.cpr_heatmap.png",
+      "state": {
+        "zoom": 4.5,
+        "centre": [
+          43.7,
+          128
+        ],
+        "minZoom": 2.166163082646113
+      }
+    },
+    {
+      "view": "detail",
+      "id": "dop_heatmap",
       "layer": "Degree of Polarisation",
-      "file": "before.detail.dop_heatmap.png",
+      "file": "after.detail.dop_heatmap.png",
       "state": {
         "zoom": 4.5,
         "centre": [
@@ -189,9 +190,8 @@
           128
         ],
         "minZoom": 2.166163082646113
-      },
-      "id": "dop_heatmap"
+      }
     }
   ],
-  "generated_utc": "2026-09-06T11:59:21.962Z"
+  "generated_utc": "2026-09-06T13:13:11.990Z"
 }

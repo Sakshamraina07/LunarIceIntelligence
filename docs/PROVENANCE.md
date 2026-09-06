@@ -25,7 +25,7 @@ is marked `MODELLED`, or if an absent value carries no reason.
 | Frame | 2258 × 6618 @ 25 m/px = 9,340 km² |
 | Measured swath | 1,460.68 km² (15.640 % of frame) — every MEASURED radar figure uses this mask only |
 | Thresholds | CPR > 1, DOP < 0.13 — read from backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, MAX_TRAVERSABLE_SLOPE_DEG, CRITICAL_LANDING_SLOPE_DEG), **not retuned** |
-| Generated | 2026-09-06T12:28:19.210704+00:00 |
+| Generated | 2026-09-06T13:12:34.850107+00:00 |
 
 ## Mark counts
 

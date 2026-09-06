@@ -798,7 +798,13 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
          "stretch": "log", "colormap": "turbo", "opaque_alpha": 235,
          "provenance": "measured-radar",
          "sources": ["native/cpr_native.tif", "native/valid_native.tif"],
-         "detail": "Circular Polarisation Ratio, sigma_sc / sigma_oc, from the calibrated "
+         "detail": "NOT a circular polarisation ratio, whatever its name. Formed as "
+                   "sigma_sc / sigma_oc from AMPLITUDE alone, it is a function of LH/LV "
+                   "only, and CPR lives in the H-V PHASE which taking magnitudes "
+                   "discards. Monte Carlo at the measured look count (METHODS 7.9.2): "
+                   "across true CPR 0.30 to 1.50 its median moves 0.00043, while 3 dB of "
+                   "channel imbalance at unchanged CPR moves it by a factor of 68. Read "
+                   "it as a channel-imbalance map. From the calibrated "
                    "Chandrayaan-2 DFSAR sri products. Alpha and the stretch both follow the "
                    "amplitude mask (15.64% of the frame, 8.75 km ribbon), NOT ISRO's wider "
                    "sri_ma swath mask (35.63%, 19.25 km): 56.11% of that swath carries "

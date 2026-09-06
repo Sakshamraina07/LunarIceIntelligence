@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/layers-manifest/1",
-  "generated_utc": "2026-09-06T12:37:26+00:00",
+  "generated_utc": "2026-09-06T13:12:11+00:00",
   "generator": "backend/scripts/render_layers.py",
   "replaces": "backend/scripts/generate_tiles.py + backend/tiles/faustini/** (tile pyramid: ~331 tiles/layer, per-tile normalisation, visible seams)",
   "product_id": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",
@@ -2124,7 +2124,7 @@
         "native/cpr_native.tif",
         "native/valid_native.tif"
       ],
-      "description": "Circular Polarisation Ratio, sigma_sc / sigma_oc, from the calibrated Chandrayaan-2 DFSAR sri products. Alpha and the stretch both follow the amplitude mask (15.64% of the frame, 8.75 km ribbon), NOT ISRO's wider sri_ma swath mask (35.63%, 19.25 km): 56.11% of that swath carries literal integer zero amplitude, and cpr there would be a fabricated 0.0. The swath is drawn as an outline instead -- see footprint.swath."
+      "description": "NOT a circular polarisation ratio, whatever its name. Formed as sigma_sc / sigma_oc from AMPLITUDE alone, it is a function of LH/LV only, and CPR lives in the H-V PHASE which taking magnitudes discards. Monte Carlo at the measured look count (METHODS 7.9.2): across true CPR 0.30 to 1.50 its median moves 0.00043, while 3 dB of channel imbalance at unchanged CPR moves it by a factor of 68. Read it as a channel-imbalance map. From the calibrated Chandrayaan-2 DFSAR sri products. Alpha and the stretch both follow the amplitude mask (15.64% of the frame, 8.75 km ribbon), NOT ISRO's wider sri_ma swath mask (35.63%, 19.25 km): 56.11% of that swath carries literal integer zero amplitude, and cpr there would be a fabricated 0.0. The swath is drawn as an outline instead -- see footprint.swath."
     },
     {
       "id": "dop_heatmap",

@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T12:19:29.132Z",
+  "generated_utc": "2026-09-06T13:13:51.656Z",
   "url": "http://localhost:3000/#/mission",
   "browser": "C:/Program Files/Google/Chrome/Application/chrome.exe",
   "viewport": [
@@ -8,7 +8,7 @@
   ],
   "init": {
     "ok": true,
-    "zoom": 3.499979548719649,
+    "zoom": 3.499958243837636,
     "size": {
       "x": 1167,
       "y": 691
@@ -27,14 +27,14 @@
     "mpu": 646.289062
   },
   "opening": {
-    "zoom": 3.4999399583309567,
+    "zoom": 3.499958243837636,
     "centre": [
-      44.859,
-      128.6546
+      44.9468,
+      128.653
     ],
     "units": {
-      "h": 61.0789,
-      "w": 103.1535
+      "h": 61.0781,
+      "w": 103.1522
     },
     "km": {
       "h": 39.47,
@@ -89,7 +89,7 @@
           6618,
           2258
         ],
-        "transform": "matrix(1, 0, 0, 1, -872, -105)",
+        "transform": "matrix(1, 0, 0, 1, -872, -104)",
         "opacity": 1,
         "className": "leaflet-image-layer leaflet-zoom-animated mc-raster mc-raster--base",
         "pane": "mapPane",
@@ -1137,6 +1137,10 @@
   },
   "consoleLines": [
     "info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold",
+    "info: [MissionMap] landing-site coverage — 5/5 outside the measured amplitude ribbon. Grid offsets are hardcoded in module_e_landing.py.",
+    "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":3,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_4\",\"rank\":4,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"},{\"site\":\"site_5\",\"rank\":5,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"}]",
+    "info: [MissionMap] rover waypoint coverage — all strategies terminate at target_coordinates (the hardcoded grid centre):",
+    "table: [{\"strategy\":\"Shortest\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":false},{\"strategy\":\"Safest\",\"waypoints\":33,\"km\":\"34.6\",\"in_amplitude_ribbon\":\"3 (9.1%)\",\"pointed_no_return\":11,\"never_observed\":19,\"drawn\":false},{\"strategy\":\"Science-Aware\",\"waypoints\":33,\"km\":\"18.1\",\"in_amplitude_ribbon\":\"9 (27.3%)\",\"pointed_no_return\":9,\"never_observed\":15,\"drawn\":false}]",
     "info: [MissionMap] landing-site coverage — 5/5 outside the measured amplitude ribbon. Grid offsets are hardcoded in module_e_landing.py.",
     "table: [{\"site\":\"site_1\",\"rank\":1,\"recommended\":true,\"grid\":\"50,18\",\"coverage\":\"outside\"},{\"site\":\"site_2\",\"rank\":2,\"recommended\":false,\"grid\":\"75,82\",\"coverage\":\"outside\"},{\"site\":\"site_3\",\"rank\":3,\"recommended\":false,\"grid\":\"25,78\",\"coverage\":\"swath\"},{\"site\":\"site_4\",\"rank\":4,\"recommended\":false,\"grid\":\"15,50\",\"coverage\":\"outside\"},{\"site\":\"site_5\",\"rank\":5,\"recommended\":false,\"grid\":\"85,48\",\"coverage\":\"outside\"}]",
     "info: [MissionMap] rover waypoint coverage — all strategies terminate at target_coordinates (the hardcoded grid centre):",

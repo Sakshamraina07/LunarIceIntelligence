@@ -611,27 +611,33 @@ const ROUTE_COLOUR = ['#4fd1e6', '#6ee7a8', '#f2c14e', '#c084fc', '#fb7185'];
 function roverIcon(headingDeg: number): L.DivIcon {
   return L.divIcon({
     className: 'mc-rover-icon',
-    iconSize: [38, 46],
-    iconAnchor: [19, 23],
-    html: `<svg viewBox="0 0 40 48" width="38" height="46" style="transform:rotate(${headingDeg.toFixed(1)}deg)">
-      <ellipse cx="20" cy="24" rx="19" ry="22" fill="#4fd1e6" opacity="0.13"/>
-      <g fill="#08131b" stroke="#7fe3f2" stroke-width="1.3">
-        <rect x="1.5" y="10" width="7" height="9" rx="2.6"/>
-        <rect x="1.5" y="20" width="7" height="9" rx="2.6"/>
-        <rect x="1.5" y="30" width="7" height="9" rx="2.6"/>
-        <rect x="31.5" y="10" width="7" height="9" rx="2.6"/>
-        <rect x="31.5" y="20" width="7" height="9" rx="2.6"/>
-        <rect x="31.5" y="30" width="7" height="9" rx="2.6"/>
+    // 48 x 58, up from 38 x 46. At the smaller size the wheels merged into the
+    // chassis and the whole thing read as a teal box on a teal line -- which is
+    // the opposite of the point, since the reason it is a vehicle and not a dot
+    // is that a dot cannot show heading.
+    iconSize: [48, 58],
+    iconAnchor: [24, 29],
+    html: `<svg viewBox="0 0 40 48" width="48" height="58" style="transform:rotate(${headingDeg.toFixed(1)}deg)">
+      <ellipse cx="20" cy="24" rx="19" ry="22" fill="#04131a" opacity="0.55"/>
+      <ellipse cx="20" cy="24" rx="19" ry="22" fill="#4fd1e6" opacity="0.14"/>
+      <g fill="#020a0f" stroke="#8fe9f6" stroke-width="1.5">
+        <rect x="1" y="9.5" width="7.5" height="9.5" rx="2.8"/>
+        <rect x="1" y="19.8" width="7.5" height="9.5" rx="2.8"/>
+        <rect x="1" y="30.1" width="7.5" height="9.5" rx="2.8"/>
+        <rect x="31.5" y="9.5" width="7.5" height="9.5" rx="2.8"/>
+        <rect x="31.5" y="19.8" width="7.5" height="9.5" rx="2.8"/>
+        <rect x="31.5" y="30.1" width="7.5" height="9.5" rx="2.8"/>
       </g>
-      <rect x="8" y="8" width="24" height="33" rx="4" fill="#0e2a34" stroke="#4fd1e6" stroke-width="1.6"/>
-      <rect x="11" y="14" width="18" height="20" rx="1.5" fill="#1d5a6b" stroke="#7fe3f2" stroke-width="0.8"/>
-      <g stroke="#08131b" stroke-width="0.8" opacity="0.85">
+      <rect x="8.5" y="8" width="23" height="33" rx="4" fill="#0b2029" stroke="#8fe9f6" stroke-width="2"/>
+      <rect x="11.5" y="14" width="17" height="20" rx="1.5" fill="#2b7f95" stroke="#bff2fb" stroke-width="1"/>
+      <g stroke="#020a0f" stroke-width="1" opacity="0.9">
         <line x1="20" y1="14" x2="20" y2="34"/>
-        <line x1="11" y1="20.7" x2="29" y2="20.7"/>
-        <line x1="11" y1="27.3" x2="29" y2="27.3"/>
+        <line x1="11.5" y1="20.7" x2="28.5" y2="20.7"/>
+        <line x1="11.5" y1="27.3" x2="28.5" y2="27.3"/>
       </g>
-      <circle cx="20" cy="7" r="3.4" fill="#08131b" stroke="#4fd1e6" stroke-width="1.5"/>
-      <path d="M13 5.2 L20 1 L27 5.2" fill="none" stroke="#7fe3f2" stroke-width="1.3"
+      <circle cx="20" cy="7" r="3.6" fill="#020a0f" stroke="#8fe9f6" stroke-width="1.7"/>
+      <!-- the forward arrow: the only part that says which way it faces -->
+      <path d="M12.5 5.6 L20 0.6 L27.5 5.6" fill="none" stroke="#bff2fb" stroke-width="1.8"
             stroke-linejoin="round" stroke-linecap="round"/>
     </svg>`,
   });

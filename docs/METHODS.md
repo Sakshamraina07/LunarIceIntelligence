@@ -728,15 +728,13 @@ ceiling, not a centre.
 | 32 × 32 (800 m) | 2.64 | 2.40 |
 | 64 × 64 (1.6 km) | 1.51 | 1.61 |
 
-Spread at 16 × 16 (LH): p5 0.77, median 4.12, p95 **9.14**.
+Spread at 16 × 16 (LH): p5 0.77, median 4.12, p95 9.14.
 
-**Measured ENL is 5–6 against a nominal 21 — a factor of about four.** The fall
-with patch size is the signature of real terrain texture entering the variance,
-which is a property of the Moon rather than of the product. That cuts both ways
-and the honest statement is a bound, not a point: **the product's true ENL lies
-somewhere between about 9 (the p95 of the most homogeneous 400 m patches) and
-the nominal 21, and is certainly not 21.** Any CFAR threshold set from 21 looks
-would be set from a variance that the data does not have.
+**Measured ENL is 5–6 against a nominal 21.** On this evidence alone the honest
+statement was a wide bound — texture is inseparable from speckle without a
+homogeneous target, so the true value could have been anywhere from about 5 to
+21 — and every quantity in a significance test scales with it. §7.4 closes that
+bound to a number, using data rather than an argument.
 
 A skewness cross-check was run and **did not discriminate** — measured third
 moments (+0.90 on DN, +1.74 on DN²) sit well above every speckle-only
@@ -744,7 +742,65 @@ prediction, because bright scatterers dominate the third moment long before they
 dominate the second. It is recorded here as attempted and uninformative rather
 than quietly dropped.
 
-### 7.4 Neighbouring pixels are not independent
+### 7.4 The control: forming 21 looks ourselves, from the single-look complex
+
+The single-look complex from the **same pass** is on disk — 355,768 azimuth
+lines × 759 slant-range bins of `ComplexLSB8`, which is contiguous `complex64`
+at byte 5,725,302. That layout is not assumed: the script asserts
+`offset + lines × samples × 8` against the file size and gets an **exact** match,
+and refuses to memmap a raster whose geometry is unconfirmed.
+
+So we can build our own 21-look product and measure it with the *identical*
+patch estimator. Reproduce with
+`python -u backend/scripts/slc_multilook_control.py --windows 9`; results in
+`docs/slc_multilook_control.json`.
+
+**Two checks that the reading of the file is right, before any conclusion rests
+on it.** First, the azimuth power spectrum gives an occupied bandwidth of
+**1071.2 Hz** in 9 windows out of 9, against the label's declared
+`total_processed_azimuth_bandwidth` of **1071.336 Hz** — agreement to 0.01 %,
+which independently confirms the byte layout, the complex interpretation, the
+PRF and which axis is azimuth. Second, the single-look intensity measures
+**ENL 1.04** (range 0.93–1.12) against a theoretical **1.00**, so the estimator
+is unbiased on data whose answer is known analytically.
+
+**Why 21 looks need not be 21.** Azimuth is sampled at the PRF, 3321.64 Hz, but
+only 1071.34 Hz of azimuth bandwidth is processed — a measured oversampling
+factor of **3.10**, identical in all 9 windows. Averaging 21 *consecutive*
+samples therefore averages 21 samples that are not independent, and can deliver
+at most 21 / 3.10 ≈ **6.8** looks. Splitting the processed band into 21
+non-overlapping sub-bands and averaging their intensities gives looks that are
+independent.
+
+Both were built, from the same complex data, decimated to the same grid, and
+measured with the same patches:
+
+| how the 21 looks are formed | measured ENL | ceiling |
+|---|---|---|
+| single look (control) | 1.04 | 1.00 |
+| **21 by spatial average** | **4.52** | 6.77 = 21 / 3.10 |
+| **21 by sub-band split** | **9.95** | 21 |
+| *the delivered `sri` product* | *5.30 / 6.46* | *21 (nominal)* |
+
+**The answer is a third outcome, and neither of the two that were anticipated.**
+It is not scene texture: the single-look control measures 1.04, so there is no
+detectable texture depressing these numbers, and in any case spatial and
+sub-band multilooking were measured on the *same grid, same patches, same
+terrain* — texture cannot explain a 2× gap between them. It is not that the
+archive is corrupt either. **"21 looks" names a method, and the two methods do
+not deliver the same number of looks.** The delivered product's 5–6 sits with
+the spatial-average figure and its 6.8 ceiling, not with the sub-band figure.
+
+**The operative number for everything downstream is therefore N ≈ 5, not 21.**
+
+*Caveats kept in view: one window of nine (the last, at the very end of the
+pass) is a clear outlier at 1.50 / 4.03 and the medians above are taken over
+all nine regardless. The sub-band figure of 9.95 falls short of its own 21
+ceiling, most likely spectral leakage from a hard band split; that gap is not
+explained here, and it does not affect the conclusion, which rests on the
+spatial arm matching the delivered product.*
+
+### 7.5 Neighbouring pixels are not independent
 
 Correlation of DN with itself at small lags, after removing each patch's mean:
 
@@ -759,36 +815,86 @@ look. This is the processing, not the terrain, which has no reason to prefer the
 azimuth axis of one particular pass. (These are an upper bound on the speckle
 correlation, since sub-patch terrain structure survives the mean removal.)
 
-### 7.5 What the 5 × 5 boxcar actually buys
+### 7.6 The boxcar trap
 
 CPR and DOP are not formed on raw pixels: the pipeline applies a 5 × 5 boxcar to
 σ⁰ first. If pixels were independent that would multiply the looks by 25.
 Measured, over the DN mask eroded by the boxcar half-width so no window reaches
 a zero-fill pixel (2,337,086 → 2,294,084 px):
 
-| channel | ENL raw | ENL after 5 × 5 | gain | if independent |
-|---|---|---|---|---|
-| LH | 5.83 | 13.72 | **2.35×** | 25× |
-| LV | 5.14 | 19.77 | **3.84×** | 25× |
+| channel | ENL raw | ENL after 5 × 5 | gain | if independent | variance understated | SD understated |
+|---|---|---|---|---|---|---|
+| LH | 5.83 | 13.72 | **2.35×** | 25× | **10.6×** | 3.26× |
+| LV | 5.14 | 19.77 | **3.84×** | 25× | **6.5×** | 2.55× |
 
-**A significance test that assumed 25× would understate its own variance by
-roughly an order of magnitude and manufacture detections.** This is the number
-Phase 8 has to use, and it had to be measured rather than counted.
+This generalises beyond this product and is the most transferable result here:
+**any study that spatially averages a SAR image and assumes its looks scale with
+pixel count is understating its noise by roughly an order of magnitude in
+variance.** The correction requires measuring the pixel-to-pixel correlation,
+which — as far as this project's literature sweep found — nobody does for lunar
+radar, so nobody knows the size of their own error.
 
-### 7.6 One prior claim of uncertainty, recorded against our own novelty claim
+### 7.7 What that does to a CPR threshold
 
-Phase 8 rests partly on the observation that this literature does not report
-uncertainty on CPR. One partial counterexample exists and is recorded here
-rather than left for a reader to find: the DFSAR instrument paper reports
+CPR is a **ratio** of two N-look intensities, so its sampling distribution is
+`CPR · F(2N, 2N)`. Everything below follows from that and is reproducible from
+`scipy.stats.f` alone.
+
+| N | rel. SD | bias E[R]/CPR | FP at CPR 0.5 | 0.7 | 0.9 | true CPR for 95 % confidence above 1.0 |
+|---|---|---|---|---|---|---|
+| **5** | 0.775 | 1.250 | 14.48 % | 29.16 % | 43.55 % | **2.978** |
+| **6** | 0.677 | 1.200 | 12.21 % | 27.31 % | 42.91 % | **2.687** |
+| 9 | 0.519 | 1.125 | 7.55 % | 22.84 % | 41.28 % | 2.217 |
+| 21 | 0.321 | 1.050 | 1.35 % | 12.59 % | 36.72 % | 1.671 |
+| 38 | 0.234 | 1.027 | 0.14 % | 6.11 % | 32.36 % | 1.462 |
+
+The threshold in use is CPR = 1.00. **At the measured N ≈ 5, a single pixel needs
+a true CPR above 2.98 before it reads over 1.0 with 95 % confidence, and ordinary
+rock at a true CPR of 0.7 crosses the threshold 29 % of the time.** At the
+nominal 21 those figures are 1.67 and 12.6 %. The difference between the nominal
+and the measured look count is the difference between a threshold that means
+something and one that does not.
+
+### 7.8 What is and is not novel here
+
+The loose claim "nobody reports uncertainty on lunar CPR" is **false**, and is
+not made anywhere in this project. The DFSAR instrument paper reports a
 "~38 look average for each sampled location" over Peary crater and "an
 approximate 1/N^1/2 … uncertainty in the CPR measurements of ±0.16"
-(Bhiravarasu et al. 2021).
+(Bhiravarasu et al. 2021, *Planet. Sci. J.* **2**, 134). Four narrower statements
+replace it, each separately defensible:
 
-That is a *global* error bar from a look count, quoted for one crater. It is not
-a per-pixel significance test, not a confidence interval on an ice area, and not
-a false-positive rate — so the three specific gaps Phase 8 targets survive. But
-the blanket statement "nobody reports uncertainty" is too strong and is not made
-anywhere in this project.
+**(a) The published error bar uses the wrong statistic.** `1/sqrt(N)` is the
+relative error of a *single channel*. CPR is a *ratio* of two, whose relative
+standard deviation is `sqrt((2N-1) / (N(N-2)))`:
+
+| N | 1/√N | correct ratio SD | ratio |
+|---|---|---|---|
+| 38 | 0.1622 | 0.2341 | **1.44×** |
+| 21 | 0.2182 | 0.3206 | 1.47× |
+| 6 | 0.4082 | 0.6770 | 1.66× |
+
+**(b) It is computed from nominal looks.** §7.3–7.4 measure ENL on a DFSAR
+product — as far as this project's literature sweep found, the first time that
+has been done for this instrument — and find it 3–4× below nominal. Combined
+with (a), a published bar of ±0.16 may understate the true figure by roughly 3×.
+
+**(c) There is an uncorrected positive bias.** `E[R] = CPR · N/(N−1)`, because
+the denominator is a random variable and `E[1/Y] > 1/E[Y]`. That is **+25 % at
+N = 5** and pushes every estimate *toward* the threshold, in the direction that
+manufactures detections. No lunar CPR study found applies this correction.
+
+**(d) Three nulls survive the counterexample intact.** Nobody tests per-pixel
+significance, reports a confidence interval on an ice area, or computes a
+false-positive rate for CPR > 1.
+
+**What cannot be claimed.** Our measured ENL is a property of *this* compact-pol
+`sri` product from *this* pass. It cannot be transferred to Sinha et al.'s
+full-polarimetric result — different acquisition mode, different processing
+chain, different look configuration — and no statement here does so. The point
+is narrower and harder to dismiss: **nobody has measured it for theirs either**,
+so the uncertainty on a published lunar CPR detection is presently unknown
+rather than small.
 
 ---
 

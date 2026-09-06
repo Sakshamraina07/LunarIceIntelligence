@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-06T18:43:53.964191+00:00",
+  "generated_utc": "2026-09-06T19:42:10.355749+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 30.1
+      "seconds": 26.1
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 27.9
+      "seconds": 22.4
     },
     {
       "id": "G4",
@@ -32,7 +32,7 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 34.2
+      "seconds": 38.7
     },
     {
       "id": "G5",
@@ -40,7 +40,7 @@
       "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 7.7
+      "seconds": 6.7
     },
     {
       "id": "G6",
@@ -48,7 +48,7 @@
       "gate": "hillshade_histogram.py + composite_contrast.py",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 5.3
+      "seconds": 4.9
     },
     {
       "id": "G6b",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 47.6
+      "seconds": 47.1
     },
     {
       "id": "G7",
@@ -64,12 +64,12 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 7.6
+      "seconds": 9.1
     },
     {
       "id": "G8",
       "statement": "Every measured figure quoted in METHODS.md still matches the artifact it was transcribed from",
-      "gate": "stamp_methods.py --check \u2014 18 artifacts",
+      "gate": "stamp_methods.py --check \u2014 19 artifacts",
       "verdict": "PASS",
       "returncode": 0,
       "seconds": 0.2
@@ -80,7 +80,7 @@
       "gate": "assert_pdf_agrees_with_analysis.py \u2014 the rendered bytes, not the inputs",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.7
+      "seconds": 0.8
     },
     {
       "id": "G10",
@@ -88,7 +88,23 @@
       "gate": "assert_upper_bounds_labelled.py \u2014 every occurrence, every tracked source",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.3
+      "seconds": 0.4
+    },
+    {
+      "id": "G12",
+      "statement": "There is one incidence field, it satisfies incidence > look angle, and nothing consumes a field that does not",
+      "gate": "assert_incidence_geometry.py --only g12 \u2014 the identity, and every consumer",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.2
+    },
+    {
+      "id": "G13",
+      "statement": "There is one CPR field and every consumer reads the same look count for it",
+      "gate": "assert_incidence_geometry.py --only g13 \u2014 read from the pipeline, not inferred",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.1
     }
   ],
   "all_pass": true

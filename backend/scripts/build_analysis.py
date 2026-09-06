@@ -909,10 +909,27 @@ def build(crater_id: str = "faustini") -> dict:
     # READ from incidence_mask.py's artifact, not recomputed here. Absent is a
     # real state: the row then says the criterion could not be evaluated, which
     # is different from saying nothing passed it.
+    #
+    # AND IT IS CURRENTLY WITHHELD. The artifact carries `available: false`
+    # because the product's incidence raster failed all three tests in
+    # incidence_audit.py -- 80.53 % of its values sit below the label's own look
+    # angle, which is geometrically impossible on a convex body. A criterion
+    # defined on incidence cannot be carried by a field that is not one, and the
+    # field cannot be re-derived from a label with no ephemeris. So the row says
+    # so, with the reason, rather than reporting a number.
     _inc_doc = None
     _inc_path = BASE_DIR / "docs" / "incidence_mask.json"
     if _inc_path.exists():
         _inc_doc = json.loads(_inc_path.read_text(encoding="utf-8"))
+        if not _inc_doc.get("available", True):
+            _inc_withheld = _inc_doc["withheld_reason"]
+            _inc_doc = None
+        else:
+            _inc_withheld = None
+    else:
+        _inc_withheld = ("docs/incidence_mask.json is not on this host. Run "
+                         "backend/scripts/incidence_audit.py then "
+                         "backend/scripts/incidence_mask.py.")
 
     # ------------------------------------------------------------- evidence rows
     # Each row carries the MEASURED value beside the ACTUAL threshold, so the
@@ -997,13 +1014,13 @@ def build(crater_id: str = "faustini") -> dict:
             "measured": None, "measured_label": "median local incidence",
             "threshold": 20.0, "comparison": ">=",
             "passed": False, "informative": False,
-            "uninformative_reason": (
-                "docs/incidence_mask.json is not on this host, so the criterion "
-                "could not be evaluated. That is different from nothing passing it."),
+            "uninformative_reason": _inc_withheld,
             "provenance": UNAVAILABLE,
-            "note": ("Run backend/scripts/incidence_mask.py. The criterion is adopted "
-                     "from Putrevu et al. 2023 section 4 and needs the product's "
-                     "incidence raster and the measured DEM."),
+            "note": ("Adopted from Putrevu et al. 2023 section 4, and WITHHELD. " +
+                     _inc_withheld +
+                     " Withheld is different from failed: this says the criterion "
+                     "could not be evaluated on this product, not that nothing "
+                     "passed it."),
         }),
         ({
             "criterion": "psr_cold_trap_overlap",

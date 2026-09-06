@@ -28,6 +28,14 @@ that mis-splits those would fail on formatting rather than on meaning. The windo
 is generous in the direction that makes the gate WEAKER, so a pass is a real
 pass; anything it lets through would need the qualifier to be more than 400
 characters away, which is far enough that a reader would not connect them either.
+
+AND IT SCANS SOURCE TEXT, NOT RENDERED STRINGS. A qualifier split across a Python
+string concatenation -- `"... an upper "` on one line and `"bound of 29.16 %"` on
+the next -- reads correctly at runtime and is invisible here, because the
+substring "upper bound" never appears in the file. That happened once, in
+assert_incidence_geometry.py, and the fix was to reword the source rather than to
+teach this file to parse Python. The cost is a false FAILURE, never a false pass,
+which is the right direction for a gate to be wrong in.
 """
 from __future__ import annotations
 
@@ -51,8 +59,18 @@ for _s in (sys.stdout, sys.stderr):
 # remembering, which is what this file exists to replace.
 BOUNDED = [
     (r"29\.16\s*%",
-     "false-positive rate at true CPR 0.7, N = 5 (METHODS 7.7) — an upper "
-     "bound because it assumes independent circular channels (7.10)",
+     "false-positive rate at true CPR 0.7, N = 5 — an upper bound because it "
+     "assumes independent circular channels (7.10), AND the wrong look count "
+     "for this screen: the threshold touches the boxcar-smoothed field at "
+     "N = 13.72, not the raw product's 5.83 (7.7)",
+     ("upper bound", "upper-bound", "up to", "at most")),
+    (r"17\.79\s*%",
+     "false-positive rate at true CPR 0.7 at the OPERATING POINT N = 13.72 "
+     "(METHODS 7.7) — still an upper bound, for the same reason (7.10)",
+     ("upper bound", "upper-bound", "up to", "at most")),
+    (r"3\.74\s*%",
+     "false-positive rate at true CPR 0.5 at the operating point (METHODS 7.7) "
+     "— an upper bound",
      ("upper bound", "upper-bound", "up to", "at most")),
 ]
 

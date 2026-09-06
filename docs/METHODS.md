@@ -181,6 +181,24 @@ the map's child effects, so the bounds being fitted to are already drawn. The fi
 also now logs what it fitted, or why it did not, so a silent no-op cannot happen
 again undetected.
 
+**Instance three of this pattern is one error appearing twice, in our own
+geometry and in our reading of someone else's.** The nadir (look) angle was used
+where the incidence angle belongs — once in `incidence_mask.py`, which treated
+the product's incidence raster as an incidence angle and built a Bragg-domain
+criterion on it, and once in reading Putrevu et al. 2023, where `9.6/sin(26°)`
+used their printed *nadir* angle to convert a slant-range spacing that is set by
+*incidence*. They are logged as ONE instance because they are one confusion:
+`sin θ_inc = ((R+h)/R) sin η`, and the two angles differ by 1.3° at 20° and 1.6°
+at 26°.
+
+The two consequences were opposite, which is the useful part. In our own
+geometry the error produced a headline claim that was false and is withdrawn
+(§7.12). In the reading of Putrevu it produced a bound that was *flattering* —
+N ≤ 51.89 instead of 54.88, a higher floor, an easier claim — and was described
+in the commit as "the safe way", which it was not (§7.10). **An error that makes
+your own case easier is the one you are least likely to look for**, and this one
+survived a commit message that congratulated it.
+
 **Both of the first two are the same defect as the five in the second pattern,
 one step upstream.** There, a *verifier* restated the value it was meant to check. Here a
 *producer* and a *consumer* each restated a transform that already existed
@@ -400,7 +418,45 @@ population. Recovering `S3` requires the phase term `2·Im⟨E_H·E_V*⟩`, whic
 exists only in the complex `sli` products — 2 × 2.17 GB, on disk, not yet
 ingested. That is Phase 5b, and this is the reason it is the fix.
 
-### 1.6 The assertion that keeps this honest
+### 1.6 The third argument, and the strongest: a pure propagation result
+
+§1.2's algebra and §7.9.2's Monte Carlo both say something about *the amplitude
+proxy*. This one says nothing about it at all, which is why it is the strongest
+of the three.
+
+The calibration multiplies both channels by `sin(inc)` **before** the 5 × 5
+boxcar. That factor is common to both channels, so in a ratio it ought to cancel —
+and it very nearly does. But **a spatially varying weight does not commute with a
+boxcar**: `boxcar(a·w)/boxcar(b·w) ≠ boxcar(a)/boxcar(b)` unless `w` is locally
+constant or `a ∝ b`. So the residual is not zero, and it can be measured by
+re-running the screening with the factor removed:
+
+| | with `sin(inc)` | without | difference |
+|---|---|---|---|
+| peak CPR | 0.053411 | 0.053852 | |
+| **max ΔCPR over the frame** | | | **1.310 × 10⁻²** |
+| **max ΔDOP over the frame** | | | **1.393 × 10⁻¹** |
+| pixels passing `CPR > 1.00 AND DOP < 0.13` | **0** | **0** | |
+
+**The DOP figure is the result.** The DOP decision threshold is **0.13**, and the
+largest excursion the calibration field alone induces is **0.1393 — 1.07× the
+entire threshold.** A pixel's DOP can be moved across the whole width of the
+criterion by a field that is not part of the physics being tested, and in this
+product that field is one whose meaning is unknown (§12).
+
+**Why this is the strongest of the three arguments.** §1.2 assumes CPR is built
+from amplitude; §7.9.2 assumes a scattering model to simulate against. **This
+assumes neither.** It is arithmetic on the pipeline as written: a weight, a
+boxcar, a ratio. It would hold for a Stokes-derived CPR, for a different
+threshold, and for any instrument whose calibration varies across the scene and
+is applied before spatial averaging.
+
+**Both figures are MAXIMA over 2,337,086 measured pixels, not typical values**,
+and **0 pixels pass the screen either way** — the candidate area does not move
+and the headline is untouched. What moves is what may be concluded from a
+*single pixel's* DOP: on this product, less than the threshold's own width.
+
+### 1.7 The assertion that keeps this honest
 
 `emit_provenance.py` gate 6 fails the build if `candidate_area_km2` is non-zero
 while the CPR source is amplitude-only and `CPR_THRESHOLD` exceeds the ceiling.
@@ -409,7 +465,7 @@ mask, a swapped threshold, or a silently changed CPR source — **never a
 discovery**. The distinction is automatic rather than dependent on somebody
 remembering the algebra.
 
-### 1.7 Do not retune the threshold
+### 1.8 Do not retune the threshold
 
 Lowering `CPR_THRESHOLD` below 0.0042611 would make the screen return area
 again. That area would be "pixels whose two channels differ by a little", which
@@ -1176,29 +1232,57 @@ CPR is a **ratio** of two N-look intensities, so its sampling distribution is
 `CPR · F(2N, 2N)`. Everything below follows from that and is reproducible from
 `scipy.stats.f` alone.
 
-| N | rel. SD | bias E[R]/CPR | FP at CPR 0.5 † | 0.7 † | 0.9 † | true CPR for 95 % confidence above 1.0 |
+| N | rel. SD | bias E[R]/CPR | FP at CPR 0.5 (upper bound) | 0.7 (upper bound) | 0.9 (upper bound) | true CPR for 95 % confidence above 1.0 |
 |---|---|---|---|---|---|---|
-| **5** | 0.775 | 1.250 | 14.48 % | 29.16 % | 43.55 % | **2.978** |
-
-| **6** | 0.677 | 1.200 | 12.21 % | 27.31 % | 42.91 % | **2.687** |
+| 5 | 0.775 | 1.250 | 14.48 % | 29.16 % | 43.55 % | 2.978 |
+| 6 | 0.677 | 1.200 | 12.21 % | 27.31 % | 42.91 % | 2.687 |
+| 6.77 | 0.623 | 1.173 | 10.75 % | 26.03 % | 42.46 % | 2.525 |
 | 9 | 0.519 | 1.125 | 7.55 % | 22.84 % | 41.28 % | 2.217 |
+| **13.72** | **0.406** | **1.079** | **3.74 %** | **17.79 %** | **39.23 %** | **1.895** |
+| 19.77 | 0.331 | 1.053 | 1.60 % | 13.32 % | 37.10 % | 1.698 |
 | 21 | 0.321 | 1.050 | 1.35 % | 12.59 % | 36.72 % | 1.671 |
 | 38 | 0.234 | 1.027 | 0.14 % | 6.11 % | 32.36 % | 1.462 |
+
+**THE OPERATING POINT IS N = 13.72, NOT N = 5, AND THIS WAS WRONG UNTIL NOW.**
+There is one CPR field and it has one look count. `process_real_sar_pipeline.py`
+applies a 5 × 5 boxcar to σ⁰ **before** forming CPR — `cpr = σ_sc/σ_oc` is built
+from `lh_smooth` and `lv_smooth`, and `cpr_native.tif` is that field — so the
+`CPR > 1.00` threshold touches the **smoothed** field, whose measured ENL is
+13.72 (LH) / 19.77 (LV), not the raw product's 5.83 / 5.14. The bold row is the
+one that describes this screen. Reading the table at N ≈ 5 quoted the raw
+product's look count against a threshold applied to a different field, and every
+figure that came from it was too pessimistic:
+
+*Both FP columns below are upper bounds, for the reason in §7.10.*
+
+| | at N = 5 (wrong) | at N = 13.72 (the field) |
+|---|---|---|
+| bias E[R]/CPR | 1.250 | **1.079** |
+| relative SD | 0.775 | **0.406** |
+| 95 % floor | 2.978 | **1.895** |
+| FP at true CPR 0.7, upper bound | 29.16 % | **17.79 %** |
+| FP at true CPR 0.5, upper bound | 14.48 % | **3.74 %** |
+
+Phase 8 was already correct — `detection_statistics.py` has used
+`ENL_SCREENING = (13.72, 19.77)` and published the 1.8946 floor since it was
+written. It was §7.7's *narrative* that read the table at the wrong row, which is
+worse than a wrong computation: the number was right in the artifact and wrong in
+the prose that quoted it.
 
 **EVERY FALSE-POSITIVE RATE IN THIS TABLE IS AN UPPER BOUND**, and the label is
 not decoration. The rates assume the two circular channels are independent;
 §7.10 shows from Putrevu et al. 2023's own Byrgius C dispersion that they are
-correlated at |ρ|² ≥ 0.36, and correlation between numerator and denominator
-narrows a ratio's distribution. `verify_all.py` fails the build if the figure
+correlated at |ρ|² ≥ 0.31, and correlation between numerator and denominator
+narrows a ratio's distribution. `verify_all.py` fails the build if either figure
 appears anywhere in this repository without that qualification attached.
 
-The threshold in use is CPR = 1.00. **At the measured N ≈ 5, a single pixel needs
-a true CPR above 2.98 before it reads over 1.0 with 95 % confidence, and ordinary
-rock at a true CPR of 0.7 crosses the threshold up to 29.16 % (upper bound;
-assumes independent same- and opposite-sense channels) of the time.** At the
-nominal 21 those figures are 1.67 and 12.6 %. The difference between the nominal
-and the measured look count is the difference between a threshold that means
-something and one that does not.
+The threshold in use is CPR = 1.00. **At the measured N = 13.72, a single pixel
+needs a true CPR above 1.895 before it reads over 1.0 with 95 % confidence, and
+ordinary rock at a true CPR of 0.7 crosses the threshold up to 17.79 % (upper
+bound; assumes independent same- and opposite-sense channels) of the time.** At
+the nominal 21 those figures are 1.671 and 12.59 %. The swath's measured maximum
+is 0.0534 — short of the floor by a factor of 35.5 — so the conclusion is
+unchanged and its margin is smaller than it was being quoted as.
 
 ### 7.8 What is and is not novel here
 
@@ -1206,7 +1290,7 @@ The loose claim "nobody reports uncertainty on lunar CPR" is **false**, and is
 not made anywhere in this project. The DFSAR instrument paper reports a
 "~38 look average for each sampled location" over Peary crater and "an
 approximate 1/N^1/2 … uncertainty in the CPR measurements of ±0.16"
-(Bhiravarasu et al. 2021, *Planet. Sci. J.* **2**, 134). Four narrower statements
+(Bhiravarasu et al. 2021, *Planet. Sci. J.* **2**, 134). Five narrower statements
 replace it, each separately defensible:
 
 **(a) The published error bar uses the wrong statistic.** `1/sqrt(N)` is the
@@ -1239,6 +1323,14 @@ manufactures detections. No lunar CPR study found applies this correction.
 **(d) Three nulls survive the counterexample intact.** Nobody tests per-pixel
 significance, reports a confidence interval on an ice area, or computes a
 false-positive rate for CPR > 1.
+
+**(e) The product's own incidence raster fails three geometric tests.** 80.53 %
+of its values sit below the spacecraft look angle, which is impossible on a
+convex body; its pixel-to-pixel step is 35–41× the geometric ramp; and it does
+not track slope, so it is not a local incidence either. **§12** is the
+measurement and **§12.5** states the claim with its four caveats. No published
+work reports it — which is a statement about the published record, not about what
+ISRO knows.
 
 **What cannot be claimed.** Our measured ENL is a property of *this* compact-pol
 `sri` product from *this* pass. It cannot be transferred to Sinha et al.'s
@@ -1445,25 +1537,40 @@ interior at **CPR = 1.07 ± 0.17**, a relative SD of **0.1589**. The paper
 *"averaging several independent single-look coherency matrices"* (Sec 3.1). So
 the look count has to be bounded from the geometry it does state:
 
+**26° is the NADIR angle they print, not the incidence angle**, and the ground
+range spacing is set by incidence. Converting first, with the same spherical
+relation as §7.11:
+
+```
+sin θ_inc = ((R + h)/R) · sin η  →  η = 26.0000°  gives  θ_inc = 27.6198°
+ground range spacing = 9.6 / sin(27.6198°) = 20.7074 m
+```
+
 | quantity | stated | |
 |---|---|---|
 | azimuth SLC spacing | 0.55 m | 25 / 0.55 = 45.45 samples |
-| slant-range spacing | 9.6 m at 26° nadir | ground range 21.90 m → 1.1416 samples |
-| output pixel | 25 m | **N ≤ 51.89** |
+| slant-range spacing | 9.6 m at 26° **nadir** | incidence 27.6198° → ground range 20.71 m → 1.2073 samples |
+| output pixel | 25 m | **N ≤ 54.88** |
 
-That product is an **upper** bound: it assumes every sample is independent and
-all of them are used. The independent-channel floor at that N is
+That product is an **upper** bound on N: it assumes every sample is independent
+and all of them are used. The independent-channel floor is
 
 ```
-sqrt((2N − 1) / (N(N − 2))) = 0.1993     at N = 51.89
-                            = 0.1936     at N = 54.88
+sqrt((2N − 1) / (N(N − 2))) = 0.1936     at N = 54.88   ← conservative
+                            = 0.1993     at N = 51.89   ← the alternative
 ```
 
 **Their measured dispersion, 0.1589, is below their own floor.** A ratio of two
-independent intensities cannot be that narrow. (The brief that prompted this work
-quoted N ≤ 54.88; from the spacings as stated the product is 51.89. The
-difference moves the conclusion the safe way — a lower N means a higher floor —
-and both are in the artifact.)
+independent intensities cannot be that narrow.
+
+**Which of the two is conservative, and an earlier version of this section had it
+backwards.** A *larger* N gives a *lower* floor, and a lower floor is a harder
+bar for the measured 0.1589 to sit under — so **54.88 is the conservative bound
+and 51.89 is the flattering one.** The first version of this work used
+`9.6/sin(26°)`, got 51.89, and called the difference "the safe way". It was the
+favourable way. The claim survives against both floors, which is why the error
+did not change the conclusion — but the reasoning quoted for it was wrong, and
+that is worth more than the conclusion.
 
 #### What follows
 
@@ -1471,7 +1578,40 @@ For two circular-Gaussian channels with field coherence ρ, the intensity
 correlation is |ρ|², and correlation between numerator and denominator narrows
 the ratio: relative SD² scales as (1 − |ρ|²). Inverting,
 
-> **|ρ|² ≥ 0.36** (0.33 at N = 54.88).
+The estimator, and the arithmetic:
+
+```
+relSD_obs²  =  (1 − ρ_I) · relSD_indep²          correlation narrows the ratio
+ρ_I         =  1 − (relSD_obs / relSD_indep)²
+            =  1 − N · relSD_obs² / 2            with relSD_indep² → 2/N
+
+relSD_obs   =  0.17 / 1.07 = 0.158879
+relSD_obs²  =  0.02524238        relSD_obs² / 2 = 0.01262119
+ρ_I         ≥  1 − 55.038 × 0.01262119  =  0.3054
+```
+
+**Their orbit altitude is not stated in the paper**, so three are tested — the
+nominal 100 km, this product's label value, and a 150 km stress case:
+
+| h | incidence | N ≤ | floor | 0.1589 below it? | **ρ_I ≥** (large-N) | ρ_I ≥ (exact floor) |
+|---|---|---|---|---|---|---|
+| 100,000 m | 27.6198° | 54.877 | 0.1936 | yes | 0.3074 | 0.3265 |
+| **105,376 m** | **27.7076°** | **55.038** | **0.1933** | **yes** | **0.3054** | 0.3245 |
+| 150,000 m | 28.4387° | 56.371 | 0.1909 | yes | 0.2885 | 0.3076 |
+| *(nadir angle used directly)* | *26.0000°* | *51.891* | *0.1993* | *yes* | *0.3451* | *0.3642* |
+
+> **|ρ|² ≥ 0.3054**, at the led-with N = 55.038.
+
+**Two estimators are printed because neither may be left unsourced.** The large-N
+form substitutes `relSD_indep² = 2/N`; the exact form uses
+`(2N−1)/(N(N−2))`, which at N ≈ 55 is 0.19330 against `sqrt(2/N)` = 0.19058 — a
+1.4 % gap that squares into 2.9 % of the bound. **The large-N form gives the
+smaller number, so it is the conservative one and it is what is reported.**
+
+**The bound moves, the conclusion does not.** Across the altitudes tested the
+bound ranges 0.2885 → 0.3451, but their measured 0.1589 is below the
+independent-channel floor in every one of them. The channels are correlated
+whichever altitude is assumed; only *how* correlated depends on it.
 
 The two circular channels are **correlated**, so **`F(2N,2N)` with independent
 numerator and denominator is conservative**, and every false-positive rate in
@@ -1514,6 +1654,16 @@ count an independent model would use for *this* field — and against it the
 observed dispersion is **1.45× wider**, not narrower. The measurement therefore
 **does not** support the claim that the independent model overstates our spread.
 
+**And the estimate itself is noisy, in the direction that helps the negative
+conclusion — so it is volunteered rather than waited for.** With A = 61.42 px per
+independent sample, a 15 × 15 window holds **3.66 effective samples**, and the
+relative sampling error of an SD estimated from n effective samples is
+`1/sqrt(2(n−1))` = **43 %**. The reported figure is then the **minimum of twenty**
+such estimates, which selects the low tail of that spread. Both effects bias the
+number **low**. A figure biased low that still lands *above* the theory is a
+stronger negative result than the raw comparison suggests, not a weaker one — but
+it also means the 0.5867 should not be read as a precise floor.
+
 It also cannot refute it. The minimum over homogeneous windows is an **upper
 bound** on the speckle floor: residual terrain structure inside a window adds
 variance and can only push the figure up. A result above the theory is consistent
@@ -1549,48 +1699,47 @@ so two terms theirs does not have:
 | LH | 70.467594 dB | +0.158726 |
 | LV | 70.316881 dB | +0.008013 |
 
-the per-channel gain imbalance from the same label; and the `sin(inc)` term,
-**−4.660 dB** at this scene's 20.00° look angle. Their stated formula has no
-incidence term, which makes it a β⁰-like normalisation; ours divides out the
-projected area. Neither is wrong — they are different quantities, and quoting a
-σ⁰ from one against a σ⁰ from the other would differ by that 4.7 dB.
+the per-channel gain imbalance from the same label; and a `sin(inc)` term their
+stated formula has no equivalent of, which makes theirs a β⁰-like normalisation
+and ours a division by the projected area. Neither is wrong — they are different
+quantities, and quoting a σ⁰ from one against a σ⁰ from the other is not a
+comparison.
 
-### 7.12 Adopting their incidence criterion — and what it removed
+**THE −4.660 dB PREVIOUSLY QUOTED FOR THAT TERM IS WITHDRAWN.** It was
+`10·log₁₀(sin 19.998°)` — the *label nominal* — and the pipeline does not evaluate
+it there. `process_real_sar_pipeline.py:408` computes `sin_inc` **per pixel** from
+the product's incidence raster, so the figure described something the code does
+not do. It is exactly the defect §0 names, in a number rather than a caption, and
+it was found only because the value happened to equal 10·log₁₀(sin(look angle)) to
+four decimals — which is what prompted the audit in §7.12.
+
+### 7.12 Their incidence criterion, and why it is withheld
 
 Putrevu Sec 4 omits local incidence below **20°** to stay in the Bragg domain
-(20–50°). We have the product's own incidence raster and measured LOLA
-topography on the same grid, so the criterion is adopted — **as a named row in
-the screening table with its own pass fraction, going through the same
-non-discriminating gate as every other criterion.** An external constraint does
-not get to skip the gate for being published.
+(20–50°). This project adopted the criterion, computed local incidence from the
+product's own incidence raster, and reported an ellipsoid median of 14.44°, a
+local median of 17.73°, and that **62.58 %** of the swath falls below the floor —
+concluding that *"this pass was flown at a look angle of 19.998°, below the Bragg
+floor for the entire scene"*.
 
-Local incidence is
-`cos θ_loc = cos θ_e cos s + sin θ_e sin s cos(φ_look − φ_aspect)`, with θ_e the
-product's incidence raster and s, φ_aspect the measured slope and aspect. **The
-look direction is measured, not assumed:** incidence grows away from the
-platform, so the sign of `d(inc)/d(line)` names the far-range direction —
-`+0.002397 °/px` along line against `+0.000323` along sample, a 7.4× ratio that
-also confirms the range axis is the line axis, as the 56.45 × 165.45 km extents
-say. Getting that sign backwards would mirror the terrain correction on every
-pixel in the frame.
+**Every one of those figures is withdrawn, and that sentence with them.** The
+raster they came from fails three independent geometric tests, and that failure
+is a measured property of the distributed L2 product rather than a defect in this
+project's arithmetic. It is therefore reported as a result, in **§12**, and the
+criterion is **withheld** — `local_incidence_in_bragg_domain`, provenance
+`NO DATA`, reason attached, criteria evaluable 5 of 6.
 
-| | |
-|---|---|
-| ellipsoid incidence, median | 14.44° |
-| **local** incidence, median | **17.73°** (terrain: **+3.29°**) |
-| below 20° — **removed** | **62.58 %** |
-| above 50° — removed | 0.02 % |
-| **inside the Bragg domain — kept** | **37.40 %** (874,082 of 2,337,086 px) |
-
-Pass fraction 0.3740 is well inside the non-discriminating band, so this
-criterion **is** informative — the only one added to the table that separates.
-
-**And the finding underneath it: this pass was flown at a look angle of
-19.998°, below the Bragg floor for the entire scene.** Every pixel that passes
-does so because *terrain* tilts the surface toward the radar, not because the
-viewing geometry satisfies the criterion. A study adopting Putrevu's mask on this
-product is not selecting a favourable subset of a suitable scene; it is selecting
-the tilted 37 % of an unsuitable one.
+**The reconstruction was considered, quantified and rejected.** Deriving the field
+ourselves needs the across-track distance from the sub-satellite track, and the
+label carries no ephemeris. Fitting the track from the imagery gives **1.83 km
+rms** (amplitude ribbon centreline, degree 4; max 6.0 km) and **2.95 km** (pointed
+swath, degree 3; max 12.3 km), with the swath edges themselves only smooth to
+3.0–5.3 km rms. At 1.83 km the induced error in local incidence is **≈ 0.5°**,
+structured rather than random, against a near-range margin of **1.27°** between
+the look angle and the incidence it implies. **Fitting an unverifiable geometric
+model in order to reach a criterion is the thing this project refuses everywhere
+else**, and it is refused here, with the arithmetic shown rather than a sentence
+about judgement.
 
 
 ## 8 · The 20 m DEM, and what it actually bought
@@ -2280,6 +2429,117 @@ own numbers, that DOP passing is precisely what caps CPR at 0.0042611. The same
 cell is **7.1 × 10³ below** the 1.8946 detection floor.
 
 
+
+---
+
+## 12 · Measured defects in the distributed L2 product
+
+*`backend/scripts/incidence_audit.py`; figures in `docs/incidence_audit.json`.
+Gate G12 (`assert_incidence_geometry.py`) fails the build if any consumer uses a
+field that violates the identity below.*
+
+Everything in this document up to here is a measurement of the Moon, of this
+project's own arithmetic, or of the literature. **This section is a measurement
+of the product**, and it is here because it is a finding rather than an
+inconvenience.
+
+### 12.1 The identity
+
+On a convex body the incidence angle always exceeds the spacecraft look angle:
+
+```
+sin θ_inc = ((R + h) / R) · sin η
+```
+
+`R = 1,737,400 m` and `h = 105,376 m` are **read from the PDS4 label**, not
+assumed, giving `(R + h)/R = 1.060652`. At the label's own look angle
+`η = 19.9979°` this forces **`θ_inc = 21.2678°`** — a **1.27° margin** that no
+correct implementation can be on the wrong side of. It is an identity, not a
+tolerance.
+
+**And the label contradicts it directly:** it reports
+`look_angle = incidence_angle = 19.997919`. Those cannot be equal on a sphere.
+That is the first sign, and it is in the product's own metadata.
+
+### 12.2 What the incidence raster should carry
+
+Forward geometry across the swath, anchored with the near edge at the incidence
+the scene-centre look angle implies (`γ = d/R`, `η = atan(R sin γ / ((R+h) − R cos γ))`,
+`θ = γ + η`):
+
+| ground range from near edge | incidence |
+|---|---|
+| 0.0 km | 21.268° |
+| 10.0 km | 26.176° |
+| 20.0 km | 30.740° |
+| 30.0 km | 34.949° |
+| 44.5 km | 40.437° |
+
+**Total span 19.170° over 1,780 pixels = 0.0108 °/px**, smooth and monotone.
+(Anchoring the swath centre at the nominal instead gives 9.29 → 31.72°, a 22.43°
+span and 0.0126 °/px; both are quoted below because the smoothness test should
+not depend on which anchoring is chosen.)
+
+**This places the scene almost entirely INSIDE the 20–50° Bragg band.** Which
+means the withdrawn claim — *"below the Bragg floor for the entire scene"* — was
+not merely unsupported. **It was very likely backwards.** The replacement figure
+offered in review, a 24.49° local median, is withdrawn for the same reason: it
+inherits the +3.29° terrain offset computed from the same unusable raster, and an
+offset derived from a field of unknown meaning is not rescued by being added to a
+correct number.
+
+### 12.3 Three tests, three failures
+
+| test | expectation | measured | verdict |
+|---|---|---|---|
+| **magnitude** | 0 % of pixels below the spacecraft look angle | **80.53 %** | **fail** |
+| **smoothness** | 0.0108–0.0126 °/px across the swath | **0.4443 °/px** median, max **39.7** | **fail (35–41×)** |
+| **terrain** | a *local* incidence tracks slope | **−0.0006** | **fail** |
+
+Each test can fail on its own and each is a different kind of evidence:
+magnitude says the values are impossible, smoothness says the field has no
+geometric structure, and terrain says it is not a terrain-corrected local
+incidence either. **The raster is neither of the two things an incidence layer
+can be.**
+
+### 12.4 What it does and does not reach
+
+The same raster is in the calibration — `σ⁰ = DN² · sin(inc) / (K_lin · G²)` —
+so it multiplies both channels before the boxcar. **§1.6 measures what that
+propagates to**: 0 pixels change their screening outcome, peak CPR moves
+0.053411 → 0.053852, and the maximum pointwise excursions are 1.310 × 10⁻² in CPR
+and **1.393 × 10⁻¹ in DOP, 1.07× the entire DOP threshold**. σ⁰ itself is scaled
+by a field of unknown meaning; `s0_native` carries that caveat and no ratio
+depends on it beyond those maxima.
+
+### 12.5 The claim, and its caveats
+
+> **Claim 8. The distributed L2-SELENOREF product ships an incidence-angle raster
+> that fails three independent geometric tests. We measured it; no published work
+> reports it.**
+
+Carrying the same four caveats as claims (a)–(d) in §7.8:
+
+1. **It is a property of this product**, `ch2_sar_ncxl_20200808t201154198`, and of
+   the `sri` ortho-rectified L2-SELENOREF branch. Nothing here says the `gri` or
+   `sli` products, other passes, or the S-band instrument share it.
+2. **Absence from the literature is not absence of knowledge.** No paper this
+   project's sweep found reports the geometry of a DFSAR incidence layer — but
+   ISRO may well know it internally, and a processing note we have not seen would
+   settle it. The claim is that it is *not in the published record*, which is a
+   claim about the record.
+3. **We do not know what the raster is.** Three tests say what it is not. Naming
+   it would require the processing chain, and guessing would be exactly the
+   failure this project is built to avoid.
+4. **It does not reach the headline.** The candidate area is unchanged, and the
+   null result stands on §1.2's algebra, which needs no incidence field at all.
+
+**What it does change** is that a Bragg-domain criterion cannot be applied to
+this product, and that any published analysis which used that raster for a
+geometric purpose — masking, terrain correction, or an incidence-dependent
+scattering model — inherits whatever it actually contains.
+
+
 ---
 
 *Sections 9, 10 and 11 are written: the site search, the traverse, and the
@@ -2304,18 +2564,19 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `1e7bf39`.
+Stamped at commit `94eb084`.
 
 | artifact | sha256 | sections |
 |---|---|---|
 | `data/pradan/lola/horizon_240m.provenance.json` | `f84a64b1ae849b27…` | §5.4, §5.6, §8.4 |
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
-| `docs/cpr_dispersion.json` | `a312d7a30c44a527…` | §7.10 |
+| `docs/cpr_dispersion.json` | `ca598328db6bc3df…` | §7.10 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
 | `docs/detection_statistics.json` | `6ba46058e1399689…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
-| `docs/incidence_mask.json` | `fab26ea8937d88e1…` | §7.11, §7.12 |
+| `docs/incidence_audit.json` | `75a568d239760cf4…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
+| `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/landing_sites.json` | `6405581775517073…` | §9.6, §9.7 |
 | `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
@@ -2324,7 +2585,7 @@ Stamped at commit `1e7bf39`.
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
-| `frontend/public/analysis/faustini.json` | `39c2b7ede998fb40…` | §8.2, §8.3 |
+| `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
 
 <!-- END GENERATED STAMP -->

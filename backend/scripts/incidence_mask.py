@@ -16,13 +16,48 @@ the product (`..._d_sri_in_cp_xx_d18.tif`), and Phase 6 put measured LOLA
 topography on the same 25 m grid. Ellipsoid incidence plus terrain gives LOCAL
 incidence, which is the quantity the constraint is about.
 
-WHAT THIS PRODUCES, AND WHAT IT DOES NOT
-----------------------------------------
-It writes a mask and reports what fraction of the valid pixels it removes. IT
-DOES NOT APPLY IT SILENTLY. The mask becomes a NAMED CRITERION in the screening
-table with its own pass fraction, and goes through the same non-discriminating
-gate as every other criterion -- a criterion that admits or rejects almost
-everything is labelled as carrying no evidence, whoever proposed it.
+AND IT IS CURRENTLY WITHDRAWN. READ THIS BEFORE THE REST.
+----------------------------------------------------------
+The first version of this script computed local incidence from the product's own
+incidence raster and reported an ellipsoid median of 14.44 deg, a local median of
+17.73 deg, and that 62.58 % of the swath falls below the 20 deg floor. EVERY ONE
+OF THOSE FIGURES IS WITHDRAWN.
+
+`incidence_audit.py` put three tests to that raster and it failed all three:
+
+  1. MAGNITUDE.   80.53 % of its values over the valid mask are BELOW the
+     label's own look angle of 19.9979 deg. On a convex body
+     sin(theta_inc) = ((R+h)/R) sin(eta), so incidence EXCEEDS the look angle at
+     every pixel. A field with four fifths of its values below it is not an
+     incidence angle, and the error is not small -- it is impossible.
+  2. SMOOTHNESS.  A geometric incidence field across this 44.5 km swath is a
+     smooth ramp of 0.0126 deg per 25 m pixel. The raster's median pixel-to-pixel
+     step is 0.4443 deg, 35x that, with a maximum of 39.7 deg/px.
+  3. TERRAIN.     A LOCAL incidence angle is ellipsoid incidence plus a terrain
+     term, so it must correlate with slope. It correlates at -0.0006.
+
+So the raster is neither an ellipsoid nor a local incidence angle, and nothing
+defined on incidence can be carried by it.
+
+NOR CAN THE FIELD BE RE-DERIVED HERE. Deriving ellipsoid incidence per pixel
+needs the across-track ground distance from the sub-satellite track, and the
+label carries no ephemeris. Fitting the track from the imagery was tried and
+does not reach the accuracy the criterion needs: a polynomial through the
+amplitude ribbon's centreline plateaus at 1.83 km rms residual (degree 4), and
+the pointed swath is worse at 3.2 km with edges that are not smooth at 3-5 km
+rms. At 1.8 km the induced error in local incidence is of order 0.5 deg, on a
+threshold at 20 deg, with the residual structured rather than random.
+
+THEREFORE THE CRITERION IS WITHHELD, not estimated. That is the same rule every
+other absent quantity in this project follows, and it is the whole reason the
+project has a NO DATA state.
+
+WHAT THIS SCRIPT NOW DOES
+-------------------------
+It reads `docs/incidence_audit.json`, and emits a mask ONLY if the audit clears
+the field. Otherwise it writes an artifact recording the refusal and its reason,
+which `build_analysis.py` renders as an UNAVAILABLE criterion row. Gate G12 fails
+the build if anything consumes a field that violates the geometric identity.
 
 THE GEOMETRY, AND THE ONE THING THAT HAD TO BE MEASURED
 --------------------------------------------------------
@@ -74,6 +109,53 @@ def hr(t: str) -> None:
     print("\n" + "=" * 78 + "\n" + t + "\n" + "=" * 78, flush=True)
 
 
+def _calibration_cross_check(RAW, STEM, eta_label: float) -> None:
+    """Ours against Putrevu's, and what our formula has that theirs does not.
+
+    Runs on the refusal path too: the calibration constant is a fact about the
+    label and does not depend on whether the incidence raster means anything.
+    """
+    from app.ingestion.sar_geometry import parse_calibration
+    hr("CALIBRATION CONSTANT — ours against theirs")
+    cal = parse_calibration(RAW / f"{STEM}_d_sri_xx_cp_xx_d18.xml")
+    K = float(cal["calibration_constant_db"])
+    THEIRS = 70.308868
+    print(f"  Putrevu et al. 2023: sigma0[dB] = 20 log10(DN) - C, C = {THEIRS}")
+    print(f"  this product's PDS4 label:   calibration_constant = {K}")
+    print(f"  difference: {K - THEIRS:+.6f} dB\n")
+    if abs(K - THEIRS) < 1e-6:
+        print("  IDENTICAL to six decimals. Their 'calibration constant for")
+        print("  ortho-rectified DFSAR images' is the per-product label value, and this")
+        print("  product carries the same one — an external check on the ingest reading")
+        print("  the right field.")
+    print("\n  Our formula is not identical, and the difference is stated rather than")
+    print("  absorbed:")
+    print("    sigma0 = DN^2 sin(inc) / (K_lin G^2)")
+    print("    -> sigma0[dB] = 20 log10(DN) + 10 log10(sin inc) - K - 20 log10(G)")
+    for ch, g in cal["channels"].items():
+        gi = float(g["gain_imbalance"])
+        print(f"    {ch}: effective constant K + 20 log10(G) = "
+              f"{K + 20 * np.log10(gi):.6f} dB  ({K + 20 * np.log10(gi) - THEIRS:+.6f} vs theirs)")
+    print("  and the sin(inc) term, which their stated formula omits: theirs is a")
+    print("  beta-nought-like normalisation, ours divides out the projected area.")
+    print()
+    print("  THE sin(inc) TERM IS EVALUATED ON THE RASTER THIS AUDIT REJECTS. A")
+    print("  PREVIOUS VERSION OF THIS SCRIPT PRINTED THAT TERM AS -4.660 dB 'at this")
+    print("  scene's angle', which was 10 log10(sin(19.998 deg)) -- the LABEL NOMINAL,")
+    print("  not what the pipeline evaluates. The pipeline evaluates it per pixel on")
+    print("  the raster, so the figure was a description of something the code does")
+    print("  not do. Withdrawn.")
+    print()
+    print("  What that means for the products, MEASURED in incidence_audit.py rather")
+    print("  than argued: the factor multiplies BOTH channels before the boxcar, so")
+    print("  the screening outcome does not move -- 0 pixels pass either way -- but it")
+    print("  does NOT cancel exactly, because the boxcar comes after the multiply.")
+    print("  Peak CPR moves 0.053411 -> 0.053852 with the factor removed, and the")
+    print("  largest pointwise differences are 1.31e-02 in CPR and 1.39e-01 in DOP.")
+    print("  sigma0 itself is scaled by an unknown field; every ratio is very nearly")
+    print("  free of it.")
+
+
 def main() -> int:
     from app.ingestion.sar_geometry import read_geotiff_frame, parse_calibration
 
@@ -82,6 +164,72 @@ def main() -> int:
                     help="Bragg-domain floor, Putrevu et al. 2023 section 4")
     ap.add_argument("--max-deg", type=float, default=50.0)
     args = ap.parse_args()
+
+    # ── THE AUDIT DECIDES WHETHER THIS SCRIPT MAY RUN AT ALL ──────────────
+    audit_path = BASE_DIR / "docs" / "incidence_audit.json"
+    if not audit_path.exists():
+        raise SystemExit(
+            "docs/incidence_audit.json is not on disk. Run\n"
+            "  python backend/scripts/incidence_audit.py\n"
+            "first: this script may not treat a raster as an incidence angle "
+            "without a check that it is one.")
+    audit = json.loads(audit_path.read_text(encoding="utf-8"))
+    if not audit["is_ellipsoid_incidence"]:
+        hr("BRAGG-DOMAIN CRITERION — WITHHELD")
+        lg = audit["label_geometry"]
+        print("  The product's incidence raster is not an incidence angle.")
+        print(f"    magnitude   {audit['test_1_magnitude']['fraction_below_look_angle'] * 100:.2f} % "
+              f"of valid pixels below the {lg['look_angle_deg']:.4f} deg look angle")
+        print(f"                (geometry requires >= {lg['incidence_required_by_look_angle_deg']:.4f} deg "
+              f"everywhere, on a convex body)")
+        print(f"    smoothness  median step {audit['test_2_smoothness']['measured_step_p50_deg_per_px']:.4f} "
+              f"deg/px against a geometric ramp of "
+              f"{audit['test_2_smoothness']['expected_ramp_deg_per_px']:.4f}"
+              f" ({audit['test_2_smoothness']['ratio']:.0f}x)")
+        print(f"    terrain     slope correlation "
+              f"{audit['test_3_terrain']['corr_with_dem_slope']:+.4f}, so it is not a "
+              f"local incidence either")
+        print("\n  The field cannot be re-derived from what the label carries: there is")
+        print("  no ephemeris, and fitting the sub-satellite track from the imagery")
+        print("  plateaus at 1.83 km rms (amplitude ribbon, degree 4) and 3.2 km")
+        print("  (pointed swath), which is of order 0.5 deg of local incidence on a")
+        print("  20 deg threshold, structured rather than random.")
+        print("\n  So the criterion is WITHHELD, not estimated. Every figure the first")
+        print("  version of this script reported is withdrawn: the 14.44 deg ellipsoid")
+        print("  median, the 17.73 deg local median, the 62.58 % removal fraction, and")
+        print("  the sentence about this pass being flown below the Bragg floor.")
+        OUT_JSON.write_text(json.dumps({
+            "schema": "incidence_mask/2",
+            "generated_utc": datetime.now(timezone.utc).isoformat(),
+            "generator": "backend/scripts/incidence_mask.py",
+            "source": "Putrevu et al. 2023, 10.1029/2023JE007745, section 4",
+            "available": False,
+            "withheld_reason": (
+                "The product's incidence raster is not an incidence angle: "
+                f"{audit['test_1_magnitude']['fraction_below_look_angle'] * 100:.2f} % of its "
+                f"values over the valid mask are below the label's own look angle of "
+                f"{lg['look_angle_deg']:.4f} deg, which is geometrically impossible on a "
+                f"convex body; its median pixel-to-pixel step is "
+                f"{audit['test_2_smoothness']['ratio']:.0f}x the geometric ramp; and it "
+                f"correlates with DEM slope at "
+                f"{audit['test_3_terrain']['corr_with_dem_slope']:+.4f}, so it is not a local "
+                "incidence either. The field cannot be re-derived from the label, which "
+                "carries no ephemeris, to the accuracy a 20 deg threshold needs. The "
+                "criterion is withheld rather than estimated."),
+            "audit": "docs/incidence_audit.json",
+            "withdrawn_figures": {
+                "ellipsoid_incidence_median_deg": 14.44,
+                "local_incidence_median_deg": 17.73,
+                "fraction_below_20_deg": 0.6258,
+                "claim": ("'this pass was flown at a look angle of 19.998 deg, below the "
+                          "Bragg floor for the entire scene' — withdrawn; the label gives "
+                          "the same value for look angle and incidence angle, which cannot "
+                          "both be true, and the raster settles neither"),
+            },
+        }, indent=2), encoding="utf-8")
+        print(f"\n  wrote {OUT_JSON.relative_to(BASE_DIR)}  (available: false)")
+        _calibration_cross_check(RAW, STEM, lg["look_angle_deg"])
+        return 0
 
     frame = read_geotiff_frame(RAW / f"{STEM}_d_sri_xx_cp_lh_d18.tif",
                                RAW / f"{STEM}_d_sri_xx_cp_xx_d18.xml")
@@ -233,51 +381,7 @@ def main() -> int:
     print(f"\n  wrote {OUT_TIF.relative_to(BASE_DIR)}")
     print(f"  wrote {OUT_JSON.relative_to(BASE_DIR)}")
 
-    # -------------------------------------------------- calibration cross-check
-    hr("CALIBRATION CONSTANT — ours against theirs")
-    cal = parse_calibration(RAW / f"{STEM}_d_sri_xx_cp_xx_d18.xml")
-    K = float(cal["calibration_constant_db"])
-    THEIRS = 70.308868
-    print(f"  Putrevu et al. 2023: sigma0[dB] = 20 log10(DN) - C, C = {THEIRS}")
-    print(f"  this product's PDS4 label:   calibration_constant = {K}")
-    print(f"  difference: {K - THEIRS:+.6f} dB\n")
-    if abs(K - THEIRS) < 1e-6:
-        print("  IDENTICAL to six decimals. Their 'calibration constant for")
-        print("  ortho-rectified DFSAR images' is the per-product label value, and")
-        print("  this product carries the same one. That is an external check on")
-        print("  the ingest reading the right field, not a coincidence to note and")
-        print("  move past.")
-    print("\n  Our formula is not identical, and the difference is stated rather")
-    print("  than absorbed:")
-    print("    sigma0 = DN^2 sin(inc) / (K_lin G^2)")
-    print("    -> sigma0[dB] = 20 log10(DN) + 10 log10(sin inc) - K - 20 log10(G)")
-    for ch, g in cal["channels"].items():
-        gi = float(g["gain_imbalance"])
-        print(f"    {ch}: effective constant K + 20 log10(G) = "
-              f"{K + 20 * np.log10(gi):.6f} dB  ({K + 20 * np.log10(gi) - THEIRS:+.6f} vs theirs)")
-    print("  and the sin(inc) term, which their stated formula omits: theirs is a")
-    print("  beta-nought-like normalisation, ours divides out the projected area.")
-    print(f"  At this scene's {nominal:.2f} deg that term is "
-          f"{10 * np.log10(np.sin(np.deg2rad(nominal))):+.3f} dB.")
-
-    with open(OUT_JSON, encoding="utf-8") as fh:
-        doc = json.load(fh)
-    doc["calibration_cross_check"] = {
-        "their_constant_db": THEIRS,
-        "our_label_constant_db": K,
-        "difference_db": K - THEIRS,
-        "identical": bool(abs(K - THEIRS) < 1e-6),
-        "our_formula": "sigma0 = DN^2 sin(inc) / (K_lin * G^2)",
-        "their_formula": "sigma0[dB] = 20 log10(DN) - C",
-        "effective_constant_db": {
-            ch: K + 20 * float(np.log10(g["gain_imbalance"]))
-            for ch, g in cal["channels"].items()},
-        "sin_inc_term_db_at_nominal": float(10 * np.log10(np.sin(np.deg2rad(nominal)))),
-        "note": ("their formula has no incidence term, so it is a beta-nought-like "
-                 "normalisation; ours divides out the projected area. The base "
-                 "constant is the same number read from the same label field."),
-    }
-    OUT_JSON.write_text(json.dumps(doc, indent=2), encoding="utf-8")
+    _calibration_cross_check(RAW, STEM, eta_label=nominal)
     return 0
 
 

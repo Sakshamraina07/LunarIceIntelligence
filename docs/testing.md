@@ -30,6 +30,8 @@ this project has spent long enough removing those.
 | G8 | `stamp_methods.py --check` | a figure in METHODS whose source artifact has moved since it was written |
 | G9 | `assert_pdf_agrees_with_analysis.py` | a figure in the PDF report that is not in the artifacts the report renders — read from the rendered bytes, not from the generator's inputs |
 | G10 | `assert_upper_bounds_labelled.py` | a bounded figure quoted as if it were a rate, anywhere in the tracked sources |
+| G12 | `assert_incidence_geometry.py` | an incidence field in which any pixel sits below the look angle — an identity on a convex body — and any consumer that uses one |
+| G13 | (same script) | two consumers disagreeing about the look count of the one CPR field |
 
 `rebuild_all.py` runs G1, G5, G7, G8 and G9 on every rebuild, and **any non-zero exit
 stops the build**, so a rebuild that would ship an unlabelled number fails before

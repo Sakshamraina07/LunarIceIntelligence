@@ -1,64 +1,15 @@
 {
-  "schema": "incidence_mask/1",
-  "generated_utc": "2026-09-06T18:32:01.717566+00:00",
+  "schema": "incidence_mask/2",
+  "generated_utc": "2026-09-06T18:57:55.613348+00:00",
   "generator": "backend/scripts/incidence_mask.py",
   "source": "Putrevu et al. 2023, 10.1029/2023JE007745, section 4",
-  "criterion": {
-    "min_deg": 20.0,
-    "max_deg": 50.0,
-    "domain": "Bragg"
-  },
-  "product_geometry": {
-    "nominal_incidence_deg": 19.997919,
-    "look_angle_deg": 19.997919,
-    "look_direction": "RIGHT",
-    "azimuth_looks": "21",
-    "range_looks": "1",
-    "scene_is_below_floor_at_nominal": true
-  },
-  "look_azimuth_measured": {
-    "mean_d_incidence_d_line_deg_px": 0.0023973604409378607,
-    "mean_d_incidence_d_sample_deg_px": 0.00032266307960588677,
-    "range_axis": "line",
-    "far_range_direction": "toward +line (increasing row)"
-  },
-  "ellipsoid_incidence_deg": {
-    "min": 0.009772882796823978,
-    "p50": 14.439136028289795,
-    "max": 46.22099685668945
-  },
-  "local_incidence_deg": {
-    "min": 0.003220099024474621,
-    "p1": 2.449364769458771,
-    "p5": 5.555981397628784,
-    "p25": 12.482681512832642,
-    "p50": 17.73319721221924,
-    "p75": 22.80008316040039,
-    "p95": 31.879916667938232,
-    "p99": 38.93870658874508,
-    "max": 85.56414794921875
-  },
-  "valid_pixels": 2337086,
-  "pass_pixels": 874082,
-  "pass_fraction": 0.374005064426384,
-  "removed_below_min_fraction": 0.6258023881021066,
-  "removed_above_max_fraction": 0.00019254747150939245,
-  "non_discriminating_threshold": 0.99,
-  "informative": true,
-  "raster": "data/pradan/native/local_incidence_native.tif",
-  "note": "Applied as a NAMED criterion with its own pass fraction, never silently. The scene's nominal incidence is below the Bragg floor, so whatever passes does so on terrain tilt alone.",
-  "calibration_cross_check": {
-    "their_constant_db": 70.308868,
-    "our_label_constant_db": 70.308868,
-    "difference_db": 0.0,
-    "identical": true,
-    "our_formula": "sigma0 = DN^2 sin(inc) / (K_lin * G^2)",
-    "their_formula": "sigma0[dB] = 20 log10(DN) - C",
-    "effective_constant_db": {
-      "LH": 70.46759402171251,
-      "LV": 70.31688137853038
-    },
-    "sin_inc_term_db_at_nominal": -4.659916557061971,
-    "note": "their formula has no incidence term, so it is a beta-nought-like normalisation; ours divides out the projected area. The base constant is the same number read from the same label field."
+  "available": false,
+  "withheld_reason": "The product's incidence raster is not an incidence angle: 80.53 % of its values over the valid mask are below the label's own look angle of 19.9979 deg, which is geometrically impossible on a convex body; its median pixel-to-pixel step is 35x the geometric ramp; and it correlates with DEM slope at -0.0006, so it is not a local incidence either. The field cannot be re-derived from the label, which carries no ephemeris, to the accuracy a 20 deg threshold needs. The criterion is withheld rather than estimated.",
+  "audit": "docs/incidence_audit.json",
+  "withdrawn_figures": {
+    "ellipsoid_incidence_median_deg": 14.44,
+    "local_incidence_median_deg": 17.73,
+    "fraction_below_20_deg": 0.6258,
+    "claim": "'this pass was flown at a look angle of 19.998 deg, below the Bragg floor for the entire scene' \u2014 withdrawn; the label gives the same value for look angle and incidence angle, which cannot both be true, and the raster settles neither"
   }
 }

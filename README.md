@@ -28,7 +28,7 @@ threshold, and how far below the detection floor the reading falls. It is not a
 predictor — there is nothing to predict — but it turns the null from something
 asserted into something checkable, everywhere in the frame.
 
-## Three findings about detection limits
+## Four findings
 
 **1. The quantity everyone calls CPR, computed from amplitude, is not CPR.**
 Monte Carlo at the measured look count: across a true CPR range of 0.30 → 1.50
@@ -54,6 +54,14 @@ significance floor, and it is not reported.**
 Read *down* a column. This accuses nobody of being wrong; it says the floor is
 not reported, so a reader cannot tell. (§11.3)
 
+**4. The distributed L2 product ships an incidence-angle raster that fails three
+geometric tests.** 80.53 % of its values sit below the spacecraft look angle,
+which is impossible on a convex body (`sin θ = ((R+h)/R)·sin η`); its
+pixel-to-pixel step is 35–41× the geometric ramp; and it does not track slope, so
+it is not a local incidence either. We measured it; no published work reports it.
+A Bragg-domain criterion therefore cannot be applied to this product, and ours is
+**withheld** rather than estimated. (§12)
+
 ## What it actually computes
 
 | | |
@@ -64,7 +72,7 @@ not reported, so a reader cannot tell. (§11.3)
 | **landing sites** | argmax of a six-criterion search over all **14,943,444** native 25 m pixels, each with per-criterion evidence and an interpolation verdict |
 | **traverse** | Dijkstra at a stated 100 m planning resolution, connectivity reported **before** any distance, `UNREACHABLE` an explicit state — all **177 waypoints** drawn on the map, each one hoverable |
 | **the probe** | click any point and read the **measured** CPR and DOP there against their thresholds and the detection floor — a 200 m block mean, labelled as one, with `NO DATA` where the radar returned nothing |
-| **incidence** | local incidence from the product's own raster plus measured LOLA slope and aspect — **62.58 %** of the measured swath falls below the 20° Bragg floor Putrevu et al. 2023 require, because this pass was flown at **19.998°** |
+| **incidence** | Putrevu et al. 2023's 20° Bragg criterion is **withheld**: the product's incidence raster has **80.53 %** of its values below the label's own look angle, which is geometrically impossible, and the field cannot be re-derived from a label with no ephemeris (`docs/METHODS.md` §7.12) |
 
 ## Quick start
 
@@ -96,7 +104,7 @@ bytes and fails the build on any figure that is not in the artifacts.
 
 ## Verification
 
-`verify_all.py` runs eleven gates and maps each to a statement in PRD section 6.
+`verify_all.py` runs twelve gates and maps each to a statement in PRD section 6.
 Five of them also run on every rebuild, and any non-zero exit stops the build.
 Each was verified by making it fail on purpose — including five cases where the
 verification apparatus itself turned out to be wrong (`docs/METHODS.md` §0).
@@ -105,7 +113,7 @@ verification apparatus itself turned out to be wrong (`docs/METHODS.md` §0).
 
 | document | what it holds |
 |---|---|
-| [`docs/METHODS.md`](docs/METHODS.md) | **the single methodological record** — 11 sections, every measured figure under a staleness stamp over 16 artifacts |
+| [`docs/METHODS.md`](docs/METHODS.md) | **the single methodological record** — 12 sections, every measured figure under a staleness stamp over 19 artifacts |
 | [`docs/PROVENANCE.md`](docs/PROVENANCE.md) | generated, not written: every value, its mark, its source raster and the line that produced it |
 | [`docs/assumptions.md`](docs/assumptions.md) | the register of what is **not** measured |
 | [`docs/testing.md`](docs/testing.md) | the gates, and what each refuses to let ship |

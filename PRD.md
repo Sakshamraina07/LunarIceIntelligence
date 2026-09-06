@@ -1737,8 +1737,12 @@ number in a report:
    amplitude-only ratio with the claim withdrawn — and `CANDIDATE AREA` is a
    measurement either way, including a measured zero. (Gate 5)
 
-   **And a figure that is an upper bound is never quoted as if it were a rate.**
-   (Gate 10) The false-positive rates in METHODS §7.7 assume the two circular
+   **And a figure that is an upper bound is never quoted as if it were a rate,
+   nor computed at the wrong look count.** (Gates 10 and 13) There is one CPR
+   field and it has one ENL: the threshold touches the boxcar-smoothed field at
+   **13.72**, so the operating point is a 1.895 floor and an FP rate of up to
+   17.79 % at true CPR 0.7 — not the 2.978 and 29.16 % the narrative was quoting
+   from the raw product's 5.83. The false-positive rates in METHODS §7.7 assume the two circular
    channels are independent; §7.10 shows from Putrevu et al. 2023's own Byrgius C
    dispersion that they are correlated at |ρ|² ≥ 0.36, so every one of those
    rates is a bound. "29 % of ordinary rock crosses the threshold" and "up to
@@ -1750,6 +1754,12 @@ number in a report:
 7. **The PDF report is a rendering of the analysis artifacts, not a second
    computation of them**, and every figure it prints appears in those artifacts
    at the precision printed. (Gate 9)
+8. **There is one incidence field, and it satisfies `incidence > look angle` at
+   every pixel.** (Gate 12) That is an identity on a convex body —
+   `sin θ = ((R+h)/R) sin η` — so no correct implementation can violate it. The
+   project shipped a Bragg-domain criterion built on a field where **80.53 %** of
+   the values sat below the look angle; the criterion is withheld and the gate
+   fails the build if anything consumes such a field again.
 
    Added after the report was found printing five landing sites that Phase 3
    deleted — Alpha Ridge, Beta Plateau, Gamma Bench, Delta Spur, Epsilon Crest,

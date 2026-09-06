@@ -1,0 +1,51 @@
+{
+  "schema": "incidence_audit/1",
+  "generated_utc": "2026-09-06T18:56:29.093437+00:00",
+  "generator": "backend/scripts/incidence_audit.py",
+  "label_geometry": {
+    "semi_major_radius_m": 1737400.0,
+    "spacecraft_altitude_m": 105376.0,
+    "look_angle_deg": 19.997919,
+    "label_incidence_angle_deg": 19.997919,
+    "radius_ratio": 1.0606515482905492,
+    "incidence_required_by_look_angle_deg": 21.267826314673552,
+    "label_gives_same_value_for_both": true
+  },
+  "raster_over_valid_deg": {
+    "min": 0.009772882796823978,
+    "p1": 0.5920854687690735,
+    "p5": 1.9368775188922882,
+    "p25": 8.237326622009277,
+    "p50": 14.439136028289795,
+    "p75": 18.98400640487671,
+    "p95": 23.310627460479736,
+    "p99": 26.54873361587524,
+    "max": 46.22099685668945
+  },
+  "test_1_magnitude": {
+    "fraction_below_look_angle": 0.8052925737435421,
+    "passes": false
+  },
+  "test_2_smoothness": {
+    "expected_ramp_deg_per_px": 0.012593734050623836,
+    "measured_step_p50_deg_per_px": 0.44426631927490234,
+    "measured_step_p95_deg_per_px": 2.751698482036588,
+    "ratio": 35.27677474282502,
+    "passes": false
+  },
+  "test_3_terrain": {
+    "corr_with_dem_slope": -0.0005649006576638561,
+    "passes": false
+  },
+  "is_ellipsoid_incidence": false,
+  "screening_blast_radius": {
+    "cpr_max_with_sin": 0.05341120436787605,
+    "cpr_max_without": 0.05385207012295723,
+    "cpr_max_abs_difference": 0.013095542788505554,
+    "dop_max_abs_difference": 0.1392841339111328,
+    "pixels_passing_with_sin": 0,
+    "pixels_passing_without": 0,
+    "screening_moves": true,
+    "why": "sin(inc) multiplies BOTH channels before the boxcar, so it cancels in CPR and DOP. It scales sigma0 and nothing else."
+  }
+}

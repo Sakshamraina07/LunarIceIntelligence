@@ -107,6 +107,23 @@ GATES = [
     ("G10", "A figure that is an upper bound is never quoted as if it were a rate",
      "assert_upper_bounds_labelled.py — every occurrence, every tracked source",
      [sys.executable, str(SCRIPTS / "assert_upper_bounds_labelled.py")], False),
+
+    # sin(theta) = ((R+h)/R) sin(eta) with (R+h)/R > 1 is an identity on a convex
+    # body. The project shipped a criterion built on a field where 80.53 % of the
+    # values sat below the look angle, and nothing checked it because nothing had
+    # ever needed to. And there is one CPR field with one look count: the
+    # narrative quoted N ~ 5 while the artifact published 13.72.
+    ("G12", "There is one incidence field, it satisfies incidence > look angle, "
+            "and nothing consumes a field that does not",
+     "assert_incidence_geometry.py --only g12 — the identity, and every consumer",
+     [sys.executable, str(SCRIPTS / "assert_incidence_geometry.py"),
+      "--only", "g12"], False),
+
+    ("G13", "There is one CPR field and every consumer reads the same look count "
+            "for it",
+     "assert_incidence_geometry.py --only g13 — read from the pipeline, not inferred",
+     [sys.executable, str(SCRIPTS / "assert_incidence_geometry.py"),
+      "--only", "g13"], False),
 ]
 
 

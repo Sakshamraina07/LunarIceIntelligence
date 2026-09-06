@@ -1,6 +1,6 @@
 {
   "schema": "cpr_dispersion/1",
-  "generated_utc": "2026-09-06T18:29:17.457194+00:00",
+  "generated_utc": "2026-09-06T19:37:39.464129+00:00",
   "generator": "backend/scripts/cpr_dispersion.py",
   "window_px": 15,
   "windows_ranked": 9711,
@@ -136,7 +136,10 @@
     "window_pixels": 225,
     "independent_samples_in_window": 3.6632571288980307,
     "rho_bar": 0.2697354907061168,
-    "sd_inflation_factor": 1.1701994852449662
+    "sd_inflation_factor": 1.1701994852449662,
+    "sd_relative_sampling_error": 0.43328978759479536,
+    "estimator_is_minimum_of": 20,
+    "bias_direction": "LOW, twice over \u2014 the sampling spread of each window's SD and the minimum taken over windows both select downward. That strengthens a negative conclusion and means the figure is not a precise floor."
   },
   "rel_sd_min_corrected": 0.5866670818326132,
   "apparent_looks_if_independent": 7.4193341216946616,
@@ -167,20 +170,59 @@
       "nadir_deg": 26.0,
       "output_pixel_m": 25.0
     },
-    "ground_range_spacing_m": 21.89925151396665,
-    "max_samples_per_output_pixel": 51.8905240043889,
-    "brief_quoted_max_samples": 54.88,
+    "ground_range_spacing_m": 20.646980197466025,
+    "max_samples_per_output_pixel": 55.037764626863,
+    "their_printed_nadir_deg": 26.0,
+    "incidence_from_nadir_deg": 27.70757093409815,
+    "orbit_altitude_assumed_m": 105376.0,
+    "orbit_altitude_source": "NOT stated in the paper; this product's label value is used and the sensitivity is reported",
+    "max_samples_at_100km_altitude": 54.87720087813063,
+    "alternative_using_nadir_directly": 51.8905240043889,
+    "which_is_conservative": "the LARGER N. A larger N gives a lower floor and therefore a harder bar for their 0.1589 to sit under; using the nadir angle directly gives the smaller N, a higher floor and an easier claim.",
     "constraint": {
-      "N=51.89": {
-        "independent_floor": 0.19925235355955756,
-        "implied_intensity_correlation": 0.3641958365957112
+      "h=100000": {
+        "incidence_deg": 27.619821701276745,
+        "max_samples": 54.87720087813063,
+        "independent_floor": 0.19359459040430219,
+        "their_rel_sd_below_floor": true,
+        "rho_I_large_N": 0.3073844417075837,
+        "rho_I_exact_floor": 0.3264903044710429,
+        "tag": "nominal"
       },
-      "N=54.88": {
-        "independent_floor": 0.19358951191528986,
-        "implied_intensity_correlation": 0.3264549672627518
+      "h=105376": {
+        "incidence_deg": 27.70757093409815,
+        "max_samples": 55.037764626863,
+        "independent_floor": 0.1933039218647019,
+        "their_rel_sd_below_floor": true,
+        "rho_I_large_N": 0.30535793618816476,
+        "rho_I_exact_floor": 0.3244632864504402,
+        "tag": "our label"
+      },
+      "h=150000": {
+        "incidence_deg": 28.438704146827053,
+        "max_samples": 56.37053931500151,
+        "independent_floor": 0.19094070169869734,
+        "their_rel_sd_below_floor": true,
+        "rho_I_large_N": 0.28853673412370373,
+        "rho_I_exact_floor": 0.30763794402607325,
+        "tag": "stress"
+      },
+      "nadir_direct": {
+        "max_samples": 51.8905240043889,
+        "independent_floor": 0.19925235355955756,
+        "their_rel_sd_below_floor": true,
+        "rho_I_large_N": 0.34507985687534326,
+        "rho_I_exact_floor": 0.3641958365957112,
+        "tag": "flattering alternative"
       }
     },
-    "implied_intensity_correlation_min": 0.3641958365957112,
+    "implied_intensity_correlation_min": 0.30535793618816476,
+    "estimator": "rho_I >= 1 - N relSD^2 / 2, the large-N form of rho_I = 1 - (relSD_obs/relSD_indep)^2. The exact-floor form gives a LARGER number, so the large-N one is the conservative bound and is what is reported.",
+    "bound_range_over_altitudes": [
+      0.28853673412370373,
+      0.34507985687534326
+    ],
+    "conclusion_holds_at_every_altitude": true,
     "paper_states_looks": false,
     "paper_only_statement": "'averaging several independent single-look coherency matrices' (Sec 3.1)",
     "consequence": "correlated channels narrow the ratio, so F(2N,2N) with independent numerator and denominator is conservative and every false-positive rate from it is an upper bound"

@@ -16,15 +16,16 @@ So the ordering is expressed here rather than in a reviewer's memory:
 
     1. ingest_lola_polar_dem.py     LOLA polar DEM -> this frame's 25 m grid
     2. process_real_sar_pipeline.py DFSAR L2 -> native cpr / dop / valid / footprint
-    3. incidence_mask.py            local incidence -> the Bragg-domain criterion
-    4. build_analysis.py            the numbers  -> public/analysis/<crater>.json
-    5. render_layers.py             the pixels   -> public/layers/*.webp + layers.json
-    6. detection_statistics.py      the floor and the confidence interval
-    7. emit_probe_grid.py           the measured field, readable point by point
-    8. emit_provenance.py           docs/PROVENANCE.md, AND the marks gate
-    9. assert_paths_agree.py        the API and the static analysis, compared
-   10. assert_pdf_agrees_with_analysis.py  the report vs the artifacts it renders
-   11. stamp_methods.py --check     METHODS against the artifacts it quotes
+    3. incidence_audit.py           is the incidence raster an incidence angle?
+    4. incidence_mask.py            the Bragg-domain criterion, or its refusal
+    5. build_analysis.py            the numbers  -> public/analysis/<crater>.json
+    6. render_layers.py             the pixels   -> public/layers/*.webp + layers.json
+    7. detection_statistics.py      the floor and the confidence interval
+    8. emit_probe_grid.py           the measured field, readable point by point
+    9. emit_provenance.py           docs/PROVENANCE.md, AND the marks gate
+   10. assert_paths_agree.py        the API and the static analysis, compared
+   11. assert_pdf_agrees_with_analysis.py  the report vs the artifacts it renders
+   12. stamp_methods.py --check     METHODS against the artifacts it quotes
 
 FIVE OF THESE ARE GATES, NOT REPORTS, and each exits non-zero rather than
 printing a warning:
@@ -45,8 +46,8 @@ as step 4, so leaving it out would put an older copy of the measured field under
 a live map.
 
 STEPS 1 AND 2 ARE SKIPPABLE, AND USUALLY SHOULD BE. They read multi-gigabyte
-products and take minutes; steps 3-11 take seconds to a couple of minutes and are
-the ones that change when the analysis changes. `--skip-ingest` runs 3-11 only.
+products and take minutes; steps 3-12 take seconds to a couple of minutes and are
+the ones that change when the analysis changes. `--skip-ingest` runs 3-12 only.
 """
 from __future__ import annotations
 
@@ -108,56 +109,61 @@ def main() -> int:
               "are reused as-is.")
     else:
         timings.append(("1 · LOLA ingest",
-                        run("1/11 · ingest_lola_polar_dem.py",
+                        run("1/12 · ingest_lola_polar_dem.py",
                             [py, str(SCRIPTS / "ingest_lola_polar_dem.py")])))
         timings.append(("2 · DFSAR pipeline",
-                        run("2/11 · process_real_sar_pipeline.py",
+                        run("2/12 · process_real_sar_pipeline.py",
                             [py, str(SCRIPTS / "process_real_sar_pipeline.py")])))
 
     # BEFORE the analysis, which reads its artifact to build the Bragg-domain
     # criterion row. Running it after would leave the criterion describing the
     # previous run's geometry.
-    timings.append(("3 · local incidence",
-                    run("3/11 · incidence_mask.py — the Bragg-domain criterion",
+    # The audit decides whether the mask may be computed at all, so it runs
+    # first. It is not optional: the mask refuses without it.
+    timings.append(("3 · incidence audit",
+                    run("3/12 · incidence_audit.py — is the raster an incidence angle?",
+                        [py, str(SCRIPTS / "incidence_audit.py")])))
+    timings.append(("4 · local incidence",
+                    run("4/12 · incidence_mask.py — the Bragg-domain criterion",
                         [py, str(SCRIPTS / "incidence_mask.py")])))
-    timings.append(("4 · analysis",
-                    run("4/11 · build_analysis.py — the numbers",
+    timings.append(("5 · analysis",
+                    run("5/12 · build_analysis.py — the numbers",
                         [py, str(SCRIPTS / "build_analysis.py"), args.crater])))
-    timings.append(("5 · layers",
-                    run("5/11 · render_layers.py — the pixels",
+    timings.append(("6 · layers",
+                    run("6/12 · render_layers.py — the pixels",
                         [py, str(SCRIPTS / "render_layers.py")])))
     # Must precede the provenance gate: that gate now REFUSES to ship a detection
     # area without its confidence interval, and this is what computes it.
-    timings.append(("6 · detection statistics",
-                    run("6/11 · detection_statistics.py — significance, and the CI",
+    timings.append(("7 · detection statistics",
+                    run("7/12 · detection_statistics.py — significance, and the CI",
                         [py, str(SCRIPTS / "detection_statistics.py")])))
     # The probe reads the SAME native rasters the analysis does, at a stated
     # decimation. If it is not rebuilt here it becomes a second, older copy of
     # the measured field sitting under a live map -- which is precisely the
     # failure mode this file exists to prevent. It runs after detection
     # statistics because it copies the floor and the look count out of them.
-    timings.append(("7 · probe grid",
-                    run("7/11 · emit_probe_grid.py — the measured field, point by point",
+    timings.append(("8 · probe grid",
+                    run("8/12 · emit_probe_grid.py — the measured field, point by point",
                         [py, str(SCRIPTS / "emit_probe_grid.py")])))
-    timings.append(("8 · provenance gate",
-                    run("8/11 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
+    timings.append(("9 · provenance gate",
+                    run("9/12 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
                         [py, str(SCRIPTS / "emit_provenance.py"), args.crater])))
     # The API and the static analysis compute terrain by two paths that share no
     # code, and they have diverged twice. The second time the UI was correct and
     # only the PDF was wrong, which is the worst shape for a bug to have: looking
     # at the app does not reveal it.
-    timings.append(("9 · cross-path gate",
-                    run("9/11 · assert_paths_agree.py — API vs static analysis",
+    timings.append(("10 · cross-path gate",
+                    run("10/12 · assert_paths_agree.py — API vs static analysis",
                         [py, str(SCRIPTS / "assert_paths_agree.py"),
                          "--crater", args.crater])))
     # The report is a rendering of the artifacts just rebuilt, so it is checked
     # against them here rather than at tag time.
-    timings.append(("10 · PDF vs analysis",
-                    run("10/11 · assert_pdf_agrees_with_analysis.py — the report's figures",
+    timings.append(("11 · PDF vs analysis",
+                    run("11/12 · assert_pdf_agrees_with_analysis.py — the report's figures",
                         [py, str(SCRIPTS / "assert_pdf_agrees_with_analysis.py"),
                          "--crater", args.crater])))
-    timings.append(("11 · METHODS staleness",
-                    run("11/11 · stamp_methods.py --check — METHODS vs its artifacts",
+    timings.append(("12 · METHODS staleness",
+                    run("12/12 · stamp_methods.py --check — METHODS vs its artifacts",
                         [py, str(SCRIPTS / "stamp_methods.py"), "--check"])))
 
     print("\n" + "=" * 78)

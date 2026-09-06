@@ -8,7 +8,7 @@ Faustini Crater (Chandrayaan-2 SAR Swath)
  
 product 
 ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18
-Every figure is rendered from the precomputed analysis artifacts and carries its provenance mark. Generated 2026-09-06 18:33 UTC.
+Every figure is rendered from the precomputed analysis artifacts and carries its provenance mark. Generated 2026-09-06 19:07 UTC.
 1. HEADLINE RESULT
 This is a screening of one Chandrayaan-2 DFSAR pass over Faustini Crater (Chandrayaan-2 SAR Swath) for water-ice signatures,
 with a hazard-aware landing-site search and traverse plan over measured LOLA topography. 
@@ -99,11 +99,11 @@ pass
 carries none
 MEASURED
 Local incidence in the Bragg domain
-17.7332
+NO DATA
 >= 20.0
 fail
-yes
-MEASURED
+carries none
+NO DATA
 Overlap with a shadowed cold trap
 0.0
 > 0.0
@@ -124,7 +124,13 @@ yes
 DERIVED
 DOP depressed (volume scattering):
  Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are
-balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock.
+balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock. 
+Local incidence in the
+Bragg domain:
+ The product's incidence raster is not an incidence angle: 80.53 % of its values over the valid mask are below the label's own look angle of
+19.9979 deg, which is geometrically impossible on a convex body; its median pixel-to-pixel step is 35x the geometric ramp; and it correlates with DEM slope
+at -0.0006, so it is not a local incidence either. The field cannot be re-derived from the label, which carries no ephemeris, to the accuracy a 20 deg threshold
+needs. The criterion is withheld rather than estimated.
 3. LANDING SITE SELECTION
 The argmax of a six-criterion search over all 
 14,943,444
@@ -274,8 +280,8 @@ Reproducibility:
 prints appears in those files, which is checked on every build by assert_pdf_agrees_with_analysis.py
 . Any quantity that could not be
 computed is printed as NO DATA and is never filled in.
-Rendered from: analysis 2026-09-06 18:33 UTC · landing sites 2026-09-06 18:42 UTC · traverse 2026-09-06 18:42 UTC · detection statistics 2026-09-06
-18:42 UTC
+Rendered from: analysis 2026-09-06 19:07 UTC · landing sites 2026-09-06 19:16 UTC · traverse 2026-09-06 19:17 UTC · detection statistics 2026-09-06
+19:17 UTC
 Source raster: native/cpr_native.tif
 Thresholds CPR > 1.00, DOP < 0.13  backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, MAX_TRAVERSABLE_SLOPE_DEG,
 CRITICAL_LANDING_SLOPE_DEG), not retuned.

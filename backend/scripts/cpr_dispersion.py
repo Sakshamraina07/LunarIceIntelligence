@@ -193,6 +193,13 @@ def main() -> int:
           f"{infl:.4f}x\n")
     r_corr = r_min * infl
     print(f"  corrected minimum relative SD: {r_min:.4f} x {infl:.4f} = {r_corr:.4f}")
+    samp_err = 1.0 / np.sqrt(2.0 * (n_eff - 1.0))
+    print(f"\n  SAMPLING ERROR OF EACH WINDOW'S SD: 1/sqrt(2(n_eff - 1)) with")
+    print(f"  n_eff = {n_eff:.2f} is {samp_err * 100:.0f} %. The figure above is the")
+    print(f"  MINIMUM of {top} estimates carrying that spread, so it is biased LOW")
+    print(f"  twice over. A figure biased low that still lands ABOVE the theory is")
+    print(f"  a STRONGER negative result, not a weaker one -- but {r_corr:.4f} is")
+    print(f"  not a precise floor and should not be quoted as one.")
 
     # ---------------------------------------------------- against the theory
     hr("AGAINST THE INDEPENDENT-CHANNEL MODEL")
@@ -259,34 +266,114 @@ def main() -> int:
     # one 25 m output pixel is the product of the two ratios -- an UPPER bound on
     # their look count, because it assumes every sample is independent and that
     # all of them are used.
+    # 26 deg is the NADIR (look) angle they print. Ground range spacing is set
+    # by INCIDENCE, and on a convex body the two differ:
+    #     sin(theta_inc) = ((R + h)/R) sin(eta)
+    # The first version used sin(26 deg) directly, got N <= 51.89, and called
+    # the difference "the safe way". A LARGER N gives a LOWER floor, which is a
+    # HARDER bar for their 0.1589 to sit under -- so 54.88 is the CONSERVATIVE
+    # bound and 51.89 was the flattering one. Same confusion as the one that
+    # produced the withdrawn Bragg criterion; METHODS section 0 logs them as one
+    # instance.
     az_spacing_m, slant_spacing_m, nadir_deg, out_m = 0.55, 9.6, 26.0, 25.0
-    ground_range_m = slant_spacing_m / np.sin(np.deg2rad(nadir_deg))
+    # THEIR ORBIT ALTITUDE IS NOT STATED IN THE PAPER, so this uses OUR
+    # product's 105,376 m and reports the sensitivity rather than hiding the
+    # assumption. Chandrayaan-2's science orbit is nominally 100 km; the two
+    # give 55.04 and 54.88 samples, floors 0.1933 and 0.1936. Both are below
+    # their measured 0.1589 and both are more conservative than the 51.89 the
+    # nadir angle gives, so the conclusion does not depend on the choice.
+    R_MOON, H_ORBIT = 1737400.0, 105376.0        # label geometry, section 7.12
+    inc_deg = float(np.degrees(np.arcsin(
+        ((R_MOON + H_ORBIT) / R_MOON) * np.sin(np.deg2rad(nadir_deg)))))
+    ground_range_m = slant_spacing_m / np.sin(np.deg2rad(inc_deg))
+    ground_range_nadir_m = slant_spacing_m / np.sin(np.deg2rad(nadir_deg))
+    n_alt = (out_m / az_spacing_m) * (out_m / ground_range_nadir_m)
     n_az = out_m / az_spacing_m
     n_rg = out_m / ground_range_m
     n_max = n_az * n_rg
-    print(f"  azimuth {az_spacing_m} m, slant range {slant_spacing_m} m at "
-          f"{nadir_deg:g} deg -> ground range {ground_range_m:.3f} m")
+    print(f"  their printed nadir angle {nadir_deg:g} deg -> incidence "
+          f"{inc_deg:.4f} deg")
+    print(f"  azimuth {az_spacing_m} m; slant range {slant_spacing_m} m at that "
+          f"incidence -> ground range {ground_range_m:.4f} m")
     print(f"  into a {out_m:g} m pixel: {n_az:.2f} x {n_rg:.4f} = "
           f"{n_max:.2f} samples, so N <= {n_max:.2f}")
-    print(f"  (the brief for this work quotes 54.88; from the spacings as stated")
-    print(f"   the product is {n_max:.2f}. The difference does not change the")
-    print(f"   conclusion and moves it the SAFE way -- a lower N means a HIGHER")
-    print(f"   floor, so both values are reported below.)\n")
+    print(f"  Using the nadir angle directly gives {n_alt:.2f}, a HIGHER floor and")
+    print(f"  an EASIER claim, so {n_max:.2f} is the conservative bound and is what")
+    print(f"  this leads with. {n_alt:.2f} is reported below as the alternative.")
+    _n_100 = (out_m / az_spacing_m) * (out_m / (slant_spacing_m / np.sin(np.arcsin(
+        (R_MOON + 100000.0) / R_MOON * np.sin(np.deg2rad(nadir_deg))))))
+    print(f"  Their orbit altitude is NOT stated in the paper. This uses ours,")
+    print(f"  {H_ORBIT:,.0f} m; at a nominal 100 km the cap would be {_n_100:.2f}")
+    print(f"  and the floor {rel_sd_independent(_n_100):.4f}. Both are below their")
+    print(f"  measured 0.1589 and both are more conservative than {n_alt:.2f}, so")
+    print(f"  the conclusion does not depend on the choice.")
+    print()
 
-    print(f"  {'N':>10}{'floor sqrt((2N-1)/(N(N-2)))':>30}{'their rel SD':>15}"
-          f"{'implied rho_I':>16}")
+    # ── THE BOUND, AND WHERE IT COMES FROM ────────────────────────────────
+    #
+    # Two independent N-look intensities give a ratio with relative variance
+    # (2N-1)/(N(N-2)), which tends to 2/N. Correlating numerator and
+    # denominator at intensity correlation rho_I narrows it by (1 - rho_I), so
+    #
+    #     relSD_obs^2 = (1 - rho_I) * relSD_indep^2
+    #     rho_I = 1 - (relSD_obs / relSD_indep)^2
+    #
+    # Substituting the large-N limit relSD_indep^2 = 2/N gives the closed form
+    #
+    #     rho_I >= 1 - N * relSD_obs^2 / 2
+    #
+    # BOTH ARE COMPUTED AND BOTH ARE PRINTED. They differ because the exact
+    # floor at N ~ 55 is 0.19330 against sqrt(2/N) = 0.19058, a 1.4 % gap that
+    # squares into 2.9 % of the bound. The large-N form gives the SMALLER
+    # number, so it is the conservative one and it is what is led with; the
+    # exact-floor value is printed beside it so neither is unsourced.
+    #
+    # THE ALTITUDE IS NOT STATED IN THE PAPER. Three are tested, spanning
+    # Chandrayaan-2's nominal 100 km, this product's label value, and a 150 km
+    # stress case. The BOUND moves with it; the CONCLUSION does not.
+    print(f"  their measured relative SD = {pub_sd}/{pub_mean} = {pub_rel:.4f}")
+    print(f"  rho_I >= 1 - N * relSD^2 / 2,  relSD^2 = {pub_rel ** 2:.8f},"
+          f"  relSD^2/2 = {pub_rel ** 2 / 2:.8f}\n")
+    print(f"  {'h (m)':>9}{'incidence':>11}{'N <=':>9}{'floor':>9}{'below?':>9}{'rho_I large-N':>15}{'rho_I exact':>13}")
     constraint = {}
-    for n in (n_max, 54.88):
+    for h_m, tag in ((100000.0, "nominal"), (H_ORBIT, "our label"),
+                     (150000.0, "stress")):
+        th = float(np.degrees(np.arcsin(
+            ((R_MOON + h_m) / R_MOON) * np.sin(np.deg2rad(nadir_deg)))))
+        gr = slant_spacing_m / np.sin(np.deg2rad(th))
+        n = (out_m / az_spacing_m) * (out_m / gr)
         floor = rel_sd_independent(n)
-        # Two circular-Gaussian channels with field coherence rho have intensity
-        # correlation |rho|^2, and correlation between numerator and denominator
-        # narrows the ratio: rel SD^2 scales as (1 - |rho|^2). Inverting the
-        # ratio of measured to independent gives the coherence their dispersion
-        # requires.
-        rho_i = 1.0 - (pub_rel / floor) ** 2 if floor > 0 else float("nan")
-        print(f"  {n:>10.2f}{floor:>30.4f}{pub_rel:>15.4f}{rho_i:>16.4f}")
-        constraint[f"N={n:.2f}"] = {"independent_floor": floor,
-                                    "implied_intensity_correlation": rho_i}
+        rho_big = 1.0 - n * pub_rel ** 2 / 2.0
+        rho_exact = 1.0 - (pub_rel / floor) ** 2
+        below = "yes" if pub_rel < floor else "NO"
+        print(f"  {h_m:>9,.0f}{th:>11.4f}{n:>9.3f}{floor:>9.4f}{below:>9}"
+              f"{rho_big:>15.4f}{rho_exact:>13.4f}   {tag}")
+        constraint[f"h={h_m:.0f}"] = {
+            "incidence_deg": th, "max_samples": n, "independent_floor": floor,
+            "their_rel_sd_below_floor": bool(pub_rel < floor),
+            "rho_I_large_N": rho_big, "rho_I_exact_floor": rho_exact,
+            "tag": tag}
+    # The nadir-angle version, kept as the flattering alternative.
+    floor_alt = rel_sd_independent(n_alt)
+    print(f"  {'--':>9}{nadir_deg:>11.4f}{n_alt:>9.3f}{floor_alt:>9.4f}"
+          f"{'yes' if pub_rel < floor_alt else 'NO':>9}"
+          f"{1.0 - n_alt * pub_rel ** 2 / 2.0:>15.4f}"
+          f"{1.0 - (pub_rel / floor_alt) ** 2:>13.4f}   nadir angle used directly")
+    constraint["nadir_direct"] = {
+        "max_samples": float(n_alt), "independent_floor": floor_alt,
+        "their_rel_sd_below_floor": bool(pub_rel < floor_alt),
+        "rho_I_large_N": 1.0 - n_alt * pub_rel ** 2 / 2.0,
+        "rho_I_exact_floor": 1.0 - (pub_rel / floor_alt) ** 2,
+        "tag": "flattering alternative"}
+
+    rho_lead = 1.0 - n_max * pub_rel ** 2 / 2.0
+    print(f"\n  THE BOUND MOVES, THE CONCLUSION DOES NOT. Their 0.1589 is below")
+    print(f"  the independent-channel floor at every altitude tested, so the two")
+    print(f"  channels are correlated in all of them. The BOUND ranges "
+          f"{min(c['rho_I_large_N'] for c in constraint.values()):.4f} to "
+          f"{max(c['rho_I_large_N'] for c in constraint.values()):.4f}.")
+    print(f"  Led with: rho_I >= {rho_lead:.4f} at N = {n_max:.3f}"
+          f"  (1 - {n_max:.3f} x {pub_rel ** 2 / 2:.8f} = {rho_lead:.4f}).")
 
     floor_ref = rel_sd_independent(n_max)
     print(f"\n  Byrgius C interior: CPR {pub_mean} +/- {pub_sd}, "
@@ -295,7 +382,8 @@ def main() -> int:
     print(f"  {floor_ref:.4f}. THEIR MEASURED DISPERSION IS BELOW THEIR OWN FLOOR.")
     print("  A ratio of two independent intensities cannot be that narrow, so the")
     print("  two circular channels are correlated, with intensity correlation")
-    print(f"  |rho|^2 >= {1.0 - (pub_rel / floor_ref) ** 2:.2f}.\n")
+    print(f"  |rho|^2 >= {rho_lead:.4f} (large-N form; the exact-floor form gives "
+          f"{1.0 - (pub_rel / floor_ref) ** 2:.4f}, and the smaller is reported).\n")
     print("  CONSEQUENCE FOR SECTION 7.7: correlation between numerator and")
     print("  denominator narrows the ratio's distribution, so F(2N,2N) with")
     print("  independent numerator and denominator is CONSERVATIVE, and every")
@@ -330,6 +418,9 @@ def main() -> int:
             "independent_samples_in_window": n_eff,
             "rho_bar": rho_bar,
             "sd_inflation_factor": infl,
+            "sd_relative_sampling_error": float(1.0 / np.sqrt(2.0 * (n_eff - 1.0))),
+            "estimator_is_minimum_of": top,
+            "bias_direction": ("LOW, twice over — the sampling spread of each window's SD and the minimum taken over windows both select downward. That strengthens a negative conclusion and means the figure is not a precise floor."),
         },
         "rel_sd_min_corrected": r_corr,
         "apparent_looks_if_independent": n_app,
@@ -353,9 +444,26 @@ def main() -> int:
                               "nadir_deg": nadir_deg, "output_pixel_m": out_m},
             "ground_range_spacing_m": float(ground_range_m),
             "max_samples_per_output_pixel": float(n_max),
-            "brief_quoted_max_samples": 54.88,
+            "their_printed_nadir_deg": nadir_deg,
+            "incidence_from_nadir_deg": inc_deg,
+            "orbit_altitude_assumed_m": H_ORBIT,
+            "orbit_altitude_source": ("NOT stated in the paper; this product's "
+                                      "label value is used and the sensitivity "
+                                      "is reported"),
+            "max_samples_at_100km_altitude": float(_n_100),
+            "alternative_using_nadir_directly": float(n_alt),
+            "which_is_conservative": ("the LARGER N. A larger N gives a lower floor and therefore a harder bar for their 0.1589 to sit under; using the nadir angle directly gives the smaller N, a higher floor and an easier claim."),
             "constraint": constraint,
-            "implied_intensity_correlation_min": float(1.0 - (pub_rel / floor_ref) ** 2),
+            "implied_intensity_correlation_min": float(rho_lead),
+            "estimator": ("rho_I >= 1 - N relSD^2 / 2, the large-N form of "
+                          "rho_I = 1 - (relSD_obs/relSD_indep)^2. The exact-floor "
+                          "form gives a LARGER number, so the large-N one is the "
+                          "conservative bound and is what is reported."),
+            "bound_range_over_altitudes": [
+                float(min(c["rho_I_large_N"] for c in constraint.values())),
+                float(max(c["rho_I_large_N"] for c in constraint.values()))],
+            "conclusion_holds_at_every_altitude": bool(all(
+                c["their_rel_sd_below_floor"] for c in constraint.values())),
             "paper_states_looks": False,
             "paper_only_statement": ("'averaging several independent single-look "
                                      "coherency matrices' (Sec 3.1)"),

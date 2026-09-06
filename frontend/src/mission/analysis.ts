@@ -290,3 +290,62 @@ export function showPercent(v: AnalysisValue | undefined, digits = 2): string {
   if (pct < 0.01) return pct.toExponential(1);
   return pct.toFixed(digits);
 }
+
+
+/**
+ * A landing site SEARCHED over all 14,943,444 native 25 m pixels by
+ * backend/scripts/search_landing_sites.py, not asserted on a coarse grid.
+ *
+ * Only the resulting sites reach the screen. Every intermediate raster,
+ * percentile table and enrichment figure stays in docs/, and this file is
+ * written by the same script that chose the sites, so the markers and the
+ * evidence behind them cannot come from two different runs.
+ */
+export interface SearchedSite {
+  rank: number;
+  grid: { line: number; sample: number };
+  lat_deg: number;
+  lon_deg: number;
+  suitability_score: number;
+  /** Distance to the nearest MODELLED cold trap, not to detected ice. */
+  ice_access: { psr_distance_km: number; threshold_km: number; passed: boolean;
+                means: string };
+  solar_power: { illumination_fraction: number; threshold: number; passed: boolean };
+  criteria: Record<string, {
+    value: number; threshold: number; comparison: string; passed: boolean;
+  }>;
+  /** Is this smooth ground, or ground where the LOLA data ran out? */
+  interpolation_check: {
+    plane_rms_m: number; frame_reference_p05_m: number;
+    ratio_to_reference_p05: number; verdict: string;
+  };
+  score_decomposition: Record<string, {
+    term_value: number; weight: number; contribution: number; share_of_score: number;
+  }>;
+  provenance: Record<string, string>;
+}
+
+export interface SearchedSites {
+  generated_utc: string;
+  generator: string;
+  search: Record<string, unknown>;
+  ranking_note: {
+    determined_by: string[];
+    safety_is_inert_here: boolean;
+    why: string;
+    not_a_flaw_in_the_weights: string;
+    term_spans: Record<string, { weight: number; min: number; max: number; span: number }>;
+  };
+  sites: SearchedSite[];
+}
+
+/** Absent is a real state: no search has been run on this host. */
+export async function loadSearchedSites(): Promise<SearchedSites | null> {
+  try {
+    const r = await fetch('/analysis/landing_sites.json', { cache: 'no-cache' });
+    if (!r.ok) return null;
+    return (await r.json()) as SearchedSites;
+  } catch {
+    return null;
+  }
+}

@@ -112,6 +112,7 @@
  * sub-pixel rms, lives in backend/app/ingestion/sar_geometry.py.
  */
 import { useEffect, useImperativeHandle, useRef, useState, forwardRef } from 'react';
+import type { SearchedSite } from './analysis';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { MissionState, CandidateLandingSite } from '../types/mission';
@@ -665,6 +666,11 @@ interface Props {
    *  out a barely-tinted grey smear. */
   scienceOpacity: number;
   showLandingSites: boolean;
+  /** Phase 3 sites, searched over all 14.9 M native 25 m pixels. When present
+   *  these REPLACE the API's hardcoded grid offsets: those were asserted on a
+   *  100 x 100 grid, located to +/-500 m, and all five fell outside the measured
+   *  amplitude ribbon. Null means no search has been run on this host. */
+  searchedSites: SearchedSite[] | null;
   activeRoverStrategies: string[];
   selectedLandingSite: CandidateLandingSite | null;
   onSelectLandingSite: (s: CandidateLandingSite) => void;
@@ -673,7 +679,7 @@ interface Props {
 }
 
 export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMap(
-  { mission, activeLayer, scienceOpacity, showLandingSites, activeRoverStrategies, selectedLandingSite, onSelectLandingSite, onCoords, onZoom },
+  { mission, activeLayer, scienceOpacity, showLandingSites, searchedSites, activeRoverStrategies, selectedLandingSite, onSelectLandingSite, onCoords, onZoom },
   ref,
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -1145,6 +1151,52 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
     }
 
     if (!showLandingSites) return;
+
+    // PHASE 3 SITES WIN. They were searched over every native 25 m pixel; the
+    // API's are five hardcoded offsets on a 100 x 100 grid, located to +/-500 m,
+    // and all five fell outside the measured amplitude ribbon. Drawing both
+    // would put two different answers to one question on the same map.
+    if (searchedSites && searchedSites.length) {
+      const inRibbon: string[] = [];
+      searchedSites.forEach((s2) => {
+        const [py, px] = gridToPixel(geom, s2.grid.sample, s2.grid.line);
+        const cov = coverageAt(geom, py, px);
+        inRibbon.push(`#${s2.rank} ${cov}`);
+        const suspect = /SUSPECT/i.test(s2.interpolation_check.verdict);
+        const marker = L.circleMarker([py, px], {
+          pane: 'mc-frame',
+          radius: s2.rank === 1 ? 9 : 7,
+          color: suspect ? '#f2c14e' : '#4fd1e6',
+          weight: 2,
+          fillColor: suspect ? '#f2c14e' : '#4fd1e6',
+          fillOpacity: 0.35,
+          className: 'mc-site mc-site--searched',
+        });
+        const crit = Object.entries(s2.criteria)
+          .map(([k, c]) => `${c.passed ? '&#10003;' : '&#10007;'} ${k} `
+            + `<b>${c.value}</b> ${c.comparison} ${c.threshold}`)
+          .join('<br/>');
+        marker.bindTooltip(
+          `<b>Site ${s2.rank}</b> &nbsp; score ${s2.suitability_score.toFixed(4)}<br/>`
+          + `${s2.lat_deg.toFixed(4)}&deg;, ${s2.lon_deg.toFixed(4)}&deg;<br/>`
+          + `<hr style="opacity:.3;margin:.3rem 0"/>${crit}`
+          + `<hr style="opacity:.3;margin:.3rem 0"/>`
+          + `<b>PSR ${s2.ice_access.psr_distance_km.toFixed(2)} km</b> — `
+          + `${s2.ice_access.means}<br/>`
+          + `<hr style="opacity:.3;margin:.3rem 0"/>`
+          + `<b>${suspect ? 'SUSPECT' : 'terrain OK'}</b>: plane-fit RMS `
+          + `${s2.interpolation_check.plane_rms_m} m, `
+          + `${s2.interpolation_check.ratio_to_reference_p05}&times; the frame`
+          + ` reference &mdash; ${s2.interpolation_check.verdict}`,
+          { direction: 'top', className: 'mc-tip', sticky: true, opacity: 1 },
+        );
+        marker.addTo(group);
+      });
+      console.info('[MissionMap] Phase 3 searched sites drawn (API sites suppressed): '
+        + inRibbon.join(', '));
+      return;
+    }
+
     rows.forEach(({ site, py, px, cov }) => {
       const sel = selectedLandingSite?.site_id === site.site_id;
       const rec = site.is_recommended;
@@ -1176,7 +1228,7 @@ export const MissionMap = forwardRef<MissionMapHandle, Props>(function MissionMa
       );
       marker.on('click', () => onSelectLandingSite(site));
     });
-  }, [mission, showLandingSites, selectedLandingSite, onSelectLandingSite, ready]);
+  }, [mission, showLandingSites, searchedSites, selectedLandingSite, onSelectLandingSite, ready]);
 
   // ── rover routes ───────────────────────────────────────────────
   //

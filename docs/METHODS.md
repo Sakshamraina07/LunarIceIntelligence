@@ -54,6 +54,12 @@ thing that has drifted is the thing meant to catch drift.
    reported "no artifact" for a perfect artifact. It measured −0.498 and printed
    a clean bill of health.
 
+**A test with the wrong sign is worse than no test at all.** No test leaves a
+question open; a test with the wrong sign closes it with the wrong answer, and
+hands you a green light to cite. The fifth instance would have certified a
+perfect interpolation artifact as clean terrain, and the site list would have
+shipped with that certification attached.
+
 **The fourth is the only one found BY DESIGN rather than by accident.** It was
 caught because the number was implausible on its face — a composite cannot carry
 *more* terrain relief than the terrain — and that is what a measurement is for.
@@ -1559,8 +1565,35 @@ near-perfectly safe; the term is saturated. Power ranges 0.758–0.896 and acces
 0.704–0.923. **The order of this list is decided by the two terms carrying
 together less than half its weight.**
 
-That is a finding about the weights, not something to tune away. It is reported
-because a composite that shows only its total would hide it.
+### 9.6a Safety is applied twice, and the second application is inert
+
+The cause is structural, not accidental. **The criteria filter has already
+removed every pixel with slope > 12°, roughness > 10 m or hazard > 0.50.** So
+everything reaching the composite is safe by construction, and `1 − hazard` has
+almost nothing left to separate:
+
+| term | weight | min | max | **span** | role here |
+|---|---|---|---|---|---|
+| access | 0.188 | 0.704 | 0.924 | **0.219** | ranks the list |
+| power | 0.312 | 0.759 | 0.896 | **0.137** | ranks the list |
+| **safety** | **0.500** | 0.977 | 0.994 | **0.017** | **inert — a gate, not a discriminator** |
+
+**The largest weight has the smallest span.** Safety enters the answer twice —
+once as a hard gate, where it does all its work, and once as a weighted score,
+where it can do none. That is the same double-counting fixed in Phase 1b, where
+`scientific_value` carried only distance while distance had already been
+subtracted: a quantity counted once where it bites and once where it cannot.
+
+**The ranking of this list is determined by the power and access terms alone.**
+
+**The weights are not retuned.** Reweighting to make safety "count" would be
+threshold-tuning against one frame. The weight is defensible: on rougher terrain,
+or a crater where the filter admits more marginal ground, safety would
+discriminate. **Its inertness here is a measurement, not a flaw**, and the span
+is reported beside the weight so a reader who sees "safety 0.50" cannot conclude
+that safety drove the choice.
+
+
 
 ### 9.7 What "PSR km" does not mean
 
@@ -1595,7 +1628,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `da0184a`.
+Stamped at commit `2c56ad0`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -1604,7 +1637,7 @@ Stamped at commit `da0184a`.
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
-| `docs/landing_sites.json` | `59eaae71c31d751f…` | §9.6, §9.7 |
+| `docs/landing_sites.json` | `6405581775517073…` | §9.6, §9.7 |
 | `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |

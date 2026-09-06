@@ -24,6 +24,7 @@ import { useEffect, useRef, useState } from 'react';
 import { fetchCraters, fetchMissionState, getReportPdfUrl } from '../services/api';
 import type { MissionState, CraterInfo, CandidateLandingSite } from '../types/mission';
 import { MissionMap, type MissionMapHandle, type LayerManifestEntry, groundResolutionLabel, loadManifest } from './MissionMap';
+import { loadSearchedSites, type SearchedSites } from './analysis';
 import { VerdictCard } from './VerdictCard';
 import { StepPanel } from './StepPanel';
 import { STEPS, LAYERS, LAYER_MAP } from './config';
@@ -191,6 +192,10 @@ export default function MissionControl() {
   const [scienceOpacity, setScienceOpacity] = useState(0.45);
   const [showRoute, setShowRoute] = useState(false);
   const [selectedSite, setSelectedSite] = useState<CandidateLandingSite | null>(null);
+  /** The Phase 3 sites, searched over all 14.9 M native pixels. Null means no
+   *  search has been run on this host -- an absent state, not an empty list. */
+  const [searched, setSearched] = useState<SearchedSites | null>(null);
+  useEffect(() => { loadSearchedSites().then(setSearched); }, []);
   const [coords, setCoords] = useState('Hover the map for coordinates');
   const [zoom, setZoom] = useState(1);
 
@@ -336,6 +341,7 @@ export default function MissionControl() {
             activeLayer={activeLayer}
             showLandingSites={showLandingSites}
             scienceOpacity={scienceOpacity}
+            searchedSites={searched?.sites ?? null}
             activeRoverStrategies={activeRoutes}
             selectedLandingSite={selectedSite}
             onSelectLandingSite={setSelectedSite}

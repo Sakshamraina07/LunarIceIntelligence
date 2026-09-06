@@ -69,6 +69,8 @@ LOLA_DIR = BASE_DIR / "data" / "pradan" / "lola"
 RAW = BASE_DIR / "data" / "pradan" / "raw" / "data" / "calibrated" / "20200808"
 STEM = "ch2_sar_ncxl_20200808t201154198"
 OUT = BASE_DIR / "docs" / "landing_sites.json"
+#: The UI reads this one.
+OUT_UI = BASE_DIR / "frontend" / "public" / "analysis" / "landing_sites.json"
 HEATMAP = NATIVE / "landing_suitability.tif"
 
 
@@ -401,6 +403,47 @@ def main() -> int:
               f"{s['criteria']['slope_deg']['value']:>6.2f}° "
               f"{s['criteria']['hazard']['value']:>7.3f} "
               f"{'YES' if s['criteria']['in_amplitude_mask']['passed'] else 'NO':>6}")
+    # ---- WHICH TERM ACTUALLY RANKS THIS LIST -----------------------------
+    # SAFETY IS APPLIED TWICE, AND THE SECOND APPLICATION IS INERT.
+    #
+    # The criteria filter already removed everything with slope > 12 deg,
+    # roughness > 10 m or hazard > 0.50. So every pixel reaching the composite is
+    # SAFE BY CONSTRUCTION, and `safety = 1 - hazard` has almost nothing left to
+    # separate. It carries the largest weight and does none of the ranking.
+    #
+    # This is the same double-counting fixed in Phase 1b, where scientific_value
+    # held only distance while distance had already been subtracted: a quantity
+    # entering the answer twice, once where it bites and once where it cannot.
+    #
+    # THE WEIGHTS ARE NOT RETUNED. Reweighting to make safety "count" would be
+    # threshold-tuning against this frame. The weight is defensible -- on rougher
+    # terrain, or a crater where the filter admits more marginal ground, safety
+    # would discriminate. Its inertness HERE is a measurement, and it is reported
+    # as one.
+    spans = {}
+    for name in ("safety", "power", "access"):
+        vals = [st["score_decomposition"][name]["term_value"] for st in sites]
+        arr_w = sites[0]["score_decomposition"][name]["weight"]
+        spans[name] = {"weight": arr_w, "min": min(vals), "max": max(vals),
+                       "span": round(max(vals) - min(vals), 4)}
+    hr("WHICH TERM RANKS THIS LIST — the largest weight does the least work")
+    print(f"  {'term':>10}{'weight':>9}{'min':>9}{'max':>9}{'span':>9}   role here")
+    for name, d in sorted(spans.items(), key=lambda kv: -kv[1]["span"]):
+        role = ("RANKS the list" if d["span"] > 0.05
+                else "INERT — a gate, not a discriminator")
+        print(f"  {name:>10}{d['weight']:>9.3f}{d['min']:>9.3f}{d['max']:>9.3f}"
+              f"{d['span']:>9.3f}   {role}")
+    print()
+    print("  Safety carries the largest weight and the smallest span, because the")
+    print("  criteria filter already removed every unsafe pixel: everything that")
+    print("  reaches the composite is safe, so 1 - hazard has nothing left to")
+    print("  separate. It is applied TWICE — once as a hard gate, once as a")
+    print("  weighted score — and the second application does no work.")
+    print("  THE RANKING OF THIS LIST IS DETERMINED BY POWER AND ACCESS ALONE.")
+    print("  The weights are NOT retuned: on rougher terrain, or where the filter")
+    print("  admits more marginal ground, safety would discriminate. Its inertness")
+    print("  here is a property of THIS frame and is reported, not corrected.")
+
     print("\n  PSR km and illum are the two that fight: closer to the cold trap means")
     print("  less sun. Both are printed because the trade-off is the decision.")
 
@@ -442,11 +485,34 @@ def main() -> int:
                 "max": float(slope_max_cell.max()),
             },
         },
-        "sites": sites,
+"ranking_note": {
+            "determined_by": ["power", "access"],
+            "safety_is_inert_here": True,
+            "why": ("The criteria filter already removes every pixel with slope > "
+                    "12 deg, roughness > 10 m or hazard > 0.50, so everything "
+                    "reaching the composite is safe and `1 - hazard` has almost "
+                    "nothing left to separate. Safety is applied TWICE — once as a "
+                    "hard gate, once as a weighted score — and the second "
+                    "application is inert. The ranking is determined by the power "
+                    "and access terms alone."),
+            "not_a_flaw_in_the_weights": ("A property of THIS frame. On rougher "
+                                          "terrain, or a crater where the filter "
+                                          "admits more marginal ground, safety would "
+                                          "discriminate. The weights are not retuned."),
+            "term_spans": spans,
+        },
+"sites": sites,
     }
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(doc, indent=2), encoding="utf-8")
     print(f"\n  wrote {OUT.relative_to(BASE_DIR)}")
+    # ONLY THE RESULTING SITES GO TO THE SCREEN. Every intermediate raster,
+    # percentile table and enrichment figure stays in docs/. Written by the same
+    # script that chose them, so the markers and the evidence behind them cannot
+    # come from two different runs.
+    OUT_UI.parent.mkdir(parents=True, exist_ok=True)
+    OUT_UI.write_text(json.dumps(doc, indent=2), encoding="utf-8")
+    print(f"  wrote {OUT_UI.relative_to(BASE_DIR)}  (the UI reads this one)")
     return 0
 
 

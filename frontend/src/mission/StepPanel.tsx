@@ -205,7 +205,7 @@ export function StepPanel(props: Props) {
         <Head eyebrow="Stage 03 · Radar" title="DFSAR Polarimetric Screening"
           desc="Circular polarisation ratio and degree of polarisation over the amplitude mask at native resolution. Statistics are taken over measured pixels only — never across the void." />
         <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
-          <Figure k="CPR mean" v={v.cpr_mean}
+          <Figure k="Channel imbalance (CPR proxy), mean" v={v.cpr_mean}
             sub={`median ${showValue(v.cpr_p50)} · p99 ${showValue(v.cpr_p99)} · peak ${showValue(v.cpr_max)}`} />
           <Figure k="DOP mean" v={v.dop_mean}
             sub={`median ${showValue(v.dop_p50)} · p99 ${showValue(v.dop_p99)} · min ${showValue(v.dop_min)}`} />

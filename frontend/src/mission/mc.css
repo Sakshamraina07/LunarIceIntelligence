@@ -546,6 +546,44 @@
    from the prose caption because it is a number a reader may need to compare
    against another layer's: after Phase 6 the terrain is 20 m-derived and the
    shadow mask is 80 m-derived on the same map. */
+/* A criterion that PASSES but carries no evidence. Deliberately not green:
+   a tick is a claim, and this row's claim would be false. Same visual weight as
+   the NO DATA treatment, because "satisfied for an unrelated reason" is closer
+   to absent than to affirmative. */
+.mc-ev--uninformative .mc-ev-label { color: var(--mc-text-mute); }
+.mc-why-uninformative { color: var(--mc-text-mute); opacity: 0.8; }
+.mc-ev-tag {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  padding: 0.05rem 0.3rem;
+  border: 1px solid var(--mc-warn);
+  color: var(--mc-warn);
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.mc-ev-why {
+  font-size: 0.62rem;
+  line-height: 1.45;
+  color: var(--mc-text-mute);
+  margin-top: 0.25rem;
+  padding-left: 0.1rem;
+  border-left: 2px solid var(--mc-warn);
+  padding-inline-start: 0.5rem;
+}
+
+/* A layer whose pixels are measured but whose PREMISE is a placeholder. */
+.mc-layer-tag {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  margin-left: auto;
+  padding: 0.02rem 0.24rem;
+  border: 1px solid var(--mc-warn);
+  color: var(--mc-warn);
+  border-radius: 2px;
+}
+
 .mc-legend-res {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 0.62rem;

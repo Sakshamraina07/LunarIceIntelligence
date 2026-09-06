@@ -39,8 +39,17 @@ function tierFor(status: 'PASS' | 'FAIL'): { cls: string; label: string } {
 function EvidenceRow({ e }: { e: AnalysisEvidence }) {
   const m = e.measured;
   const missing = m === null || m === undefined;
-  const Ico = missing ? Minus : e.passed ? Check : X;
-  const icoCls = missing ? 'mc-why-na' : e.passed ? 'mc-why-yes' : 'mc-why-no';
+  // THREE STATES, NOT TWO. A pass that carries no evidence is not a tick.
+  // `informative: false` means the criterion is satisfied for a reason unrelated
+  // to the question — the DOP row passes because the two receive channels are
+  // balanced, which is the ordinary case over regolith, and would read the same
+  // over bare rock. Rendering that as the one green tick beside four crosses
+  // makes the least meaningful row the first number a reviewer reads.
+  const uninformative = e.passed && e.informative === false;
+  const Ico = missing ? Minus : uninformative ? Minus : e.passed ? Check : X;
+  const icoCls = missing ? 'mc-why-na'
+    : uninformative ? 'mc-why-uninformative'
+      : e.passed ? 'mc-why-yes' : 'mc-why-no';
   const measured = missing
     ? '—'
     : Math.abs(m) >= 1 || m === 0
@@ -56,7 +65,7 @@ function EvidenceRow({ e }: { e: AnalysisEvidence }) {
     : `${e.comparison} ${e.threshold.toFixed(2)}`;
 
   return (
-    <li className="mc-ev" title={e.note}>
+    <li className={uninformative ? 'mc-ev mc-ev--uninformative' : 'mc-ev'} title={e.note}>
       <Ico size={14} className={`mc-why-ico ${icoCls}`} />
       <div className="mc-ev-body">
         <div className="mc-ev-head">
@@ -67,7 +76,11 @@ function EvidenceRow({ e }: { e: AnalysisEvidence }) {
           <span className="mc-ev-mlabel">{e.measured_label}</span>
           <span className={missing ? 'mc-ev-num mc-ev-num--na' : 'mc-ev-num'}>{measured}</span>
           {th && <span className="mc-ev-th">vs {th}</span>}
+          {uninformative && <span className="mc-ev-tag">PASSES — NOT EVIDENCE</span>}
         </div>
+        {uninformative && e.uninformative_reason && (
+          <div className="mc-ev-why">{e.uninformative_reason}</div>
+        )}
       </div>
     </li>
   );
@@ -136,7 +149,8 @@ export function VerdictCard({ analysis, craterName }: { analysis: Analysis | nul
       <div className="mc-verdict-prov">
         <Prov p={head.provenance} />
         <span>
-          {analysis.verdict.criteria_passed}/{analysis.verdict.criteria_total} criteria ·
+          {analysis.verdict.criteria_informative_passed ?? analysis.verdict.criteria_passed}
+          /{analysis.verdict.criteria_total} criteria ·
           confidence {analysis.verdict.confidence} ·
           screening {analysis.verdict.screening_status === 'PASS' ? 'PASSED' : 'NOT PASSED'}
         </span>

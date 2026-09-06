@@ -101,7 +101,7 @@ function contextCells(a: Analysis): CtxCell[] {
   const dopP50 = v.dop_p50?.value;
   const slopeMax = v.max_slope_deg?.value;
   return [
-    { k: 'CPR (mean)', v: v.cpr_mean, sub: cprMax != null ? `peak ${cprMax.toPrecision(3)}` : 'over measured px' },
+    { k: 'Channel imbal. (mean)', v: v.cpr_mean, sub: cprMax != null ? `peak ${cprMax.toPrecision(3)}` : 'over measured px' },
     { k: 'DOP (mean)', v: v.dop_mean, sub: dopP50 != null ? `median ${dopP50.toPrecision(3)}` : 'over measured px' },
     { k: 'PSR Area', v: v.psr_area_km2, sub: 'km² shadowed' },
     { k: 'Mean Slope', v: v.mean_slope_deg, sub: slopeMax != null ? `max ${slopeMax.toFixed(1)}°` : '', suffix: '°', digits: 2 },
@@ -145,7 +145,16 @@ export default function MissionControl() {
   // anything. STEP_LAYER still swings the map to cpr_heatmap on step 3.
   const [activeLayer, setActiveLayer] = useState('hillshade');
   const [showLandingSites, setShowLandingSites] = useState(true);
-  const [showRoute, setShowRoute] = useState(true);
+  // OFF BY DEFAULT. The planner is real -- Dijkstra over measured slope,
+  // roughness, hazard and illumination -- but the DESTINATION is not: the
+  // screen found 0.00 km2 of candidate, so there is nothing to route TO and
+  // every strategy aims at a hardcoded grid centre. That is why the ROVER stat
+  // reads NO DATA. Drawing a confident cyan line to an invented target, above a
+  // cell saying the quantity is not computable, is the same picture-versus-
+  // number disagreement this project keeps catching. The layer stays available,
+  // because the cost surface IS measured and worth showing, but it is opt-in and
+  // it says what it is.
+  const [showRoute, setShowRoute] = useState(false);
   const [selectedSite, setSelectedSite] = useState<CandidateLandingSite | null>(null);
   const [coords, setCoords] = useState('Hover the map for coordinates');
   const [zoom, setZoom] = useState(1);
@@ -304,6 +313,12 @@ export default function MissionControl() {
             </button>
             <button className={`mc-layer ${showRoute ? 'mc-layer--on' : ''}`} onClick={() => setShowRoute((v) => !v)}>
               <span className="mc-layer-sw" style={{ background: '#4fd1e6' }} /> Rover Route
+              <span className="mc-layer-tag" title={
+                'Dijkstra over measured slope, roughness, hazard and illumination — '
+                + 'but the target is a hardcoded grid centre, because the screen found '
+                + '0.00 km² of candidate and there is nothing to route to. The path is '
+                + 'real; the destination is not. Phase 4.'
+              }>DEMO TARGET</span>
               <Check size={13} className="mc-layer-check" />
             </button>
           </div>

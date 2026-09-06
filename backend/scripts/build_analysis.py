@@ -909,10 +909,34 @@ def build(crater_id: str = "faustini") -> dict:
             "measured": round(dop_s["p50"], 6), "measured_label": "median DOP",
             "threshold": dop_th, "comparison": "<",
             "passed": bool(dop_s["p50"] < dop_th),
+            # A TICK IMPLIES EVIDENCE, AND THIS ONE CARRIES NONE.
+            #
+            # METHODS 7.9.2 establishes by Monte Carlo that the amplitude proxy is
+            # a CHANNEL-IMBALANCE estimator with exactly zero sensitivity to the
+            # circular polarisation ratio. This row is the same algebra seen from
+            # the other side: DOP_amp = |tanh(x/2)| with x = ln(LH/LV), so
+            # balanced channels -- the normal case over regolith -- drive it to
+            # zero whatever the surface is made of. It passes because the
+            # instrument's two receive channels agree, not because anything about
+            # this terrain is depolarising.
+            #
+            # So it gets a third state. Rendering it as the one green tick beside
+            # four crosses would make the least informative row on the card the
+            # first number a reviewer reads.
+            "informative": False,
+            "uninformative_reason": (
+                f"Satisfied by {dop_pass.sum() / max(valid.sum(), 1) * 100:.1f} % of measured pixels "
+                f"because the amplitude proxy collapses when the two receive channels are "
+                f"balanced, which is the ordinary case over regolith. It is not evidence of "
+                f"volume scattering, and it would read the same over bare rock."),
             "provenance": MEASURED,
             "note": (f"{dop_pass.sum() / max(valid.sum(), 1) * 100:.1f} % of measured pixels sit below "
-                     f"{dop_th}. Depolarised returns are consistent with volume scattering, but on their own "
-                     "they do not discriminate ice from fine dry regolith."),
+                     f"{dop_th}. PASSES FOR A REASON THAT IS NOT ABOUT ICE: this build's DOP is "
+                     f"|tanh(x/2)| with x = ln(LH/LV), so it measures channel imbalance, and balanced "
+                     f"channels are what regolith normally gives. Depolarised returns are consistent "
+                     "with volume scattering, but on their own they do not discriminate ice from fine "
+                     "dry regolith -- and this proxy does not measure depolarisation in the first "
+                     "place. See METHODS 7.9.2."),
         },
         ({
             "criterion": "psr_cold_trap_overlap",
@@ -997,6 +1021,13 @@ def build(crater_id: str = "faustini") -> dict:
               f"{m:>12s}  vs {th:<10s} {e['provenance']}")
 
     passed_n = sum(1 for e in evidence if e["passed"])
+    # A criterion that passes for a reason unrelated to the question is not
+    # evidence, and counting it as though it were is how "1/5" becomes the first
+    # number a reviewer reads. Informative passes are counted separately.
+    informative_pass_n = sum(1 for e in evidence
+                             if e["passed"] and e.get("informative", True))
+    uninformative = [e for e in evidence
+                     if e["passed"] and not e.get("informative", True)]
     evaluable = [e for e in evidence if e["provenance"] != UNAVAILABLE]
     withheld_n = len(evidence) - len(evaluable)
     status = "PASS" if cand_n > 0 else "FAIL"
@@ -1146,8 +1177,15 @@ def build(crater_id: str = "faustini") -> dict:
         "criteria_total": len(evidence),
         "criteria_evaluable": len(evaluable),
         "criteria_withheld": withheld_n,
-        "criteria_note": (f"{passed_n} of {len(evaluable)} criteria that can be evaluated in this build "
-                          f"passed. The other {withheld_n} are WITHHELD, not failed: two shadow terms "
+        "criteria_informative_passed": informative_pass_n,
+        "criteria_uninformative_passed": len(uninformative),
+        "criteria_uninformative": [
+            {"label": e["label"], "reason": e["uninformative_reason"]} for e in uninformative],
+        "criteria_note": (f"{informative_pass_n} of {len(evaluable)} evaluable criteria passed "
+                          f"INFORMATIVELY. {len(uninformative)} further passed for a reason unrelated "
+                          f"to ice and is shown as such rather than as a tick: "
+                          + " ".join(e["uninformative_reason"] for e in uninformative) + " "
+                          + f"The other {withheld_n} are WITHHELD, not failed: two shadow terms "
                           f"awaiting the Phase 2 horizon computation, and thermal stability, for which "
                           f"no product and no model exist here. A withheld criterion is not evidence "
                           f"against ice."),

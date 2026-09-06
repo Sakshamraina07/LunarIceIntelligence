@@ -649,7 +649,7 @@ def build_layers(src: dict, terrain: dict, hillshade: np.ndarray,
              az=(illum_meta or {}).get("azimuths", "?"),
          )},
 
-        {"resolution": radar_res, "id": "cpr_heatmap", "label": "Radar Signals (CPR)", "data": src["cpr"], "mask": valid,
+        {"resolution": radar_res, "id": "cpr_heatmap", "label": "Channel imbalance (CPR proxy)", "data": src["cpr"], "mask": valid,
          "stretch": "log", "colormap": "turbo", "opaque_alpha": 235,
          "provenance": "measured-radar",
          "sources": ["native/cpr_native.tif", "native/valid_native.tif"],

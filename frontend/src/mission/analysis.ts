@@ -48,6 +48,11 @@ export interface AnalysisEvidence {
   threshold: number | null;
   comparison: string | null;
   passed: boolean;
+  /** False when the criterion is SATISFIED FOR A REASON UNRELATED TO THE
+   *  QUESTION. Absent means informative, so an older analysis file keeps its
+   *  current rendering rather than silently becoming "not evidence". */
+  informative?: boolean;
+  uninformative_reason?: string;
   provenance: Provenance;
   note: string;
 }
@@ -172,6 +177,11 @@ export interface Analysis {
   verdict: {
     screening_status: 'PASS' | 'FAIL';
     criteria_passed: number;
+    /** Passes that actually bear on the question. `criteria_passed` counts every
+     *  pass including ones that carry no evidence; this is the one to display. */
+    criteria_informative_passed?: number;
+    criteria_uninformative_passed?: number;
+    criteria_uninformative?: { label: string; reason: string }[];
     criteria_total: number;
     /** How many criteria could be evaluated at all. The rest are WITHHELD. */
     criteria_evaluable: number;

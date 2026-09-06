@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-06T11:50:40.204554+00:00",
+  "generated_utc": "2026-09-06T12:14:59.902284+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -165,7 +165,15 @@
     "criteria_total": 5,
     "criteria_evaluable": 5,
     "criteria_withheld": 0,
-    "criteria_note": "1 of 5 criteria that can be evaluated in this build passed. The other 0 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.",
+    "criteria_informative_passed": 0,
+    "criteria_uninformative_passed": 1,
+    "criteria_uninformative": [
+      {
+        "label": "DOP depressed (volume scattering)",
+        "reason": "Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock."
+      }
+    ],
+    "criteria_note": "0 of 5 evaluable criteria passed INFORMATIVELY. 1 further passed for a reason unrelated to ice and is shown as such rather than as a tick: Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock. The other 0 are WITHHELD, not failed: two shadow terms awaiting the Phase 2 horizon computation, and thermal stability, for which no product and no model exist here. A withheld criterion is not evidence against ice.",
     "label": "No radar ice signature in this swath",
     "sublabel": "0.00 km² of the 1,461 km² measured swath passed CPR > 1.00 and DOP < 0.13",
     "confidence": "Low",
@@ -551,8 +559,10 @@
       "threshold": 0.13,
       "comparison": "<",
       "passed": true,
+      "informative": false,
+      "uninformative_reason": "Satisfied by 92.7 % of measured pixels because the amplitude proxy collapses when the two receive channels are balanced, which is the ordinary case over regolith. It is not evidence of volume scattering, and it would read the same over bare rock.",
       "provenance": "MEASURED",
-      "note": "92.7 % of measured pixels sit below 0.13. Depolarised returns are consistent with volume scattering, but on their own they do not discriminate ice from fine dry regolith."
+      "note": "92.7 % of measured pixels sit below 0.13. PASSES FOR A REASON THAT IS NOT ABOUT ICE: this build's DOP is |tanh(x/2)| with x = ln(LH/LV), so it measures channel imbalance, and balanced channels are what regolith normally gives. Depolarised returns are consistent with volume scattering, but on their own they do not discriminate ice from fine dry regolith -- and this proxy does not measure depolarisation in the first place. See METHODS 7.9.2."
     },
     {
       "criterion": "psr_cold_trap_overlap",

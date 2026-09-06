@@ -1296,7 +1296,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `6fdfbb5`.
+Stamped at commit `8de063d`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -1308,6 +1308,6 @@ Stamped at commit `6fdfbb5`.
 | `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
-| `frontend/public/analysis/faustini.json` | `b0c92a7f373533ec…` | §8.2, §8.3 |
+| `frontend/public/analysis/faustini.json` | `1b52de2160842ca0…` | §8.2, §8.3 |
 
 <!-- END GENERATED STAMP -->

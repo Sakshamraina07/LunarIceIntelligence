@@ -136,7 +136,7 @@ export const LAYERS: LayerDef[] = [
     provenance: 'measured',
   },
   {
-    id: 'cpr_heatmap', label: 'Radar Signals (CPR)', swatch: '#06b6d4', tiled: true,
+    id: 'cpr_heatmap', label: 'Channel imbalance (CPR proxy)', swatch: '#06b6d4', tiled: true,
     gradient: 'linear-gradient(to right,#30123b,#4a68d8,#1ae4b6,#a4fc3c,#faba39,#d23105)',
     low: 'Lower CPR', high: 'Higher CPR',
     provenance: 'measured',

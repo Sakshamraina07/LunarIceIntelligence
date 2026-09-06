@@ -79,10 +79,24 @@ app reports `NOT_INGESTED` and serves no numbers at all** — not zeros, which
 would be a measurement claim. There is no demo or synthetic fallback on any
 serving path.
 
+## The report
+
+`GET /api/report/pdf/{crater}` renders the PDF **from the same four artifacts the
+mission screen reads** — it computes nothing of its own. Every figure carries a
+provenance mark, because a reader holding a printout cannot hover a number to
+find out where it came from.
+
+It did not use to. Until this pass the report was generated from the on-demand
+backend's legacy payload and printed **five landing sites that Phase 3 had
+deleted** — one marked RECOMMENDED — beside a rover traverse of 18.06 km and
+3,137.5 Wh for an invented 30 kg vehicle, while the screen reported NO DATA for
+the same quantity. `assert_pdf_agrees_with_analysis.py` now reads the rendered
+bytes and fails the build on any figure that is not in the artifacts.
+
 ## Verification
 
-`verify_all.py` runs nine gates and maps each to a statement in PRD section 6.
-Four of them also run on every rebuild, and any non-zero exit stops the build.
+`verify_all.py` runs ten gates and maps each to a statement in PRD section 6.
+Five of them also run on every rebuild, and any non-zero exit stops the build.
 Each was verified by making it fail on purpose — including five cases where the
 verification apparatus itself turned out to be wrong (`docs/METHODS.md` §0).
 

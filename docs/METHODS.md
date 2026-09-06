@@ -9,8 +9,9 @@ and `PROVENANCE.md` names the phase that will compute it.
 
 ## 0 · The recurring defect in this project
 
-*Three patterns, twelve instances. The first two are below in full; the third —
-one transform written twice — follows them.*
+*Four patterns, sixteen instances. Two of them are about descriptions drifting
+from what they describe, one is about a transform written twice, and the fourth
+is about a whole surface that had no check on it at all.*
 
 **Five instances so far of one failure: a caption, a name or a summary that
 stopped tracking the computation it describes.** The illumination layer's
@@ -195,6 +196,98 @@ had been on that map, in the wrong place, since Phase 3 shipped. They were never
 noticed because **nobody had drawn a route between them** — the traverse existed
 only in `traverse.json`. Rendering a deliverable is not only presentation; it is
 the first time two computations are made to agree on a screen.
+
+
+### The fourth pattern: the surface nobody was looking at
+
+One instance, and it is the worst defect this project has produced since the
+Random Forest's `P(ice) = 0.96`.
+
+**The PDF report was printing five landing sites that do not exist.** Alpha Ridge
+(North), Beta Plateau, Gamma Bench, Delta Spur and Epsilon Crest — the exact five
+names, in the exact order, of the hardcoded grid offsets in
+`module_e_landing.py` that Phase 3 replaced with a search over all 14,943,444
+native pixels. Every figure in that table came from the deleted list:
+
+| | in the report | measured |
+|---|---|---|
+| slope | 6.7 / 8.6 / 10.6 / 10.7 / 12.2° | 0.26 / 0.18 / 0.05 / 0.55 / 0.20° |
+| illumination | 0.02 / 0.01 / 0.04 / 0.03 / 0.00 | 0.457 / 0.456 / 0.409 / 0.460 / 0.389 |
+| score | 37.1 | 0.9290 |
+
+**The score is not even on the same scale**, which is the tell: two numbers that
+disagree can be argued about, but 37.1 against 0.929 is two different
+quantities wearing one label. And one of those five rows was marked
+**RECOMMENDED**, in a formal report, for a site the search never chose.
+
+Three more, in the same document:
+
+1. **It contradicted the app.** 18.06 km and 3,137.5 Wh as headline rover
+   figures, while the screen's ROVER cell read NO DATA — not computable. Phase 4
+   plans routes of 1,641–7,280 m and reports energy **per kilogram** precisely so
+   that no rover mass is invented; the report invented 30 kg.
+2. **It contradicted itself, two pages apart.** §2: *"Explainable ML Likelihood:
+   Random Forest model … provides continuous probability distributions."* §5
+   item 2: *"the Random Forest ice-likelihood classifier was WITHDRAWN."*
+3. **It made a false reproducibility claim**: *"every figure above is computed
+   from the Chandrayaan-2 DFSAR product named on page 1, and re-running the
+   pipeline on that product reproduces them."* The sites and the rover figures
+   were hardcoded, so re-running reproduced none of them. **That sentence had
+   already been deleted from `pdf_generator.py` once, and had come back in new
+   wording** — which is the first pattern, in the file that had most recently
+   been cleaned of it.
+
+And **all of Phase 8 was absent**: no confidence interval on the candidate area,
+which `assert_detection_area_has_interval` exists to require; no measured ENL; no
+significance floor; no PSR area; no coverage figures.
+
+**Why nothing caught it.** `assert_paths_agree.py` compares `mission_service`
+against `faustini.json` on **slope, roughness and hazard** — the three quantities
+that diverged the last time — and on nothing else.
+`assert_detection_area_has_interval` guards the analysis JSON, which is not what
+the report reads. So the PDF was generated from the legacy payload and **no gate
+had ever looked at it**. It is not that a check was wrong; it is that a whole
+surface had none, and it was the surface that leaves the browser.
+
+> **A PDF is read without the badge.** Every other surface in this project
+> carries its provenance beside it and a reader can hover a figure to find out
+> where it came from. On paper they cannot, which makes the report the place
+> where a stale number does the most damage — and it was the last output with
+> no gate on it.
+
+**The fix is structural and is Phase 1's, applied to the surface Phase 1 missed.**
+The report is now a *rendering* of the four artifacts the mission screen reads —
+`<crater>.json`, `landing_sites.json`, `traverse.json`,
+`detection_statistics.json` — and computes nothing. `report_data.py` reads them
+and re-derives not a rounding, not a unit conversion, not a sum. Every table
+carries a provenance column, and no site is marked RECOMMENDED, because the
+ranking is a score order over one frame and the cold-trap target is modelled.
+
+**And the gate, because this was the third time two surfaces disagreed.**
+`assert_pdf_agrees_with_analysis.py` renders the report, extracts the text from
+the **rendered bytes** — not from the generator's inputs, which would be checking
+one assumption against itself — and fails the build on any numeric literal that
+is not in the artifacts at the precision printed. Two presentational transforms
+are allowed and named (a fraction shown as a percentage; magnitude, because the
+extractor reads unsigned literals); no sums, no ratios, no unit conversions. It
+also fails on six phrases by name, because *"Random Forest … provides continuous
+probability distributions"* contains no numbers.
+
+Injection-tested: `--inject` adds one fabricated site carrying the deleted list's
+own figures, and the gate names all six that are not in any artifact — slope
+6.70, illumination 0.020, cold-trap distance 11.44, score 37.1000, and both
+coordinates.
+
+The PDF text extractor it depends on had **two defects of its own**, both found
+by disbelieving a clean result. It reported a full two-page report as empty,
+because ReportLab writes `/Filter [/ASCII85Decode /FlateDecode]` and a plain
+`zlib` attempt fails silently. Then, once ASCII85 was added, it "successfully"
+extracted 3,156 bytes of undecoded noise, because ASCII85 output is printable
+letters and a 3 kB block of it contains the byte pairs `BT` and `TJ` by chance —
+a plausibility test that passes on garbage. Chains are now tried most-decoded
+first, and the stream regex is anchored because `stream\r?\n` also matches the
+tail of `endstream`.
+
 
 ---
 

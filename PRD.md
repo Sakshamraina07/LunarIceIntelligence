@@ -1721,7 +1721,7 @@ the three outcomes above was observed.
 
 ## 6 · Definition of done
 
-The project is done when all six statements are true and each is backed by a
+The project is done when all seven statements are true and each is backed by a
 number in a report:
 
 1. Every number rendered on `#mission` resolves to a raster read or an explicit
@@ -1739,3 +1739,16 @@ number in a report:
 6. The map's relief is real at 25 m (LOLA 20 m native), lit from more than one
    direction, and the base filter is set from a histogram rather than by eye.
    (Gate 6)
+7. **The PDF report is a rendering of the analysis artifacts, not a second
+   computation of them**, and every figure it prints appears in those artifacts
+   at the precision printed. (Gate 9)
+
+   Added after the report was found printing five landing sites that Phase 3
+   deleted — Alpha Ridge, Beta Plateau, Gamma Bench, Delta Spur, Epsilon Crest,
+   one of them marked RECOMMENDED — beside a rover traverse of 18.06 km and
+   3,137.5 Wh while the screen's ROVER cell read NO DATA. It was generated from
+   `mission_service`'s legacy payload, and Gate 7 compares that payload against
+   the analysis on slope, roughness and hazard only, so nothing looked at it.
+   **A PDF is the one artefact that leaves the browser without the provenance
+   badge beside it**, which makes it the surface where a stale number does the
+   most damage and the last one that had no gate.

@@ -1,6 +1,6 @@
 {
   "schema": "detection_statistics/1",
-  "generated_utc": "2026-09-06T17:09:39.715760+00:00",
+  "generated_utc": "2026-09-06T18:13:15.214539+00:00",
   "generator": "backend/scripts/detection_statistics.py",
   "effective_looks": {
     "screened_field": {

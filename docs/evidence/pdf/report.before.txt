@@ -1,0 +1,135 @@
+LUNAR ICE INTELLIGENCE & MISSION REPORT
+Target: 
+Faustini Crater (Chandrayaan-2 SAR Swath)
+ | Data Mode: 
+REAL
+ | Chandrayaan-2 Remote Sensing
+Architecture v2.0
+1. EXECUTIVE MISSION SUMMARY
+This decision-support analysis establishes landing feasibility, identifies candidate subsurface ice-bearing deposits, and plans
+hazard-aware rover traverses for 
+Faustini Crater (Chandrayaan-2 SAR Swath)
+. The analysis integrates Chandrayaan-2 DFSAR
+polarimetric radar (CPR/DOP), LOLA/DEM illumination and terrain hazards, machine learning ice likelihood scoring, and
+multi-objective A* rover navigation.
+Metric
+Value
+Operational Significance
+Candidate Ice Area
+0.00 km²
+CPR > 1.00 AND DOP < 0.13, over cells carrying radar
+Estimated Ice-Equivalent Volume
+0 m³
+candidate area x 5 m assumed depth x 0.15 assumed pore fraction  an assumption, not a measurement
+Recommended Landing Site
+Alpha Ridge (North)
+Highest composite score (safety + illumination - distance)
+Rover Traverse Distance
+18.06 km
+Science-Aware route, uniform-cost search over slope and hazard
+Estimated Rover Energy
+3,137.5 Wh
+Simplified engineering estimate, 30 kg rover
+2. DFSAR RADAR ANALYSIS & ICE INTELLIGENCE
+Circular Polarization Ratio (CPR):
+ High CPR (> 1.0) inside permanent shadow regions indicates the Coherent Backscatter
+Opposition Effect (CBOE), characteristic of low-loss dielectric media such as water ice.
+Degree of Polarization (DOP):
+ Depressed DOP (
+< 0.13) confirms multiple subsurface volume scattering.
+Scientific Baseline Screening:
+ Requires CPR > 1.0 AND DOP < 0.13 AND spatial overlap with PSR.
+Explainable ML Likelihood:
+ Random Forest model trained on dual-pol and morphological features provides continuous probability
+distributions without replacing scientific physics.
+3. LANDING SITE SELECTION (MULTI-CRITERIA RANKING)
+Rank
+Site Name
+Slope
+Hazard
+Illumination
+Score
+Recommendation
+#1
+Alpha Ridge (North)
+6.7°
+0.23
+0.02
+37.1
+RECOMMENDED
+#2
+Beta Plateau (South-East)
+8.6°
+0.31
+0.01
+30.0
+Alternative
+#3
+Gamma Bench (South-West)
+10.6°
+0.37
+0.04
+27.9
+Alternative
+#4
+Delta Spur (West)
+10.7°
+0.38
+0.03
+25.7
+Alternative
+#5
+Epsilon Crest (East)
+12.2°
+0.43
+0.00
+22.4
+Alternative
+4. ROVER TRAVERSE STRATEGY COMPARISON
+Strategy
+Algorithm
+Distance (km)
+Mean Hazard
+Energy (Wh)
+Science Yield
+Shortest
+Dijkstra
+18.06
+0.41
+3,137.5
+0.0
+Safest
+Dijkstra
+34.64
+0.24
+5,415.7
+0.0
+Science-Aware
+Dijkstra
+18.06
+0.41
+3,137.5
+0.0
+5. SCIENTIFIC LIMITATIONS & MISSION ASSUMPTIONS
+1. 
+Radar Signatures:
+ Polarimetric anomalies (CPR > 1.0, DOP < 0.13) are consistent with potential subsurface ice, but do not constitute
+certified ground truth confirmation without in-situ drilling or neutron spectrometry.
+2. 
+No ML model:
+ the Random Forest ice-likelihood classifier was WITHDRAWN. It was fitted to uniformly random labels whose positive
+class was defined as CPR 1.05-2.5  a range this amplitude-only product cannot reach  so every probability it produced was an
+extrapolation from fabricated examples. No probability appears in this report.
+3. 
+Volumetric uncertainty:
+ ice volume is a 3-tier range over assumed regolith stratigraphy (conservative 2 m / 0.05, expected 5 m / 0.15,
+upper 10 m / 0.3). The area is measured; the depth and the pore fraction are assumptions and are stated with every figure.
+4. 
+Rover energy:
+ a simplified engineering estimate for a 30 kg micro-rover, not a substitute for certified NASA/ISRO flight dynamic
+models. The planner is a uniform-cost (Dijkstra) search; no optimality beyond that is claimed.
+5. 
+Reproducibility:
+ every figure above is computed from the Chandrayaan-2 DFSAR product named on page 1, and re-running the
+pipeline on that product reproduces them. Any quantity that could not be computed is printed as NO DATA rather than filled in.
+Generated automatically by Lunar Ice Intelligence System v2.0 | Department of Engineering Final Year Project

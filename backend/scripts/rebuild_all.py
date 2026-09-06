@@ -22,9 +22,10 @@ So the ordering is expressed here rather than in a reviewer's memory:
     6. emit_probe_grid.py           the measured field, readable point by point
     7. emit_provenance.py           docs/PROVENANCE.md, AND the marks gate
     8. assert_paths_agree.py        the API and the static analysis, compared
-    9. stamp_methods.py --check     METHODS against the artifacts it quotes
+    9. assert_pdf_agrees_with_analysis.py  the report vs the artifacts it renders
+   10. stamp_methods.py --check     METHODS against the artifacts it quotes
 
-FOUR OF THESE ARE GATES, NOT REPORTS, and each exits non-zero rather than
+FIVE OF THESE ARE GATES, NOT REPORTS, and each exits non-zero rather than
 printing a warning:
 
   * step 5 computes the interval step 7 refuses to ship a detection area without;
@@ -32,6 +33,9 @@ printing a warning:
     without a reason;
   * step 8 fails if the API and the static analysis disagree on a terrain
     quantity they both report -- they have diverged twice;
+  * step 9 fails if the PDF prints a figure the artifacts do not contain -- it
+    printed five deleted landing sites and an invented rover energy for months,
+    because nothing checked it;
   * step 9 fails if an artifact moved after a figure was transcribed from it into
     METHODS, and names which sections to re-read.
 
@@ -40,8 +44,8 @@ as step 3, so leaving it out would put an older copy of the measured field under
 a live map.
 
 STEPS 1 AND 2 ARE SKIPPABLE, AND USUALLY SHOULD BE. They read multi-gigabyte
-products and take minutes; steps 3-9 take seconds to a couple of minutes and are
-the ones that change when the analysis changes. `--skip-ingest` runs 3-9 only.
+products and take minutes; steps 3-10 take seconds to a couple of minutes and are
+the ones that change when the analysis changes. `--skip-ingest` runs 3-10 only.
 """
 from __future__ import annotations
 
@@ -103,22 +107,22 @@ def main() -> int:
               "are reused as-is.")
     else:
         timings.append(("1 · LOLA ingest",
-                        run("1/9 · ingest_lola_polar_dem.py",
+                        run("1/10 · ingest_lola_polar_dem.py",
                             [py, str(SCRIPTS / "ingest_lola_polar_dem.py")])))
         timings.append(("2 · DFSAR pipeline",
-                        run("2/9 · process_real_sar_pipeline.py",
+                        run("2/10 · process_real_sar_pipeline.py",
                             [py, str(SCRIPTS / "process_real_sar_pipeline.py")])))
 
     timings.append(("3 · analysis",
-                    run("3/9 · build_analysis.py — the numbers",
+                    run("3/10 · build_analysis.py — the numbers",
                         [py, str(SCRIPTS / "build_analysis.py"), args.crater])))
     timings.append(("4 · layers",
-                    run("4/9 · render_layers.py — the pixels",
+                    run("4/10 · render_layers.py — the pixels",
                         [py, str(SCRIPTS / "render_layers.py")])))
     # Must precede the provenance gate: that gate now REFUSES to ship a detection
     # area without its confidence interval, and this is what computes it.
     timings.append(("5 · detection statistics",
-                    run("5/9 · detection_statistics.py — significance, and the CI",
+                    run("5/10 · detection_statistics.py — significance, and the CI",
                         [py, str(SCRIPTS / "detection_statistics.py")])))
     # The probe reads the SAME native rasters the analysis does, at a stated
     # decimation. If it is not rebuilt here it becomes a second, older copy of
@@ -126,21 +130,27 @@ def main() -> int:
     # failure mode this file exists to prevent. It runs after detection
     # statistics because it copies the floor and the look count out of them.
     timings.append(("6 · probe grid",
-                    run("6/9 · emit_probe_grid.py — the measured field, point by point",
+                    run("6/10 · emit_probe_grid.py — the measured field, point by point",
                         [py, str(SCRIPTS / "emit_probe_grid.py")])))
     timings.append(("7 · provenance gate",
-                    run("7/9 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
+                    run("7/10 · emit_provenance.py — docs/PROVENANCE.md, and the marks gate",
                         [py, str(SCRIPTS / "emit_provenance.py"), args.crater])))
     # The API and the static analysis compute terrain by two paths that share no
     # code, and they have diverged twice. The second time the UI was correct and
     # only the PDF was wrong, which is the worst shape for a bug to have: looking
     # at the app does not reveal it.
     timings.append(("8 · cross-path gate",
-                    run("8/9 · assert_paths_agree.py — API vs static analysis",
+                    run("8/10 · assert_paths_agree.py — API vs static analysis",
                         [py, str(SCRIPTS / "assert_paths_agree.py"),
                          "--crater", args.crater])))
-    timings.append(("9 · METHODS staleness",
-                    run("9/9 · stamp_methods.py --check — METHODS vs its artifacts",
+    # The report is a rendering of the artifacts just rebuilt, so it is checked
+    # against them here rather than at tag time.
+    timings.append(("9 · PDF vs analysis",
+                    run("9/10 · assert_pdf_agrees_with_analysis.py — the report's figures",
+                        [py, str(SCRIPTS / "assert_pdf_agrees_with_analysis.py"),
+                         "--crater", args.crater])))
+    timings.append(("10 · METHODS staleness",
+                    run("10/10 · stamp_methods.py --check — METHODS vs its artifacts",
                         [py, str(SCRIPTS / "stamp_methods.py"), "--check"])))
 
     print("\n" + "=" * 78)

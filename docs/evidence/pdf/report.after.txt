@@ -1,0 +1,237 @@
+LUNAR ICE INTELLIGENCE & MISSION REPORT
+Target: 
+Faustini Crater (Chandrayaan-2 SAR Swath)
+  
+|
+  Chandrayaan-2 DFSAR (L-band, hybrid circular polarimetry), 2020-08-08  
+|
+ 
+product 
+ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18
+Every figure is rendered from the precomputed analysis artifacts and carries its provenance mark. Generated 2026-09-06 16:46 UTC.
+1. HEADLINE RESULT
+This is a screening of one Chandrayaan-2 DFSAR pass over Faustini Crater (Chandrayaan-2 SAR Swath) for water-ice signatures,
+with a hazard-aware landing-site search and traverse plan over measured LOLA topography. 
+The headline result is a null result.
+0.00 km² of the 1,461 km² measured swath passed CPR > 1.00 and DOP < 0.13
+Metric
+Value
+Mark
+What it means
+Candidate ice area
+0.0000 km²
+MEASURED
+CPR > 1.00 AND DOP < 0.13, over cells carrying radar
+95% CI [0.0000, 0.0024] km
+² (Wilson score interval on the pass proportion)
+Radar measured
+1,460.68 km²
+MEASURED
+of a 9,339.65 km² frame at 25 m/px  15.64% returned amplitude
+Permanent shadow
+2,043 km²
+MEASURED
+horizon computation over the full LOLA polar array, 360 azimuths
+Ice-equivalent volume
+0 m³
+DERIVED
+candidate area × assumed depth × assumed pore fraction  the area is
+measured, both multipliers are assumptions
+2. WHAT WAS MEASURED, AND WHAT IT IS NOT
+The quantity screened is derived from amplitude alone.
+ With CPR built from the two amplitude channels, CPR and DOP are
+monotone functions of the SAME single variable, so the rule 
+CPR > 1.00 AND DOP < 0.13
+ is arithmetically empty: satisfying the
+DOP criterion bounds CPR from above, whatever the terrain. The screen is empty BY CONSTRUCTION, not by absence of ice.
+It is therefore not a circular polarisation ratio.
+ True CPR lives in the H
+
+V phase, and taking magnitudes discards it. The
+published quantity is reported here as a channel-imbalance proxy carrying CPR's name, which is what it is.
+No machine-learning likelihood appears in this report.
+ The Random Forest classifier was withdrawn: it was fitted to uniformly
+random labels whose positive class was CPR 1.05
+
+2.5, a range this amplitude-only product cannot reach.
+Detection statistic
+Value
+Mark
+Basis
+Equivalent number of looks (screened field)
+13.72  19.77
+MEASURED
+raw product 5.83 / 5.14; the product declares 21
+Per-pixel significance floor
+1.6981  1.8946
+MEASURED
+a single pixel must read above this to be significantly over a
+threshold of 1.0 at 95% confidence
+Swath maximum
+0.053411
+MEASURED
+short of the floor by a factor of 35.5
+Candidate area interval
+[0.0000, 0.0024] km²
+MEASURED
+Wilson score interval on the pass proportion on 2,337,086
+measured pixels, 0 passing. The normal approximation gives [0, 0]
+at k = 0 and would report a measured zero as carrying no
+uncertainty.
+Our proxy is NOT F(2N,2N)-distributed  METHODS 7.9.2. This raster is the ratio of the measured value to the floor a true sigma_SC/sigma_OC would have
+to clear, not a p-value on our own quantity.
+3. LANDING SITE SELECTION
+The argmax of a six-criterion search over all 
+14,943,444
+ native 25 m pixels, with 5 km non-maximum suppression so the five are
+five places and not five pixels of one. Every criterion is evaluated per site and its threshold is printed beside it.
+Rank
+Latitude
+Longitude
+Slope
+Hazard
+Illum.
+Score
+Cold trap
+Terrain
+Mark
+#1
+-86.2714°
+82.6477°
+0.26°
+0.0168
+0.457
+0.9290
+3.05 km
+OK
+MEASURED
+#2
+-86.4434°
+82.9859°
+0.18°
+0.0103
+0.456
+0.9197
+4.34 km
+OK
+MEASURED
+#3
+-86.0109°
+80.1392°
+0.05°
+0.0060
+0.409
+0.9147
+2.03 km
+OK
+MEASURED
+#4
+-86.2995°
+79.6466°
+0.55°
+0.0223
+0.460
+0.9009
+5.91 km
+OK
+MEASURED
+#5
+-85.8987°
+78.0560°
+0.20°
+0.0233
+0.389
+0.8986
+1.52 km
+OK
+MEASURED
+Ranked by power and access. The criteria filter already removes every pixel with slope > 12 deg, roughness > 10 m or hazard > 0.50, so everything reaching
+the composite is safe and `1 - hazard` has almost nothing left to separate. Safety is applied TWICE  once as a hard gate, once as a weighted score  and
+the second application is inert. The ranking is determined by the power and access terms alone. 
+No site is marked RECOMMENDED:
+ the ranking is a score
+order over this frame, and the cold-trap distance is to a MODELLED cold trap  where ice could persist under the horizon computation, not where ice is.
+Candidate ice area in this frame is 0.0000 km² and no radar detection supports any of these targets.
+4. TRAVERSE PLANNING
+Dijkstra, 8-connected, scipy.sparse.csgraph at a stated 100 m planning resolution. 
+Connectivity is established before any
+distance is quoted:
+ 5/5 sites lie in one passable component holding 98.46% of all passable cells, and 81.32% of 932,856 planning
+cells are passable. Every length is a multiple of 100 m (or 141.4 m diagonally). A route reported as 4,180 m is 4,180 +/- 50 m.
+Site
+Length
+Climb
+Energy
+Waypoints
+Status
+Mark
+#1
+3,272.8 m
+0.0 m
+1,329.6 J/kg
+30
+REACHABLE
+DERIVED
+#2
+4,662.7 m
+46.9 m
+1,970.4 J/kg
+41
+REACHABLE
+DERIVED
+#3
+2,207.1 m
+0.2 m
+896.9 J/kg
+21
+REACHABLE
+DERIVED
+#4
+7,279.9 m
+47.6 m
+3,034.7 J/kg
+68
+REACHABLE
+DERIVED
+#5
+1,641.4 m
+44.0 m
+738.4 J/kg
+17
+REACHABLE
+DERIVED
+Energy is 
+DERIVED
+ and reported PER KILOGRAM: g_moon * (mu_roll * length_m + positive climb_m), per kg, with g = 1.625 m/s² and an 
+assumed
+ rolling
+resistance µ = 0.25. Reported PER KILOGRAM so no rover mass is invented. mu_roll is an assumed rolling resistance for regolith, not a measurement. No
+rover mass, wheel geometry, speed or duty cycle exists anywhere in this project, so no watt-hour figure is issued.
+5. LIMITATIONS AND ASSUMPTIONS
+1. 
+Radar:
+ the screened quantity is derived from amplitude alone and is a channel-imbalance proxy, not a circular polarisation ratio. No
+result here is ground truth; confirmation requires in-situ drilling or neutron spectrometry.
+2. 
+No ML model:
+ the Random Forest ice-likelihood classifier was WITHDRAWN and no probability appears anywhere in this report,
+including in section 2.
+3. 
+Volume:
+ the area is measured; the depth and the pore fraction are assumptions and are printed with the figure.
+4. 
+Traverse:
+ the path is computed over measured slope and hazard; the DESTINATION is a modelled cold trap, not a detection. Energy is
+per kilogram because no vehicle is modelled.
+5. 
+Reproducibility:
+ this report is a RENDERING of the analysis artifacts listed below, not a second computation of them. Every figure it
+prints appears in those files, which is checked on every build by assert_pdf_agrees_with_analysis.py
+. Any quantity that could not be
+computed is printed as NO DATA and is never filled in.
+Rendered from: analysis 2026-09-06 16:46 UTC · landing sites 2026-09-06 18:06 UTC · traverse 2026-09-06 18:07 UTC · detection statistics 2026-09-06
+18:07 UTC
+Source raster: native/cpr_native.tif
+Thresholds CPR > 1.00, DOP < 0.13  backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, MAX_TRAVERSABLE_SLOPE_DEG,
+CRITICAL_LANDING_SLOPE_DEG), not retuned.
+Generated automatically by Lunar Ice Intelligence System v2.0 | Department of Engineering Final Year Project

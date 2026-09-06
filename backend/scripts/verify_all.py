@@ -91,6 +91,15 @@ GATES = [
            "artifact it was transcribed from",
      f"stamp_methods.py --check — {_N_STAMPED} artifacts",
      [sys.executable, str(SCRIPTS / "stamp_methods.py"), "--check"], False),
+
+    # G7 compares the API against the analysis on slope, roughness and hazard.
+    # It has never looked at the PDF, which is how a formal report came to print
+    # five landing sites that Phase 3 deleted, one of them marked RECOMMENDED,
+    # beside a rover figure the screen reports as NO DATA. Third time two
+    # surfaces have disagreed; this closes the last one.
+    ("G9", "The PDF report prints nothing the analysis artifacts do not contain",
+     "assert_pdf_agrees_with_analysis.py — the rendered bytes, not the inputs",
+     [sys.executable, str(SCRIPTS / "assert_pdf_agrees_with_analysis.py")], False),
 ]
 
 

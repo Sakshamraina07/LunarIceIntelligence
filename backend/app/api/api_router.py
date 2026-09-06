@@ -13,6 +13,7 @@ from app.core.exceptions import UnknownCraterError
 from app.demo.lunar_generator import demo_generator_enabled
 from app.services.mission_service import mission_orchestrator
 from app.services.pdf_generator import generate_mission_pdf_report
+from app.services.report_data import load_report_bundle, ReportArtifactsMissing
 
 router = APIRouter()
 
@@ -133,61 +134,40 @@ def get_sensitivity_analysis(
 
 @router.get("/report/pdf/{crater_id}")
 def download_mission_report_pdf(crater_id: str):
-    mission_data = mission_orchestrator.run_full_mission_pipeline(crater_id=crater_id)
+    """The report, rendered from the artifacts the mission screen reads.
 
-    # The absent state has no numeric sections, so there is nothing to typeset.
-    # 409 rather than 500: the request was well-formed, the crater simply has no
-    # ingested product. A PDF is the one artefact that leaves the browser without
-    # the badge, so this is a refusal and not a thinner report.
-    if mission_data.get("status") != "OK":
+    THIS USED TO RUN THE FULL MISSION PIPELINE AND TYPESET ITS PAYLOAD. That
+    payload still carries the pre-Phase-3 world -- five hardcoded landing sites
+    from module_e_landing.py, and a rover distance in km with an energy in Wh
+    for an invented 30 kg vehicle -- so the PDF was printing five sites that no
+    longer exist, one of them marked RECOMMENDED, beside a traverse figure the
+    screen reports as NO DATA.
+
+    The report is now a RENDERING of the same four documents the UI reads. It is
+    the Phase 1 fix applied to the one surface that never got it: a report that
+    computes its own answer is a second source of truth, and this project has
+    spent long enough removing those.
+
+    The DEMO gate is unchanged in effect and stricter in form: the analysis
+    artifact carries its own data_mode, and both this endpoint and the generator
+    refuse anything but REAL.
+    """
+    try:
+        bundle = load_report_bundle(crater_id)
+    except ReportArtifactsMissing as exc:
+        # 409, not 500: the request was well-formed and the artifact is simply
+        # not on this host. A PDF is the one artefact that leaves the browser
+        # without the badge, so this is a refusal and not a thinner report.
         raise HTTPException(
             status_code=409,
             detail={
-                "error": "NOT_INGESTED",
+                "error": "NO_ANALYSIS_ARTIFACT",
                 "message": f"No mission report can be issued for {crater_id}.",
-                "gate": mission_data.get("gate"),
+                "reason": str(exc),
             },
         )
 
-    # A route that did not find a path has no distance and no energy. Reading
-    # `.total_distance_km` off it yields 0.0, which the report would print as a
-    # measured zero-kilometre traverse; None makes the generator print NO DATA.
-    science_route = mission_data["rover_routes"].get("Science-Aware")
-    route_found = bool(science_route is not None and science_route.path_found)
-    volume = mission_data["volume"]
-
-    pdf_payload = {
-        "crater_name": mission_data["selected_crater"].name,
-        "data_mode": mission_data["data_mode"],
-        "candidate_area_km2": mission_data["ice"].scientific_candidate_area_km2,
-        "expected_volume_m3": volume.expected_volume_m3,
-        "recommended_site": mission_data["recommended_landing_site"].name,
-        "rover_distance_km": science_route.total_distance_km if route_found else None,
-        "rover_energy_wh": science_route.total_energy_wh if route_found else None,
-        "landing_sites": [s.dict() for s in mission_data["landing_sites"]],
-        "rover_routes": {k: v.dict() for k, v in mission_data["rover_routes"].items()},
-        # The thresholds and assumptions the run ACTUALLY used, so the report
-        # states them instead of captioning literals that can drift from config.
-        "assumptions": {
-            "cpr_threshold": mission_data["radar"].cpr_threshold_used,
-            "dop_threshold": mission_data["radar"].dop_threshold_used,
-            "expected_depth_m": volume.expected_assumptions.get("assumed_depth_m"),
-            "expected_fraction": volume.expected_assumptions.get("ice_volume_fraction"),
-        },
-        "volume_tiers": [
-            {"tier": "conservative",
-             "assumed_depth_m": volume.conservative_assumptions.get("assumed_depth_m"),
-             "assumed_pore_fraction": volume.conservative_assumptions.get("ice_volume_fraction")},
-            {"tier": "expected",
-             "assumed_depth_m": volume.expected_assumptions.get("assumed_depth_m"),
-             "assumed_pore_fraction": volume.expected_assumptions.get("ice_volume_fraction")},
-            {"tier": "upper",
-             "assumed_depth_m": volume.upper_assumptions.get("assumed_depth_m"),
-             "assumed_pore_fraction": volume.upper_assumptions.get("ice_volume_fraction")},
-        ],
-    }
-
-    pdf_bytes = generate_mission_pdf_report(pdf_payload)
+    pdf_bytes = generate_mission_pdf_report(bundle)
 
     return Response(
         content=pdf_bytes,

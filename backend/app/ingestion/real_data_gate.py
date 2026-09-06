@@ -45,6 +45,12 @@ PRADAN_ROOT = BASE_DIR / "data" / "pradan"
 
 #: Roles a crater needs before any REAL number can be computed for it.
 DEM_ROLE = "dem"
+#: The raster terrain is actually SCORED on. Added because the gate's whole
+#: purpose -- being the pipeline's only file resolver, so nothing is scored that
+#: was not provenance-checked -- was quietly broken when mission_service started
+#: reading native/dem_native.tif directly: the gate went on vetting a 2048^2
+#: file nothing opened while the file that was scored went unvetted.
+DEM_NATIVE_ROLE = "dem_native"
 CPR_ROLE = "cpr"
 DOP_ROLE = "dop"
 
@@ -117,6 +123,10 @@ def crater_inputs(crater_id: str) -> Dict[str, Path]:
     those are the files whose ambiguity caused the bug."""
     return {
         DEM_ROLE: PRADAN_ROOT / "dem" / f"{crater_id}_lola_dem.tif",
+        # Same extent as DEM_ROLE but at its true 2258 x 6618 / 25 m posts.
+        # REQUIRED, not optional: terrain is scored here, so a host without it
+        # must report ineligible rather than silently score the coarse copy.
+        DEM_NATIVE_ROLE: PRADAN_ROOT / "native" / "dem_native.tif",
         CPR_ROLE: PRADAN_ROOT / "dfsar" / "cpr_real.tif",
         DOP_ROLE: PRADAN_ROOT / "dfsar" / "dop_real.tif",
     }
@@ -145,7 +155,7 @@ def real_data_status(crater_id: str, crater_info: object) -> RealDataStatus:
                 "evidence about this one."
             ),
             product_id=product_id,
-            missing_roles=[DEM_ROLE, CPR_ROLE, DOP_ROLE],
+            missing_roles=[DEM_ROLE, DEM_NATIVE_ROLE, CPR_ROLE, DOP_ROLE],
         )
 
     paths = crater_inputs(crater_id)
@@ -259,7 +269,7 @@ def assert_no_shared_real_rasters(catalog: Dict[str, object]) -> Dict[str, objec
     for i, a in enumerate(ids):
         for b in ids[i + 1:]:
             pairs += 1
-            for role in (DEM_ROLE, CPR_ROLE, DOP_ROLE):
+            for role in (DEM_ROLE, DEM_NATIVE_ROLE, CPR_ROLE, DOP_ROLE):
                 pa, pb = eligible[a].inputs.get(role), eligible[b].inputs.get(role)
                 if pa is not None and pa == pb:
                     collisions.append({"crater_a": a, "crater_b": b, "role": role,
@@ -271,7 +281,7 @@ def assert_no_shared_real_rasters(catalog: Dict[str, object]) -> Dict[str, objec
     rec: Dict[str, object] = {
         "checked_craters": ids,
         "pairs_compared": pairs,
-        "roles": [DEM_ROLE, CPR_ROLE, DOP_ROLE],
+        "roles": [DEM_ROLE, DEM_NATIVE_ROLE, CPR_ROLE, DOP_ROLE],
         "digests": digests,
         "tolerance": "no two eligible craters may share a raster path or digest",
         "collisions": collisions,

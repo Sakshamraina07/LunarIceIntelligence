@@ -39,11 +39,14 @@ NOT comparable, and excluded ON PURPOSE rather than by loosening a tolerance:
     its maximum is a max OF MEANS and is legitimately far below the native
     maximum (33.24 vs 69.39 deg on the current frame). That is why
     process_real_dem carries slope_max_deg separately.
-  * safe_slope_fraction. The two paths give the SAME NAME to different
-    thresholds -- the API uses CRITICAL_LANDING_SLOPE_DEG (12 deg) while the
-    static file's safe_slope_fraction is the traversable limit (20 deg) and its
-    landable_slope_fraction is the 12 deg one. A gate that compared them by name
-    would fail forever on a naming collision rather than on a real divergence.
+FIXED RATHER THAN EXCLUDED: safe_slope_fraction used to mean the 12 deg limit
+in the API and the 20 deg one in the static file, with landable_slope_fraction
+holding the 12 deg one there. Two quantities under one name across two files.
+Excluding it would have made this gate correct and left the trap armed for the
+next reader -- including an examiner comparing the PDF against the UI. Both
+sides now carry the threshold IN the name (slope_fraction_below_12deg /
+slope_fraction_below_20deg), the 12 deg one is gated with its own stated
+tolerance, and the names are checked against config on every run.
 
 Usage:
     python -u backend/scripts/assert_paths_agree.py [--crater faustini]
@@ -71,9 +74,15 @@ for _stream in (sys.stdout, sys.stderr):
 #: (api key under "terrain", static key under "values"). Only quantities that
 #: are the same thing computed two ways.
 COMPARED = [
-    ("mean_slope_deg", "mean_slope_deg"),
-    ("mean_roughness", "mean_roughness_m"),
-    ("mean_hazard_score", "mean_hazard"),
+    ("mean_slope_deg", "mean_slope_deg", None),
+    ("mean_roughness", "mean_roughness_m", None),
+    ("mean_hazard_score", "mean_hazard", None),
+    # Gate-able now that the naming collision is fixed: both sides mean the
+    # 12 deg limit. Its own tolerance, because the API's copy is computed on an
+    # AREA-AVERAGED field and averaging moves a threshold crossing more than it
+    # moves a mean -- a stated allowance for a known effect, not a number raised
+    # until the row passed.
+    ("slope_fraction_below_12deg", "slope_fraction_below_12deg", 0.05),
 ]
 
 #: Named, with the reason, so that excluding them is a stated decision rather
@@ -81,10 +90,6 @@ COMPARED = [
 EXCLUDED = {
     "max_slope_deg": "the API maximum is a max of an AREA-AVERAGED field; "
                      "slope_max_deg carries the true cell maximum instead",
-    "safe_slope_fraction": "same name, different threshold — API uses 12 deg "
-                           "(CRITICAL_LANDING_SLOPE_DEG), the static file's "
-                           "safe_slope_fraction is the 20 deg traversable limit "
-                           "and its landable_slope_fraction is the 12 deg one",
 }
 
 
@@ -123,9 +128,25 @@ def main() -> int:
     print("=" * 78)
     print(f"CROSS-PATH CONSISTENCY — API vs static analysis, {args.crater}")
     print("=" * 78)
+    # The threshold is IN the field name, so the name and config must not drift
+    # apart. If someone retunes config, this fails loudly instead of leaving a
+    # key called "below_12deg" holding a 15 deg answer.
+    from app.core.config import settings as _cfg
+    for deg, attr in ((12, "CRITICAL_LANDING_SLOPE_DEG"),
+                      (20, "MAX_TRAVERSABLE_SLOPE_DEG")):
+        actual = float(getattr(_cfg, attr))
+        if abs(actual - deg) > 1e-9:
+            print(f"  FAIL  slope_fraction_below_{deg}deg is named for {deg}° but "
+                  f"config.{attr} is {actual:g}°.")
+            print("        Rename the field or revert the threshold; a name that "
+                  "states a number it does not use is worse than no name.")
+            return 1
+    print("  field names verified against config: 12 deg = "
+          "CRITICAL_LANDING_SLOPE_DEG, 20 deg = MAX_TRAVERSABLE_SLOPE_DEG\n")
     print(f"  {'quantity':24s}{'API':>13}{'static':>13}{'rel diff':>11}  verdict")
     failed = []
-    for akey, skey in COMPARED:
+    for akey, skey, own_tol in COMPARED:
+        tol = own_tol if own_tol is not None else args.tolerance
         va = terrain.get(akey)
         vb = (static.get(skey) or {}).get("value")
         if va is None or vb is None:
@@ -133,11 +154,12 @@ def main() -> int:
             failed.append((akey, "one side is absent"))
             continue
         rel = abs(va - vb) / max(abs(vb), 1e-12)
-        ok = rel <= args.tolerance
+        ok = rel <= tol
         print(f"  {akey:24s}{va:>13.4f}{vb:>13.4f}{rel:>11.5f}  "
-              f"{'ok' if ok else 'FAIL'}")
+              f"{'ok' if ok else 'FAIL'}"
+              + (f"   (tol {tol:.0%})" if own_tol is not None else ""))
         if not ok:
-            failed.append((akey, f"{rel:.4%} > {args.tolerance:.2%}"))
+            failed.append((akey, f"{rel:.4%} > {tol:.2%}"))
 
     print(f"\n  excluded from the comparison, with cause:")
     for k, why in EXCLUDED.items():
@@ -153,8 +175,11 @@ def main() -> int:
         print("  code. A divergence means one of them changed grid, ordering or")
         print("  spacing. Do NOT raise the tolerance: find which path moved.")
         return 1
-    print(f"\n  GATE PASS — {len(COMPARED)} quantities agree within "
-          f"{args.tolerance:.2%}.")
+    own = [k for k, _s, t in COMPARED if t is not None]
+    print(f"\n  GATE PASS — {len(COMPARED)} quantities agree: "
+          f"{len(COMPARED) - len(own)} within the default {args.tolerance:.2%}"
+          + (f", and {len(own)} within a stated per-row tolerance "
+             f"({', '.join(own)})." if own else "."))
     return 0
 
 

@@ -310,9 +310,9 @@ export function StepPanel(props: Props) {
         <div className="mc-metrics" style={{ marginTop: '0.9rem' }}>
           <Figure k="Slope mean" v={v.mean_slope_deg} digits={2}
             sub={`median ${showValue(v.slope_p50_deg, 2)}° · p99 ${showValue(v.slope_p99_deg, 2)}° · max ${showValue(v.max_slope_deg, 1)}°`} />
-          <Figure k="Traversable" v={v.safe_slope_fraction} percent digits={1}
+          <Figure k="Traversable" v={v.slope_fraction_below_20deg} percent digits={1}
             sub={`at or below ${hm.slope_risk_reference_deg}° (MAX_TRAVERSABLE_SLOPE_DEG) · `
-                 + `${showPercent(v.landable_slope_fraction, 1)} % at or below `
+                 + `${showPercent(v.slope_fraction_below_12deg, 1)} % at or below `
                  + `${th.critical_landing_slope_deg}° (CRITICAL_LANDING_SLOPE_DEG)`} />
           <Figure k="Roughness mean" v={v.mean_roughness_m} digits={2}
             sub={`median ${showValue(v.roughness_p50_m, 2)} m · p99 ${showValue(v.roughness_p99_m, 2)} m`} />

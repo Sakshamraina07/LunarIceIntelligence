@@ -69,7 +69,7 @@ export interface TerrainAnalysisResult {
   crater_id: string;
   mean_slope_deg: number;
   max_slope_deg: number;
-  safe_slope_fraction: number;
+  slope_fraction_below_12deg: number;
   mean_roughness: number;
   mean_hazard_score: number;
   high_hazard_area_km2: number;

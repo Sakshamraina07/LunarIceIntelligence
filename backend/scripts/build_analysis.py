@@ -1269,11 +1269,11 @@ def build(crater_id: str = "faustini") -> dict:
         "slope_p90_deg": val(round(float(np.percentile(t["slope_deg"], 90)), 4), "°", MEASURED, note=SLOPE_NOTE),
         "slope_p99_deg": val(round(float(np.percentile(t["slope_deg"], 99)), 4), "°", MEASURED, note=SLOPE_NOTE),
         "max_slope_deg": val(round(float(t["slope_deg"].max()), 4), "°", MEASURED, note=SLOPE_NOTE),
-        "safe_slope_fraction": val(round(float((t["slope_deg"] <= cfg.MAX_TRAVERSABLE_SLOPE_DEG).mean()), 6),
+        "slope_fraction_below_20deg": val(round(float((t["slope_deg"] <= cfg.MAX_TRAVERSABLE_SLOPE_DEG).mean()), 6),
                                    "", MEASURED,
                                    note=f"Fraction of the frame at or below MAX_TRAVERSABLE_SLOPE_DEG = "
                                         f"{cfg.MAX_TRAVERSABLE_SLOPE_DEG:g}°, read from config.py. " + SLOPE_NOTE),
-        "landable_slope_fraction": val(round(float((t["slope_deg"] <= cfg.CRITICAL_LANDING_SLOPE_DEG).mean()), 6),
+        "slope_fraction_below_12deg": val(round(float((t["slope_deg"] <= cfg.CRITICAL_LANDING_SLOPE_DEG).mean()), 6),
                                        "", MEASURED,
                                        note=f"Fraction at or below CRITICAL_LANDING_SLOPE_DEG = "
                                             f"{cfg.CRITICAL_LANDING_SLOPE_DEG:g}°. " + SLOPE_NOTE),

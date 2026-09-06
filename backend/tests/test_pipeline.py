@@ -19,7 +19,7 @@ def test_full_mission_pipeline_execution():
         assert state["psr"].psr_area_km2 >= 0.0
         assert state["radar"].mean_cpr >= 0.0
         assert state["ice"].scientific_candidate_area_km2 >= 0.0
-        assert state["terrain"].safe_slope_fraction > 0.0
+        assert state["terrain"].slope_fraction_below_12deg > 0.0
         assert len(state["landing_sites"]) >= 3
         assert state["recommended_landing_site"].is_recommended is True
 

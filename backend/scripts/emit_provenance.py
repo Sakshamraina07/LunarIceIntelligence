@@ -97,6 +97,27 @@ RESOLVED_BY = {
     "boulder_risk": "NEVER in this build — no optical product; WEIGHT_BOULDER = 0 (PRD §5)",
 }
 
+def _dem_basis() -> str:
+    """The DEM's provenance, READ FROM ITS OWN SIDECAR, never typed here.
+
+    This string was hardcoded as "LOLA LDEM_80S_80M V2.0" in thirteen places.
+    Phase 6 replaced the 80 m product with the 20 m one and every one of them
+    went stale at once -- PROVENANCE.md ended up naming the 80 m product in the
+    same sentence that said "20 m posts". Same defect class as the layers.json
+    badge rule: a caption must be written by whatever produced the thing it
+    describes.
+    """
+    side = BASE_DIR / "data/pradan/lola/ldem_frame_25m.provenance.json"
+    try:
+        prov = json.loads(side.read_text(encoding="utf-8"))["provenance"]
+    except (OSError, ValueError, KeyError):
+        return ("native/dem_native.tif — DEM provenance sidecar unreadable, "
+                "SOURCE NOT VERIFIED")
+    return f"native/dem_native.tif = {prov}"
+
+
+_DEM = _dem_basis()
+
 #: Which raster each value is read from. Keyed by prefix, longest match wins.
 SOURCE_RASTER = {
     "cpr": "native/cpr_native.tif (Chandrayaan-2 DFSAR L2, amplitude mask)",
@@ -106,18 +127,17 @@ SOURCE_RASTER = {
     "criteria": "native/cpr_native.tif + native/dop_native.tif",
     "measured_area": "native/valid_native.tif",
     "pointed_area": "native/footprint_native.tif (ISRO sri_ma)",
-    "slope": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "max_slope": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "mean_slope": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "safe_slope": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "landable_slope": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "roughness": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "mean_roughness": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "hazard": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "mean_hazard": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "critical_hazard": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "min_elevation": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
-    "max_elevation": "native/dem_native.tif = LOLA LDEM_80S_80M V2.0",
+    "slope": _DEM,
+    "max_slope": _DEM,
+    "mean_slope": _DEM,
+    "slope_fraction_below": _DEM,
+    "roughness": _DEM,
+    "mean_roughness": _DEM,
+    "hazard": _DEM,
+    "mean_hazard": _DEM,
+    "critical_hazard": _DEM,
+    "min_elevation": _DEM,
+    "max_elevation": _DEM,
     "conservative_volume": "derived from candidate area — no raster of its own",
     "expected_volume": "derived from candidate area — no raster of its own",
     "upper_volume": "derived from candidate area — no raster of its own",

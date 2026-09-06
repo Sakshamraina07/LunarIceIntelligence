@@ -95,7 +95,7 @@ class TerrainAnalysisResult(BaseModel):
     crater_id: str
     mean_slope_deg: float
     max_slope_deg: float
-    safe_slope_fraction: float
+    slope_fraction_below_12deg: float
     mean_roughness: float
     mean_hazard_score: float
     high_hazard_area_km2: float

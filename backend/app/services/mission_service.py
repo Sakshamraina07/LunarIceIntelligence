@@ -31,6 +31,7 @@ FIXED (this version):
 """
 
 import cv2
+import json
 import base64
 import numpy as np
 from typing import Dict, Any, Optional
@@ -278,9 +279,21 @@ class MissionPipelineService:
             # extent at its true 2258 x 6618 / 25 m posts. Terrain is scored there
             # and the bounded fields are area-averaged onto the serving grid, so
             # the API and the static analysis compute the same quantity.
-            _native_dem = PRADAN_ROOT / "native" / "dem_native.tif"
-            if _native_dem.is_file():
-                _terrain_src, _src_spacing = str(_native_dem), (25.0, 25.0)
+            # FROM THE GATE, never constructed here. real_data_gate is the
+            # pipeline's only file resolver, and reading a path it did not
+            # resolve is the exact hole this restores.
+            _native_dem = status.inputs.get("dem_native")
+            if _native_dem and Path(_native_dem).is_file():
+                # READ, NOT TYPED. A literal 25.0 here would be the fourth
+                # spacing constant in this project to go stale behind a rename;
+                # the ingest already records what grid it wrote onto.
+                _side = PRADAN_ROOT / "lola" / "ldem_frame_25m.provenance.json"
+                try:
+                    _px = float(json.loads(_side.read_text(encoding="utf-8"))
+                                ["output_metres_per_pixel"])
+                except (OSError, ValueError, KeyError, TypeError):
+                    _px = float(frame.pixel_size_m[0]) if frame is not None else 25.0
+                _terrain_src, _src_spacing = str(_native_dem), (_px, _px)
             else:
                 # No silent 25 m: derive the file's real spacing from the frame.
                 _terrain_src = str(dem_pradan_path)

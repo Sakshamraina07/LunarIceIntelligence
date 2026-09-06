@@ -143,7 +143,14 @@ def analyze_terrain_safety(
     total_cells = dem.size
 
     safe_slope_mask = slope_deg <= settings.CRITICAL_LANDING_SLOPE_DEG
-    safe_slope_fraction = float(np.sum(safe_slope_mask) / total_cells)
+    # NAME CARRIES THE THRESHOLD. This was `safe_slope_fraction` while the
+    # static analysis used that same name for the 20 deg TRAVERSABLE limit
+    # and `landable_slope_fraction` for this 12 deg one -- two different
+    # quantities under one name across two files, which is the defect class
+    # this project has now caught five times. Excluding it from the
+    # cross-path gate made the gate correct and left the trap armed for the
+    # next reader comparing the PDF against the UI.
+    slope_fraction_below_12deg = float(np.sum(safe_slope_mask) / total_cells)
 
     high_hazard_mask = hazard >= 0.70
     high_hazard_cells = int(np.sum(high_hazard_mask))
@@ -166,7 +173,7 @@ def analyze_terrain_safety(
         crater_id=crater_id,
         mean_slope_deg=round(float(np.mean(slope_deg)), 2),
         max_slope_deg=round(float(np.max(slope_deg)), 2),
-        safe_slope_fraction=round(safe_slope_fraction, 4),
+        slope_fraction_below_12deg=round(slope_fraction_below_12deg, 4),
         mean_roughness=round(float(np.mean(roughness)), 2),
         mean_hazard_score=round(float(np.mean(hazard)), 3),
         high_hazard_area_km2=round(high_hazard_area_km2, 2),

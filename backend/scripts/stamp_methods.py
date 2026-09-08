@@ -331,7 +331,7 @@ def check_labelled_figures(text: str) -> list:
                     continue
                 # A LABEL IS A TABLE CELL, NOT A WORD IN A SENTENCE.
                 # Without this, section 5.10's pre-registration line -- "by
-                # roughly 1.2-1.6x, with high recall and lower precision" -- was
+                # roughly 1.2-1.6x (the point-Sun band), with high recall and
                 # read as labelling 1.2 with "recall". The words are qualitative
                 # there and label nothing. Only a markdown table row states
                 # "this name has this value", which is the claim being checked.

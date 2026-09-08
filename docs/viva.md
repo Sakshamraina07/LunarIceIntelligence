@@ -64,9 +64,26 @@ is computed across the full 2533² LOLA polar array, by an O(n) skyline scan
 (Dozier & Frew 1990) verified against O(n²) brute force to **1.7 × 10⁻⁶**. The
 Sun is modelled as a **finite disc**, because the product I validate against
 models one. Result: **Jaccard 0.714, precision 0.772, recall 0.906** against the
-LOLA team's own published PSR mask — and the eight-row prediction for that
-comparison was **committed to git before the sweep finished**, so the timestamps
-prove no result existed when the predictions were written. 8 of 8 held.
+LOLA team's own published PSR mask.
+
+**Two pre-registrations were scored, and they are not the same one.** Both were
+**committed to git before the sweep finished**, so the timestamps prove no result
+existed when the predictions were written.
+
+*Two pre-registrations were scored — the eight-row solar-disc A/B held **8 of 8**,
+and the earlier **1.2–1.6×** band for the LPSR area ratio is recorded as **NOT A
+HIT** at 1.174×, conservatively, since that band was written for the point-Sun
+model it has since superseded (where it measured 1.301× and did fall inside) and
+is arguably void rather than missed.*
+
+This sentence used to read *"the eight-row prediction for that comparison … 8 of 8
+held"*, which let the 8-of-8 be taken as the score for the band. The 8-of-8 is
+true — it scores eight *directional* predictions about how each metric would move
+when the finite disc replaced the point Sun, and all eight moved as predicted —
+but it is not the band's score, and the band did not hit. METHODS §5.10 records
+all three facts separately: the mechanism held, the numeric band was scored
+against a model it was not written for, and the miss is recorded conservatively
+rather than dismissed as void.
 
 **A correction to the physics.** Solar elevation at the pole is not capped at
 1.54°. That is a bound on the *subsolar latitude*; elevation at latitude φ

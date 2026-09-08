@@ -72,6 +72,20 @@ BOUNDED = [
      "false-positive rate at true CPR 0.5 at the operating point (METHODS 7.7) "
      "— an upper bound",
      ("upper bound", "upper-bound", "up to", "at most")),
+    # A PRE-REGISTRATION SCORE IS A CLAIM ABOUT WHICH MODEL IT WAS SCORED
+    # AGAINST, and quoting it without that is the same defect as quoting a bound
+    # as a rate. The 1.2-1.6x band was written for the POINT-SUN model, where it
+    # measured 1.301x and fell INSIDE. The finite disc then shipped, and against
+    # the shipped model the ratio is 1.174x -- just outside. This project records
+    # that as NOT A HIT, which is the conservative reading; the band is arguably
+    # VOID rather than missed, because it was scored against a model it does not
+    # describe. Neither reading may be quoted without the other being reachable.
+    (r"1\.2\s*[-–—]\s*1\.6\s*[x×]",
+     "the pre-registered PSR area-ratio band — written for the POINT-SUN model "
+     "(where it measured 1.301x, inside), and scored against the shipped "
+     "finite-disc model at 1.174x, just outside. Recorded as NOT A HIT "
+     "conservatively; arguably VOID rather than missed (METHODS 5.10)",
+     ("void", "point-sun", "point sun", "superseded", "not a hit")),
 ]
 
 SEARCH_ROOTS = ["docs", "backend", "frontend/src", "PRD.md", "README.md"]
@@ -141,10 +155,21 @@ def main() -> int:
         # unlabelled occurrence in a tracked source file, and the gate would then
         # fail on its own test fixture on every ordinary run -- which it did, the
         # first time this was written. A gate that cries wolf gets waved through.
+        lo, hi = 1.2, 1.6
         extra = [(Path("<injected>"),
                   f"Ordinary rock crosses the CPR threshold {29.16:.2f} % of the "
-                  "time, so the screen cannot be trusted.")]
-        print("\n  --inject: one unlabelled quotation of the bounded figure")
+                  "time, so the screen cannot be trusted."),
+                 # AND ONE FOR THE PRE-REGISTRATION BAND. The band is a claim
+                 # about the model it was scored against; quoted bare it reads
+                 # as a plain miss, which is the reading this project chose to
+                 # record but not the only defensible one. Built, not spelled,
+                 # for the same reason as the figure above.
+                 (Path("<injected-band>"),
+                  f"We pre-registered a bias of {lo:g}-{hi:g}x and measured "
+                  "1.174x, so the prediction failed.")]
+        print("")
+        print("  --inject: one unlabelled quotation of the bounded figure, and")
+        print("            one of the pre-registration band without its caveat")
 
     bad = scan(extra)
     n_files = sum(1 for _ in files())
@@ -153,14 +178,26 @@ def main() -> int:
     if bad:
         print(f"\n  UNLABELLED: {len(bad)}")
         for path, line, fig, what, ctx in bad:
-            rel = path if path.name == "<injected>" else path.relative_to(BASE_DIR)
+            rel = (path if path.name.startswith("<injected")
+                   else path.relative_to(BASE_DIR))
             print(f"    {rel}:{line}  {fig}")
             print(f"      {what}")
             print(f"      ...{ctx.strip()}...")
 
     if args.inject:
         if bad:
-            print("\n  INJECTION CAUGHT. The gate works.")
+            names = {q.name for q, *_ in bad}
+            # BOTH must be caught, not either. Passing on one while the other
+            # slipped through is a green light for a gate that half works --
+            # the shape section 0 records seven times over.
+            missing = {"<injected>", "<injected-band>"} - names
+            if missing:
+                print("")
+                print("  INJECTION ONLY PARTLY CAUGHT: " + str(sorted(missing))
+                      + " slipped through. The gate does not do what it says.")
+                return 1
+            print("")
+            print("  BOTH INJECTIONS CAUGHT. The gate works.")
             return 0
         print("\n  INJECTION NOT CAUGHT. The gate does not do what it says.")
         return 1

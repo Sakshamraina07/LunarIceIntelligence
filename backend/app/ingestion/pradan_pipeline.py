@@ -250,6 +250,16 @@ def process_real_dem(
         aspect_deg, slope_max = aspect_n, slope_n
 
     hillshade = compute_hillshade(dem, spacing_m)
+    # OPEN DEFECT -- see METHODS 5.1a. A capped 1.5 deg solar altitude feeding a
+    # brightness threshold is a SOLAR-GEOMETRY claim, not a display choice, and
+    # METHODS 5.3 measures it wrong by 4.4x: elevation at latitude phi reaches
+    # 1.54 + (90 - |phi|), which is 6.71 deg at this frame's edge. It is also a
+    # brightness proxy for permanent shadow, the method 5.1 replaced with the
+    # horizon computation. Nothing a reader sees comes from here -- the verdict
+    # and the 2043 km2 PSR area are the horizon product -- but G7 compares the
+    # API and the static analysis on slope, roughness and hazard only, so a
+    # disagreement about shadow would go unnoticed. Not declared in
+    # assumptions.md: declaring it would assert the model 5.3 refutes.
     illumination = simulate_grazing_illumination(dem, spacing_m, sun_altitude_deg=1.5)
     psr_mask = (illumination < 0.05)
     doubly_shadowed = psr_mask & (dem < np.percentile(dem, 20))

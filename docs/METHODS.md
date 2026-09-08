@@ -855,6 +855,48 @@ event.
 Both are deleted. Illumination is now a horizon computation, and the layer and
 the statistics are the same array.
 
+#### 5.1a A live consumer of the refuted model — `sun_altitude_deg = 1.5`
+
+**This was going to be declared in `assumptions.md` as an undeclared model
+parameter. It must not be, because declaring it would assert something §5.3
+spends a whole section refuting.**
+
+`pradan_pipeline.py:161-172` defines `simulate_grazing_illumination(...,
+sun_altitude_deg=1.5)`, and line 253 calls it, then line 254 does:
+
+```python
+illumination = simulate_grazing_illumination(dem, spacing_m, sun_altitude_deg=1.5)
+psr_mask     = (illumination < 0.05)
+doubly_shadowed = psr_mask & (dem < np.percentile(dem, 20))
+```
+
+Those three arrays are returned by `process_real_dem` and read by
+`mission_service.py:307-309`, passed into `analyze_psr(...)` at line 371, and
+rendered as `illumination` and `psr_mask` raster layers at lines 542-543.
+
+**It is read, so it cannot simply be deleted; and it is a SOLAR-GEOMETRY term,
+not a display choice, so it cannot be declared either.** The distinction matters
+and §8.6 is the contrast: the hillshade azimuths there are a *presentation*
+choice, legitimately tunable, affecting only how relief is drawn. This is not
+that. A capped 1.5° solar altitude feeding a brightness threshold is a claim
+about where the Sun can be — and §5.3 measures that claim wrong by a factor of
+**4.4×**, because elevation at latitude φ reaches `1.54° + (90° − |φ|)`, which is
+6.71° at this frame's edge. It is also a **brightness proxy for permanent
+shadow**, which is the exact method §5.1 replaced with the horizon computation.
+
+**What it does and does not reach.** The verdict, the PSR area on screen
+(2043 km²), and every figure in this document come from the horizon computation
+over the LOLA array, not from this. This path is the on-demand API's, which
+answers `NOT_INGESTED` on every deployed host. So nothing a reader has seen is
+affected. But `assert_paths_agree.py` (G7) compares the API against the static
+analysis on **slope, roughness and hazard only** — there is no PSR term in it —
+so if the two disagreed about shadow, nothing in this repository would notice.
+
+**Recorded as an open defect, not fixed here, and not declared.** Removing a PSR
+source from the API path is a change with real blast radius and is not smuggled
+into a documentation pass. What is settled is the classification: it is
+illegitimate, §5.3 governs it, and it does not belong in `assumptions.md`.
+
 ### 5.2 The quantity
 
 For a point `p` and azimuth `az`, the horizon is the elevation angle of the
@@ -1109,6 +1151,9 @@ predicted band, and the band would have been narrower had it been written after.
 > a **point** when its angular radius is ~0.25° — large next to a ±1.54° band at
 > grazing incidence. Both bias toward more shadow. **Predicted: we over-call PSR
 > by roughly 1.2–1.6×, with high recall and lower precision.**
+>
+> *(That band is the point-Sun band; it is superseded, and scored below as NOT A
+> HIT rather than void.)*
 
 #### The result
 
@@ -1139,19 +1184,58 @@ Against `AVGVISIB`, on the continuous field:
 | rms difference | 0.074238 |
 | least-squares fit | ours = 0.821453 × theirs − 0.013873 |
 
-**Measured 1.174×, inside the predicted 1.2–1.6× band at its low edge — in fact
-just below it — in the predicted direction and with the predicted shape:** recall
-0.906 against precision 0.771, i.e. we find nearly all of their shadow and add
+Recall 0.906 against precision 0.771: we find nearly all of their shadow and add
 some of our own. The regression slope of 0.821 says the same thing from the other
-side: we report systematically *less* illumination than they do.
+side — we report systematically *less* illumination than they do. The direction
+and the shape are both as predicted.
 
-**Where the prediction missed, and in which direction.** 1.174× falls just under
-the 1.2× floor of the pre-registered band. That is the finite solar disc doing
-exactly what §5.9 predicted it would: the band was written for a point Sun, the
-disc removed 11.4 % of the shadow, and the result landed a little past the
-low edge. A prediction that lands just outside its band because the model was
-*improved* after the band was written is not a failed prediction, but it is not a
-hit either, and it is recorded as what it is.
+#### Scoring the prediction — three facts, not one
+
+These are separable and were previously collapsed into a single verdict, which is
+how a true claim and a missed one came to share a sentence.
+
+**1. The MECHANISM prediction (§5.9) HELD, with the correct sign.** A point Sun
+over-predicts shadow; a finite disc will reduce it. Measured: the disc removed
+**11.4 %** of the point-Sun shadow (464,333 → 411,535 px). This was the
+substantive physical claim and it is a clean hit.
+
+**2. The NUMERIC BAND (1.2–1.6×) was written for the point-Sun model, and is
+scored here against the finite-disc model.** Against the model it was *written
+for* it measured **1.301×** — comfortably inside. Against the model that
+*shipped* it measures **1.174×** — just outside the 1.2 floor. The band did not
+move; the model underneath it did.
+
+**3. It is recorded as NOT A HIT. That is the conservative reading, and the
+alternative is stated rather than suppressed.** A band written for a model that
+has since been superseded is arguably **VOID** rather than missed: it makes a
+claim about a computation this project no longer performs, and scoring it against
+a different computation is not the test it was registered as. Both readings are
+defensible. **The conservative one is the one recorded**, because a project whose
+entire argument is that it does not grade itself generously does not get to
+invoke a technicality the one time a prediction goes against it.
+
+> **THE TALLY, IN ONE SENTENCE, USED EVERYWHERE:** *Two pre-registrations were
+> scored — the eight-row solar-disc A/B held **8 of 8**, and the earlier
+> **1.2–1.6×** band for the LPSR area ratio is recorded as **NOT A HIT** at
+> 1.174×, conservatively, since that band was written for the point-Sun model it
+> has since superseded (where it measured 1.301× and did fall inside) and is
+> arguably void rather than missed.*
+
+**These are two different pre-registrations and conflating them is a defect.**
+The 8-of-8 is `validate_psr_vs_lola.py`'s solar-disc A/B: eight *directional*
+predictions about how each metric would move when the disc replaced the point
+Sun, committed before the sweep ran, with the point-Sun values as baselines. All
+eight moved as predicted, including its own numeric ratio prediction (`~1.16`,
+measured 1.174, tolerance ±0.06). The 1.2–1.6× band is the *earlier* prediction
+about how our PSR would compare to LPSR at all. `docs/viva.md` previously ran the
+two together in one sentence, so a reader took the 8-of-8 as the score for the
+band. **The 8 of 8 is true and stays; it just does not mean what that sentence
+implied.**
+
+`verify_all.py` (G10) fails the build if the band is quoted anywhere without the
+qualifier that it was written for the superseded model — the same protection the
+29.16 % upper bound carries, for the same reason: a figure whose meaning depends
+on a condition is a different claim once the condition is dropped.
 
 **93.2 % of pixels agree.** The disagreement is one-sided and its sign was
 predicted from the physics before the comparison was run.
@@ -2958,7 +3042,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `2ee7116`.
+Stamped at commit `2b962b8`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -2972,7 +3056,7 @@ Stamped at commit `2ee7116`.
 | `docs/incidence_audit.json` | `75a568d239760cf4…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
-| `docs/psr_validation.json` | `082c71a40d2f8f8e…` | §5.10 |
+| `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |

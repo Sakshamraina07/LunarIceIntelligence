@@ -146,7 +146,8 @@ def main() -> int:
     print("  Finer topography resolves more small shadows, and this model treats the")
     print("  Sun as a POINT (true angular radius ~0.25 deg, large next to a +/-1.54 deg")
     print("  band at grazing incidence) — both bias toward MORE shadow.")
-    print("  PREDICTED: we over-call PSR by roughly 1.2–1.6x, with high recall and")
+    print("  PREDICTED (for the POINT-SUN model, before the finite disc shipped):")
+    print("             we over-call PSR by roughly 1.2–1.6x, with high recall and")
     print("             lower precision. A large bias would not be defensible.")
 
     # ---------------------------------------------------------------- LPSR
@@ -316,7 +317,11 @@ def main() -> int:
         "avgvisib": {"pearson_r": r, "rms": rms,
                      "fit_ours_vs_theirs": {"slope": float(slope), "intercept": float(icpt)}},
         "prediction": ("modest positive bias 1.2-1.6x, high recall and lower precision, "
-                       "stated before looking"),
+                       "stated before looking. WRITTEN FOR THE POINT-SUN MODEL, where "
+                       "it measured 1.301x and fell inside; the finite disc then "
+                       "shipped and the ratio is 1.174x, just outside. Recorded as NOT "
+                       "A HIT conservatively — arguably void rather than missed, since "
+                       "it was scored against a model it does not describe."),
     }, indent=2), encoding="utf-8")
     print(f"\n  wrote {OUT.relative_to(BASE_DIR)}")
     return 0

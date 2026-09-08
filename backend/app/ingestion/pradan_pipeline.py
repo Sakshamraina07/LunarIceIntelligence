@@ -158,20 +158,24 @@ def extract_boulders_from_ohrc(
     return np.clip(hazard_grid, 0.0, 1.0).astype(np.float32)
 
 
-def simulate_grazing_illumination(
-    dem: np.ndarray,
-    spacing_m: Tuple[float, float],
-    sun_altitude_deg: float = 1.5
-) -> np.ndarray:
-    """
-    Computes grazing solar illumination based on Horn gradient and elevation.
-
-    `spacing_m` is (metres_per_line, metres_per_sample) for `dem`.
-    """
-    hill = compute_hillshade(dem, spacing_m, altitude_deg=sun_altitude_deg)
-    elev_norm = (dem - np.min(dem)) / (np.ptp(dem) + 1e-6)
-    return np.clip(hill * (elev_norm ** 1.3), 0.0, 1.0).astype(np.float32)
-
+# simulate_grazing_illumination() WAS HERE, AND sun_altitude_deg WITH IT.
+#
+# It computed a hillshade at a capped 1.5 deg solar altitude and called the dark
+# pixels permanent shadow. METHODS 5.3 measures that model wrong by up to 4.4x --
+# solar elevation at latitude phi reaches 1.54 + (90 - |phi|), which is 6.71 deg
+# at this frame's outer edge, so treating it as a constant under-illuminates the
+# frame. METHODS 5.1 deleted both brightness proxies from every other path when
+# the horizon computation replaced them; this one survived only because it sat
+# behind an API nobody was reading.
+#
+# It is DELETED, not adapted. mission_service now reads the horizon product --
+# the same one build_analysis reads for the verdict and the report renders --
+# through the same load_horizon().to_frame() call, or refuses with
+# HorizonPSRUnavailable. One PSR source, read and not recomputed.
+#
+# sun_altitude_deg is deleted with it and is deliberately NOT recorded in
+# assumptions.md: with no consumer it is not an assumption, and declaring it
+# would assert the capped-elevation model METHODS 5.3 spends a section refuting.
 
 #: The DFSAR frame's own post spacing, for callers that want the default.
 #: NOTHING assumes the file on disk is at this spacing -- see process_real_dem's
@@ -250,26 +254,15 @@ def process_real_dem(
         aspect_deg, slope_max = aspect_n, slope_n
 
     hillshade = compute_hillshade(dem, spacing_m)
-    # OPEN DEFECT -- see METHODS 5.1a. A capped 1.5 deg solar altitude feeding a
-    # brightness threshold is a SOLAR-GEOMETRY claim, not a display choice, and
-    # METHODS 5.3 measures it wrong by 4.4x: elevation at latitude phi reaches
-    # 1.54 + (90 - |phi|), which is 6.71 deg at this frame's edge. It is also a
-    # brightness proxy for permanent shadow, the method 5.1 replaced with the
-    # horizon computation. Nothing a reader sees comes from here -- the verdict
-    # and the 2043 km2 PSR area are the horizon product -- but G7 compares the
-    # API and the static analysis on slope, roughness and hazard only, so a
-    # disagreement about shadow would go unnoticed. Not declared in
-    # assumptions.md: declaring it would assert the model 5.3 refutes.
-    illumination = simulate_grazing_illumination(dem, spacing_m, sun_altitude_deg=1.5)
-    psr_mask = (illumination < 0.05)
-    doubly_shadowed = psr_mask & (dem < np.percentile(dem, 20))
+    # NO ILLUMINATION, NO PSR MASK, NO DOUBLY-SHADOWED TERM FROM HERE.
+    # This function reads a DEM and derives terrain. Shadow is a horizon
+    # computation over the full LOLA polar array and is read from that product by
+    # mission_service; deriving it here as well would be the second
+    # implementation that METHODS 0's third pattern is about.
 
     return {
         "dem": dem,
         "hillshade": hillshade,
-        "psr_mask": psr_mask,
-        "doubly_shadowed": doubly_shadowed,
-        "illumination": illumination,
         "slope_deg": slope_deg,
         "aspect_deg": aspect_deg,
         "roughness": roughness,

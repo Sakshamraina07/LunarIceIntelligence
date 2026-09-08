@@ -41,6 +41,11 @@ class PSRAnalysisResult(BaseModel):
     crater_id: str
     total_area_km2: float
     psr_area_km2: float
+    #: The PIXEL COUNT behind psr_area_km2, unrounded and exact.
+    #: Areas on both paths are roundings of one native reduction, so comparing
+    #: them is comparing two roundings; the count is the same integer or it is a
+    #: different measurement. G7 gates this at tolerance 0.
+    psr_px: int
     psr_area_fraction: float
     doubly_shadowed_area_km2: float
     mean_illumination_fraction: float

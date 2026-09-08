@@ -58,6 +58,91 @@ from app.modules.module_g_volume import estimate_ice_volume
 from app.core.provenance import create_provenance
 
 
+class HorizonPSRUnavailable(RuntimeError):
+    """This host cannot say where the shadow is, and will not guess.
+
+    The same shape as ReportArtifactsMissing (G16): absence REFUSES, it does not
+    degrade. A served host without the horizon product could substitute the
+    brightness proxy this replaced and produce a plausible PSR mask -- which is
+    precisely the np.zeros_like mistake the whole project is built against, and
+    is what happened here for as long as the proxy existed.
+    """
+
+
+def _read_horizon_psr(frame, shape=None):
+    """The horizon-derived PSR, projected onto this frame -- or a refusal.
+
+    ONE PSR SOURCE. build_analysis.py reads `load_horizon(...).to_frame(...)` for
+    the verdict; the PDF renders what that produced; this reads the same product
+    through the same call. Nothing here recomputes shadow, so there is no second
+    implementation to drift.
+
+    Returns (illumination_fraction, psr_mask, doubly_shadowed, summary) at the
+    frame's NATIVE resolution, with the summary carrying the authoritative
+    areas.
+    """
+    from app.ingestion.horizon_frame import load_horizon
+
+    lola_dir = PRADAN_ROOT / "lola"
+    try:
+        hp = load_horizon(lola_dir)
+    except FileNotFoundError as exc:
+        raise HorizonPSRUnavailable(
+            f"No horizon product on this host ({exc}). Permanent shadow is a "
+            f"horizon computation over the full LOLA polar array (METHODS 5); "
+            f"without it this host cannot say where the shadow is. It does not "
+            f"substitute a brightness proxy -- METHODS 5.1 deleted those, and "
+            f"METHODS 5.3 measures the capped-elevation model wrong by up to "
+            f"4.4x. Run: python backend/scripts/compute_horizon.py"
+        ) from exc
+
+    if frame is None:
+        raise HorizonPSRUnavailable(
+            "The SAR frame geometry is unreadable, so the horizon product cannot "
+            "be projected onto it. A mask placed without geometry would be in the "
+            "wrong place, which is worse than an absent one."
+        )
+
+    # PROJECT AT THE FRAME'S NATIVE SHAPE, NOT THE DISPLAY GRID.
+    #
+    # to_frame builds `rows = arange(lines)` and feeds them to
+    # frame.pixel_to_xy, so `shape` is FRAME PIXEL INDICES, not an arbitrary
+    # output grid. Passing the API's 100x100 sampled a 100x100-pixel CORNER of a
+    # 2258x6618 frame -- about 2.5 km of it -- and reported 8704.56 km2 of
+    # shadow against the analysis artifact's 2043.22, with a mean illumination
+    # of exactly 0.0. The refusal path was right and the projection was wrong,
+    # which is the more dangerous half to get wrong because it answers.
+    native_shape = tuple(int(v) for v in frame.shape)
+    projected = hp.to_frame(frame, native_shape)
+    illum = projected["illumination_fraction"]
+    psr = projected["psr_mask"]
+    dbl = projected.get("doubly_shadowed")
+
+    # The area reduction is build_analysis.py's, line for line: a pixel count
+    # times the frame's own cell area, at NATIVE resolution. It is not a second
+    # implementation of shadow -- shadow was read above -- and computing it at
+    # the display grid instead would quantise a measured area to 564 x 1654 m
+    # cells and then call it the same number.
+    sy, sx = float(frame.pixel_size_m[1]), float(frame.pixel_size_m[0])
+    cell_km2 = (sy / 1000.0) * (sx / 1000.0)
+    finite = np.isfinite(illum)
+    summary = {
+        "psr_px": int(psr.sum()),
+        "psr_km2": float(psr.sum() * cell_km2),
+        "total_px": int(psr.size),
+        "total_km2": float(psr.size * cell_km2),
+        "psr_fraction": float(psr.mean()),
+        "mean_illumination_fraction": float(np.nanmean(illum)) if finite.any() else None,
+        "doubly_px": int(dbl.sum()) if dbl is not None else None,
+        "doubly_km2": float(dbl.sum() * cell_km2) if dbl is not None else None,
+        "native_shape": native_shape,
+        "cell_km2": cell_km2,
+        "source": "horizon product via load_horizon().to_frame() — the same "
+                  "product and the same call build_analysis.py reads",
+    }
+    return illum, psr, dbl, summary
+
+
 def array_to_base64_png(arr: np.ndarray, colormap: Optional[int] = None) -> str:
     """
     Encodes 2D numpy raster to a web-optimized Base64 PNG image.
@@ -304,10 +389,42 @@ class MissionPipelineService:
                                         source_spacing_m=_src_spacing)
             dem = dem_dict["dem"]
             spacing_m = dem_dict["spacing_m"]
-            illumination = dem_dict["illumination"]
-            psr_mask = dem_dict["psr_mask"]
-            doubly_shadowed_mask = dem_dict["doubly_shadowed"]
             hillshade = dem_dict["hillshade"]
+
+            # ONE PSR SOURCE, READ AND NOT RECOMPUTED.
+            #
+            # This used to take `illumination`, `psr_mask` and `doubly_shadowed`
+            # straight from process_real_dem, which derived them from a BRIGHTNESS
+            # THRESHOLD on a hillshade at a capped 1.5 deg solar altitude. METHODS
+            # 5.3 measures that model wrong by up to 4.4x -- solar elevation at
+            # latitude phi reaches 1.54 + (90 - |phi|), which is 6.71 deg at this
+            # frame's edge -- and METHODS 5.1 had already deleted both brightness
+            # proxies from every other path. This one survived because it sits
+            # behind an API nobody reads.
+            #
+            # It is not adapted, it is REPLACED. An adapter is how the two paths
+            # drifted in the PDF (METHODS 0, third pattern): a second
+            # implementation of a transform that already exists agrees with the
+            # first until it does not. The horizon product IS the PSR source --
+            # the same one build_analysis reads for the verdict, the same one the
+            # report renders -- and this reads it or it refuses.
+            (illum_native, psr_native, dbl_native,
+             psr_summary) = _read_horizon_psr(frame, None)
+
+            # The masks are DOWNSAMPLED FOR DISPLAY ONLY, nearest-neighbour,
+            # never bilinear -- an interpolated boolean invents half-shadowed
+            # pixels (METHODS 5.10). Every NUMBER comes from `psr_summary`, which
+            # was reduced at native resolution, so nothing a reader sees is a
+            # statistic of a resampled mask.
+            _th, _tw = dem.shape
+            illumination = cv2.resize(np.nan_to_num(illum_native, nan=0.0),
+                                      (_tw, _th), interpolation=cv2.INTER_AREA)
+            psr_mask = cv2.resize(psr_native.astype(np.uint8), (_tw, _th),
+                                  interpolation=cv2.INTER_NEAREST).astype(bool)
+            doubly_shadowed_mask = (
+                cv2.resize(dbl_native.astype(np.uint8), (_tw, _th),
+                           interpolation=cv2.INTER_NEAREST).astype(bool)
+                if dbl_native is not None else np.zeros_like(psr_mask))
 
             cpr = read_raster_file(str(cpr_real_path))
             dop = read_raster_file(str(dop_real_path))
@@ -355,6 +472,7 @@ class MissionPipelineService:
             spacing_absent_reason = None
             illumination = env["illumination"]
             psr_mask = env["psr_mask"]
+            psr_summary = None  # generated grid; nothing authoritative to read
             doubly_shadowed_mask = env["doubly_shadowed_mask"]
             cpr = env["cpr"]
             dop = env["dop"]
@@ -375,7 +493,12 @@ class MissionPipelineService:
             psr_mask=psr_mask,
             doubly_shadowed_mask=doubly_shadowed_mask,
             spacing_m=spacing_m,
-            data_mode=effective_data_mode
+            data_mode=effective_data_mode,
+            # REAL runs hand it the native-resolution reduction so the served
+            # numbers are the analysis artifact's numbers, not statistics of a
+            # display-sized mask. DEMO passes None and analyze_psr computes from
+            # the generated grid, which is the only thing there is there.
+            authoritative=psr_summary,
         )
 
         # Step 3: Module B - DFSAR Radar Polarimetry (CPR & DOP)

@@ -26,7 +26,7 @@ this project has spent long enough removing those.
 | G5 | `detection_statistics.py` | a candidate area without an interval, or a significance claim without a named look count |
 | G6 | `hillshade_histogram.py` | a base filter set by eye — post-filter median > ~190 or >1 % clipping at 255 |
 | G6b | `composite_contrast.py` | a science layer that hides the relief beneath it, tested on retention **and** correlation |
-| G7 | `assert_paths_agree.py` | the API and the static analysis disagreeing on a terrain quantity |
+| G7 | `assert_paths_agree.py` | the API and the static analysis disagreeing on a terrain quantity; **on permanent shadow — PSR area and PSR pixel count, at tolerance 0** (`--inject shadow` adds one pixel to one path); or **a quantity both paths produce that is neither compared nor excluded with a reason** (`--inject coverage`), because a gate that checks three of six named quantities certifies only the three it knows about |
 | G8 | `stamp_methods.py --check` | a figure in METHODS whose source artifact has moved since it was written; **a labelled figure that disagrees with the artifact it is mapped to** (`--inject-digit` perturbs one digit of the Jaccard row and the untouched checker must find it); and a duplicated or out-of-order section number |
 | G9 | `assert_pdf_agrees_with_analysis.py` | a figure in the PDF report that is not in the artifacts the report renders — read from the rendered bytes, not from the generator's inputs |
 | G10 | `assert_upper_bounds_labelled.py` | a bounded figure quoted as if it were a rate, anywhere in the tracked sources |

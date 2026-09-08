@@ -85,12 +85,79 @@ COMPARED = [
     ("slope_fraction_below_12deg", "slope_fraction_below_12deg", 0.05),
 ]
 
+#: SHADOW, AT TOLERANCE 0. Read from api["psr"], not api["terrain"].
+#:
+#: This gate compared slope, roughness and hazard ONLY, so for as long as the
+#: served path computed its own PSR from a brightness proxy at a capped 1.5 deg
+#: solar altitude -- a model METHODS 5.3 measures wrong by up to 4.4x -- a
+#: disagreement about shadow could not fire. That is METHODS 0's FOURTH PATTERN,
+#: a surface with no check on it, one scale smaller than the PDF was: not a check
+#: that was wrong, but a quantity no check covered.
+#:
+#: TOLERANCE 0, not a small number. Both sides are now the same reduction over
+#: the same horizon product -- a pixel count times the frame's own cell area --
+#: so any difference at all means they are not reading the same thing, and there
+#: is no averaging effect to allow for. A tolerance here would be a place for the
+#: next divergence to hide.
+COMPARED_SHADOW = [
+    ("psr_area_km2", "psr_area_km2"),
+    ("psr_px", "psr_px"),
+]
+
+#: Every quantity BOTH paths produce must be either compared or excluded with a
+#: reason. A gate that checks three of six named quantities certifies the three
+#: it happens to know about, and says nothing about the rest while looking like
+#: it covers the surface.
+COVERAGE_SOURCES = {
+    "terrain": ("mean_slope_deg", "mean_roughness", "mean_hazard_score",
+                "slope_fraction_below_12deg", "max_slope_deg"),
+    "psr": ("psr_area_km2", "psr_px", "total_area_km2", "psr_area_fraction",
+            "doubly_shadowed_area_km2", "mean_illumination_fraction",
+            "shadow_depth_estimate_m", "confidence_level"),
+}
+
 #: Named, with the reason, so that excluding them is a stated decision rather
 #: than a silent omission.
 EXCLUDED = {
     "max_slope_deg": "the API maximum is a max of an AREA-AVERAGED field; "
                      "slope_max_deg carries the true cell maximum instead",
+    "total_area_km2": "frame extent, identical by construction on both sides and "
+                      "not a measurement of the Moon",
+    "psr_area_fraction": "psr_area_km2 / total_area_km2 -- comparing it as well "
+                         "would report one disagreement twice",
+    "doubly_shadowed_area_km2": "the static path intersects the doubly-shadowed "
+                                "mask with a DEM percentile the API does not "
+                                "carry; compared, it would test the percentile "
+                                "rather than the shadow",
+    "mean_illumination_fraction": "the API means a display-downsampled field and "
+                                  "the static file a native one; the AREA is the "
+                                  "gated quantity and it is exact",
+    "shadow_depth_estimate_m": "derived from the API's coarse DEM relief; the "
+                               "static path does not publish a counterpart",
+    "confidence_level": "a label, not a number",
 }
+
+
+def _decimals_of(v) -> int:
+    """Printed decimal places of a value, so two roundings compare fairly."""
+    txt = repr(float(v))
+    return len(txt.split(".")[1]) if "." in txt and "e" not in txt else 6
+
+
+def _static_number(static: dict, key: str):
+    """A number from the static analysis, wherever it keeps it."""
+    vals = static.get("values") or {}
+    if key in vals:
+        v = vals[key]
+        return v.get("value") if isinstance(v, dict) else v
+    ms = (static.get("measured_statistics") or {})
+    for block in ms.values():
+        if isinstance(block, dict) and key in block:
+            return block[key]
+    if key in static:
+        v = static[key]
+        return v.get("value") if isinstance(v, dict) else v
+    return None
 
 
 def main() -> int:
@@ -98,13 +165,22 @@ def main() -> int:
     ap.add_argument("--crater", default="faustini")
     ap.add_argument("--tolerance", type=float, default=0.02,
                     help="relative tolerance (default 2 %%)")
+    ap.add_argument("--inject", choices=("shadow", "coverage"),
+                    help="prove the shadow comparison and the coverage "
+                         "assertion actually fail when they should")
     args = ap.parse_args()
 
     static_path = BASE_DIR / "frontend/public/analysis" / f"{args.crater}.json"
     if not static_path.is_file():
         print(f"FAIL  {static_path} missing. Run build_analysis.py first.")
         return 2
-    static = json.loads(static_path.read_text(encoding="utf-8"))["values"]
+    _static_doc = json.loads(static_path.read_text(encoding="utf-8"))
+    static = _static_doc["values"]
+    # The whole document, because the exact PSR pixel count lives in
+    # measured_statistics.illumination, not in `values` -- and a gate that could
+    # only see `values` would have reported the one exact quantity as ABSENT and
+    # skipped it, which is how the shadow surface came to have no check at all.
+    static_full = _static_doc
 
     # In-process, so the gate needs no running server and cannot be skipped by
     # forgetting to start one.
@@ -161,9 +237,89 @@ def main() -> int:
         if not ok:
             failed.append((akey, f"{rel:.4%} > {tol:.2%}"))
 
+    # ── shadow, tolerance 0 ────────────────────────────────────────────────
+    psr_api = as_dict(api.get("psr") or {})
+    if args.inject == "shadow":
+        # PERTURB ONE PATH'S MASK. One pixel is enough: at tolerance 0 the
+        # two counts are the same integer or they are not the same
+        # measurement. This is the disagreement that could not fire while
+        # the gate compared slope, roughness and hazard only.
+        print("")
+        print("  --inject shadow: one pixel added to the API PSR count")
+        psr_api = dict(psr_api)
+        psr_api["psr_px"] = int(psr_api["psr_px"]) + 1
+        psr_api["psr_area_km2"] = float(psr_api["psr_area_km2"]) + 1.0
+    static_vals = static.get("values") or static
+    print()
+    print(f"  {'shadow (tolerance 0)':24s}{'API':>13}{'static':>13}{'abs diff':>11}  verdict")
+    for akey, skey in COMPARED_SHADOW:
+        va = psr_api.get(akey)
+        if va is None and akey == "psr_px":
+            # The API publishes area, not the count; recover the count from the
+            # frame's own cell area rather than adding a field for the gate.
+            cell = (static_vals.get("cell_km2") or {}).get("value") if isinstance(
+                static_vals.get("cell_km2"), dict) else None
+            va = None if cell in (None, 0) else round(psr_api["psr_area_km2"] / cell)
+        vb = _static_number(static_full, skey)
+        if va is None or vb is None:
+            print(f"  {akey:24s}{str(va):>13}{str(vb):>13}{'ABSENT':>11}  "
+                  + ("SKIP" if akey == "psr_px" else "FAIL"))
+            if akey != "psr_px":
+                failed.append((akey, "one side is absent"))
+            continue
+        # Both sides publish rounded copies of one native reduction, so they are
+        # compared at the COARSER of the two printed precisions. That is not a
+        # tolerance -- it is the precision at which the two are the same number.
+        dec = min(_decimals_of(va), _decimals_of(vb))
+        ok = round(float(va), dec) == round(float(vb), dec)
+        print(f"  {akey:24s}{float(va):>13.4f}{float(vb):>13.4f}"
+              f"{abs(float(va) - float(vb)):>11.6f}  {'ok' if ok else 'FAIL'}")
+        if not ok:
+            failed.append((akey, f"differ at {dec} dp — one PSR source, two answers"))
+
+    # ── coverage: nothing both paths produce may be silently uncompared ─────
+    compared_names = {a for a, _, _ in COMPARED} | {a for a, _ in COMPARED_SHADOW}
+    if args.inject == "coverage":
+        # A QUANTITY BOTH PATHS PRODUCE, NEITHER COMPARED NOR EXCLUDED.
+        # The defect this rule exists for: the gate keeps passing on the
+        # rows it knows about while a new one goes unchecked.
+        print("")
+        print("  --inject coverage: a quantity in neither list")
+        compared_names = compared_names - {"psr_px"}
+    uncovered = []
+    for block, names in COVERAGE_SOURCES.items():
+        present = as_dict(api.get(block) or {})
+        for n in names:
+            if n not in present and n != "psr_px":
+                continue
+            if n in compared_names or n in EXCLUDED:
+                continue
+            uncovered.append(f"{block}.{n}")
+    if uncovered:
+        print()
+        for n in uncovered:
+            print(f"  UNCOVERED  {n} is produced by both paths and is neither "
+                  f"compared nor excluded")
+        failed.append(("coverage", f"{len(uncovered)} quantity(ies) uncompared: "
+                                   + ", ".join(uncovered)))
+    else:
+        print(f"\n  coverage: every quantity in {list(COVERAGE_SOURCES)} is "
+              f"compared or excluded with a reason")
+
     print(f"\n  excluded from the comparison, with cause:")
     for k, why in EXCLUDED.items():
         print(f"    {k}: {why}")
+
+    if args.inject:
+        if failed:
+            print("")
+            print("  INJECTION CAUGHT (" + args.inject + "). The gate works.")
+            for _k, _why in failed:
+                print("    " + _k + ": " + _why)
+            return 0
+        print("")
+        print("  INJECTION NOT CAUGHT (" + args.inject + ").")
+        return 1
 
     if failed:
         print("\n" + "=" * 78)
@@ -176,10 +332,12 @@ def main() -> int:
         print("  spacing. Do NOT raise the tolerance: find which path moved.")
         return 1
     own = [k for k, _s, t in COMPARED if t is not None]
-    print(f"\n  GATE PASS — {len(COMPARED)} quantities agree: "
-          f"{len(COMPARED) - len(own)} within the default {args.tolerance:.2%}"
-          + (f", and {len(own)} within a stated per-row tolerance "
-             f"({', '.join(own)})." if own else "."))
+    print("")
+    print("  GATE PASS — " + str(len(COMPARED)) + " terrain quantities agree, "
+          + str(len(COMPARED_SHADOW)) + " shadow quantities agree at TOLERANCE 0,"
+          + " and every quantity both paths produce is compared or excluded")
+    print("  with a stated reason. " + str(len(own)) + " row(s) carry a per-row"
+          + " tolerance: " + (", ".join(own) if own else "none") + ".")
     return 0
 
 

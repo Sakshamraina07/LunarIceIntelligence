@@ -9,7 +9,7 @@ and `PROVENANCE.md` names the phase that will compute it.
 
 ## 0 · The recurring defect in this project
 
-*Four patterns, twenty instances. Two of them are about descriptions drifting
+*Four patterns, twenty-one instances. Two of them are about descriptions drifting
 from what they describe, one is about a transform written twice, and the fourth
 is about a whole surface that had no check on it at all.*
 
@@ -372,7 +372,13 @@ the first time two computations are made to agree on a screen.
 
 ### The fourth pattern: the surface nobody was looking at
 
-One instance, and it is the worst defect this project has produced since the
+Two instances. The second is §5.1b — G7 compared slope, roughness and hazard
+only, so a disagreement about permanent shadow between the API and the static
+analysis could not fire, and a served path computed its own shadow from a model
+§5.3 refutes by 4.4× for as long as that was true. Same shape as the first, one
+scale smaller: a quantity with no check rather than a document with none.
+
+The first, and it is the worst defect this project has produced since the
 Random Forest's `P(ice) = 0.96`.
 
 **The PDF report was printing five landing sites that do not exist.** Alpha Ridge
@@ -855,47 +861,71 @@ event.
 Both are deleted. Illumination is now a horizon computation, and the layer and
 the statistics are the same array.
 
-#### 5.1a A live consumer of the refuted model — `sun_altitude_deg = 1.5`
+#### 5.1a One PSR source — the third application of Phase 1's fix
 
-**This was going to be declared in `assumptions.md` as an undeclared model
-parameter. It must not be, because declaring it would assert something §5.3
-spends a whole section refuting.**
+`pradan_pipeline.py` computed `psr_mask = (illumination < 0.05)` from a hillshade
+at a capped **1.5°** solar altitude, and `mission_service` served it. §5.3
+measures that model wrong by up to **4.4×** — solar elevation at latitude φ
+reaches `1.54° + (90° − |φ|)`, which is 6.71° at this frame's outer edge — and
+§5.1 had already deleted both brightness proxies from every other path. **This
+one survived because it sat behind an API nobody was reading.**
 
-`pradan_pipeline.py:161-172` defines `simulate_grazing_illumination(...,
-sun_altitude_deg=1.5)`, and line 253 calls it, then line 254 does:
+**It is deleted, not adapted.** `simulate_grazing_illumination` and
+`sun_altitude_deg` are gone; `process_real_dem` no longer returns `illumination`,
+`psr_mask` or `doubly_shadowed` at all. An adapter would have been a second
+implementation of a transform that already exists, which is §0's third pattern
+and is exactly how the PDF and the screen came to disagree. `mission_service`
+now calls `load_horizon(...).to_frame(...)` — the same product, through the same
+call, that `build_analysis.py` reads for the verdict and the report renders — or
+raises `HorizonPSRUnavailable` with its reason. **Absence refuses; it does not
+degrade**, the same rule G16 applies to the report.
 
-```python
-illumination = simulate_grazing_illumination(dem, spacing_m, sun_altitude_deg=1.5)
-psr_mask     = (illumination < 0.05)
-doubly_shadowed = psr_mask & (dem < np.percentile(dem, 20))
-```
+`sun_altitude_deg` is **not** recorded in `docs/assumptions.md`. With no consumer
+it is not an assumption, and declaring it would assert the capped-elevation model
+this section spends §5.3 refuting.
 
-Those three arrays are returned by `process_real_dem` and read by
-`mission_service.py:307-309`, passed into `analyze_psr(...)` at line 371, and
-rendered as `illumination` and `psr_mask` raster layers at lines 542-543.
+**The projection was wrong before it was right, and the wrong version answered.**
+`to_frame(frame, shape)` builds `rows = arange(lines)` and feeds them to
+`frame.pixel_to_xy`, so `shape` is **frame pixel indices**, not an output grid.
+Passing the API's 100 × 100 display grid sampled a 100 × 100-pixel *corner* of a
+2258 × 6618 frame — about 2.5 km of it — and reported **8704.56 km²** of shadow
+against the analysis artifact's 2043.22, with a mean illumination of exactly
+0.0. The refusal path was correct and the projection was not, which is the more
+dangerous half to get wrong because it returns a number. The horizon is now
+projected at the frame's native shape and reduced there — a pixel count times the
+frame's own cell area, `build_analysis.py`'s arithmetic line for line — and the
+masks are downsampled **nearest-neighbour, for display only**. Every number comes
+from the native reduction, so nothing served is a statistic of a resampled mask.
 
-**It is read, so it cannot simply be deleted; and it is a SOLAR-GEOMETRY term,
-not a display choice, so it cannot be declared either.** The distinction matters
-and §8.6 is the contrast: the hillshade azimuths there are a *presentation*
-choice, legitimately tunable, affecting only how relief is drawn. This is not
-that. A capped 1.5° solar altitude feeding a brightness threshold is a claim
-about where the Sun can be — and §5.3 measures that claim wrong by a factor of
-**4.4×**, because elevation at latitude φ reaches `1.54° + (90° − |φ|)`, which is
-6.71° at this frame's edge. It is also a **brightness proxy for permanent
-shadow**, which is the exact method §5.1 replaced with the horizon computation.
+| | API path | static analysis |
+|---|---:|---:|
+| PSR pixels | **3269150** | **3269150** |
+| PSR area | 2043.22 km² | 2043.219 km² |
 
-**What it does and does not reach.** The verdict, the PSR area on screen
-(2043 km²), and every figure in this document come from the horizon computation
-over the LOLA array, not from this. This path is the on-demand API's, which
-answers `NOT_INGESTED` on every deployed host. So nothing a reader has seen is
-affected. But `assert_paths_agree.py` (G7) compares the API against the static
-analysis on **slope, roughness and hazard only** — there is no PSR term in it —
-so if the two disagreed about shadow, nothing in this repository would notice.
+Both are roundings of one native reduction of one product. G7 gates the **pixel
+count at tolerance 0**, because two areas are two roundings but two counts are
+the same integer or they are not the same measurement.
 
-**Recorded as an open defect, not fixed here, and not declared.** Removing a PSR
-source from the API path is a change with real blast radius and is not smuggled
-into a documentation pass. What is settled is the classification: it is
-illegitimate, §5.3 governs it, and it does not belong in `assumptions.md`.
+#### 5.1b The gate that could not have caught it — §0's fourth pattern, smaller
+
+`assert_paths_agree.py` (G7) compared **slope, roughness and hazard only**. For as
+long as the served path computed its own shadow, a disagreement about PSR between
+the two paths **could not fire**. Nothing was wrong with the three checks it ran;
+there was simply no check on the fourth quantity.
+
+> **This is §0's fourth pattern — a surface with no check on it — one scale
+> smaller than the PDF was.** There the uncovered surface was a whole document;
+> here it is one quantity inside a gate that was otherwise working. The failure
+> shape is identical: *it is not that a check was wrong; it is that a whole
+> surface had none*, and a green light from the covered part reads as a green
+> light for the whole.
+
+G7 now compares PSR area and PSR pixel count at tolerance 0, and — because a gate
+that checks three of six named quantities certifies the three it happens to know
+about — it **enumerates every quantity both paths produce** and fails if any is
+neither compared nor excluded with a stated reason. Injection-tested both ways:
+`--inject shadow` adds one pixel to one path's count, `--inject coverage` removes
+a quantity from both lists.
 
 ### 5.2 The quantity
 
@@ -3042,7 +3072,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `2b962b8`.
+Stamped at commit `5cbed6a`.
 
 | artifact | sha256 | sections |
 |---|---|---|

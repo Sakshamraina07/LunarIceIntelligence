@@ -5,7 +5,7 @@ candidate craters from general PSRs. Computes hillshade, illumination fractions,
 """
 
 import numpy as np
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 from scipy.ndimage import label
 from app.core.config import settings
 from app.core.schemas import PSRAnalysisResult
@@ -76,6 +76,7 @@ def analyze_psr(
     spacing_m: Tuple[float, float],
     *,
     data_mode: str,
+    authoritative: Optional[Dict[str, Any]] = None,
 ) -> Tuple[PSRAnalysisResult, Dict[str, np.ndarray]]:
     """
     Performs illumination & shadow analysis, separating PSR from doubly-shadowed zones.
@@ -88,14 +89,28 @@ def analyze_psr(
     total_cells = dem.size
     total_area_km2 = total_cells * cell_area_km2
 
-    psr_cells = int(np.sum(psr_mask))
-    psr_area_km2 = float(psr_cells * cell_area_km2)
-    psr_area_fraction = float(psr_cells / total_cells)
-
-    doubly_cells = np.sum(doubly_shadowed_mask)
-    doubly_shadowed_area_km2 = float(doubly_cells * cell_area_km2)
-
-    mean_illumination = float(np.mean(illumination))
+    # ONE PSR SOURCE. When the caller has the horizon product it reduces the
+    # masks at NATIVE resolution and hands the result in; the arrays below are
+    # display-sized and their statistics would quantise a measured area to the
+    # display grid, then present it as the same number the verdict carries.
+    # A served path that computed its own PSR from a brightness proxy is exactly
+    # what this replaced -- see METHODS 5.1a and mission_service._read_horizon_psr.
+    if authoritative:
+        psr_cells = int(authoritative["psr_px"])
+        psr_area_km2 = float(authoritative["psr_km2"])
+        total_area_km2 = float(authoritative["total_km2"])
+        total_cells = int(authoritative["total_px"])
+        psr_area_fraction = float(authoritative["psr_fraction"])
+        doubly_shadowed_area_km2 = float(authoritative["doubly_km2"] or 0.0)
+        _mi = authoritative.get("mean_illumination_fraction")
+        mean_illumination = float(_mi) if _mi is not None else float("nan")
+    else:
+        psr_cells = int(np.sum(psr_mask))
+        psr_area_km2 = float(psr_cells * cell_area_km2)
+        psr_area_fraction = float(psr_cells / total_cells)
+        doubly_cells = np.sum(doubly_shadowed_mask)
+        doubly_shadowed_area_km2 = float(doubly_cells * cell_area_km2)
+        mean_illumination = float(np.mean(illumination))
 
     # Shadow depth estimate: Height difference between surrounding rim crest and deepest shadow floor
     shadow_depth_estimate_m = float(np.max(dem) - np.min(dem[psr_mask])) if psr_cells > 0 else 0.0
@@ -134,6 +149,7 @@ def analyze_psr(
         crater_id=crater_id,
         total_area_km2=round(total_area_km2, 2),
         psr_area_km2=round(psr_area_km2, 2),
+        psr_px=int(psr_cells),
         psr_area_fraction=round(psr_area_fraction, 4),
         doubly_shadowed_area_km2=round(doubly_shadowed_area_km2, 2),
         mean_illumination_fraction=round(mean_illumination, 3),

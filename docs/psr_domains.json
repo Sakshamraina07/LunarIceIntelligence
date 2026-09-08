@@ -1,0 +1,60 @@
+{
+  "schema": "lunar-ice/psr-domains/1",
+  "generated_utc": "2026-09-08T07:32:38.386528+00:00",
+  "computed_by": "backend/scripts/psr_domains.py",
+  "horizon_product": "data/pradan/lola/horizon_240m.npz",
+  "effective_metres_per_pixel": 240.0,
+  "solar_model": "finite disc, angular radius 0.25 deg",
+  "domains": {
+    "full_array": {
+      "psr_km2": 23704.416,
+      "domain_km2": 369566.7264,
+      "percent": 6.414109904024087,
+      "status": "diagnostic only"
+    },
+    "inscribed_80S_circle": {
+      "psr_km2": 22810.9248,
+      "domain_km2": 290345.2992,
+      "percent": 7.856481528322261,
+      "status": "the product's nominal coverage"
+    },
+    "poleward_of_87p5S": {
+      "psr_km2": 4730.5728,
+      "domain_km2": 18057.4272,
+      "percent": 26.197379879233296,
+      "status": "Mazarico comparison band"
+    },
+    "dfsar_frame": {
+      "psr_km2": 2043.2187500000005,
+      "domain_km2": 9339.652500000002,
+      "percent": 21.876817686739418,
+      "status": "the only value that may reach the UI"
+    }
+  },
+  "full_array_over_frame": 2.5380404677797164,
+  "mazarico_2011": {
+    "published_km2": 3660.0,
+    "published_band_km2": 18060.0,
+    "published_percent": 20.3,
+    "ours_km2": 4730.5728,
+    "ours_band_km2": 18057.4272,
+    "ours_percent": 26.197379879233296,
+    "ratio_ours_over_published": 1.2925062295081966,
+    "their_note": "larger than earlier work, 2751 km2 for the same band"
+  },
+  "doubly_shadowed": {
+    "full_array": {
+      "pixels": 32,
+      "area_km2": 1.8432,
+      "fraction_of_full_array_psr": 7.775766338221537e-05,
+      "metres_per_pixel": 240.0
+    },
+    "dfsar_frame": {
+      "pixels": 770,
+      "area_km2": 0.48125000000000007,
+      "fraction_of_frame_psr": 0.00023553523087040975,
+      "metres_per_pixel": 25.0
+    },
+    "provenance": "DERIVED"
+  }
+}

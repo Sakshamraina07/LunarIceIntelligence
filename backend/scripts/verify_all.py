@@ -158,9 +158,15 @@ GATES = [
 
     # The report is the one artefact that leaves the browser, and it must obey
     # the same three-state rule the screen does: on a host that answers but
-    # holds no rasters, NO PDF IS ISSUED -- 409 -- and a PDF that IS issued says
-    # which state produced it. The deployed backend is in exactly that state, so
-    # this gate, and the PDF fix it guards, are VERIFIABLE LOCALLY ONLY.
+    # holds no ARTIFACTS, NO PDF IS ISSUED -- 409 -- and a PDF that IS issued
+    # says what it was rendered from.
+    #
+    # This comment used to end "the deployed backend is in exactly that state,
+    # so this gate, and the PDF fix it guards, are VERIFIABLE LOCALLY ONLY."
+    # That was false: the precondition is the committed artifacts, not the
+    # rasters, and the deployed host serves the report with HTTP 200. METHODS
+    # and PRD were corrected when the claim was withdrawn; this line was missed,
+    # and G19 found it.
     ("G16", "A report is issued only on a host that holds the artifacts, and it "
             "names the state it was issued under",
      "assert_pdf_refuses_without_rasters.py — the loader, the 409, the rendered bytes",
@@ -188,6 +194,21 @@ GATES = [
             "inferred from the mission endpoint's state",
      "assert_report_state_is_its_own.py - independent, not derived, honest doc, probe works",
      [sys.executable, str(SCRIPTS / "assert_report_state_is_its_own.py")], False),
+
+    # Eight claims have been withdrawn after being measured wrong, each recorded
+    # in METHODS section 0. A withdrawal only holds if the claim cannot come
+    # back, and prose is copied forward -- one of these was found still alive in
+    # THIS FILE's own comment when the gate was written.
+    #
+    # Every term names a CLAIM, never a figure. An ad-hoc predecessor rejected
+    # the bare string "8.75", which is simultaneously a deleted fabrication, the
+    # measured 8.75 km amplitude ribbon, and a look count derivable from Fa &
+    # Cai 2013. A scan that fires on a bare number either blocks correct work or
+    # gets disabled, and both are worse than one that names what it forbids.
+    ("G19", "A claim this project withdrew cannot reappear in a tracked source, "
+            "and every scan term names a claim rather than a figure",
+     "assert_withdrawn_claims_absent.py --list prints each term with the sentence it forbids",
+     [sys.executable, str(SCRIPTS / "assert_withdrawn_claims_absent.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

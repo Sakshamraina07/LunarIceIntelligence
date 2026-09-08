@@ -52,6 +52,7 @@ for _stream in (sys.stdout, sys.stderr):
         pass
 
 INJECT_DIGIT = False
+INJECT_UNSTAMPED = False
 
 BEGIN = "<!-- BEGIN GENERATED STAMP -- do not edit by hand -->"
 END = "<!-- END GENERATED STAMP -->"
@@ -74,9 +75,12 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/roughness_vs_latitude.json": ["9.1", "9.2"],
     "docs/site_inspection.json": ["9.3"],
     "docs/psr_validation.json": ["5.10"],
+    "docs/psr_domains.json": ["5.8", "5.9", "5.11"],
+    "docs/f2_footprint.json": ["6.2"],
+    "docs/composite_contrast.json": ["8.7"],
     "docs/solar_model_ab.json": ["5.3", "5.10"],
     "docs/antialias_sigma.json": ["8.1"],
-    "frontend/public/analysis/faustini.json": ["8.2", "8.3"],
+    "frontend/public/analysis/faustini.json": ["1.4", "8.2", "8.3"],
     "data/pradan/lola/ldem_frame_25m.provenance.json": ["8.1", "8.2", "8.4"],
     "data/pradan/lola/horizon_240m.provenance.json": ["5.4", "5.6", "8.4"],
 }
@@ -371,6 +375,98 @@ def check_labelled_figures(text: str) -> list:
     return problems
 
 
+#: Sections that quote a number but map to NO artifact, each with the reason.
+#:
+#: THE HOLE THIS CLOSES. Sections 5.8 and 5.11 quoted measured PSR areas that
+#: came from a terminal, not from a committed artifact, so they appeared in no
+#: stamp entry -- and the numeric-literal checker only reads sections that map to
+#: one. When the finite solar disc shipped and every figure in both sections
+#: moved, nothing could notice. That is METHODS 0's FOURTH PATTERN at document
+#: scale: not a check that was wrong, but a surface no check covered.
+#:
+#: An entry here is a STATED DECISION that a section's numbers need no artifact.
+#: It is not a way to silence a section that does.
+SECTIONS_WITHOUT_ARTIFACTS: dict = {
+    "0": "the defect register. Its numbers are counts of instances and quotations "
+         "of figures that are checked where they are computed.",
+    "1.1": "prose describing which expressions the build evaluates; the figures "
+           "are checked in 1.2 and 1.4.",
+    "1.2": "a closed-form derivation. artanh and tanh of a config constant, "
+           "reproducible from the identity and owning no artifact.",
+    "1.3": "the consequence of 1.2, same derivation.",
+    "1.5": "interpretation, no measured figure of its own.",
+    "1.6": "a propagation result derived in the prose from 1.2.",
+    "1.7": "an assertion about the code, not a measurement.",
+    "1.8": "policy, and the thresholds it names are checked against config by G7.",
+    "2": "georeferencing residuals, checked by the frame tests rather than a "
+         "stamped artifact.",
+    "3": "PDS label constants, verified on every run by assert_dem_is_lola().",
+    "4": "mask definitions; the counts are in faustini.json and checked by G1.",
+    "5.1": "narrative of what replaced what.",
+    "5.1a": "the fix record; its two PSR figures are gated at tolerance 0 by G7.",
+    "5.1b": "the gate-gap record; quotes G7's own coverage.",
+    "5.12": "a defect record. It must quote the SUPERSEDED figures (2,264.2 km2, "
+            "the 1.3011 ratio) beside the current ones to explain what went "
+            "stale, so it cannot be checked against the artifact that holds only "
+            "the current values -- the same reason section 0 is excluded. It was "
+            "flagged by this very assertion when it was written, which is the "
+            "gate working.",
+    "5.2": "definitional.",
+    "5.3": "a geometric identity in latitude, derived in the prose.",
+    "5.5": "describes where the computation runs.",
+    "5.7": "the polar-to-frame mapping residual, checked by the frame tests.",
+    "6": "the published thresholds and their citations, checked against config.",
+    "7.2": "amplitude-vs-intensity, from label constants; the dB arithmetic is "
+           "shown inline and the incidence sensitivity is derived in the prose.",
+    "7.8": "narrative.",
+    "7.9": "narrative heading for 7.9.1-7.9.3.",
+    "7.9.1a": "an argument about which distribution may be applied, no new figure.",
+    "8.5": "reports a floor already carried in faustini.json.",
+    "8.6": "hillshade azimuth geometry, a presentation choice, derived in prose.",
+    "6.3": "acquisition-mode facts from the cited paper's own text, not "
+           "measurements of ours.",
+    "6.4": "their published peak CPR against our ceiling; both figures are "
+           "checked where they are computed -- theirs in 6.2's citation block, "
+           "ours in 1.2 -- and the ratio is the division of the two.",
+    "9": "chapter opening; every figure restates 9.1-9.3 and landing_sites.json, "
+         "which are stamped.",
+    "9.4": "describes the guard; the figures it cites belong to 9.1-9.3.",
+    "9.5": "latitude clustering, from landing_sites.json via 9.6.",
+    "9.5b": "names two criterion sets apart; carries no measurement.",
+    "9.6a": "shows that the second safety application is inert.",
+    "10.6": "the route-drawing gate, asserted by its own script.",
+    "11.4": "describes the gate.",
+    "12": "chapter heading for 12.1-12.5.",
+}
+
+
+def check_section_artifact_coverage(text: str, extra_section: str = "") -> list:
+    """Every section quoting a number must map to an artifact, or be excluded.
+
+    The same coverage rule G7 now applies to the two computation paths, applied
+    to this document: a check that only reads the sections it happens to know
+    about certifies those and says nothing about the rest, while looking like it
+    covers the surface.
+    """
+    problems = []
+    bodies = section_bodies(text)
+    if extra_section:
+        bodies = dict(bodies)
+        bodies[extra_section] = "This section reports a measured area of 1234.5 km2."
+    mapped = {sec for secs in ARTIFACTS.values() for sec in secs}
+    for sec, body in sorted(bodies.items()):
+        if sec in mapped or sec in SECTIONS_WITHOUT_ARTIFACTS:
+            continue
+        nums = [m.group(1) for m in _NUM.finditer(body)
+                if not LITERAL_EXEMPT.match(m.group(1))]
+        if nums:
+            problems.append(
+                f"S{sec} quotes {len(nums)} figure(s) (e.g. {', '.join(nums[:3])}) "
+                f"but maps to no artifact and is not in SECTIONS_WITHOUT_ARTIFACTS. "
+                f"Nothing can detect it going stale.")
+    return problems
+
+
 def _numkey(n: str):
     """(chapter, subsection, suffix) -- always this shape, so keys compare.
 
@@ -412,12 +508,17 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true",
                     help="verify the stamp instead of writing it; exit 1 if stale")
+    ap.add_argument("--inject-unstamped", action="store_true",
+                    help="prove the coverage assertion fails when a section "
+                         "quotes a number and maps to no artifact")
     ap.add_argument("--inject-digit", action="store_true",
                     help="prove the digit check fails when a figure does not match "
                          "its artifact -- the METHODS 5.10 defect, replayed")
     args = ap.parse_args()
     global INJECT_DIGIT
+    global INJECT_UNSTAMPED
     INJECT_DIGIT = args.inject_digit
+    INJECT_UNSTAMPED = args.inject_unstamped
 
     text = METHODS.read_text(encoding="utf-8")
     digests = current()
@@ -488,20 +589,25 @@ def main() -> int:
                   + " in the text under test" + chr(10))
         lit = check_labelled_figures(checked)
         num = check_section_numbering(checked)
+        cov = check_section_artifact_coverage(
+            checked, "13.9" if INJECT_UNSTAMPED else "")
+        for m in cov:
+            print("  COVERAGE " + m)
         for m in num:
             print(f"  NUMBERING {m}")
         for m in lit[:40]:
             print(f"  FIGURE   {m}")
         if len(lit) > 40:
             print(f"  ...      and {len(lit) - 40} more")
-        if lit or num:
+        if lit or num or cov:
             print("\n  GATE FAIL — the stamp matches but the PROSE does not. This is")
             print("  the blind spot the stamp used to only document: a digest can be")
             print("  refreshed without anyone re-reading the sections it covers.")
             return 1
         print("\n  GATE PASS — every watched artifact matches its stamp, every figure")
         print("  in the sections it covers appears in it at the precision printed,")
-        print("  and no section number is duplicated or out of order.")
+        print("  no section number is duplicated or out of order, and every section")
+        print("  quoting a figure maps to an artifact or is excluded by name.")
         return 0
 
     body = re.sub(re.escape(BEGIN) + r".*?" + re.escape(END), "", text, flags=re.S).rstrip()

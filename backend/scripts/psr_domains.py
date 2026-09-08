@@ -123,6 +123,86 @@ def main() -> int:
           f"({rows[2][3]:.1f} % of {rows[2][2]:,.0f} km²)")
     print(f"  ratio ours/published                          {maz_ours / 3660.0:.2f}x")
     print("  Mazarico note their own figure is larger than earlier work (2,751 km²).")
+
+    # ---------------------------------------------------------------- artifact
+    # EMITTED, NOT JUST PRINTED. METHODS 5.8, 5.9 and 5.11 quoted these figures
+    # from a terminal, so they appeared in NO stamp entry -- and when the finite
+    # solar disc shipped and every one of them moved, nothing could notice. The
+    # staleness stamp only watches artifacts, and the numeric-literal checker
+    # only reads sections that map to one. A section quoting measured figures
+    # with no artifact behind it is a surface with no check on it: METHODS 0's
+    # fourth pattern, at document scale.
+    import json as _json
+    from datetime import datetime, timezone
+
+    doubly_px = doubly_km2 = doubly_frac_of_array_psr = None
+    doubly_frame_px = doubly_frame_km2 = doubly_frac_of_frame_psr = None
+    try:
+        _fa = BASE_DIR / "frontend" / "public" / "analysis" / "faustini.json"
+        _doc = _json.loads(_fa.read_text(encoding="utf-8"))
+        _d = (_doc.get("illumination_model") or {}).get("doubly_shadowed") or {}
+        doubly_px = _d.get("pixels")
+        doubly_km2 = _d.get("area_km2")
+        doubly_frac_of_array_psr = _d.get("fraction_of_psr")
+        _ms = ((_doc.get("measured_statistics") or {}).get("illumination") or {})
+        doubly_frame_px = _ms.get("doubly_shadowed_px")
+        _psr_px = _ms.get("psr_px")
+        if doubly_frame_px is not None:
+            doubly_frame_km2 = float(doubly_frame_px) * (25.0 / 1000.0) ** 2
+            if _psr_px:
+                doubly_frac_of_frame_psr = float(doubly_frame_px) / float(_psr_px)
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+
+    out = {
+        "schema": "lunar-ice/psr-domains/1",
+        "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "computed_by": "backend/scripts/psr_domains.py",
+        "horizon_product": "data/pradan/lola/horizon_240m.npz",
+        "effective_metres_per_pixel": float(eff),
+        "solar_model": "finite disc, angular radius 0.25 deg",
+        "domains": {
+            "full_array": {"psr_km2": rows[0][1], "domain_km2": rows[0][2],
+                           "percent": rows[0][3], "status": "diagnostic only"},
+            "inscribed_80S_circle": {"psr_km2": rows[1][1], "domain_km2": rows[1][2],
+                                     "percent": rows[1][3],
+                                     "status": "the product's nominal coverage"},
+            "poleward_of_87p5S": {"psr_km2": rows[2][1], "domain_km2": rows[2][2],
+                                  "percent": rows[2][3],
+                                  "status": "Mazarico comparison band"},
+            "dfsar_frame": {"psr_km2": psr_frame_km2, "domain_km2": frame_km2,
+                            "percent": psr_frame_km2 / frame_km2 * 100.0,
+                            "status": "the only value that may reach the UI"},
+        },
+        "full_array_over_frame": rows[0][1] / frame_km2,
+        "mazarico_2011": {
+            "published_km2": 3660.0,
+            "published_band_km2": 18060.0,
+            "published_percent": 20.3,
+            "ours_km2": maz_ours,
+            "ours_band_km2": rows[2][2],
+            "ours_percent": rows[2][3],
+            "ratio_ours_over_published": maz_ours / 3660.0,
+            "their_note": "larger than earlier work, 2751 km2 for the same band",
+        },
+        # BOTH DOMAINS, NAMED. The artifact carried a full-array count and a
+        # frame count under one heading, and `fraction_of_psr` was relative to
+        # the FULL-ARRAY PSR while the section quoting it said "of our PSR"
+        # beside a frame area. An area without its domain is as defective as a
+        # number without its provenance mark -- 5.8's own rule, applied here.
+        "doubly_shadowed": {
+            "full_array": {"pixels": doubly_px, "area_km2": doubly_km2,
+                           "fraction_of_full_array_psr": doubly_frac_of_array_psr,
+                           "metres_per_pixel": float(eff)},
+            "dfsar_frame": {"pixels": doubly_frame_px, "area_km2": doubly_frame_km2,
+                            "fraction_of_frame_psr": doubly_frac_of_frame_psr,
+                            "metres_per_pixel": 25.0},
+            "provenance": "DERIVED",
+        },
+    }
+    dest = BASE_DIR / "docs" / "psr_domains.json"
+    dest.write_text(_json.dumps(out, indent=2), encoding="utf-8")
+    print(f"\n  wrote {dest.relative_to(BASE_DIR)}")
     return 0
 
 

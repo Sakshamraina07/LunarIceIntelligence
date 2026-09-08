@@ -9,7 +9,7 @@ and `PROVENANCE.md` names the phase that will compute it.
 
 ## 0 · The recurring defect in this project
 
-*Four patterns, twenty-one instances. Two of them are about descriptions drifting
+*Four patterns, twenty-two instances. Two of them are about descriptions drifting
 from what they describe, one is about a transform written twice, and the fourth
 is about a whole surface that had no check on it at all.*
 
@@ -372,7 +372,14 @@ the first time two computations are made to agree on a screen.
 
 ### The fourth pattern: the surface nobody was looking at
 
-Two instances. The second is §5.1b — G7 compared slope, roughness and hazard
+Three instances. The third is §5.12 — §5.8, §5.9 and §5.11 quoted measured PSR
+areas printed to a terminal, so they mapped to no artifact, and neither the
+staleness digest nor the numeric-literal checker could see them. Every figure in
+all three was stale by a whole solar model while §5.10 beside them was correct.
+The document-scale version of the same shape, and switching the coverage
+assertion on found six further uncovered sections immediately.
+
+The second is §5.1b — G7 compared slope, roughness and hazard
 only, so a disagreement about permanent shadow between the API and the static
 analysis could not fire, and a served path computed its own shadow from a model
 §5.3 refutes by 4.4× for as long as that was true. Same shape as the first, one
@@ -1079,18 +1086,22 @@ is no *offset*. The control shows a half-pixel error would be caught.
 
 **An area without its domain is as defective as a number without its provenance
 mark.** The horizon runs over the whole polar array; the DFSAR frame is 3.9 % of
-it. Quoting the full-array total as "the PSR area" would state a figure 2.88×
+it. Quoting the full-array total as "the PSR area" would state a figure 2.54×
 larger than the entire scene.
 
-`backend/scripts/psr_domains.py` prints all four, and only the last may reach
-`faustini.json`:
+`backend/scripts/psr_domains.py` computes all four and writes
+`docs/psr_domains.json`; only the last may reach `faustini.json`:
 
 | domain | PSR | of domain | % | status |
 |---|---:|---:|---:|---|
-| full 608 × 608 km array | 26,899.6 km² | 369,566.7 km² | 7.28 % | **diagnostic only** |
-| inscribed 80°S circle | 25,848.8 km² | 290,345.3 km² | 8.90 % | the product's nominal coverage |
-| poleward of 87.5°S | 5,474.9 km² | 18,057.4 km² | 30.32 % | Mazarico comparison band |
-| **DFSAR frame** | **2,264.2 km²** | **9,339.7 km²** | **24.24 %** | **the only value in the UI** |
+| full 608 × 608 km array | 23,704.4 km² | 369,566.7 km² | 6.41 % | **diagnostic only** |
+| inscribed 80°S circle | 22,810.9 km² | 290,345.3 km² | 7.86 % | the product's nominal coverage |
+| poleward of 87.5°S | 4,730.6 km² | 18,057.4 km² | 26.20 % | Mazarico comparison band |
+| **DFSAR frame** | **2,043.2 km²** | **9,339.7 km²** | **21.88 %** | **the only value in the UI** |
+
+*Every figure in this table moved when the finite solar disc shipped (§5.9), and
+none of them moved in this document until now, because this section quoted a
+terminal and appeared in no stamp entry. See §5.12.*
 
 ### 5.9 Sanity anchor — Mazarico et al. (2011)
 
@@ -1101,11 +1112,21 @@ of PSR poleward of 87.5°S at 240 m/px, and note explicitly that their figure is
 | | area poleward of 87.5°S | % of the 18,060 km² band |
 |---|---:|---:|
 | Mazarico et al. 2011, 240 m/px | 3,660 km² | 20.3 % |
-| **this project, 240 m/px** | **5,475 km²** | **30.3 %** |
-| ratio | **1.50×** | |
+| **this project, 240 m/px** | **4,730.6 km²** | **26.2 %** |
+| ratio | **1.2925×** | |
 
-**We report 50 % more shadow than the published figure, and the direction is
-worth stating rather than explaining away.** Three candidate causes were listed,
+**We report 29 % more shadow than the published figure, and the direction is
+worth stating rather than explaining away.**
+
+> **This said 50 % until the finite disc's effect was propagated here, and it was
+> understating our own agreement.** The 1.50× was the point-Sun ratio; the disc
+> that §5.10 validates reduced our 87.5°S band from 5,474.9 km² to 4,730.6 km²,
+> and the ratio with it. §0 names understating your own work as the same defect
+> as overstating it — the direction of a drift is not what makes it a drift —
+> and this one had the added property of making the project look more at odds
+> with the published literature than it is.
+
+Three candidate causes were listed,
 in the order I thought they mattered. **The first has since been closed by
 acting on it**, and the entry is kept rather than deleted so the prediction and
 its outcome stay side by side:
@@ -1283,10 +1304,19 @@ no scattered light from lit terrain**. Pass 1 gives the first half. Pass 2
 The crest mask is rotated with `order=0` (nearest) — a PSR flag is boolean and
 interpolating it would invent half-shadowed crests.
 
-| | |
-|---|---:|
-| doubly shadowed ∩ frame | **0.94 km²** |
-| as a fraction of our PSR ∩ frame | 0.04 % |
+**Both domains, each with its own denominator** — because this section quoted a
+frame area beside a fraction computed over the full array, which is exactly the
+defect §5.8 exists to prevent:
+
+| domain | doubly shadowed | as a fraction of THAT domain's PSR |
+|---|---:|---:|
+| full 608 × 608 km array, 240 m | 1.8432 km² (32 px) | 7.7758e-05 = 0.0078 % |
+| **DFSAR frame, 25 m** | **0.48125 km² (770 px)** | **2.3554e-04 = 0.0236 %** |
+
+*Was 0.94 km² and "0.04 % of our PSR" — the point-Sun frame figures, with a
+fraction that in the artifact was relative to the full array rather than the
+frame. An area without its domain is as defective as a number without its
+provenance mark (§5.8), and this section was quoting one of each.*
 
 **What it captures and what it does not.** It captures the dominant term: a floor
 ringed by rims that are themselves in permanent shadow has no nearby sunlit
@@ -1298,6 +1328,40 @@ receive some scattered light from lit terrain lying below a dark crest.
 It is **not** the discarded proxy. That was the brightness proxy's shadow
 intersected with the lowest elevation quintile of the DEM — an elevation
 percentile, which is not a shadowing event.
+
+### 5.12 Why nothing caught §5.8 and §5.11 — and the assertion that now does
+
+§5.10 was corrected from `docs/psr_validation.json` when the finite solar disc
+shipped. **§5.8, §5.9 and §5.11 were not, and could not have been**, because they
+quoted figures printed to a terminal by `psr_domains.py` and appeared in **no
+stamp entry**. The staleness stamp watches artifacts; the numeric-literal checker
+only reads sections that map to one. Neither could see these sections at all, so
+both passed them in silence while every figure in them was stale by a whole solar
+model — the frame PSR read 2,264.2 km² beside a §5.10 reporting 2,043.2, and
+2264.2 / 1740.2 = 1.3011, the superseded ratio, sitting in the document as a
+current fact.
+
+> **This is §0's fourth pattern at document scale — a surface no check covered.**
+> Not a check that was wrong: §8's digest check was working correctly and had
+> nothing to say, because nothing had told it these sections existed. The green
+> light from the covered sections read as a green light for the document.
+
+Two things closed it:
+
+1. **`psr_domains.py` now emits `docs/psr_domains.json`** — the four domains, the
+   Mazarico anchor, and the doubly-shadowed term in **both** of its domains, each
+   with its own denominator. §5.8, §5.9 and §5.11 map to it.
+2. **`stamp_methods.py --check` asserts the coverage rule**: every section
+   containing a numeric literal must appear in at least one stamp entry, or be
+   listed by name in `SECTIONS_WITHOUT_ARTIFACTS` with a reason. It is the same
+   assertion G7 gained for the two computation paths, turned on this document.
+   `--inject-unstamped` adds a numbered section with a figure and no mapping.
+
+**It found six more the moment it was switched on** — §1.4, §6.2, §6.3, §6.4,
+§8.7 and §9. Three now map to artifacts that already existed and had never been
+connected (`faustini.json`, `f2_footprint.json`, `composite_contrast.json`);
+three are excluded by name with their reasons. The stamp went from 20 artifacts
+to 23.
 
 ---
 
@@ -3072,20 +3136,23 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `5cbed6a`.
+Stamped at commit `56661dc`.
 
 | artifact | sha256 | sections |
 |---|---|---|
 | `data/pradan/lola/horizon_240m.provenance.json` | `f84a64b1ae849b27…` | §5.4, §5.6, §8.4 |
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
+| `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `ca598328db6bc3df…` | §7.10 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
 | `docs/detection_statistics.json` | `6ba46058e1399689…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
 | `docs/incidence_audit.json` | `75a568d239760cf4…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
+| `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
@@ -3093,7 +3160,7 @@ Stamped at commit `5cbed6a`.
 | `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
-| `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §8.2, §8.3 |
+| `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
 | `frontend/public/analysis/sweep_grid.json` | `a6c22dbcf875dad5…` | §1.9 |
 

@@ -27,7 +27,7 @@ this project has spent long enough removing those.
 | G6 | `hillshade_histogram.py` | a base filter set by eye — post-filter median > ~190 or >1 % clipping at 255 |
 | G6b | `composite_contrast.py` | a science layer that hides the relief beneath it, tested on retention **and** correlation |
 | G7 | `assert_paths_agree.py` | the API and the static analysis disagreeing on a terrain quantity |
-| G8 | `stamp_methods.py --check` | a figure in METHODS whose source artifact has moved since it was written |
+| G8 | `stamp_methods.py --check` | a figure in METHODS whose source artifact has moved since it was written; **a labelled figure that disagrees with the artifact it is mapped to** (`--inject-digit` perturbs one digit of the Jaccard row and the untouched checker must find it); and a duplicated or out-of-order section number |
 | G9 | `assert_pdf_agrees_with_analysis.py` | a figure in the PDF report that is not in the artifacts the report renders — read from the rendered bytes, not from the generator's inputs |
 | G10 | `assert_upper_bounds_labelled.py` | a bounded figure quoted as if it were a rate, anywhere in the tracked sources |
 | G12 | `assert_incidence_geometry.py` | an incidence field in which any pixel sits below the look angle — an identity on a convex body — and any consumer that uses one |
@@ -103,6 +103,25 @@ unreachable" because it is required to name the state it is in. A check that
 cannot tell *a control describing itself* from *a badge describing the system*
 would have forced the Report control to go quiet — causing the exact defect the
 file exists to prevent. It now reads `.mc-topbar .mc-badge` only.
+
+G8's digit check was **wrong twice before it was right**, and both versions were
+caught by disbelieving a clean-looking result rather than by a test.
+
+Its first version copied `assert_pdf_agrees_with_analysis.py` wholesale — every
+numeric literal in a mapped section must appear in the artifact. That works for
+the PDF because the PDF is *purely* a rendering. `METHODS.md` is not: §7.7's whole
+table is closed forms computed in the prose, correctly absent from
+`cpr_significance.json`. It produced **188 findings, almost all the checker's
+fault** — and a gate that cries wolf gets waved through, which this project had
+already learned once with G10. It is now anchored on **labels**: where the prose
+names a quantity the artifact also names, in a table row, the number beside it
+must be that artifact's value. That is exactly the shape the defect had.
+
+Its `--inject-digit` was then wrong in the more dangerous direction: it
+**appended a fabricated finding** to the results list, which proves the print
+statement works and nothing else. That is METHODS §0's seventh instance committed
+inside the fix for its twentieth. It now perturbs one digit of the real Jaccard
+row in the document under test and requires the untouched checker to find it.
 
 G10's own first version **failed on its own test fixture**: the injection payload
 was a string literal in the file, so the gate found an unlabelled occurrence in a

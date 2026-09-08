@@ -9,7 +9,7 @@ and `PROVENANCE.md` names the phase that will compute it.
 
 ## 0 · The recurring defect in this project
 
-*Four patterns, eighteen instances. Two of them are about descriptions drifting
+*Four patterns, twenty instances. Two of them are about descriptions drifting
 from what they describe, one is about a transform written twice, and the fourth
 is about a whole surface that had no check on it at all.*
 
@@ -55,7 +55,7 @@ to happen instead of three.
 
 **And it drifted a third time, one commit later, in the commit that caused it.**
 The badge went to the Sensitivity Studio because that stage's four sliders
-re-queried the pipeline. §1.7 then precomputed the joint screen, the sliders
+re-queried the pipeline. §1.9 then precomputed the joint screen, the sliders
 became a read of a static artifact, and stage 09 stopped depending on a host at
 all — which made both the sentence *and the badge's location* wrong again, in the
 same change that removed the dependency. A host-state badge on a stage with no
@@ -105,6 +105,43 @@ one that contains a report control (`--inject wrongstage`).
 > the previous ones. This is not a sentence written carelessly; it is a sentence
 > with no generator. That is why it needed a gate reading the rendered text
 > against the rendered DOM, rather than a resolution to be more careful.
+
+**Instance 19 — one document, two look counts, and the wrong one came first.**
+§7.4 closed with *"the operative number for everything downstream is therefore
+N ≈ 5, not 21"*. §7.7, four sections later, states in capitals that the operating
+point is **N = 13.72**, because the pipeline boxcars σ⁰ before forming CPR and the
+threshold touches the smoothed field. Both sentences were in this file at once,
+and §7.4 is the one a reader reaches first. §7.4's own content was never wrong —
+the *delivered product* really does measure 5.3–6.5 against a nominal 21 — it
+just claimed a scope it had not established. A section that overreaches by one
+clause is harder to catch than one that is simply incorrect, because everything
+around the clause checks out.
+
+**Instance 20 — the stamp's own documented blind spot, in the section that
+carries the project's only external validation.** §5.10 reported Jaccard
+**0.6732**, Dice 0.8047 and ratio 1.301 against the LOLA team's published PSR
+mask. `docs/psr_validation.json` held **0.714229**, 0.833295 and 1.174153, and
+the deployed site had been displaying 0.714 for days. The §5.10 numbers were the
+*point-Sun* run; the finite solar disc shipped afterwards
+(`solar_model.primary = "finite disc"`, radius 0.25°, confirmed by the shipped
+`psr_pixels = 411535` matching the 0.25° branch of its own A/B and not the
+464333 of the 0.0° branch), the validation was re-run, and the prose was not.
+§5.9 and §5.10's pre-registration paragraph were still arguing from *"this model
+treats the Sun as a point"* about a model that no longer existed.
+
+> **The staleness stamp said in writing that it could not catch this.** *"It does
+> not verify that any individual digit was transcribed correctly; only generation
+> could do that."* The artifact's sha256 changed when the disc shipped, so G8
+> fired, the stamp was refreshed — and refreshing the stamp is precisely the act
+> of recording that the prose has been re-checked. It had not been. **A gate that
+> documents its own blind spot has not mitigated it; it has only made the eventual
+> failure quotable in advance.**
+
+That blind spot is now closed rather than only named: `stamp_methods.py` extracts
+every numeric literal from the sections an artifact maps to and asserts each one
+appears in that artifact at the precision printed. It is
+`assert_pdf_agrees_with_analysis.py`'s mechanism turned on this document. Ten
+figures in §5.10 alone would have failed it the moment the disc shipped.
 
 ### The second pattern: the verification apparatus itself being wrong
 
@@ -535,8 +572,8 @@ pushing `|x|` up, the other pushing it down, along the same axis. The DOP
 condition therefore imposes a hard ceiling on achievable CPR:
 
 ```
-DOP < 0.13  ⟹  |x| < 2·artanh(0.13) = 0.2614770
-            ⟹  CPR < tanh²(0.2614770/4) = 0.0042611
+DOP < 0.13  ⟹  |x| < 2·artanh(0.13) = 0.2614797
+            ⟹  CPR < tanh²(0.2614797/4) = 0.0042611
 ```
 
 **No pixel satisfying `DOP < 0.13` can exhibit `CPR > 0.0042611` — whatever the
@@ -556,8 +593,17 @@ by `emit_provenance.py`):
 | `CPR` predicted from `DOP` alone, max\|residual\| | **1.241 × 10⁻⁶** (float32 storage precision) |
 | rms residual | 8.025 × 10⁻⁹ |
 | Pearson r between predicted and stored CPR | **0.999999999994** |
-| Ceiling implied by `DOP < 0.13` | CPR < 0.0042611 |
-| Highest CPR observed among pixels with `DOP < 0.13` | **0.0042611** — the ceiling, hit exactly |
+| Ceiling implied by `DOP < 0.13` | CPR < **0.004261082862785302** (algebraic) |
+| Highest CPR observed among pixels with `DOP < 0.13` | **0.004261057358235121** (measured) |
+| Agreement between them | **2.5504550181000563e-08** absolute, **5.985462147133474e-06** relative |
+
+**It is not "hit exactly", and saying so was both false and weaker than the
+truth.** These are two independent computations — one a closed form in
+`tanh`/`artanh`, the other a max over 2,166,825 measured pixels — and they
+converge to six parts in a million. Exactness would be the *expected* result of
+one number having been copied from the other. Six-significant-figure agreement
+between a derivation and a measurement is the claim worth making, and §1.9
+re-derives it from the sweep artifact independently of this table.
 
 The Phase 1 sensitivity sweep brackets the ceiling without having been designed
 to. Its grid was built from the measured percentiles, and the transition falls
@@ -653,7 +699,7 @@ is not a CBOE signature and is not evidence of ice. PRD §2 rule 4 stands: if a
 threshold is mis-set, print the distribution and say so. The distribution is
 printed above.
 
-### 1.7 How far the threshold has to fall — the sweep, precomputed
+### 1.9 How far the threshold has to fall — the sweep, precomputed
 
 Stage 09's four sliders re-queried `/api/mission/{crater}`, which re-runs the
 pipeline and therefore needs the 9 GB of gitignored products. No deployed host
@@ -987,14 +1033,28 @@ of PSR poleward of 87.5°S at 240 m/px, and note explicitly that their figure is
 | ratio | **1.50×** | |
 
 **We report 50 % more shadow than the published figure, and the direction is
-worth stating rather than explaining away.** Three candidate causes, in the order
-I think they matter:
+worth stating rather than explaining away.** Three candidate causes were listed,
+in the order I thought they mattered. **The first has since been closed by
+acting on it**, and the entry is kept rather than deleted so the prediction and
+its outcome stay side by side:
 
-1. **A point Sun.** This model treats the Sun as a point. Its true angular radius
-   is ~0.25°, which is large next to a ±1.54° subsolar band at grazing incidence.
-   A finite solar disc lights terrain a point source leaves dark, so a point Sun
-   systematically **over**-predicts shadow. This is the most likely single cause
-   and it has the right sign.
+1. **~~A point Sun.~~ CLOSED — the finite disc shipped, and this is no longer a
+   candidate cause.** It was the leading one, and it was acted on rather than
+   left as an explanation. `compute_horizon.py` now models the solar disc at an
+   angular radius of **0.25°**, lighting a pixel when *any part of the disc*
+   clears the horizon — the condition Mazarico et al. themselves use, which is
+   why the sign was predictable. The shipped
+   `horizon_240m.provenance.json` records `solar_model.primary = "finite disc"`
+   and the A/B it was chosen from:
+
+   | solar radius | PSR pixels | PSR km² (full array) | mean illumination |
+   |---|---:|---:|---:|
+   | 0.00° (point) | 464,333 | 26,745.58 | 0.2614 |
+   | **0.25° (shipped)** | **411,535** | **23,704.42** | **0.2721** |
+
+   A finite disc removed **11.4 %** of the point-Sun shadow, in the predicted
+   direction. The figures in the table above are the point-Sun run and are left
+   standing as the *before* side of that A/B; §5.10 carries the shipped result.
 2. **Uniform band weighting.** The subsolar latitude is sampled uniformly over
    ±1.54°, whereas the real ephemeris does not distribute uniformly. `psr_mask`
    is *never lit under any state*, so it is insensitive to weighting — but it is
@@ -1036,6 +1096,14 @@ it is meant to test. `AVGVISIB` is continuous and is resampled bilinearly.
 
 #### The prediction, stated before looking
 
+**The prediction below was written against the POINT-SUN model, and is kept
+verbatim because that is what a pre-registration is for.** The finite disc
+(§5.9) shipped afterwards, and the run reported here is the finite-disc one — so
+the prediction is being scored against a *later, better* model than the one it
+was written for. That direction is stated rather than quietly benefited from: a
+finite disc removes shadow, so it moves the result toward the low end of the
+predicted band, and the band would have been narrower had it been written after.
+
 > Ours is 80 m posts decimated to 240 m; theirs is 120 m and epoch-specific.
 > Finer topography resolves more small shadows, and this model treats the Sun as
 > a **point** when its angular radius is ~0.25° — large next to a ±1.54° band at
@@ -1044,39 +1112,48 @@ it is meant to test. `AVGVISIB` is continuous and is resampled bilinearly.
 
 #### The result
 
-Confusion matrix over the frame (14,943,444 px):
+Confusion matrix over the frame (14,943,444 px), read from
+`docs/psr_validation.json`:
 
 | | LPSR shadow | LPSR lit |
 |---|---:|---:|
-| **ours shadow** | 2,577,749 | 1,045,041 |
-| **ours lit** | 206,513 | 11,114,141 |
+| **ours shadow** | 2,522,138 | 747,012 |
+| **ours lit** | 262,124 | 11,412,170 |
 
 | | |
 |---|---:|
-| our PSR ∩ frame | 2,264.2 km² |
-| their PSR ∩ frame | 1,740.2 km² |
-| **ratio** | **1.301×** |
-| Jaccard (IoU) | 0.6732 |
-| Dice | 0.8047 |
-| precision | 0.7115 |
-| recall | 0.9258 |
-| overall agreement | 0.9162 |
+| our PSR ∩ frame | 2043.21875 km² |
+| their PSR ∩ frame | 1740.16375 km² |
+| **ratio** | **1.174153** |
+| Jaccard (IoU) | **0.714229** |
+| Dice | 0.833295 |
+| precision | 0.771497 |
+| recall | 0.905855 |
+| overall agreement | 0.932470 |
 
 Against `AVGVISIB`, on the continuous field:
 
 | | |
 |---|---:|
-| Pearson r | **0.8925** |
-| rms difference | 0.0890 |
-| least-squares fit | ours = 0.755 × theirs − 0.018 |
+| Pearson r | **0.911915** |
+| rms difference | 0.074238 |
+| least-squares fit | ours = 0.821453 × theirs − 0.013873 |
 
-**Measured 1.301×, inside the predicted 1.2–1.6× band, in the predicted
-direction, with the predicted shape** — recall 0.926 against precision 0.712, i.e.
-we find nearly all of their shadow and add some of our own. The regression slope
-of 0.755 says the same thing from the other side: we report systematically *less*
-illumination than they do.
+**Measured 1.174×, inside the predicted 1.2–1.6× band at its low edge — in fact
+just below it — in the predicted direction and with the predicted shape:** recall
+0.906 against precision 0.771, i.e. we find nearly all of their shadow and add
+some of our own. The regression slope of 0.821 says the same thing from the other
+side: we report systematically *less* illumination than they do.
 
-Nine out of ten pixels agree. The disagreement is one-sided and its sign was
+**Where the prediction missed, and in which direction.** 1.174× falls just under
+the 1.2× floor of the pre-registered band. That is the finite solar disc doing
+exactly what §5.9 predicted it would: the band was written for a point Sun, the
+disc removed 11.4 % of the shadow, and the result landed a little past the
+low edge. A prediction that lands just outside its band because the model was
+*improved* after the band was written is not a failed prediction, but it is not a
+hit either, and it is recorded as what it is.
+
+**93.2 % of pixels agree.** The disagreement is one-sided and its sign was
 predicted from the physics before the comparison was run.
 
 ### 5.11 The doubly-shadowed term — computed, and its approximation stated
@@ -1308,7 +1385,46 @@ K = 70.3089 dB, incidence 20.00°, and a median LH DN of 542:
 The intensity reading puts the entire scene 16 dB *beneath* the instrument's own
 detection floor, which is not a worse fit but a physical impossibility. The
 amplitude reading puts it 11 dB above the floor, and −20.3 dB is an ordinary
-lunar L-band backscatter at 20° incidence.
+lunar L-band backscatter at this incidence.
+
+**The 20.00° above is the label's nominal figure, which §12 proves the product
+cannot carry — and the verdict does not depend on it.** §12.1 shows
+`sin θ = ((R+h)/R)·sin η` forbids an incidence angle at or below the look angle
+on a convex body, and §12.3 shows the delivered incidence raster fails three
+independent tests. The geometric value implied by the label's own altitude is
+**21.2678°** (§12.1). The `sin θ` term moves by:
+
+```
+10·log10(sin 20.0000°) = −4.6595 dB
+10·log10(sin 21.2678°) = −4.4042 dB
+                shift  =  0.2553 dB
+```
+
+**0.2553 dB against a 27.3 dB separation between the two hypotheses** — the
+amplitude reading sits +11.2 dB above the noise floor and the intensity reading
+−16.1 dB below it. The tie is broken by more than two orders of magnitude more
+than this angle is worth, so **every incidence angle in the plausible range gives
+the same verdict**, and no value of θ rescues the intensity hypothesis. A reader
+arriving from §12 asking whether the amplitude finding rests on a discredited
+field will find the answer here: it does not.
+
+#### Every consumer of the label incidence, and its sensitivity
+
+`sin θ` enters `process_real_sar_pipeline.py:410-411` as a factor on **both**
+channels — `sigma0_lh` and `sigma0_lv` — so it divides out of any ratio built
+from them. That splits the consumers cleanly into the two that see it and the
+ones that cannot:
+
+| consumer | does θ reach it? | sensitivity |
+|---|---|---|
+| **§7.2 amplitude vs intensity** (this section) | **yes** — an absolute σ⁰ level against NESZ | 0.2553 dB over 20.0000° → 21.2678°, against a 27.3 dB margin. **Verdict unchanged.** |
+| **CPR, DOP, the screen, candidate area** | **no** — a common factor in a ratio | Cancels algebraically. Measured residual (§12.4, `incidence_audit.json`): max ΔCPR **0.013095542788505554**, max ΔDOP **0.1392841339111328**, and **0 pixels pass either way**. |
+| **§7.10 Putrevu slant-range spacing** | **yes** | Their printed 26° is a *nadir* angle; the incidence it implies is 27.6198°. Handled at §7.10, and it changed the N cap from 51.89 to 54.88. |
+| **§7.12 Bragg-domain criterion** | **yes, decisively** | It was the criterion's entire input. **Withheld**, not recomputed — §7.12. |
+
+The pattern is worth naming: **θ matters exactly where an absolute radiometric
+level matters, and nowhere a ratio is formed.** The one place it was decisive is
+the one place the criterion has been withdrawn.
 
 **Verdict: the DN are amplitude.** This is also the convention in the DFSAR
 instrument paper, whose calibration equation carries `(DN)²`
@@ -1398,7 +1514,19 @@ archive is corrupt either. **"21 looks" names a method, and the two methods do
 not deliver the same number of looks.** The delivered product's 5–6 sits with
 the spatial-average figure and its 6.8 ceiling, not with the sub-band figure.
 
-**The operative number for everything downstream is therefore N ≈ 5, not 21.**
+**What this section establishes is a fact about the DELIVERED PRODUCT: it
+measures 5.3–6.5 effective looks against a nominal 21.** That is the whole
+claim here, and it is about `cpr_real.tif`'s input channels as archived.
+
+**It is NOT the look count that applies to the screened field, and this sentence
+used to say it was.** It read *"the operative number for everything downstream is
+therefore N ≈ 5, not 21"*, which contradicted §7.7 four sections later: the
+pipeline applies a 5 × 5 boxcar to σ⁰ *before* forming CPR, so the threshold
+touches a smoothed field whose measured ENL is **13.72**, not the raw product's
+5.83. Both sentences were in this document at once, and the wrong one came
+first — so a reader who stopped at §7.4 left with the superseded number.
+**See §7.6 for the smoothing step and §7.7 for the operating point that applies
+to every downstream figure.**
 
 *One window of nine (the last, at the very end of the pass) is a clear outlier
 at 1.50 / 4.03, and the medians above are taken over all nine regardless.*
@@ -1553,9 +1681,13 @@ texture; and the quantified consequence for a live scientific dispute. The verb
 throughout is **measure and quantify**, never *discover*.
 
 **(c) There is an uncorrected positive bias.** `E[R] = CPR · N/(N−1)`, because
-the denominator is a random variable and `E[1/Y] > 1/E[Y]`. That is **+25 % at
-N = 5** and pushes every estimate *toward* the threshold, in the direction that
-manufactures detections. No lunar CPR study found applies this correction.
+the denominator is a random variable and `E[1/Y] > 1/E[Y]`. It pushes every
+estimate *toward* the threshold, in the direction that manufactures detections,
+and no lunar CPR study found applies the correction. Its size depends on the look
+count of the field being thresholded: **+25 % at N = 5**, but **+7.9 % at
+N = 13.72**, which is this screen's operating point (§7.7). The +25 % figure is
+the one that applies to a *raw-product* CPR; quoted against our own screen it
+overstates the bias by a factor of three.
 
 **(d) Three nulls survive the counterexample intact.** Nobody tests per-pixel
 significance, reports a confidence interval on an ice area, or computes a
@@ -1590,8 +1722,14 @@ actually thresholded is a 5 × 5 boxcar of σ⁰ on top of that. So the effectiv
 count is measured, by integrating the two-dimensional autocorrelation of
 `cpr_real.tif` itself over patches lying wholly inside the valid mask:
 
-**A = 61.5 pixels per independent sample.** F2's **1,520 pixels of CPR are
-therefore about 25 independent samples**, not 1,520.
+**A = 61.420749918170166 pixels per independent sample**, read from
+`docs/cpr_significance.json` (`effective_samples.area_all_lags`) and identical in
+`docs/cpr_dispersion.json` (`correlation_correction.correlation_area_px`). F2's
+**1,520 pixels of CPR are therefore about 25 independent samples**, not 1,520.
+
+*This read `A = 61.5` while §7.10 used `61.42` for the same quantity from the
+same artifact — one number, two roundings, and the coarser one first. Both now
+quote the artifact.*
 
 Patches are mean-removed before the ACF, which suppresses the DC terrain level
 and biases A slightly *low* — that is, biases the independent count *high*, so
@@ -1611,7 +1749,7 @@ Median peak over an ice-free F2, true CPR 0.7, as the median of the maximum of
 would be precisely the error this project exists to avoid.** Only the
 right-hand column may be used.
 
-#### 7.9.2a Why F(2N,2N) may not be applied to our own values
+#### 7.9.1a Why F(2N,2N) may not be applied to our own values
 
 `R ~ CPR · F(2N, 2N)` holds for a ratio of two independent N-look **intensities**
 — which is what published CPR, `σ_SC/σ_OC` from the Stokes vector, is. The
@@ -1852,8 +1990,10 @@ whichever altitude is assumed; only *how* correlated depends on it.
 
 The two circular channels are **correlated**, so **`F(2N,2N)` with independent
 numerator and denominator is conservative**, and every false-positive rate in
-§7.7 — the 29.16 % at true CPR 0.7 and N = 5 included — is an **upper bound on
-the rate, not the rate**.
+§7.7 is an **upper bound on the rate, not the rate** — the operating-point
+figure of **17.79 % at true CPR 0.7 and N = 13.72** included, and equally the
+superseded **29.16 % at N = 5**, which §7.7 records as the value the narrative
+wrongly quoted before the look count was resolved.
 
 **This does not weaken the argument, it bounds it.** An upper bound of 29 % on
 ordinary rock crossing a CPR threshold is still a reason not to trust the
@@ -2624,7 +2764,7 @@ answer, and it is not reported in the source.**
    that their N is ours — it is that nobody has measured theirs.**
 4. These floors are for a **single pixel**. A detection averaged over many pixels
    has a lower floor, by roughly √n_eff — and n_eff, not n, because CPR pixels
-   are correlated (§7.9.1 measures 61.5 px per independent sample in our field).
+   are correlated (§7.9.1 measures 61.42 px per independent sample in our field).
 5. **No claim is made that any published detection is wrong.** The claim is that
    the floor is not reported alongside it, so a reader cannot tell.
 
@@ -2818,7 +2958,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `a479f57`.
+Stamped at commit `2ee7116`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -2841,6 +2981,6 @@ Stamped at commit `a479f57`.
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
-| `frontend/public/analysis/sweep_grid.json` | `a6c22dbcf875dad5…` | §1.7 |
+| `frontend/public/analysis/sweep_grid.json` | `a6c22dbcf875dad5…` | §1.9 |
 
 <!-- END GENERATED STAMP -->

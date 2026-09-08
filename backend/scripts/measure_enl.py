@@ -55,9 +55,19 @@ for _stream in (sys.stdout, sys.stderr):          # cp1252 mojibake, once, here
         pass
 
 ROOT = Path(__file__).resolve().parents[2]
-RAW = ROOT / "data/pradan/raw/data/calibrated/20200808"
-STEM = "ch2_sar_{band}_20200808t201154198_d_sri_xx_cp_{ch}_d18.tif"
-LABEL = "ch2_sar_{band}_20200808t201154198_d_sri_xx_cp_xx_d18.xml"
+# WHERE THE PRODUCT IS. These are DEFAULTS, not constants: their values are
+# exactly what they were when they were pinned, so every existing caller gets
+# the same files, and --dir/--stem/--label let the SAME estimator read another
+# acquisition.
+#
+# ONLY THE ADDRESSING IS PARAMETERISED. Nothing below this line changes: not the
+# patch geometry, not the mode-versus-mean choice, not the wholly-inside-mask
+# rule, not the patch sizes. An estimator adjusted per product measures the
+# adjustment and not the product, so the argument that would let it be adjusted
+# does not exist.
+DEFAULT_DIR = "data/pradan/raw/data/calibrated/20200808"
+DEFAULT_STEM = "ch2_sar_{band}_20200808t201154198_d_sri_xx_cp_{ch}_d18.tif"
+DEFAULT_LABEL = "ch2_sar_{band}_20200808t201154198_d_sri_xx_cp_xx_d18.xml"
 
 
 def hr(t: str) -> None:
@@ -84,10 +94,10 @@ def looks_from_amplitude_ratio(r: float) -> float:
     return math.sqrt(lo * hi)
 
 
-def label_looks(band: str) -> dict:
+def label_looks(band: str, raw: Path, label_tmpl: str) -> dict:
     """The declared look count, read from the label rather than remembered."""
-    name = LABEL.format(band=band)
-    src = (RAW / name).read_text(encoding="utf-8", errors="replace")
+    name = label_tmpl.format(band=band)
+    src = (raw / name).read_text(encoding="utf-8", errors="replace")
 
     def one(tag: str):
         m = re.search(r"<isda:" + tag + r">([^<]+)</isda:" + tag + r">", src)
@@ -209,11 +219,23 @@ def main() -> int:
     ap.add_argument("--band", default="L", choices=["L", "S"])
     ap.add_argument("--patches", default="16,32,64")
     ap.add_argument("--out", default="docs/enl.json")
+    ap.add_argument("--dir", default=DEFAULT_DIR,
+                    help="directory holding the sri rasters and their label, "
+                         "relative to the repo root or absolute")
+    ap.add_argument("--stem", default=DEFAULT_STEM,
+                    help="raster filename template with {band} and {ch}")
+    ap.add_argument("--label", default=DEFAULT_LABEL,
+                    help="label filename template with {band}")
     args = ap.parse_args()
     band = {"L": "ncxl", "S": "ncxs"}[args.band]
+    raw = Path(args.dir)
+    if not raw.is_absolute():
+        raw = ROOT / args.dir
+    stem_t, label_t = args.stem, args.label
+    print(f"  product directory       {raw}")
 
     hr("A. THE DECLARED LOOK COUNT -- " + args.band + "-band sri, read from the label")
-    lab = label_looks(band)
+    lab = label_looks(band, raw, label_t)
     print("  source                  " + str(lab["source"]))
     print("  range_looks             " + str(lab["range_looks"]))
     print("  azimuth_looks           " + str(lab["azimuth_looks"]))
@@ -229,8 +251,8 @@ def main() -> int:
     print(f"    mean^2/var on AMPLITUDE   {amplitude_ratio(n_nom):8.2f}")
     print("  A factor of ~4 apart, so the two cannot be mistaken for each other.")
 
-    lh = tifffile.imread(str(RAW / STEM.format(band=band, ch="lh"))).astype(np.float64)
-    lv = tifffile.imread(str(RAW / STEM.format(band=band, ch="lv"))).astype(np.float64)
+    lh = tifffile.imread(str(raw / stem_t.format(band=band, ch="lh"))).astype(np.float64)
+    lv = tifffile.imread(str(raw / stem_t.format(band=band, ch="lv"))).astype(np.float64)
     valid = (lh > 0) & (lv > 0)
     print(f"\n  raster {lh.shape[0]} x {lh.shape[1]}, declared UnsignedLSB2 (uint16 DN)")
     print(f"  DN > 0 in both channels: {int(valid.sum()):,} px "
@@ -284,11 +306,11 @@ def main() -> int:
     k_db = lab["calibration_constant"]
     k_lin = 10.0 ** (k_db / 10.0)
     inc_deg = float(re.search(r"<isda:incidence_angle unit=\"deg\">([^<]+)<",
-                              (RAW / LABEL.format(band=band)).read_text(
+                              (raw / label_t.format(band=band)).read_text(
                                   encoding="utf-8", errors="replace")).group(1))
     nesz = {c: float(v) for c, v in re.findall(
         r"<isda:polarization>(\w+)</isda:polarization>.*?<isda:nes0_coeff_0>([^<]+)<",
-        (RAW / LABEL.format(band=band)).read_text(encoding="utf-8", errors="replace"),
+        (raw / label_t.format(band=band)).read_text(encoding="utf-8", errors="replace"),
         flags=re.S)}
     dn_med = float(np.median(lh[valid]))
     sin_t = math.sin(math.radians(inc_deg))

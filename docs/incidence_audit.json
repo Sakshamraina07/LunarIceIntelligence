@@ -1,6 +1,6 @@
 {
   "schema": "incidence_audit/1",
-  "generated_utc": "2026-09-06T18:56:29.093437+00:00",
+  "generated_utc": "2026-09-08T14:26:31.898970+00:00",
   "generator": "backend/scripts/incidence_audit.py",
   "label_geometry": {
     "semi_major_radius_m": 1737400.0,
@@ -11,6 +11,47 @@
     "incidence_required_by_look_angle_deg": 21.267826314673552,
     "label_gives_same_value_for_both": true
   },
+  "label_angle_survey": [
+    {
+      "label": "data/pradan/raw/data/calibrated/20200808/ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+      "present": true,
+      "collection": "sar_calibrated",
+      "note": "the product this project screens",
+      "date_of_pass": "2020-08-08",
+      "processing_level": "Calibrated",
+      "product_type": "L2-SELENOREF",
+      "incidence_angle_deg": 19.997919,
+      "look_angle_deg": 19.997919,
+      "spacecraft_altitude_m": 105376.0,
+      "declares_them_equal": true
+    },
+    {
+      "label": "data/generality/20200305/data/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+      "present": true,
+      "collection": "sar_calibrated",
+      "note": "generality candidate, comparable product line",
+      "date_of_pass": "2020-03-05",
+      "processing_level": "Calibrated",
+      "product_type": "L2-SELENOREF",
+      "incidence_angle_deg": 26.00765,
+      "look_angle_deg": 26.00765,
+      "spacecraft_altitude_m": 106434.0,
+      "declares_them_equal": true
+    },
+    {
+      "label": "data/generality/20251106/data/raw/20251106/ch2_sar_nrxl_20251106t221014810_d_r0b_xx_cp_xx_d18.xml",
+      "present": true,
+      "collection": "sar_raw",
+      "note": "generality candidate, L0B-RAW, not comparable for ENL",
+      "date_of_pass": "2025-11-06",
+      "processing_level": "Raw",
+      "product_type": "L0B-RAW",
+      "incidence_angle_deg": 25.999873,
+      "look_angle_deg": 25.999873,
+      "spacecraft_altitude_m": 84311.0,
+      "declares_them_equal": true
+    }
+  ],
   "raster_over_valid_deg": {
     "min": 0.009772882796823978,
     "p1": 0.5920854687690735,

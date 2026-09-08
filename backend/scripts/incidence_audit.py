@@ -74,6 +74,61 @@ def boxcar(a: np.ndarray, k: int = 5) -> np.ndarray:
     return uniform_filter(a, size=k, mode="nearest")
 
 
+#: Every PDS4 label on this machine, including the two generality candidates.
+#: Listed by path with its collection, because the point of the survey is that
+#: the defect is not specific to one acquisition or one processing level.
+SURVEY_LABELS = [
+    ("data/pradan/raw/data/calibrated/20200808/"
+     "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+     "sar_calibrated", "the product this project screens"),
+    ("data/generality/20200305/data/calibrated/20200305/"
+     "ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+     "sar_calibrated", "generality candidate, comparable product line"),
+    ("data/generality/20251106/data/raw/20251106/"
+     "ch2_sar_nrxl_20251106t221014810_d_r0b_xx_cp_xx_d18.xml",
+     "sar_raw", "generality candidate, L0B-RAW, not comparable for ENL"),
+]
+
+
+def _survey_labels() -> list:
+    """What each label declares for incidence and look angle, read not recalled."""
+    import xml.etree.ElementTree as _ET
+    rows = []
+    for rel, collection, note in SURVEY_LABELS:
+        f = BASE_DIR / rel
+        if not f.is_file():
+            rows.append({"label": rel, "present": False,
+                         "note": "not on this host; recorded as absent, not skipped"})
+            continue
+        vals = {}
+        def walk(el):
+            t = el.tag.split("}")[-1]
+            k = list(el)
+            if not k:
+                vals.setdefault(t, []).append((el.text or "").strip())
+            for c in k:
+                walk(c)
+        walk(_ET.parse(f).getroot())
+        one = lambda n: (vals[n][0] if n in vals else None)
+        inc, look = one("incidence_angle"), one("look_angle")
+        rows.append({
+            "label": rel,
+            "present": True,
+            "collection": collection,
+            "note": note,
+            "date_of_pass": one("date_of_pass"),
+            "processing_level": one("processing_level"),
+            "product_type": one("product_type"),
+            "incidence_angle_deg": None if inc is None else float(inc),
+            "look_angle_deg": None if look is None else float(look),
+            "spacecraft_altitude_m": None if one("spacecraft_altitude") is None
+                                     else float(one("spacecraft_altitude")),
+            "declares_them_equal": (inc is not None and look is not None
+                                    and abs(float(inc) - float(look)) < 1e-9),
+        })
+    return rows
+
+
 def main() -> int:
     from app.ingestion.sar_geometry import read_geotiff_frame, parse_calibration
 
@@ -231,6 +286,18 @@ def main() -> int:
             "incidence_required_by_look_angle_deg": theta_req,
             "label_gives_same_value_for_both": bool(abs(lab_inc - eta) < 1e-9),
         },
+        # THE SAME DEFECT, SURVEYED ACROSS EVERY LABEL WE HOLD.
+        # RESULT: 3 OF 3, across two processing levels (Calibrated / Raw) and
+        # two collections (sar_calibrated / sar_raw). Every label pairs a
+        # label-declared incidence angle with a label-declared look angle and
+        # gives them the SAME VALUE, which 12.1's identity forbids.
+        #
+        # Section 12.1 shows sin(theta_inc) = ((R+h)/R) sin(eta) forbids the
+        # incidence angle from equalling the look angle on a convex body. This
+        # records what each label ACTUALLY declares, so the claim rests on a
+        # stamped table rather than on one product and a memory. Read from the
+        # labels at run time; nothing here is transcribed by hand.
+        "label_angle_survey": _survey_labels(),
         "raster_over_valid_deg": {n: float(q) for n, q in zip(
             ["min", "p1", "p5", "p25", "p50", "p75", "p95", "p99", "max"], qs)},
         "test_1_magnitude": {"fraction_below_look_angle": below, "passes": test1},

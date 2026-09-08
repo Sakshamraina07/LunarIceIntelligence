@@ -3136,7 +3136,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `56661dc`.
+Stamped at commit `4aba4cd`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3149,7 +3149,7 @@ Stamped at commit `56661dc`.
 | `docs/detection_statistics.json` | `6ba46058e1399689…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
-| `docs/incidence_audit.json` | `75a568d239760cf4…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
+| `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
 | `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |

@@ -209,6 +209,17 @@ GATES = [
             "and every scan term names a claim rather than a figure",
      "assert_withdrawn_claims_absent.py --list prints each term with the sentence it forbids",
      [sys.executable, str(SCRIPTS / "assert_withdrawn_claims_absent.py")], False),
+
+    # METHODS section 1's identity is ALGEBRA, so it cannot depend on which
+    # acquisition it is evaluated on. A second, independent product is therefore
+    # a real check on whether these files are being read correctly at all, and a
+    # POSITIVE result rather than an absence. If it ever fails to replicate, the
+    # finding is that we are reading the file wrong -- this gate forces that
+    # conclusion rather than leaving it available.
+    ("G20", "The CPR/DOP degeneracy replicates on an independent acquisition and "
+            "the measured crossing sits on the closed form",
+     "assert_degeneracy_replicates.py — 2020-03-05, a different orbit, look angle, PRF and grid",
+     [sys.executable, str(SCRIPTS / "assert_degeneracy_replicates.py")], True),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

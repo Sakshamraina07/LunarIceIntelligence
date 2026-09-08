@@ -769,6 +769,42 @@ published threshold over the crossing, with the counts dying exactly there. The
 `configaxis` injection — re-centring the axis on the published threshold, the
 defect this gate exists for — trips two of the four independently.
 
+### 1.10 The degeneracy replicates on an independent acquisition
+
+§1.2's identity is **algebra**, so it cannot depend on which acquisition it is
+evaluated on. That makes a second product a real check on whether these files are
+being read correctly at all — and a **positive result**, not an absence.
+
+The 2020-03-05 pass is independent of ours in every respect that could matter: a
+different date, orbit and hemispheric track, a look angle of 26.007650° against
+19.997919°, a PRF of 3107.597454 Hz against 3321.641156, a pulse bandwidth of
+2.0 MHz against 7.5 MHz, 39 declared azimuth looks against 21, and a 90 m output
+grid against 25 m.
+
+| | 2020-08-08 (screened) | 2020-03-05 (independent) |
+|---|---:|---:|
+| valid pixels | 2,337,086 | 86,357 |
+| max \|CPR − tanh²(artanh(DOP)/2)\| | 7.54e-14 | **4.32e-14** |
+| max CPR where DOP < 0.13 | 0.0042610239 | **0.0042607148** |
+| closed form tanh²(artanh(0.13)/2) | 0.0042610829 | 0.0042610829 |
+| relative agreement | 1.38e-05 | **8.64e-05** |
+| pixels passing CPR > 1.00 **and** DOP < 0.13 | **0** | **0** |
+
+The identity holds to a float-precision residual on both, the measured crossing
+sits on the closed form to better than one part in ten thousand, and **the joint
+screen is empty on both products**. The emptiness §1 derives is not a property of
+our scene.
+
+> **If this ever fails to replicate, the finding is that we are reading the file
+> wrong, not that the algebra varies.** `G20 — assert_degeneracy_replicates.py`
+> exists so that conclusion is forced rather than merely available: it asserts
+> the independent product's crossing matches the closed form to better than 1e-3
+> relative (three orders looser than either product achieves), that CPR predicted
+> from DOP matches stored CPR to float precision, and that no pixel passes on
+> either product. Injection-tested three ways — perturbing the crossing,
+> shuffling one channel to break the pairing without changing its marginal
+> distribution, and forcing a passing pixel.
+
 ---
 
 ## 2 · Georeferencing
@@ -1734,6 +1770,88 @@ it**: it rests on the spatial arm (4.4–4.5) matching the delivered product
 (5.3–6.5) and its independently derived 6.77 ceiling, and on the sub-band arm
 being roughly twice the spatial arm on identical grids, identical patches and
 identical terrain — a gap that texture cannot produce.
+
+### 7.4a A pre-registered prediction, and its failure
+
+**(a) The prediction, as committed before measurement.** §7.3 derives a ceiling
+from the label alone: looks are formed by splitting the processed Doppler
+bandwidth, so when the PRF exceeds that bandwidth the looks overlap in frequency
+and the achievable ENL is `azimuth_looks / (PRF / processed_azimuth_bandwidth)`.
+`predict_enl_ceiling.py` computes it and opens no raster. Committed at
+**`4aba4cd`**, before `measure_enl.py` was pointed at the second product:
+
+| product | looks | PRF (Hz) | processed bw (Hz) | oversampling | predicted ceiling |
+|---|---:|---:|---:|---:|---:|
+| 2020-08-08 (ours) | 21 | 3321.641156 | 1071.335975 | 3.100466 | 6.7732 |
+| **2020-03-05** | **39** | **3107.597454** | **1069.708995** | **2.905087** | **13.4247** |
+
+Ours reproduces §7.3's 6.77, so the formula scored here is the document's own.
+
+**(b) The refactor was inert, and that is what makes the result admissible.**
+`measure_enl.py` had its input pinned in three module constants. They became
+`--dir`, `--stem`, `--label` with those exact values as defaults; **the estimator
+did not change** — not the patch geometry, not the mode-versus-mean choice, not
+the wholly-inside-mask rule, not the patch sizes. Re-running the original product
+through the new argument form reproduced **5.8276** (LH) and **5.1413** (LV), and
+**5.2960 / 6.4629** at 16 × 16, to every digit; a strict subset check found **0**
+of the committed artifact's leaves changed; and under `--patches 16,32` — what
+the committed file was written with — the output was **byte-identical**, with
+`git` reporting `docs/enl.json` unmodified. An estimator adjusted per product
+measures the adjustment, so it was proven unadjusted before it was used.
+
+**(c) The measurement.** On the 2020-03-05 L-band product the estimator returned
+**2.2806** (LH) and **2.2084** (LV) — **0.170** and **0.165** of the predicted
+13.4247, against 0.860 and 0.759 for our own product. **Doubling the declared
+azimuth looks, from 21 to 39, lowered the measured ENL.**
+
+**(d) The verdict.**
+
+> `azimuth_looks / oversampling` is not sufficient on its own, and the mechanism
+> as pre-registered does not generalise across these two configurations.
+
+**(e) What survives: the bound, not the prediction.** Every multilooked
+measurement sits below its own ceiling, and the attained fraction does not
+cluster:
+
+| product | band | ch | declared looks | ceiling | measured ENL | attained |
+|---|---|---|---:|---:|---:|---:|
+| 2020-08-08 | L | LH | 21 | 6.7732 | 5.8276 | 0.860 |
+| 2020-08-08 | S | LV | 21 | 6.7732 | 6.2721 | 0.926 |
+| 2020-08-08 | S | LH | 21 | 6.7732 | 5.2439 | 0.774 |
+| 2020-08-08 | L | LV | 21 | 6.7732 | 5.1413 | 0.759 |
+| 2020-03-05 | S | LH | 39 | 13.4247 | 3.7204 | 0.277 |
+| 2020-03-05 | L | LH | 39 | 13.4247 | 2.2806 | 0.170 |
+| 2020-03-05 | L | LV | 39 | 13.4247 | 2.2084 | 0.165 |
+| 2020-03-05 | S | LV | 39 | 13.4247 | 1.6250 | 0.121 |
+
+**The bound holds in 8 of 8. The attained fraction spans a factor of 7.65.** A
+quantity that bounds a measurement but does not predict where in its range the
+measurement falls is a ceiling, not a model, and §8.2 must not be read as
+claiming more.
+
+**The single-look control calibrates the estimator; it does not test the bound.**
+The `sli` products declare `azimuth_looks = 1` and `range_looks = 1`, so the
+ceiling is exactly 1.00 and coincides with the expected value. Measured, on
+16 × 16 patches of intensity wholly inside the valid mask: median **0.9854**
+(2020-08-08) and **0.9965** (2020-03-05), with per-patch p5–p95 of
+**0.4554–1.4110** and **0.4994–1.5228**. The estimator is unbiased at one look.
+It is listed here because omitting a control that came out well would be
+selection, but a bound equal to the expectation cannot be violated from below and
+is therefore not a constraint that could have failed.
+
+**(f) Candidate explanations — UNTESTED.** These are differences between the two
+products, not findings, and are recorded so that a later test has something to
+address:
+
+- output spacing against input resolution — 90 m output over 74.9 × 49.6 m input
+  resolution, against 25 m over 19.99 × 26.73 m
+- pulse bandwidth — 2.0 MHz against 7.5 MHz
+- lag-1 correlation — 0.689 / 0.729 (azimuth / range) against 0.838 / 0.576
+
+**They are not ranked and none is selected.** Choosing among them now would
+construct an explanation after seeing the answer, which is the failure the
+pre-registration exists to prevent. §7.4b states what will be tested next and
+commits to it in advance.
 
 ### 7.5 Neighbouring pixels are not independent
 
@@ -3136,7 +3254,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `4aba4cd`.
+Stamped at commit `18a7998`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3146,8 +3264,11 @@ Stamped at commit `4aba4cd`.
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `ca598328db6bc3df…` | §7.10 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
+| `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `6ba46058e1399689…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/enl_generality.json` | `0d737b2d40a1a1b6…` | §7.4a |
+| `docs/enl_predictions.json` | `d59432045e298f0e…` | §7.4a |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |

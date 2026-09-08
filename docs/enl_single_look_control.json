@@ -1,0 +1,28 @@
+{
+  "schema": "lunar-ice/enl-single-look/1",
+  "generated_utc": "2026-09-08T14:29:20.166967+00:00",
+  "computed_by": "inline control in emit_enl_generality workflow",
+  "statistic": "per-patch mean^2/var on intensity (re^2+im^2), 16x16 patches wholly inside the >0 mask, first 40000 lines",
+  "declared_looks": {
+    "azimuth_looks": 1,
+    "range_looks": 1,
+    "product_type": "L1A-SLANT-RANGE"
+  },
+  "expected": 1.0,
+  "products": {
+    "2020-08-08 sli LH": {
+      "n_patches": 52436,
+      "median": 0.9854243709711306,
+      "mean": 0.9707445333500506,
+      "p5": 0.4554490894135471,
+      "p95": 1.4110488175683993
+    },
+    "2020-03-05 sli LH": {
+      "n_patches": 12500,
+      "median": 0.9964596760106657,
+      "mean": 1.0010303030303418,
+      "p5": 0.49943126541623073,
+      "p95": 1.522780559709667
+    }
+  }
+}

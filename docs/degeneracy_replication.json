@@ -1,0 +1,33 @@
+{
+  "schema": "lunar-ice/degeneracy-replication/1",
+  "generated_utc": "2026-09-08T14:35:32.184990+00:00",
+  "computed_by": "backend/scripts/assert_degeneracy_replicates.py",
+  "closed_form_ceiling": 0.004261082862785302,
+  "dop_threshold": 0.13,
+  "cpr_threshold": 1.0,
+  "relative_tolerance": 0.001,
+  "products": [
+    {
+      "product": "2020-08-08 (the screened product)",
+      "directory": "data/pradan/raw/data/calibrated/20200808",
+      "independent": false,
+      "relative_agreement": 1.3842518714470227e-05,
+      "valid_px": 2337086,
+      "max_residual": 7.543965452327939e-14,
+      "crossing": 0.00426102387866603,
+      "peak_cpr": 0.5557024793388429,
+      "passing": 0
+    },
+    {
+      "product": "2020-03-05 (independent)",
+      "directory": "data/generality/20200305/data/calibrated/20200305",
+      "independent": true,
+      "relative_agreement": 8.636703467204308e-05,
+      "valid_px": 86357,
+      "max_residual": 4.321543123353422e-14,
+      "crossing": 0.004260714845693951,
+      "peak_cpr": 0.11111111111109877,
+      "passing": 0
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "label": {
+    "range_looks": 1,
+    "azimuth_looks": 39,
+    "total_looks": 39,
+    "calibration_constant": 70.308868,
+    "range_window": "HAMMING",
+    "range_window_coefficient": 0.7,
+    "azimuth_window": "HAMMING",
+    "azimuth_window_coefficient": 1.0,
+    "source": "ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml"
+  },
+  "patch_sizes": {
+    "16": {
+      "LH": {
+        "on_DN": {
+          "statistic": "mean^2/var on DN",
+          "n_patches": 197,
+          "mode": 12.295532136508333,
+          "mean": 17.781645647407384,
+          "p5": 5.076838327286742,
+          "p25": 10.400908150395203,
+          "median": 15.005693108691354,
+          "p75": 23.20212872442267,
+          "p95": 39.25358570641978
+        },
+        "on_DN_squared": {
+          "statistic": "mean^2/var on DN^2",
+          "n_patches": 197,
+          "mode": 2.280297856523385,
+          "mean": 3.6509509588894105,
+          "p5": 0.5990424690675478,
+          "p25": 1.7694850239567939,
+          "median": 2.7628443581318183,
+          "p75": 4.907699601777514,
+          "p95": 9.527418407456214
+        },
+        "implied_looks": {
+          "if_DN_are_amplitude__from_DN_squared": 2.280297856523385,
+          "if_DN_are_amplitude__from_DN_as_amplitude": 3.184480331424869,
+          "if_DN_are_intensity__from_DN": 12.295532136508333,
+          "declared": 39.0
+        }
+      },
+      "LV": {
+        "on_DN": {
+          "statistic": "mean^2/var on DN",
+          "n_patches": 197,
+          "mode": 17.452227540988197,
+          "mean": 18.589657056284157,
+          "p5": 5.473891502797436,
+          "p25": 10.800324175077751,
+          "median": 16.17165717996446,
+          "p75": 23.288207401246986,
+          "p95": 40.65655369845661
+        },
+        "on_DN_squared": {
+          "statistic": "mean^2/var on DN^2",
+          "n_patches": 197,
+          "mode": 2.2084413069255153,
+          "mean": 3.832402048384051,
+          "p5": 0.7096458767162724,
+          "p25": 2.02035261375141,
+          "median": 2.9818759200705403,
+          "p75": 5.175429313608141,
+          "p95": 9.397765978456851
+        },
+        "implied_looks": {
+          "if_DN_are_amplitude__from_DN_squared": 2.2084413069255153,
+          "if_DN_are_amplitude__from_DN_as_amplitude": 4.4777062751480665,
+          "if_DN_are_intensity__from_DN": 17.452227540988197,
+          "declared": 39.0
+        }
+      }
+    },
+    "32": {
+      "LH": {
+        "on_DN": {
+          "statistic": "mean^2/var on DN",
+          "n_patches": 14,
+          "mode": 9.508222066610088,
+          "mean": 11.049230699456777,
+          "p5": 2.721864581939868,
+          "p25": 7.755983792739239,
+          "median": 9.225775554867727,
+          "p75": 14.622902921932425,
+          "p95": 21.092348417588717
+        },
+        "on_DN_squared": {
+          "statistic": "mean^2/var on DN^2",
+          "n_patches": 14,
+          "mode": 1.3847471643249156,
+          "mean": 1.9367865946146559,
+          "p5": 0.43275086343811064,
+          "p25": 1.3033932914680482,
+          "median": 1.4617387065178002,
+          "p75": 2.3145491023530216,
+          "p95": 4.270575329334135
+        },
+        "implied_looks": {
+          "if_DN_are_amplitude__from_DN_squared": 1.3847471643249156,
+          "if_DN_are_amplitude__from_DN_as_amplitude": 2.483825726768066,
+          "if_DN_are_intensity__from_DN": 9.508222066610088,
+          "declared": 39.0
+        }
+      },
+      "LV": {
+        "on_DN": {
+          "statistic": "mean^2/var on DN",
+          "n_patches": 14,
+          "mode": 2.2624527357193998,
+          "mean": 11.064585051366217,
+          "p5": 2.7781088936776244,
+          "p25": 8.067844698439455,
+          "median": 9.378220048662634,
+          "p75": 14.818714141575779,
+          "p95": 20.085450658550982
+        },
+        "on_DN_squared": {
+          "statistic": "mean^2/var on DN^2",
+          "n_patches": 14,
+          "mode": 0.22378713648200738,
+          "mean": 1.921734875769125,
+          "p5": 0.4351606541934314,
+          "p25": 1.2095572006168234,
+          "median": 1.56259069761926,
+          "p75": 2.5164872685082313,
+          "p95": 4.063093776878303
+        },
+        "implied_looks": {
+          "if_DN_are_amplitude__from_DN_squared": 0.22378713648200738,
+          "if_DN_are_amplitude__from_DN_as_amplitude": 0.6358958057339357,
+          "if_DN_are_intensity__from_DN": 2.2624527357193998,
+          "declared": 39.0
+        }
+      }
+    }
+  },
+  "amplitude_vs_intensity": {
+    "verdict": "DN are AMPLITUDE",
+    "calibration_constant_db": 70.308868,
+    "incidence_deg": 26.00765,
+    "median_DN_LH": 333.0,
+    "nesz_linear": {
+      "LH": 0.0002354541,
+      "LV": 0.0002604065
+    },
+    "sigma0_if_amplitude_db": -23.44037502690773,
+    "sigma0_if_intensity_db": -48.66481736197093
+  },
+  "skewness": {
+    "patch": 16,
+    "theory_intensity": 0.32025630761017426,
+    "theory_amplitude": 0.08070540726652765,
+    "measured": {
+      "LH": {
+        "median_skew_of_DN": 1.286087202022356,
+        "median_skew_of_DN_squared": 2.4243265423885223
+      },
+      "LV": {
+        "median_skew_of_DN": 1.287841677545478,
+        "median_skew_of_DN_squared": 2.27816805116273
+      }
+    }
+  },
+  "lag_correlation": {
+    "LH": {
+      "azimuth_lines": [
+        0.68897167300564,
+        0.591701357306417,
+        0.5072133214459382
+      ],
+      "range_samples": [
+        0.7291547483506299,
+        0.573962630013281,
+        0.4347974387203035
+      ]
+    },
+    "LV": {
+      "azimuth_lines": [
+        0.6825633648562238,
+        0.5860312550030324,
+        0.5051102375924342
+      ],
+      "range_samples": [
+        0.7212846574309899,
+        0.5649877018973566,
+        0.4242481866837959
+      ]
+    }
+  },
+  "boxcar_gain": {
+    "LH": {
+      "enl_raw": 2.280562763611556,
+      "enl_boxcar5": 17.457745503045494,
+      "gain": 7.6550164641814
+    },
+    "LV": {
+      "enl_raw": 2.2084413069255153,
+      "enl_boxcar5": 11.179147632578275,
+      "gain": 5.06200803142074
+    }
+  }
+}

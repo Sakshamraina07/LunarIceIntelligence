@@ -113,6 +113,18 @@ def floor_95(n: float) -> float:
     return 1.0 / fdist.ppf(0.05, 2 * n, 2 * n)
 
 
+def _correlation_area() -> float:
+    """Pixels per independent sample, READ from cpr_significance.json.
+
+    Not a literal. METHODS 7.9.1 measures it by integrating the two-dimensional
+    autocorrelation of the CPR field, and 7.9.1 and 7.10 once carried 61.5 and
+    61.42 for this one quantity. A second transcription here would be a third.
+    """
+    f = Path(__file__).resolve().parents[2] / "docs" / "cpr_significance.json"
+    doc = json.loads(f.read_text(encoding="utf-8"))
+    return float(doc["effective_samples"]["area_all_lags"])
+
+
 def wilson(k: int, n: int, z: float = 1.959964):
     """Wilson score interval for a proportion. Correct AT ZERO, which is the
     whole reason it is used here: the normal approximation gives [0, 0] for k = 0
@@ -176,11 +188,40 @@ def main() -> int:
     print("  still produced this observation.\n")
     cand = valid & (cpr > cpr_th) & (dop < dop_th)
     k, n_px = int(cand.sum()), int(valid.sum())
-    lo, hi = wilson(k, n_px, {0.95: 1.959964, 0.99: 2.575829}.get(args.confidence, 1.959964))
+    _z = {0.95: 1.959964, 0.99: 2.575829}.get(args.confidence, 1.959964)
+    lo_raw, hi_raw = wilson(k, n_px, _z)
+
+    # THE INTERVAL MUST BE TAKEN ON INDEPENDENT SAMPLES, NOT ON PIXELS.
+    #
+    # The raw-pixel interval treats 2,337,086 correlated pixels as 2,337,086
+    # independent trials. METHODS 7.9.1 measured the correlation area of this
+    # field at 61.42 px per independent sample, so the pixel count overstates
+    # the sample size by ~61x and the interval comes out ~61x too narrow. A
+    # confidence interval that is too narrow is worse than none: it states a
+    # precision the data does not have, on the one number this project exists
+    # to report honestly.
+    #
+    # CEIL, NOT FLOOR OR ROUND, AND THE REASON IS RECORDED.
+    # 2,337,086 / 61.420749918170166 = 38050.43089..., so floor and round both
+    # give 38050 and only ceil gives the 38,051 the manuscript prints. The
+    # difference does not move the headline -- the upper bound is 0.147 km2 at
+    # either -- but the artifact and the paper must not disagree about a count
+    # a reader can divide out for themselves.
+    area_px = float(_correlation_area())
+    n_eff = math.ceil(n_px / area_px)
+    lo_eff, hi_eff = wilson(k, n_eff, _z)
+    lo, hi = lo_eff, hi_eff
     print(f"  candidate pixels      {k:,} of {n_px:,} measured")
     print(f"  candidate area        {k * cell_km2:.4f} km²")
+    _frame = n_px * cell_km2
+    print(f"  correlation area      {area_px:.4f} px per independent sample "
+          f"(METHODS 7.9.1)")
+    print(f"  effective samples     {n_eff:,}  = ceil({n_px:,} / {area_px:.4f})")
+    print(f"  {args.confidence:.0%} Wilson, RAW PIXELS  "
+          f"[{lo_raw * _frame:.4f}, {hi_raw * _frame:.4f}] km²   "
+          f"<- SUPERSEDED, ~61x too narrow")
     print(f"  {args.confidence:.0%} Wilson interval  "
-          f"[{lo * n_px * cell_km2:.4f}, {hi * n_px * cell_km2:.4f}] km²")
+          f"[{lo * _frame:.4f}, {hi * _frame:.4f}] km²   <- on effective samples")
     print(f"  i.e. 0 km², and the data would not have distinguished anything up to")
     print(f"  {hi * n_px * cell_km2:.4f} km² from zero.")
     print("\n  WILSON, NOT THE NORMAL APPROXIMATION. At k = 0 the normal interval is")
@@ -237,10 +278,28 @@ def main() -> int:
             "pixels": k, "measured_pixels": n_px,
             "area_km2": round(k * cell_km2, 6),
             "confidence": args.confidence,
+            "correlation_area_px": area_px,
+            "n_effective": n_eff,
+            "ci_km2_raw_pixels": [round(lo_raw * n_px * cell_km2, 6),
+                                  round(hi_raw * n_px * cell_km2, 6)],
+            "ci_km2_effective": [round(lo_eff * n_px * cell_km2, 6),
+                                 round(hi_eff * n_px * cell_km2, 6)],
             "ci_km2": [round(lo * n_px * cell_km2, 6), round(hi * n_px * cell_km2, 6)],
-            "method": "Wilson score interval on the pass proportion",
+            "note": ("raw-pixel interval is 61x too narrow; pixels are not "
+                     "independent (61.42 px per independent sample)"),
+            "n_effective_rounding": ("ceil. 2337086 / 61.420749918170166 = "
+                                     "38050.43089, so floor and round give 38050 "
+                                     "and only ceil gives the 38051 the manuscript "
+                                     "prints. The upper bound is 0.147 km2 either "
+                                     "way; the count is matched so artifact and "
+                                     "paper do not disagree."),
+            "method": "Wilson score interval on the pass proportion, on EFFECTIVE samples",
             "why_wilson": ("The normal approximation gives [0, 0] at k = 0 and would "
                            "report a measured zero as carrying no uncertainty."),
+            "why_effective": ("METHODS 7.9.1 measures 61.42 px per independent "
+                              "sample by integrating the CPR autocorrelation. "
+                              "Treating pixels as trials overstates n by ~61x and "
+                              "narrows the interval by the same factor."),
             "provenance": "MEASURED",
         },
         "published_reanalysis": {"rows": rows, "assumptions": ASSUMPTIONS,

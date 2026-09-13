@@ -3017,10 +3017,27 @@ in this literature reported with one.**
 |---|---|
 | candidate pixels | **0** of 2,337,086 measured |
 | candidate area | **0.0000 km²** |
-| 95 % Wilson interval | **[0.0000, 0.0024] km²** |
+| 95 % Wilson interval, on **38 051 effective samples** | **[0.0000, 0.147] km²** |
+| the same interval on 2,337,086 **raw pixels** — SUPERSEDED, ~61× too narrow | [0.0000, 0.0024] km² |
 
 The measurement is zero, **and the data would not have distinguished anything up
-to 0.0024 km² from zero.** That is a stronger statement than a bare zero, and a
+**THE INTERVAL IS TAKEN ON INDEPENDENT SAMPLES, NOT ON PIXELS, AND IT WAS NOT.**
+This table carried [0.0000, 0.0024] km² until the manuscript's figure was checked
+against it. That interval treats 2,337,086 correlated pixels as 2,337,086
+independent trials. §7.9.1 measures the correlation area of this very field at
+**61.42 px per independent sample**, so the pixel count overstates the sample
+size by about sixty-one and the interval comes out about sixty-one times too
+narrow. `ceil(2 337 086 / 61.420749918170166) = 38 051` effective samples, and
+the Wilson upper bound at k = 0 on that count is **0.147 km²**.
+
+> **A confidence interval that is too narrow is worse than no interval at all.**
+> A bare zero claims nothing about its own precision. A zero wearing a tight
+> error bar claims a great deal, and this one claimed sixty-one times more than
+> the data supports — on the single number this project exists to report
+> honestly. The superseded figure is kept above, labelled, because a wrong number
+> that vanishes cannot be audited and its correction cannot be checked.
+
+to 0.147 km² from zero.** That is a stronger statement than a bare zero, and a
 more honest one: it says how large a real signal could have been and still
 produced this observation.
 
@@ -3254,7 +3271,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `18a7998`.
+Stamped at commit `61bc57a`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3265,10 +3282,10 @@ Stamped at commit `18a7998`.
 | `docs/cpr_dispersion.json` | `ca598328db6bc3df…` | §7.10 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
-| `docs/detection_statistics.json` | `6ba46058e1399689…` | §11.1, §11.2, §11.3 |
+| `docs/detection_statistics.json` | `8f48a4d7d7dc6666…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
-| `docs/enl_generality.json` | `0d737b2d40a1a1b6…` | §7.4a |
-| `docs/enl_predictions.json` | `d59432045e298f0e…` | §7.4a |
+| `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
+| `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
@@ -3278,7 +3295,7 @@ Stamped at commit `18a7998`.
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
-| `docs/slc_multilook_control.json` | `85b3d66ff708ac67…` | §7.4 |
+| `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §1.4, §8.2, §8.3 |

@@ -220,6 +220,16 @@ GATES = [
             "the measured crossing sits on the closed form",
      "assert_degeneracy_replicates.py — 2020-03-05, a different orbit, look angle, PRF and grid",
      [sys.executable, str(SCRIPTS / "assert_degeneracy_replicates.py")], True),
+
+    # The candidate-area interval was taken on 2,337,086 raw pixels while 7.9.1
+    # measured 61.42 px per independent sample, so it came out ~61x too narrow.
+    # A confidence interval that is too narrow is worse than none: it states a
+    # precision the data does not have, on the one number this project exists to
+    # report honestly.
+    ("G23", "The candidate-area confidence interval is taken on effective "
+            "samples, not on correlated pixels",
+     "assert_wilson_on_effective_samples.py - 38,051 effective samples, upper bound 0.147 km2",
+     [sys.executable, str(SCRIPTS / "assert_wilson_on_effective_samples.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

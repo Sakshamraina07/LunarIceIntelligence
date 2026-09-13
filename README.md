@@ -16,7 +16,8 @@ carries a mark — `MEASURED`, `DERIVED` or `NO DATA` — and the build fails if
 does not.**
 
 **The headline result is a null result with a proof.** The screen returns
-0.0000 km² of candidate ice, 95 % CI [0.0000, 0.0024] km², and the reason is
+0.0000 km² of candidate ice, 95 % CI [0.0000, 0.147] km² on 38 051 effective
+samples, and the reason is
 closed-form rather than empirical: with CPR derived from amplitude alone it is a
 strictly increasing function of DOP, so `CPR > 1.00 AND DOP < 0.13` is
 arithmetically empty. That is not a failure to find ice. It is a measurement of

@@ -9,7 +9,8 @@ Every number below is checkable in this repository.*
 ## 1. "You didn't find any ice."
 
 **Correct. The candidate area is 0.0000 km², with a 95 % confidence interval of
-[0.0000, 0.0024] km². And I can prove that number could not have been anything
+[0.0000, 0.147] km² on 38 051 effective samples. And I can prove that number
+could not have been anything
 else.**
 
 Three things, in order.
@@ -156,7 +157,8 @@ Concretely, four things this literature does not currently do:
    **1.70–1.90** to be significantly above a threshold of 1.00. The swath's
    maximum is 0.0534 — short by a factor of 35.
 3. **An ice-candidate area reported with a confidence interval** —
-   0.0000 km², 95 % CI [0.0000, 0.0024] km². Wilson, not the normal
+   0.0000 km², 95 % CI [0.0000, 0.147] km² on 38 051 effective samples
+   (2,337,086 pixels ÷ 61.42 px per independent sample). Wilson, not the normal
    approximation, because at k = 0 the normal interval collapses to [0, 0] and
    would report a measured zero as carrying no uncertainty at all. **The zero is
    the case that most needs its interval.**

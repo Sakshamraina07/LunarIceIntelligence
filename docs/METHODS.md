@@ -839,8 +839,32 @@ the cursor readout and the backend agree by construction. This replaced a flat
 
 ## 3 · Elevation
 
-LOLA `LDEM_80S_80M` V2.0 (`LRO-L-LOLA-4-GDR-V1.0`), 80 m native posts, bilinearly
-resampled onto this frame's 25 m grid.
+LOLA **`LDEM_80S_20M`** V2.0 (`LRO-L-LOLA-4-GDR-V1.0`), **20 m native posts**,
+low-passed with a measured anti-alias sigma and carried onto this frame's 25 m
+grid. `build_analysis.py` reads that figure from
+`data/pradan/lola/ldem_frame_25m.provenance.json` rather than holding a literal
+(`NATIVE_POST_M`, line 178), so this section and the pipeline cannot drift apart.
+
+> **THIS SECTION SAID 80 m UNTIL NOW, AND IT WAS DESCRIBING A PRODUCT THAT HAD
+> BEEN REPLACED.** Phase 8 ingested the 1.85 GB 20 m product and §8.2 measured
+> what it bought; §3 was never updated and went on naming the 80 m source and
+> calling the terrain "80 m-post quantities". The document then contradicted
+> itself — §3 said 80, §8 said 20 — and a reader checking the resolution would
+> have got a different answer depending on which section they opened.
+
+**TWO LOLA PRODUCTS ARE IN USE AND THEY ARE NOT INTERCHANGEABLE.** Conflating
+them is what produced the error above, so they are tabulated rather than
+described:
+
+| use | product | native | carried onto | provenance file |
+|---|---|---|---|---|
+| **frame DEM** — slope, roughness, hazard, the 25 m grid | `LDEM_80S_20M` | **20 m** | 25 m | `ldem_frame_25m.provenance.json` |
+| **horizon, illumination, PSR** (§5) | `LDEM_80S_80M` | **80 m** | 240 m, block mean, decimation 3 | `horizon_240m.provenance.json` |
+
+The horizon runs on the 80 m product because it sweeps 360 azimuths across the
+full 2533 × 2533 polar array and the 20 m array is 30400 × 30400; the frame DEM
+runs on the 20 m product because it covers one frame. Both figures are correct
+for their own product, and neither may be quoted for the other.
 
 - The PDS label is parsed as plain text and **units are parsed out of the angle
   brackets**: `MAP_SCALE = 80 <m/pix>` versus `0.080 <KM/PIXEL>` is a 1000× trap
@@ -856,10 +880,15 @@ resampled onto this frame's 25 m grid.
   `dem_native_synthetic.tif` for historical reasons and that name must never
   quietly become true again.
 
-**Resolution honesty.** Slope, roughness and hazard are 80 m-post quantities
-carried on a 25 m grid. They contain no relief finer than 80 m, and every
-terrain value emitted names 80 in its own note — the number a reader needs in
-order to judge them is 80, not 25.
+**Resolution honesty.** Slope, roughness and hazard are **20 m-post** quantities
+carried on a 25 m grid, and every terrain value emitted names its own source post
+spacing in its note — the number a reader needs in order to judge them is the
+post spacing, not the grid. **The grid is the binding constraint, not the
+source**: §8.2 measures that moving from the 80 m to the 20 m source shifted the
+whole distribution by about 2.4 % — p50 +2.4 % against p90 +2.1 %, the same shift
+throughout rather than detail appearing in the tails — because a 25 m grid cannot
+carry relief finer than 25 m however fine the posts beneath it are. The 1.85 GB
+bought provenance, not resolution, and §8.2 says so at length.
 
 ---
 
@@ -3271,7 +3300,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `61bc57a`.
+Stamped at commit `c989c2d`.
 
 | artifact | sha256 | sections |
 |---|---|---|

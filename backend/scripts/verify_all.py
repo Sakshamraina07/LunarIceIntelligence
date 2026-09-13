@@ -230,6 +230,16 @@ GATES = [
             "samples, not on correlated pixels",
      "assert_wilson_on_effective_samples.py - 38,051 effective samples, upper bound 0.147 km2",
      [sys.executable, str(SCRIPTS / "assert_wilson_on_effective_samples.py")], False),
+
+    # METHODS 3 said the frame DEM was LDEM_80S_80M at 80 m; it is LDEM_80S_20M
+    # at 20 m. Section 3 described the product Phase 8 replaced and was never
+    # updated, so the document contradicted itself -- 3 said 80, 8 said 20. There
+    # are TWO LOLA products here (frame DEM 20 m, horizon 80 m) and the defect is
+    # quoting one for the other.
+    ("G24", "The frame DEM's product and post spacing are read from its "
+            "provenance file, and the horizon's remain distinct",
+     "assert_lola_product_agrees.py - two products, never confused",
+     [sys.executable, str(SCRIPTS / "assert_lola_product_agrees.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

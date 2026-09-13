@@ -1,0 +1,135 @@
+{
+ "schema": "lunar-ice/data-provenance/1",
+ "generated_utc": "2026-09-13T10:44:43.441949+00:00",
+ "generator": "backend/scripts/verify_data_provenance.py",
+ "product_stem": "ch2_sar_ncxl_20200808t201154198",
+ "archive_identifier": "urn:isro:isda:ch2_cho:sar_calibrated:ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",
+ "provider": "ISRO, via ISSDC PRADAN (https://pradan.issdc.gov.in/ch2/)",
+ "observation_start_utc": "2020-08-08T20:11:54.198000+00:00",
+ "observation_stop_utc": "2020-08-08T20:13:41.304000+00:00",
+ "observation_duration_s": 107.106,
+ "label_created": "2022-10-28",
+ "geometry": {
+  "lines": 2258,
+  "samples": 6618,
+  "bytes_per_pixel": 2
+ },
+ "files": {
+  "ch2_sar_ncxl_20200808t201154198_d_gri_in_cp_xx_d18.tif": {
+   "bytes": 53437192,
+   "sha256": "59d5151d53425381ea7a1ea9a20addef87cd205dd8f4a28fc3c8fc72c44dfb17",
+   "mtime_utc": "2022-11-29T18:23:13+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_gri_xx_cp_lh_d18.tif": {
+   "bytes": 26802796,
+   "sha256": "eef5898175f3529231843ab15af9d8c0c7099d08215adada159c0cccf526a7ec",
+   "mtime_utc": "2022-11-29T18:24:19+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_gri_xx_cp_lv_d18.tif": {
+   "bytes": 26802796,
+   "sha256": "62c4792f7f66c19ff52c2299d40970c8f7439846f725b5891b4a16212ac3a26d",
+   "mtime_utc": "2022-11-29T18:24:20+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_gri_xx_cp_xx_d18.xml": {
+   "bytes": 15040,
+   "sha256": "410e53e44723f4cb5f2e726cf38eb88a58e9a1efe9d6b577073c432e93e1657c",
+   "mtime_utc": "2022-11-29T18:24:20+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_lh_d18.tif": {
+   "bytes": 2165948598,
+   "sha256": "2f6b20ea8d4f20c6f1bd6fb1906abab9acf6cc4a6abf2f1762e72424671d0fc3",
+   "mtime_utc": "2022-11-29T18:23:58+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_lv_d18.tif": {
+   "bytes": 2165948598,
+   "sha256": "8e7bfb509c9aeab5700143a51f9d7bdf819b64a51b548e90c2b7c734124f0333",
+   "mtime_utc": "2022-11-29T18:24:18+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_xx_d18.xml": {
+   "bytes": 13870,
+   "sha256": "4c86c9033c1d5f5ccb7f8a2bf81184ad4e2189b41ae077e700b4fba8357376c9",
+   "mtime_utc": "2022-11-29T18:24:18+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sri_in_cp_xx_d18.tif": {
+   "bytes": 59792476,
+   "sha256": "9f5766756c2a2b99aa09d9bb73e51f9b66fb10761862dc58a84b2376e49dbaa9",
+   "mtime_utc": "2022-11-29T18:24:21+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sri_ma_cp_xx_d18.tif": {
+   "bytes": 14962144,
+   "sha256": "636ba0d58078f0727ef5c7ba10e39be600c0592ef0b8c2be6df303fbb753b63c",
+   "mtime_utc": "2022-11-29T18:23:15+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_lh_d18.tif": {
+   "bytes": 29905588,
+   "sha256": "c90fa1cd1cfae9219933c74b4a656ffdc6545b25067730361948b890d297714a",
+   "mtime_utc": "2022-11-29T18:24:20+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_lv_d18.tif": {
+   "bytes": 29905588,
+   "sha256": "44dfcdb1ec99d0d17cfaf8e1e47af14c69a7d733f32d95e76b9b3e685c6a86d4",
+   "mtime_utc": "2022-11-29T18:24:21+00:00"
+  },
+  "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml": {
+   "bytes": 18807,
+   "sha256": "3454f0f3680911ec7b5ff57e445a29949795f8d221ddac9c2cc5b21807612c97",
+   "mtime_utc": "2022-11-29T18:24:21+00:00"
+  }
+ },
+ "terms": {
+  "source": "https://pradan.issdc.gov.in/ch2/disclaimer.xhtml",
+  "summary": "Open and free of charge for non-profit scientific use. Data remains the property of ISRO. No copying, leasing or loaning without prior permission of ISRO/DOS. No commercial use.",
+  "redistributed_by_this_repository": false,
+  "required_acknowledgement": "We acknowledge the use of data from the Chandrayaan-II, second lunar mission of the Indian Space Research Organisation (ISRO), archived at the Indian Space Science Data Centre (ISSDC)."
+ },
+ "checks": [
+  {
+   "id": "T1",
+   "check": "filename timestamp == label start_date_time",
+   "status": "PASS",
+   "detail": "2020-08-08T20:11:54.198000+00:00 vs 2020-08-08T20:11:54.198000+00:00, delta +0.000000 s"
+  },
+  {
+   "id": "T2",
+   "check": "per-line epoch times reproduce the label window",
+   "status": "PASS",
+   "detail": "start +0.000275 s, stop +0.000366 s, duration 107.106000 vs 107.106091 s (label rounds to ms)"
+  },
+  {
+   "id": "T3",
+   "check": "declared geometry predicts size (lh)",
+   "status": "PASS",
+   "detail": "2258x6618x2 = 29,886,888 B; file 29,905,588 B; TIFF overhead 18,700 B"
+  },
+  {
+   "id": "T3",
+   "check": "declared geometry predicts size (lv)",
+   "status": "PASS",
+   "detail": "2258x6618x2 = 29,886,888 B; file 29,905,588 B; TIFF overhead 18,700 B"
+  },
+  {
+   "id": "T4",
+   "check": "every raster in the label manifest is present",
+   "status": "PASS",
+   "detail": "4 declared, 4 present"
+  },
+  {
+   "id": "T5",
+   "check": "azimuth_looks x look_bandwidth == total processed bandwidth",
+   "status": "PASS",
+   "detail": "21 x 51.015999 = 1071.335979 Hz vs declared 1071.335975 Hz"
+  },
+  {
+   "id": "T6",
+   "check": "SHA-256 recorded for every file",
+   "status": "PASS",
+   "detail": "12 files hashed"
+  },
+  {
+   "id": "T7",
+   "check": "delivered file timestamps (informational)",
+   "status": "INFO",
+   "detail": "2022-11-29T18:23:13+00:00 .. 2022-11-29T18:24:21+00:00"
+  }
+ ]
+}

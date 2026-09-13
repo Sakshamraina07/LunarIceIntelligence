@@ -248,6 +248,31 @@ GATES = [
     ("G25", "No document spells a count it could read from the thing it counts",
      "assert_counts_are_read.py - gate count and apparatus failures, read not spelled",
      [sys.executable, str(SCRIPTS / "assert_counts_are_read.py")], False),
+
+    # Is the bundle on disk the product the paper claims? Seven checks across
+    # representations a wrong, truncated, edited or substituted file could not
+    # all satisfy at once -- filename timestamp against the label, per-line
+    # epoch times against the observation window, declared geometry against the
+    # byte count, the manifest, the look-bandwidth identity, and SHA-256.
+    ("G27", "The Chandrayaan-2 bundle on disk is the product the manuscript "
+            "names, and is internally coherent",
+     "verify_data_provenance.py - 7 checks, emits docs/data_provenance.json",
+     [sys.executable, str(SCRIPTS / "verify_data_provenance.py")], False),
+
+    # Does the repository contain what the paper promises? Includes C7, which
+    # reads the whole of git HISTORY -- a raster committed once and deleted
+    # later is still in history and would become public with the repository.
+    ("G28", "The repository contains what the paper promises, and its history "
+            "carries no data or secret",
+     "check_repo_complete.py - C1-C7, C7 scans every path ever committed",
+     [sys.executable, str(SCRIPTS / "check_repo_complete.py")], False),
+
+    # matplotlib emits Type 3 fonts by default and IEEE PDF eXpress rejects
+    # them. That make_figures.py sets pdf.fonttype=42 is a claim about the
+    # script; this regenerates the figures and inspects the bytes.
+    ("G26", "Every figure regenerates, embeds its fonts, and carries no Type 3",
+     "paper/assert_figures_embed_fonts.py - rebuilt, then read from the PDF itself",
+     [sys.executable, str(BASE_DIR / "paper" / "assert_figures_embed_fonts.py")], True),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

@@ -1,0 +1,44 @@
+{
+  "title": "Detection limits for lunar water ice in Chandrayaan-2 DFSAR compact-polarimetric data: analysis code and verification gates",
+  "upload_type": "software",
+  "license": "MIT",
+  "version": "1.0.0",
+  "creators": [
+    {
+      "name": "Raina, Saksham",
+      "orcid": "0000-0000-0000-0000"
+    }
+  ],
+  "description": "<p>Code, derived artifacts and verification gates for a study of the detection limits of a CPR-based lunar water-ice criterion applied to a single Chandrayaan-2 DFSAR L-band pass over the lunar south pole.</p><p><strong>This record contains no Chandrayaan-2 or LOLA data.</strong> The ISRO products remain the property of ISRO and are obtained from PRADAN under ISRO's terms; the LOLA products come from the NASA PDS. <code>docs/data_provenance.json</code> records which files the analysis read, with SHA-256, so the same products can be obtained and confirmed byte-for-byte without this record distributing them. See <code>DATA.md</code>.</p>",
+  "keywords": [
+    "synthetic aperture radar",
+    "compact polarimetry",
+    "equivalent number of looks",
+    "detection statistics",
+    "lunar water ice",
+    "Moon",
+    "planetary radar",
+    "speckle"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "urn:isro:isda:ch2_cho:sar_calibrated",
+      "relation": "isDerivedFrom",
+      "scheme": "urn",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "LDEM_80S_20M",
+      "relation": "isDerivedFrom",
+      "scheme": "other",
+      "resource_type": "dataset"
+    },
+    {
+      "identifier": "LDEM_80S_80M",
+      "relation": "isDerivedFrom",
+      "scheme": "other",
+      "resource_type": "dataset"
+    }
+  ],
+  "notes": "The DOI is not minted here; the author mints it at release. The ORCID above is a placeholder for the author to replace."
+}

@@ -122,11 +122,11 @@ non-zero candidate area under an amplitude-only screen. Currently 56 values:
 the native DEM against the LOLA crop at **tolerance 0.0** — bit-identity, not
 "close enough" — and exits non-zero on any difference.
 
-**Nine gates**, four of them on every rebuild, and `verify_all.py` runs all nine
-and maps each to a statement in PRD section 6.
+**Twenty-two gates**, five of them on every rebuild, and `verify_all.py` runs all
+twenty-two and maps each to a statement in PRD section 6.
 
 **Every gate was verified by making it fail on purpose.** That is not decoration:
-**five times in this project the verification apparatus itself was wrong.** A
+**seven times in this project the verification apparatus itself was wrong.** A
 histogram check tested a CSS filter the application did not apply — it *passed*,
 on a fiction. A latitude test had the wrong sign and would have certified a
 perfect interpolation artifact as clean terrain. **No test leaves a question

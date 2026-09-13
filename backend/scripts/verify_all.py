@@ -240,6 +240,14 @@ GATES = [
             "provenance file, and the horizon's remain distinct",
      "assert_lola_product_agrees.py - two products, never confused",
      [sys.executable, str(SCRIPTS / "assert_lola_product_agrees.py")], False),
+
+    # viva.md said "Nine gates" and "five times the apparatus was wrong"; README
+    # said "nineteen gates". There were twenty-one and METHODS 0 records seven.
+    # Three numbers, three documents, all stale, none wrong when written --
+    # section 0's FIRST pattern, and nothing was checking.
+    ("G25", "No document spells a count it could read from the thing it counts",
+     "assert_counts_are_read.py - gate count and apparatus failures, read not spelled",
+     [sys.executable, str(SCRIPTS / "assert_counts_are_read.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

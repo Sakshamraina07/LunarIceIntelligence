@@ -3300,7 +3300,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `c989c2d`.
+Stamped at commit `9ef6fd7`.
 
 | artifact | sha256 | sections |
 |---|---|---|

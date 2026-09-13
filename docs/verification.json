@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-08T14:35:32.241321+00:00",
+  "generated_utc": "2026-09-13T11:15:15.769822+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -8,7 +8,7 @@
       "gate": "emit_provenance.py \u2014 six assertions, each injection-tested",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.1
+      "seconds": 0.2
     },
     {
       "id": "G2",
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 24.2
+      "seconds": 25.1
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 18.7
+      "seconds": 21.1
     },
     {
       "id": "G4",
@@ -32,7 +32,7 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 25.1
+      "seconds": 27.6
     },
     {
       "id": "G5",
@@ -40,7 +40,7 @@
       "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 3.5
+      "seconds": 3.8
     },
     {
       "id": "G6",
@@ -48,7 +48,7 @@
       "gate": "hillshade_histogram.py + composite_contrast.py",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 2.5
+      "seconds": 3.0
     },
     {
       "id": "G6b",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 38.6
+      "seconds": 42.7
     },
     {
       "id": "G7",
@@ -64,7 +64,7 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 19.8
+      "seconds": 21.9
     },
     {
       "id": "G8",
@@ -104,7 +104,7 @@
       "gate": "assert_incidence_geometry.py --only g13 \u2014 read from the pipeline, not inferred",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.1
+      "seconds": 0.2
     },
     {
       "id": "G15",
@@ -112,7 +112,7 @@
       "gate": "verify_production.mjs --all-states \u2014 the built bundle, all three backend states",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 90.1
+      "seconds": 90.5
     },
     {
       "id": "G16",
@@ -136,7 +136,7 @@
       "gate": "assert_report_state_is_its_own.py - independent, not derived, honest doc, probe works",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 20.5
+      "seconds": 19.9
     },
     {
       "id": "G19",
@@ -144,7 +144,7 @@
       "gate": "assert_withdrawn_claims_absent.py --list prints each term with the sentence it forbids",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 1.3
+      "seconds": 1.0
     },
     {
       "id": "G20",
@@ -152,7 +152,55 @@
       "gate": "assert_degeneracy_replicates.py \u2014 2020-03-05, a different orbit, look angle, PRF and grid",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 2.7
+      "seconds": 2.8
+    },
+    {
+      "id": "G23",
+      "statement": "The candidate-area confidence interval is taken on effective samples, not on correlated pixels",
+      "gate": "assert_wilson_on_effective_samples.py - 38,051 effective samples, upper bound 0.147 km2",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.2
+    },
+    {
+      "id": "G24",
+      "statement": "The frame DEM's product and post spacing are read from its provenance file, and the horizon's remain distinct",
+      "gate": "assert_lola_product_agrees.py - two products, never confused",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.2
+    },
+    {
+      "id": "G25",
+      "statement": "No document spells a count it could read from the thing it counts",
+      "gate": "assert_counts_are_read.py - gate count and apparatus failures, read not spelled",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.3
+    },
+    {
+      "id": "G27",
+      "statement": "The Chandrayaan-2 bundle on disk is the product the manuscript names, and is internally coherent",
+      "gate": "verify_data_provenance.py - 7 checks, emits docs/data_provenance.json",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 45.9
+    },
+    {
+      "id": "G28",
+      "statement": "The repository contains what the paper promises, and its history carries no data or secret",
+      "gate": "check_repo_complete.py - C1-C7, C7 scans every path ever committed",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 9.7
+    },
+    {
+      "id": "G26",
+      "statement": "Every figure regenerates, embeds its fonts, and carries no Type 3",
+      "gate": "paper/assert_figures_embed_fonts.py - rebuilt, then read from the PDF itself",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 7.6
     }
   ],
   "all_pass": true

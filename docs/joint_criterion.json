@@ -1,0 +1,44 @@
+{
+  "schema": "lunar-ice/joint-criterion/1",
+  "generated_utc": "2026-09-13T11:02:15.818566+00:00",
+  "generator": "backend/scripts/joint_criterion.py",
+  "seed": 7,
+  "trials_per_row": 600000,
+  "n_looks": 14,
+  "true_cpr": 0.7,
+  "dop_threshold": 0.13,
+  "m_min_at_true_cpr": 0.17647058823529416,
+  "cpr_band_for_m_below_threshold": [
+    0.7699115044247788,
+    1.2988505747126435
+  ],
+  "rows": [
+    {
+      "true_m": 0.17647158823529416,
+      "marginal_fp_percent": 17.69033333333333,
+      "joint_fp_percent": 1.8145000000000002
+    },
+    {
+      "true_m": 0.2,
+      "marginal_fp_percent": 17.403666666666666,
+      "joint_fp_percent": 1.6253333333333335
+    },
+    {
+      "true_m": 0.3,
+      "marginal_fp_percent": 16.734666666666666,
+      "joint_fp_percent": 0.8240000000000001
+    },
+    {
+      "true_m": 0.5,
+      "marginal_fp_percent": 14.579166666666667,
+      "joint_fp_percent": 0.07200000000000001
+    }
+  ],
+  "marginal_fp_percent_analytic_F": 17.544925186078576,
+  "headline": {
+    "marginal_fp_percent_monte_carlo": 17.69033333333333,
+    "joint_fp_percent": 1.8145000000000002,
+    "at_true_m": 0.17647158823529416
+  },
+  "not_available_on_this_build": "The amplitude-only CPR is a function of DOP alone (METHODS 1), so on this product the two conditions are one condition and the joint rate cannot be claimed. It describes what a Stokes-derived build from the sli products could do."
+}

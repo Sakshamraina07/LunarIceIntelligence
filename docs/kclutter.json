@@ -1,0 +1,52 @@
+{
+  "schema": "lunar-ice/kclutter/1",
+  "generated_utc": "2026-09-13T11:03:58.759114+00:00",
+  "generator": "backend/scripts/kclutter.py",
+  "seed": 7,
+  "trials_per_row": 1000000,
+  "n_looks": 14,
+  "true_cpr": 0.7,
+  "fp_percent_F_gaussian": 17.544925186078576,
+  "rows": [
+    {
+      "nu": 1.5,
+      "nu_label": "1.5",
+      "fp_shared_percent": 17.5135,
+      "fp_independent_percent": 39.31
+    },
+    {
+      "nu": 2.0,
+      "nu_label": "2",
+      "fp_shared_percent": 17.5135,
+      "fp_independent_percent": 37.7539
+    },
+    {
+      "nu": 5.0,
+      "nu_label": "5",
+      "fp_shared_percent": 17.5135,
+      "fp_independent_percent": 31.8213
+    },
+    {
+      "nu": 10.0,
+      "nu_label": "10",
+      "fp_shared_percent": 17.5135,
+      "fp_independent_percent": 27.3609
+    },
+    {
+      "nu": null,
+      "nu_label": "inf",
+      "fp_shared_percent": 17.5135,
+      "fp_independent_percent": 17.5149
+    }
+  ],
+  "shared_texture_range": [
+    17.5135,
+    17.5135
+  ],
+  "independent_texture_range": [
+    17.5149,
+    39.31
+  ],
+  "reproducibility": "These are what the reference block produces from a FRESH default_rng(7), verified by running it verbatim. The manuscript quotes 17.53 % shared and 27.5-39.5 % independent, which is the same code with the generator already advanced by earlier blocks of the script it lived in. The difference is 0.02 pp on the shared row and 0.1-0.2 pp on the independent ones, and changes no conclusion -- but this artifact reports what THIS committed script produces, because a number that cannot be regenerated from the repository is not sourced by it.",
+  "why_shared_is_the_right_model": "Both circular channels are formed from one illumination of one footprint, so they share the texture modulation and it cancels in their ratio. The independent-texture row is computed as the alternative it is NOT, not as a correction to apply."
+}

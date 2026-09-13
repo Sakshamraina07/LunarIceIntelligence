@@ -1,0 +1,44 @@
+{
+  "schema": "lunar-ice/correlated-ratio/1",
+  "generated_utc": "2026-09-13T11:00:43.467549+00:00",
+  "generator": "backend/scripts/correlated_ratio.py",
+  "seed": 7,
+  "trials_per_row": 1500000,
+  "n_looks": 14,
+  "true_cpr": 0.7,
+  "fp_percent_F_independent": 17.544925186078576,
+  "model": "Lee et al. 1994: two correlated circular-Gaussian channels, w = rho z1 + sqrt(1-rho^2) z2, intensities summed over N looks",
+  "rows": [
+    {
+      "rho": 0.0,
+      "drawn_at_rho": 0.0,
+      "fp_percent": 17.5806,
+      "ratio_to_F": 1.0020333408973285
+    },
+    {
+      "rho": 0.5,
+      "drawn_at_rho": 0.5,
+      "fp_percent": 14.140533333333332,
+      "ratio_to_F": 0.8059614494425695
+    },
+    {
+      "rho": 0.8,
+      "drawn_at_rho": 0.8,
+      "fp_percent": 6.2686,
+      "ratio_to_F": 0.3572884998662727
+    },
+    {
+      "rho": 0.9,
+      "drawn_at_rho": 0.9,
+      "fp_percent": 1.9156666666666666,
+      "ratio_to_F": 0.10918636849968995
+    },
+    {
+      "rho": 0.98,
+      "drawn_at_rho": 0.9822,
+      "fp_percent": 0.0014,
+      "ratio_to_F": 7.979515359295246e-05
+    }
+  ],
+  "note": "F(2N,2N) assumes independent numerator and denominator. The channels are correlated, so every F-based rate in this work is an upper bound; these rows measure by how much."
+}

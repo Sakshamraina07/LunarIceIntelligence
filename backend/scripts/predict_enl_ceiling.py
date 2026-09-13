@@ -134,6 +134,15 @@ def main() -> int:
         "status": "PRE-REGISTERED PREDICTION — committed before measure_enl.py "
                   "was run on any product listed here that was not already "
                   "measured. Reads labels only; opens no raster.",
+        # BAND IS PART OF THE IDENTITY OF A PREDICTION, NOT A DETAIL.
+        # enl_generality.json once carried S-band rows bounded by ceilings
+        # computed from the L-band label, on the grounds that the two agree.
+        # They do agree -- L and S share the pass (l_s_joint_mode = YES) and
+        # declare identical PRF, bandwidth and looks -- but nothing had READ the
+        # S label, so a correct number stood on a provenance that did not exist.
+        # That is section 12's defect class: a label field from one product
+        # bounding a raster from another. Each entry now records its own band.
+        "keyed_by": ["date_of_pass", "frequency_band"],
         "predictions": entries,
     }
     out = BASE_DIR / args.out

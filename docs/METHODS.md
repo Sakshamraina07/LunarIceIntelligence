@@ -3300,7 +3300,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `9ef6fd7`.
+Stamped at commit `ec0566e`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3308,7 +3308,7 @@ Stamped at commit `9ef6fd7`.
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
-| `docs/cpr_dispersion.json` | `ca598328db6bc3df…` | §7.10 |
+| `docs/cpr_dispersion.json` | `66bcd45b9e3c0333…` | §7.10 |
 | `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `8f48a4d7d7dc6666…` | §11.1, §11.2, §11.3 |

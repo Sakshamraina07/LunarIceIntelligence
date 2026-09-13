@@ -1,0 +1,35 @@
+{
+  "schema": "lunar-ice/slepian-ceiling/1",
+  "generated_utc": "2026-09-13T10:54:02.866905+00:00",
+  "generator": "backend/scripts/slepian_ceiling.py",
+  "inputs_read_from": {
+    "prf_hz": "docs/enl_predictions.json::predictions[0].declared.pulse_repetition_frequency",
+    "bandwidth_hz": "docs/enl_predictions.json::predictions[0].declared.total_processed_azimuth_bandwidth",
+    "measured_spatial_arm": "docs/slc_multilook_control.json::medians.enl_spatial_21"
+  },
+  "prf_hz": 3321.641156,
+  "processed_azimuth_bandwidth_hz": 1071.335975,
+  "azimuth_looks": 21,
+  "oversampling": 3.10046636490481,
+  "two_WT_asymptotic": 6.773174590024859,
+  "participation_ratio_rectangular": 7.338628547910912,
+  "enl_rectangular_spectrum": 7.33862854791091,
+  "enl_hamming_054": 4.065579018511823,
+  "hamming_coefficient": 0.54,
+  "measured_spatial_arm": 4.524020841500781,
+  "eigenvalues_top10": [
+    3.100466,
+    3.100465,
+    3.100398,
+    3.098746,
+    3.0733,
+    2.844626,
+    1.918482,
+    0.651402,
+    0.102225,
+    0.009276
+  ],
+  "eigenvalues_above_half_max": 7,
+  "ordering_holds": true,
+  "note": "2WT is a large-time-bandwidth approximation and N = 21 is not large; the exact participation ratio is ~8 % higher. The measured arm lies between the tapered and untapered bounds."
+}

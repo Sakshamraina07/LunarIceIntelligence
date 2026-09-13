@@ -1,6 +1,6 @@
 {
   "schema": "cpr_dispersion/1",
-  "generated_utc": "2026-09-06T19:37:39.464129+00:00",
+  "generated_utc": "2026-09-13T10:56:45.400066+00:00",
   "generator": "backend/scripts/cpr_dispersion.py",
   "window_px": 15,
   "windows_ranked": 9711,
@@ -187,6 +187,8 @@
         "their_rel_sd_below_floor": true,
         "rho_I_large_N": 0.3073844417075837,
         "rho_I_exact_floor": 0.3264903044710429,
+        "ground_range_spacing_m": 20.707390650030295,
+        "altitude_m": 100000.0,
         "tag": "nominal"
       },
       "h=105376": {
@@ -196,6 +198,8 @@
         "their_rel_sd_below_floor": true,
         "rho_I_large_N": 0.30535793618816476,
         "rho_I_exact_floor": 0.3244632864504402,
+        "ground_range_spacing_m": 20.646980197466025,
+        "altitude_m": 105376.0,
         "tag": "our label"
       },
       "h=150000": {
@@ -205,6 +209,8 @@
         "their_rel_sd_below_floor": true,
         "rho_I_large_N": 0.28853673412370373,
         "rho_I_exact_floor": 0.30763794402607325,
+        "ground_range_spacing_m": 20.158821437091053,
+        "altitude_m": 150000.0,
         "tag": "stress"
       },
       "nadir_direct": {
@@ -216,6 +222,16 @@
         "tag": "flattering alternative"
       }
     },
+    "led_with": "100 km",
+    "led_with_row": "h=100000",
+    "led_with_triple": {
+      "N": 54.87720087813063,
+      "independent_floor": 0.19359459040430219,
+      "rho_I_min": 0.3073844417075837,
+      "incidence_deg": 27.619821701276745,
+      "ground_range_spacing_m": 20.707390650030295
+    },
+    "also_reported_row": "h=105376",
     "implied_intensity_correlation_min": 0.30535793618816476,
     "estimator": "rho_I >= 1 - N relSD^2 / 2, the large-N form of rho_I = 1 - (relSD_obs/relSD_indep)^2. The exact-floor form gives a LARGER number, so the large-N one is the conservative bound and is what is reported.",
     "bound_range_over_altitudes": [

@@ -352,6 +352,12 @@ def main() -> int:
             "incidence_deg": th, "max_samples": n, "independent_floor": floor,
             "their_rel_sd_below_floor": bool(pub_rel < floor),
             "rho_I_large_N": rho_big, "rho_I_exact_floor": rho_exact,
+            # The ground-range spacing PER ALTITUDE. It was emitted once, at our
+            # label's altitude, while the row the manuscript leads with is the
+            # 100 km one -- so the spacing on disk (20.647 m) belonged to a
+            # different row from the rho it sat beside (20.708 m at 100 km).
+            "ground_range_spacing_m": float(gr),
+            "altitude_m": float(h_m),
             "tag": tag}
     # The nadir-angle version, kept as the flattering alternative.
     floor_alt = rel_sd_independent(n_alt)
@@ -454,6 +460,22 @@ def main() -> int:
             "alternative_using_nadir_directly": float(n_alt),
             "which_is_conservative": ("the LARGER N. A larger N gives a lower floor and therefore a harder bar for their 0.1589 to sit under; using the nadir angle directly gives the smaller N, a higher floor and an easier claim."),
             "constraint": constraint,
+            # WHICH ROW IS LED WITH, NAMED RATHER THAN INFERRED. The altitude is
+            # not stated in Putrevu et al., so a choice is unavoidable; leaving
+            # it implicit meant a reader had to guess which of four rows the
+            # headline rho came from. 100 km is the nominal mission altitude and
+            # is the conservative of the two candidates (a larger N gives a
+            # lower floor and therefore a harder bar for their 0.1589 to clear).
+            "led_with": "100 km",
+            "led_with_row": "h=100000",
+            "led_with_triple": {
+                "N": constraint["h=100000"]["max_samples"],
+                "independent_floor": constraint["h=100000"]["independent_floor"],
+                "rho_I_min": constraint["h=100000"]["rho_I_large_N"],
+                "incidence_deg": constraint["h=100000"]["incidence_deg"],
+                "ground_range_spacing_m": constraint["h=100000"]["ground_range_spacing_m"],
+            },
+            "also_reported_row": "h=105376",
             "implied_intensity_correlation_min": float(rho_lead),
             "estimator": ("rho_I >= 1 - N relSD^2 / 2, the large-N form of "
                           "rho_I = 1 - (relSD_obs/relSD_indep)^2. The exact-floor "

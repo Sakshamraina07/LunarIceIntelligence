@@ -1,8 +1,12 @@
 {
   "schema": "lunar-ice/enl-prediction/1",
-  "generated_utc": "2026-09-08T13:56:23.152801+00:00",
+  "generated_utc": "2026-09-08T15:36:44.123150+00:00",
   "computed_by": "backend/scripts/predict_enl_ceiling.py",
   "status": "PRE-REGISTERED PREDICTION \u2014 committed before measure_enl.py was run on any product listed here that was not already measured. Reads labels only; opens no raster.",
+  "keyed_by": [
+    "date_of_pass",
+    "frequency_band"
+  ],
   "predictions": [
     {
       "label": "data/pradan/raw/data/calibrated/20200808/ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
@@ -13,6 +17,39 @@
         "total_processed_azimuth_bandwidth": "1071.335975",
         "azimuth_look_bandwidth": "51.015999",
         "frequency_band": "L",
+        "product_type": "L2-SELENOREF",
+        "processing_level": "Calibrated",
+        "imaging_mode": "STRIPMAP",
+        "num_polarizations": "2",
+        "calibration_constant": "70.308868",
+        "output_pixel_spacing": "25.000000",
+        "look_angle": "19.997919",
+        "incidence_angle": "19.997919",
+        "spacecraft_altitude": "105376.000000",
+        "pulse_bandwidth": "7.500000e+06",
+        "centre_latitude": "-87.691649",
+        "centre_longitude": "81.459788",
+        "date_of_pass": "2020-08-08",
+        "no_scans": "2258",
+        "no_pixels": "6618"
+      },
+      "azimuth_looks": 21.0,
+      "prf_hz": 3321.641156,
+      "total_processed_azimuth_bandwidth_hz": 1071.335975,
+      "oversampling": 3.10046636490481,
+      "predicted_ceiling": 6.773174590024859,
+      "formula": "ceiling = azimuth_looks / (PRF / processed_azimuth_bandwidth)",
+      "why": "looks are formed by splitting the processed Doppler bandwidth; when PRF exceeds it the looks overlap in frequency and are not independent"
+    },
+    {
+      "label": "data/pradan/raw/data/calibrated/20200808/ch2_sar_ncxs_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+      "declared": {
+        "azimuth_looks": "21",
+        "range_looks": "1",
+        "pulse_repetition_frequency": "3321.641156",
+        "total_processed_azimuth_bandwidth": "1071.335975",
+        "azimuth_look_bandwidth": "51.015999",
+        "frequency_band": "S",
         "product_type": "L2-SELENOREF",
         "processing_level": "Calibrated",
         "imaging_mode": "STRIPMAP",
@@ -71,25 +108,37 @@
       "why": "looks are formed by splitting the processed Doppler bandwidth; when PRF exceeds it the looks overlap in frequency and are not independent"
     },
     {
-      "label": "data/generality/20251106/data/raw/20251106/ch2_sar_nrxl_20251106t221014810_d_r0b_xx_cp_xx_d18.xml",
+      "label": "data/generality/20200305/data/calibrated/20200305/ch2_sar_ncxs_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
       "declared": {
-        "pulse_repetition_frequency": "2596.377534",
-        "frequency_band": "L",
-        "product_type": "L0B-RAW",
-        "processing_level": "Raw",
+        "azimuth_looks": "39",
+        "range_looks": "1",
+        "pulse_repetition_frequency": "3107.597454",
+        "total_processed_azimuth_bandwidth": "1069.708995",
+        "azimuth_look_bandwidth": "27.428436",
+        "frequency_band": "S",
+        "product_type": "L2-SELENOREF",
+        "processing_level": "Calibrated",
         "imaging_mode": "STRIPMAP",
         "num_polarizations": "2",
-        "look_angle": "25.999873",
-        "incidence_angle": "25.999873",
-        "spacecraft_altitude": "84311.000000",
-        "pulse_bandwidth": "7.500000e+07",
-        "centre_latitude": "-88.781118",
-        "centre_longitude": "-149.767137",
-        "date_of_pass": "2025-11-06"
+        "calibration_constant": "70.308868",
+        "output_pixel_spacing": "90.000000",
+        "look_angle": "26.007650",
+        "incidence_angle": "26.007650",
+        "spacecraft_altitude": "106434.000000",
+        "pulse_bandwidth": "2.000000e+06",
+        "centre_latitude": "-85.562334",
+        "centre_longitude": "-44.646601",
+        "date_of_pass": "2020-03-05",
+        "no_scans": "1714",
+        "no_pixels": "700"
       },
-      "predicted_ceiling": null,
-      "oversampling": null,
-      "reason_absent": "the label carries no azimuth_looks, total_processed_azimuth_bandwidth. A raw (L0B) product has not formed looks yet, so there is no ceiling to predict -- this is an absent state, not a zero."
+      "azimuth_looks": 39.0,
+      "prf_hz": 3107.597454,
+      "total_processed_azimuth_bandwidth_hz": 1069.708995,
+      "oversampling": 2.9050867745577853,
+      "predicted_ceiling": 13.424728080949187,
+      "formula": "ceiling = azimuth_looks / (PRF / processed_azimuth_bandwidth)",
+      "why": "looks are formed by splitting the processed Doppler bandwidth; when PRF exceeds it the looks overlap in frequency and are not independent"
     }
   ]
 }

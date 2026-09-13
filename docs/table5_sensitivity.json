@@ -1,0 +1,48 @@
+{
+  "schema": "lunar-ice/table5-sensitivity/1",
+  "generated_utc": "2026-09-13T10:54:41.900254+00:00",
+  "generator": "backend/scripts/table5_sensitivity.py",
+  "scaling": {
+    "raw_reference": 5.83,
+    "screened_reference": 13.72,
+    "factor": 2.3533447684391082,
+    "read_from": "docs/detection_statistics.json::effective_looks"
+  },
+  "true_cpr_for_fp": 0.7,
+  "formulas": {
+    "N": "raw x screened_reference / raw_reference",
+    "floor": "F^-1(0.95; 2N, 2N)",
+    "fp": "1 - F(1/0.7; 2N, 2N)"
+  },
+  "all_fp_are_upper_bounds": "They assume independent circular channels. METHODS 7.10 measures |rho|^2 >= 0.3052 from Putrevu et al. 2023's own dispersion, and correlation between numerator and denominator narrows the ratio.",
+  "rows": [
+    {
+      "raw_enl": 2.64,
+      "N": 6.212830188679246,
+      "floor_95": 2.6376363951273847,
+      "fp_percent_at_cpr_0p7": 26.94277683074322,
+      "fp_is_upper_bound": true
+    },
+    {
+      "raw_enl": 5.3,
+      "N": 12.472727272727273,
+      "floor_95": 1.9569356492870122,
+      "fp_percent_at_cpr_0p7": 18.955495475782293,
+      "fp_is_upper_bound": true
+    },
+    {
+      "raw_enl": 5.83,
+      "N": 13.72,
+      "floor_95": 1.8946236969971033,
+      "fp_percent_at_cpr_0p7": 17.7924239915343,
+      "fp_is_upper_bound": true
+    },
+    {
+      "raw_enl": 6.22,
+      "N": 14.637804459691253,
+      "floor_95": 1.8551890270095572,
+      "fp_percent_at_cpr_0p7": 16.998354884000456,
+      "fp_is_upper_bound": true
+    }
+  ]
+}

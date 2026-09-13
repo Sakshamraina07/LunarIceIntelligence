@@ -341,7 +341,17 @@ def main() -> int:
                                 "enl_single_look", "enl_spatial_21",
                                 "enl_subband_21", "enl_subband_unequal_power_ceiling",
                                 "enl_subband_equalised", "enl_subband_tapered",
-                                "enl_subband_tapered_equalised")}}, indent=2),
+                                "enl_subband_tapered_equalised")},
+                    # MIN AND MAX, because the manuscript prints a RANGE for the
+                    # single-look control ("1.04, range 0.93-1.12") and a range
+                    # quoted from a median-only artifact has no source for its
+                    # endpoints. The audit reported those two as NO SOURCE until
+                    # they were emitted.
+                    "min": {k: min(float(r[k]) for r in rows)
+                            for k in rows[0] if isinstance(rows[0][k], (int, float))},
+                    "max": {k: max(float(r[k]) for r in rows)
+                            for k in rows[0] if isinstance(rows[0][k], (int, float))},
+                    "n_windows": len(rows)}, indent=2),
         encoding="utf-8")
     print(f"\nwrote {args.out}")
     return 0

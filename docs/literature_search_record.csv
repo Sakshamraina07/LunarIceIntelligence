@@ -1,0 +1,35 @@
+id,first_author,year,venue,title_short,instrument,screen_level,relevant_lunar_cpr_ice_study,reports_measured_enl_of_analysed_product,reports_perpixel_floor_at_stated_N,reports_fp_rate_for_cpr_criterion,note
+1,Fa & Cai,2013,JGR Planets,CPR characteristics of impact craters from Mini-RF,Mini-RF,full text (cited in manuscript),yes,no,no,no,reports CPR moments descriptively; no look-count inversion; no floor
+2,Spudis et al.,2013,JGR Planets,Evidence for water ice: anomalous polar craters,Mini-RF,full text (cited),yes,no,no,no,
+3,Spudis et al.,2010,GRL,Initial results north pole Mini-SAR,Mini-SAR,abstract,yes,no,no,no,
+4,Sinha et al.,2026,npj Space Exploration,Subsurface ice in doubly shadowed craters,DFSAR full-pol,full text (cited),yes,no,no,no,criterion CPR>1 and m<0.13; look count not stated
+5,Bhiravarasu et al.,2026,Research Square preprint,Volume scattering not a single diagnostic indicator,DFSAR,full text (cited),yes,no,no,no,
+6,Thomson et al.,2012,GRL,Upper limit for ice in Shackleton,Mini-RF,full text (cited),yes,no,no,no,mixing-model upper limit on ice fraction; no per-pixel significance floor
+7,Fa & Eke,2018,JGR Planets,Unravelling the mystery of lunar anomalous craters,Mini-RF + Diviner,full text (cited),yes,no,no,no,
+8,Putrevu et al.,2023,JGR Planets,Lunar impact craters: full-polarimetric DFSAR,DFSAR full-pol,full text (cited),yes,no,no,no,
+9,Kumar et al.,2022,Adv. Space Res.,Polarimetric analysis of L-band DFSAR for ice in PSRs,DFSAR,abstract,yes,no,no,no,
+10,Verma et al.,2025,Icarus,Exploring water-ice deposits in lunar polar craters with DFSAR,DFSAR,full text (cited),yes,no,no,no,
+11,(ResearchGate preprint),2025,preprint,Backscatter coefficients and CPR study of PSR craters DFSAR,DFSAR,abstract,yes,no,no,no,
+12,(IEEE conference),2024,IEEE conference (10641024),Detection of water ice in Faustini crater floor using DFSAR,DFSAR,abstract,yes,no,no,no,
+13,(AdSpR),2022,Adv. Space Res.,Dielectric and polarimetric analysis of Hermite-A,Mini-SAR/Mini-RF/DFSAR,abstract,yes,no,no,no,
+14,(Remote Sensing),2025,Remote Sensing 17(1):31,Integrated analysis of water ice in Erlanger crater,Mini-SAR + DFSAR,FULL TEXT NOT ACCESSED,yes,unknown,unknown,unknown,abstract only; full text behind provenance/rate limits in this pass
+15,(JESS),2020,J. Earth Syst. Sci.,Mini-RF Ohm and Stevinus craters CPR and m-chi,Mini-RF,abstract,yes,no,no,no,
+16,(Spudis et al.),2013,(conference/JGR),Excess numbers of enhanced-CPR craters in polar regions,Mini-RF,abstract,yes,no,no,no,
+17,Raney et al.,2012,JGR Planets,m-chi decomposition applied to lunar craters,Mini-RF,full text (cited),yes,no,no,no,documents 8 looks for S-band zoom mode
+18,Raney et al.,2012,LPSC abstract,Characterization of lunar craters using m-chi,Mini-RF,abstract,yes,no,no,no,
+19,(Mini-SAR polarimetric study),2013,(journal),Polarimetric properties of lunar surface using Mini-SAR,Mini-SAR,abstract,yes,no,no,no,
+20,(Mini-SAR equatorial),2012,(journal),Scattering characteristics of lunar equatorial region Mini-SAR,Mini-SAR,abstract,no,no,no,no,equatorial scattering; excluded as not an ice study
+21,(EGU abstract),2020,EGU General Assembly,Mini-RF observations of polar craters and ice distribution,Mini-RF,abstract,yes,no,no,no,
+22,(Science Bulletin),2025,Science Bulletin,Upper limit of ice at south pole from SYISR-FAST bistatic radar,Earth-based bistatic,abstract,yes,no,no,no,Earth-based; not an orbital product
+23,(Univ. Arizona),n/a,(conference),Comparison of Mini-RF and Earth-based radar polarimetry,Mini-RF + Earth-based,abstract,no,no,no,no,cross-calibration; excluded
+24,(NTRS),2012,NASA NTRS,Radar scattering and block size of crater ejecta,Mini-RF,abstract,no,no,no,no,ejecta blocks; excluded
+25,Cahill et al.,2014,Icarus,Mini-RF global observations of the Moon,Mini-RF,abstract,no,no,no,no,global mapping; excluded
+26,(JSTARS),2023,IEEE JSTARS,Pol-SAR image simulation of lunar surface with DFSAR and Mini-RF data,DFSAR + Mini-RF,FULL TEXT NOT ACCESSED,no,unknown,no,no,simulation study; ENL appears in index snippet as a simulation parameter; abstract does not report a measured ENL on real data
+27,(JSTARS),2021,IEEE JSTARS,Simulation of Pol-SAR imaging and Mini-RF data analysis,Mini-RF,abstract,no,no,no,no,simulation; excluded
+28,(conference),2024,(conference),Polarimetric characterization of Chandrayaan-3 landing site with DFSAR,DFSAR,abstract,no,no,no,no,landing-site characterisation; excluded
+29,(AdSpR),2023,Adv. Space Res.,South polar craters via optical microwave thermal,multi,abstract,yes,no,no,no,
+30,(LPSC),2011,LPSC abstract,New insights from global mapping by Mini-RF,Mini-RF,abstract,no,no,no,no,excluded
+31,Nozette et al.,1996,Science,Clementine bistatic radar experiment,Clementine,full text (cited),yes,no,no,no,
+32,Neish et al.,2011,JGR,Nature of lunar volatiles as revealed by Mini-RF,Mini-RF,full text (cited),yes,no,no,no,
+33,Campbell,2012,JGR,High circular polarization ratios in radar scattering from geologic targets,Earth-based/Mini-RF,full text (cited),yes,no,no,no,
+34,Bhiravarasu et al.,2021,Planet. Sci. J.,DFSAR performance characterization,DFSAR,full text (cited),no,no,no,no,instrument paper; declares nominal looks; excluded from CPR-ice set

@@ -1,0 +1,113 @@
+{
+  "source": {
+    "citation": "Fa, W. and Cai, Y. (2013), J. Geophys. Res. Planets, 118(8), 1582-1608, doi:10.1002/jgre.20110",
+    "table": "Table 1, p. 1585, interior region",
+    "transcribed_by_hand": true
+  },
+  "documented_looks": 8.0,
+  "documented_note": "Raney et al. 2012, para. [4], quotes 8 looks for the S-band ZOOM mode at 7.5 m. Fa & Cai used the 14.8 m baseline CDR. These are adjacent products of one instrument, not the same product.",
+  "craters": [
+    {
+      "name": "Hermite B",
+      "mu": 0.97,
+      "sigma": 0.5,
+      "skewness": 1.75,
+      "excess_kurtosis": 6.12,
+      "relative_sd": 0.5154639175257733,
+      "N_from_dispersion": 9.114264887117828,
+      "N_from_skewness": 9.647089771188682,
+      "N_from_kurtosis": 9.944362801050335
+    },
+    {
+      "name": "Rozhdestvenskiy N",
+      "mu": 0.93,
+      "sigma": 0.5,
+      "skewness": 1.83,
+      "excess_kurtosis": 7.66,
+      "relative_sd": 0.5376344086021505,
+      "N_from_dispersion": 8.51280023684989,
+      "N_from_skewness": 9.138683896433891,
+      "N_from_kurtosis": 8.835770471097803
+    },
+    {
+      "name": "Main L",
+      "mu": 0.92,
+      "sigma": 0.48,
+      "skewness": 1.82,
+      "excess_kurtosis": 7.06,
+      "relative_sd": 0.5217391304347826,
+      "N_from_dispersion": 8.936125592821424,
+      "N_from_skewness": 9.198638756170414,
+      "N_from_kurtosis": 9.211144868335872
+    },
+    {
+      "name": "Schomberger A",
+      "mu": 0.99,
+      "sigma": 0.5,
+      "skewness": 1.77,
+      "excess_kurtosis": 6.51,
+      "relative_sd": 0.5050505050505051,
+      "N_from_dispersion": 9.424835165478576,
+      "N_from_skewness": 9.513590607376054,
+      "N_from_kurtosis": 9.614867491485715
+    },
+    {
+      "name": "Cardanus E",
+      "mu": 0.83,
+      "sigma": 0.46,
+      "skewness": 2.19,
+      "excess_kurtosis": 7.19,
+      "relative_sd": 0.5542168674698795,
+      "N_from_dispersion": 8.109898009381661,
+      "N_from_skewness": 7.489350335857476,
+      "N_from_kurtosis": 9.124595928335898
+    },
+    {
+      "name": "Byrgius C",
+      "mu": 1.12,
+      "sigma": 0.59,
+      "skewness": 1.88,
+      "excess_kurtosis": 7.33,
+      "relative_sd": 0.5267857142857142,
+      "N_from_dispersion": 8.797512920085268,
+      "N_from_skewness": 8.852913832491248,
+      "N_from_kurtosis": 9.034762080339164
+    },
+    {
+      "name": "Dollond E",
+      "mu": 1.0,
+      "sigma": 0.53,
+      "skewness": 1.85,
+      "excess_kurtosis": 7.0,
+      "relative_sd": 0.53,
+      "N_from_dispersion": 8.711308967404864,
+      "N_from_skewness": 9.021635568060736,
+      "N_from_kurtosis": 9.252155432026901
+    },
+    {
+      "name": "Stevinus A",
+      "mu": 1.04,
+      "sigma": 0.56,
+      "skewness": 1.93,
+      "excess_kurtosis": 7.95,
+      "relative_sd": 0.5384615384615385,
+      "N_from_dispersion": 8.491805313623786,
+      "N_from_skewness": 8.588729353268144,
+      "N_from_kurtosis": 8.67428317933435
+    }
+  ],
+  "median_N_from_dispersion": 8.754410943745066,
+  "median_N_from_skewness": 9.080159732247314,
+  "median_N_from_kurtosis": 9.167870398335886,
+  "agreement_sd_vs_skew_percent": 3.720967528203499,
+  "consequence_at_median_dispersion_N": {
+    "N": 8.754410943745066,
+    "bias": 1.1289588606090872,
+    "relative_sd": 0.528385433461137,
+    "floor_95": 2.2432794220027024,
+    "fp_at_true_cpr_0p7": 23.155176961825287,
+    "fp_at_true_cpr_0p5": 7.840142732871003,
+    "note": "Upper bounds. F(2N,2N) assumes the two circular channels are independent; see METHODS 7.10."
+  },
+  "gate_failures": []
+}

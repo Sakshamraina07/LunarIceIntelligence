@@ -1,0 +1,47 @@
+{
+  "schema": "lunar-ice/background-cpr-sweep/1",
+  "generated_utc": "2026-09-13T10:55:33.481549+00:00",
+  "generator": "backend/scripts/background_cpr_sweep.py",
+  "N": 13.72,
+  "N_read_from": "docs/detection_statistics.json::effective_looks.screened_field.lh",
+  "formula": "FP(c) = 1 - F(1/c; 2N, 2N)",
+  "all_values_are_upper_bounds": "They assume independent circular channels; METHODS 7.10 measures |rho|^2 >= 0.3052 and correlation narrows the ratio.",
+  "span_factor_0p3_to_0p9": 329.69380080247,
+  "rows": [
+    {
+      "true_cpr": 0.3,
+      "fp_percent": 0.1189819890348276,
+      "is_upper_bound": true
+    },
+    {
+      "true_cpr": 0.4,
+      "fp_percent": 0.9673471892699625,
+      "is_upper_bound": true
+    },
+    {
+      "true_cpr": 0.5,
+      "fp_percent": 3.7404952843565153,
+      "is_upper_bound": true
+    },
+    {
+      "true_cpr": 0.6,
+      "fp_percent": 9.36238903425054,
+      "is_upper_bound": true
+    },
+    {
+      "true_cpr": 0.7,
+      "fp_percent": 17.7924239915343,
+      "is_upper_bound": true
+    },
+    {
+      "true_cpr": 0.8,
+      "fp_percent": 28.144449828672236,
+      "is_upper_bound": true
+    },
+    {
+      "true_cpr": 0.9,
+      "fp_percent": 39.22762419193012,
+      "is_upper_bound": true
+    }
+  ]
+}

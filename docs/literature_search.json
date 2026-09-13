@@ -1,0 +1,20 @@
+{
+  "schema": "lunar-ice/literature-search/1",
+  "generated_utc": "2026-09-13T10:58:07.249981+00:00",
+  "generator": "backend/scripts/literature_search_gate.py",
+  "record": "docs/literature_search_record.csv",
+  "counts": {
+    "unique": 34,
+    "excluded": 9,
+    "relevant": 25,
+    "full_text": 12,
+    "abstract": 12,
+    "inaccessible": 1
+  },
+  "criteria_yes": {
+    "reports_measured_enl_of_analysed_product": 0,
+    "reports_perpixel_floor_at_stated_N": 0,
+    "reports_fp_rate_for_cpr_criterion": 0
+  },
+  "note": "The inaccessible paper is counted and named rather than dropped; a search that excluded it would claim a completeness it does not have."
+}

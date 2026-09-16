@@ -5,7 +5,7 @@ cpr_dispersion.py -- the CPR speckle floor, measured in our own product.
 
 WHY
 ---
-Section 7.7 computes false-positive rates from `CPR * F(2N,2N)`, the sampling
+Section 7.7 computes noise exceedance rates from `CPR * F(2N,2N)`, the sampling
 distribution of a ratio of two INDEPENDENT N-look intensities. That model is an
 assumption about the two circular channels, and it had never been checked
 against the dispersion this product actually shows.
@@ -232,7 +232,7 @@ def main() -> int:
         print(f"  MEASURED {r_corr:.4f}  <<  THEORY {t_ref:.4f} at N = {n_ref}")
         print(f"  ratio {ratio:.3f}\n")
         print("  The independent-channel F(2N,2N) model OVERSTATES the spread of CPR")
-        print("  in this product. Every false-positive rate computed from it -- the")
+        print("  in this product. Every exceedance rate computed from it -- the")
         print("  29.16 % at true CPR 0.7 and N = 5 in section 7.7, and every other")
         print("  entry in that table -- is therefore an UPPER BOUND on the rate, not")
         print("  the rate. The two circular channels are correlated, and correlation")
@@ -382,6 +382,19 @@ def main() -> int:
           f"  (1 - {n_max:.3f} x {pub_rel ** 2 / 2:.8f} = {rho_lead:.4f}).")
 
     floor_ref = rel_sd_independent(n_max)
+    # THE OTHER READING OF THE SAME NUMBER, AND IT NEEDS NO CORRELATION.
+    # rho_I >= 0.31 answers "how correlated must the channels be if the kernel is
+    # one output cell?". Invert the dispersion instead and it answers "how many
+    # independent samples would explain it with no correlation at all?" -- a
+    # kernel overlapping its neighbours. Both are consistent with what is
+    # published, which is the point: the processing detail that decides between
+    # them is not in print, so the paper reports both and rests on neither.
+    n_equivalent = looks_for_rel_sd(pub_rel)
+    print(f"\n  Inverting the same dispersion under INDEPENDENT equal-look channels:")
+    print(f"  relSD {pub_rel:.6f} corresponds to N = {n_equivalent:.2f} samples, which "
+          f"an averaging")
+    print(f"  kernel overlapping neighbouring cells could supply without any "
+          f"correlation.")
     print(f"\n  Byrgius C interior: CPR {pub_mean} +/- {pub_sd}, "
           f"relative SD {pub_rel:.4f}.")
     print(f"  The independent-channel floor at their own maximum look count is")
@@ -393,7 +406,7 @@ def main() -> int:
     print("  CONSEQUENCE FOR SECTION 7.7: correlation between numerator and")
     print("  denominator narrows the ratio's distribution, so F(2N,2N) with")
     print("  independent numerator and denominator is CONSERVATIVE, and every")
-    print("  false-positive rate computed from it -- 29.16 % included -- is an")
+    print("  exceedance rate computed from it -- 29.16 % included -- is an")
     print("  UPPER BOUND rather than a rate. That conclusion rests on THIS")
     print("  external measurement, not on our own dispersion, which is an upper")
     print("  bound and cannot settle the question from below.\n")
@@ -481,6 +494,13 @@ def main() -> int:
                           "rho_I = 1 - (relSD_obs/relSD_indep)^2. The exact-floor "
                           "form gives a LARGER number, so the large-N one is the "
                           "conservative bound and is what is reported."),
+            "N_from_dispersion_independent_channels": float(n_equivalent),
+            "N_from_dispersion_note": (
+                "the look count that reproduces their relative SD with NO channel "
+                "correlation: an averaging kernel overlapping neighbouring output "
+                "cells. The alternative reading to rho_I >= 0.307 at N = 54.88, "
+                "and the processing detail that would decide between them is not "
+                "published."),
             "bound_range_over_altitudes": [
                 float(min(c["rho_I_large_N"] for c in constraint.values())),
                 float(max(c["rho_I_large_N"] for c in constraint.values()))],
@@ -491,7 +511,7 @@ def main() -> int:
                                      "coherency matrices' (Sec 3.1)"),
             "consequence": ("correlated channels narrow the ratio, so F(2N,2N) with "
                             "independent numerator and denominator is conservative "
-                            "and every false-positive rate from it is an upper bound"),
+                            "and every exceedance rate from it is an upper bound"),
         },
     }, indent=2), encoding="utf-8")
     print(f"\n  wrote {OUT.relative_to(BASE_DIR)}")

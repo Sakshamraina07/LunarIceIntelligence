@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/slepian-ceiling/1",
-  "generated_utc": "2026-09-13T10:54:02.866905+00:00",
+  "generated_utc": "2026-09-16T09:10:50.443730+00:00",
   "generator": "backend/scripts/slepian_ceiling.py",
   "inputs_read_from": {
     "prf_hz": "docs/enl_predictions.json::predictions[0].declared.pulse_repetition_frequency",
@@ -14,6 +14,9 @@
   "two_WT_asymptotic": 6.773174590024859,
   "participation_ratio_rectangular": 7.338628547910912,
   "enl_rectangular_spectrum": 7.33862854791091,
+  "enl_mildly_shaped_spectrum": 7.3764225342229865,
+  "participation_ratio_mildly_shaped": 7.376422534222985,
+  "mildly_shaped_spectrum": "1 - 0.1 cos(2 pi f / B) over the same support",
   "enl_hamming_054": 4.065579018511823,
   "hamming_coefficient": 0.54,
   "measured_spatial_arm": 4.524020841500781,
@@ -31,5 +34,32 @@
   ],
   "eigenvalues_above_half_max": 7,
   "ordering_holds": true,
+  "other_products": [
+    {
+      "prediction_index": 1,
+      "label": "data/pradan/raw/data/calibrated/20200808/ch2_sar_ncxs_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+      "azimuth_looks": 21,
+      "oversampling": 3.10046636490481,
+      "two_WT_asymptotic": 6.773174590024859,
+      "participation_ratio_rectangular": 7.338628547910912
+    },
+    {
+      "prediction_index": 2,
+      "label": "data/generality/20200305/data/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+      "azimuth_looks": 39,
+      "oversampling": 2.9050867745577853,
+      "two_WT_asymptotic": 13.424728080949187,
+      "participation_ratio_rectangular": 14.040324585549053
+    },
+    {
+      "prediction_index": 3,
+      "label": "data/generality/20200305/data/calibrated/20200305/ch2_sar_ncxs_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+      "azimuth_looks": 39,
+      "oversampling": 2.9050867745577853,
+      "two_WT_asymptotic": 13.424728080949187,
+      "participation_ratio_rectangular": 14.040324585549053
+    }
+  ],
+  "other_products_note": "2WT and the participation ratio depend only on (azimuth_looks, oversampling), both read from each product's own label via docs/enl_predictions.json; no measurement of those products enters here",
   "note": "2WT is a large-time-bandwidth approximation and N = 21 is not large; the exact participation ratio is ~8 % higher. The measured arm lies between the tapered and untapered bounds."
 }

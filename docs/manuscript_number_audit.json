@@ -1,727 +1,28 @@
 {
   "schema": "lunar-ice/manuscript-audit/1",
-  "generated_utc": "2026-09-16T08:05:05.798054+00:00",
+  "generated_utc": "2026-09-16T10:10:28.978685+00:00",
   "computed_by": "backend/scripts/audit_manuscript_numbers.py",
-  "manuscript": "Claude outputs/dfsar_detection_limits_full.tex",
+  "manuscript": "Claude outputs/dfsar_detection_limits_submission.tex",
   "manuscript_is_read_only": true,
-  "n_audited": 121,
+  "n_audited": 269,
   "counts": {
-    "PASS": 89,
-    "MISMATCH": 0,
-    "NO SOURCE": 8,
-    "ABSENT": 24
+    "PASS": 259,
+    "MISMATCH": 6,
+    "NO SOURCE": 4,
+    "ABSENT": 0
   },
   "rows": [
     {
-      "id": "ceiling",
-      "printed": "4.261e-3",
-      "artifact": "docs/degeneracy_replication.json",
-      "key": "closed_form_ceiling",
-      "artifact_value": 0.004261082862785302,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "tanh^2(artanh(0.13)/2)",
-      "tex_lines": [
-        46,
-        363,
-        1130,
-        1631,
-        1948,
-        2715
-      ]
-    },
-    {
-      "id": "x_bound",
-      "printed": "0.2614797",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "III",
-      "note": "2*artanh(0.13); closed form, checked as DERIVED below",
-      "tex_lines": [
-        329,
-        331,
-        1914,
-        1916
-      ]
-    },
-    {
-      "id": "factor",
-      "printed": "235",
-      "artifact": "frontend/public/analysis/sweep_grid.json",
-      "key": "crossing.factor_below_published",
-      "artifact_value": 234.68353413909173,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "1.00 / measured crossing",
-      "tex_lines": [
-        334,
-        1281,
-        1919,
-        2866
-      ]
-    },
-    {
-      "id": "valid_px",
-      "printed": "2,337,086",
-      "artifact": "docs/detection_statistics.json",
-      "key": "candidate_area.measured_pixels",
-      "artifact_value": 2337086.0,
+      "id": "obs_duration",
+      "printed": "107.106",
+      "artifact": "docs/data_provenance.json",
+      "key": "observation_duration_s",
+      "artifact_value": 107.106,
       "verdict": "PASS",
       "section": "II",
-      "note": "valid-amplitude pixel count",
+      "note": "label start/stop, verified per line by G27",
       "tex_lines": [
-        1346
-      ]
-    },
-    {
-      "id": "max_resid_stored",
-      "printed": "1.241e-6",
-      "artifact": "frontend/public/analysis/faustini.json",
-      "key": "cpr_dop_identity.max_abs_residual",
-      "artifact_value": 1.2414956257877224e-06,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "stored float32 field",
-      "tex_lines": [
-        370,
-        1955
-      ]
-    },
-    {
-      "id": "rms_resid",
-      "printed": "8.025e-9",
-      "artifact": "frontend/public/analysis/faustini.json",
-      "key": "cpr_dop_identity.rms_residual",
-      "artifact_value": 8.025280870672378e-09,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "stored float32 field",
-      "tex_lines": [
-        371,
-        1956
-      ]
-    },
-    {
-      "id": "crossing",
-      "printed": "4.2610574e-3",
-      "artifact": "frontend/public/analysis/sweep_grid.json",
-      "key": "crossing.cpr_value",
-      "artifact_value": 0.004261057358235121,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "max CPR where DOP < 0.13, screened field",
-      "tex_lines": [
-        373,
-        1958
-      ]
-    },
-    {
-      "id": "crossing_rel",
-      "printed": "5.99e-6",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "III",
-      "note": "relative agreement, crossing vs closed form; DERIVED",
-      "tex_lines": [
-        374,
-        1959
-      ]
-    },
-    {
-      "id": "mc_trials",
-      "printed": "120 000",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "IV",
-      "note": "trials per Monte Carlo row; the count is a run parameter, not a measurement",
-      "tex_lines": [
-        1981
-      ]
-    },
-    {
-      "id": "rho",
-      "printed": "0.9822",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "IV",
-      "note": "measured LH/LV coherence",
-      "tex_lines": [
-        397,
-        1982
-      ]
-    },
-    {
-      "id": "mc_N",
-      "printed": "5",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[0].n_looks",
-      "artifact_value": 5.0,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": "look count the simulator ran at",
-      "tex_lines": [
-        52,
-        57,
-        61,
-        101,
-        103,
-        138,
-        140,
-        141,
-        145,
-        149,
-        169,
-        174,
-        180,
-        192,
-        197,
-        209,
-        210,
-        211,
-        220,
-        222,
-        252,
-        261,
-        289,
-        334,
-        349,
-        371,
-        373,
-        374,
-        380,
-        382,
-        400,
-        406,
-        416,
-        436,
-        441,
-        492,
-        493,
-        497,
-        500,
-        501,
-        509,
-        516,
-        563,
-        571,
-        572,
-        573,
-        597,
-        598,
-        599,
-        618,
-        621,
-        624,
-        666,
-        674,
-        675,
-        682,
-        684,
-        685,
-        686,
-        687,
-        689,
-        690,
-        698,
-        706,
-        707,
-        708,
-        713,
-        714,
-        725,
-        727,
-        739,
-        743,
-        748,
-        755,
-        757,
-        759,
-        767,
-        778,
-        779,
-        786,
-        787,
-        801,
-        805,
-        806,
-        809,
-        812,
-        821,
-        830,
-        852,
-        857,
-        860,
-        861,
-        900,
-        901,
-        903,
-        905,
-        906,
-        907,
-        909,
-        926,
-        928,
-        936,
-        939,
-        965,
-        968,
-        972,
-        984,
-        1000,
-        1023,
-        1057,
-        1076,
-        1078,
-        1080,
-        1088,
-        1136,
-        1142,
-        1175,
-        1185,
-        1206,
-        1213,
-        1224,
-        1242,
-        1248,
-        1251,
-        1255,
-        1260,
-        1264,
-        1269,
-        1272,
-        1281,
-        1283,
-        1292,
-        1301,
-        1309,
-        1311,
-        1314,
-        1356,
-        1359,
-        1362,
-        1366,
-        1370,
-        1371,
-        1372,
-        1373,
-        1376,
-        1384,
-        1386,
-        1389,
-        1442,
-        1443,
-        1450,
-        1452,
-        1453,
-        1459,
-        1466,
-        1468,
-        1469,
-        1473,
-        1480,
-        1483,
-        1485,
-        1492,
-        1495,
-        1497,
-        1499,
-        1502,
-        1515,
-        1537,
-        1539,
-        1542,
-        1547,
-        1549,
-        1551,
-        1552,
-        1558,
-        1560,
-        1563,
-        1637,
-        1642,
-        1646,
-        1686,
-        1688,
-        1723,
-        1725,
-        1726,
-        1730,
-        1734,
-        1754,
-        1759,
-        1765,
-        1777,
-        1782,
-        1794,
-        1795,
-        1796,
-        1805,
-        1807,
-        1837,
-        1846,
-        1874,
-        1919,
-        1934,
-        1956,
-        1958,
-        1959,
-        1965,
-        1967,
-        1985,
-        1991,
-        2001,
-        2021,
-        2026,
-        2077,
-        2078,
-        2082,
-        2085,
-        2086,
-        2094,
-        2101,
-        2148,
-        2156,
-        2157,
-        2158,
-        2182,
-        2183,
-        2184,
-        2203,
-        2206,
-        2209,
-        2251,
-        2259,
-        2260,
-        2267,
-        2269,
-        2270,
-        2271,
-        2272,
-        2274,
-        2275,
-        2283,
-        2291,
-        2292,
-        2293,
-        2298,
-        2299,
-        2310,
-        2312,
-        2324,
-        2328,
-        2333,
-        2340,
-        2342,
-        2344,
-        2352,
-        2363,
-        2364,
-        2371,
-        2372,
-        2386,
-        2390,
-        2391,
-        2394,
-        2397,
-        2406,
-        2415,
-        2437,
-        2442,
-        2445,
-        2446,
-        2485,
-        2486,
-        2488,
-        2490,
-        2491,
-        2492,
-        2494,
-        2511,
-        2513,
-        2521,
-        2524,
-        2550,
-        2553,
-        2557,
-        2569,
-        2585,
-        2608,
-        2642,
-        2661,
-        2663,
-        2665,
-        2673,
-        2721,
-        2727,
-        2760,
-        2770,
-        2791,
-        2798,
-        2809,
-        2827,
-        2833,
-        2836,
-        2840,
-        2845,
-        2849,
-        2854,
-        2857,
-        2866,
-        2868,
-        2877,
-        2886,
-        2894,
-        2896,
-        2899,
-        2941,
-        2944,
-        2947,
-        2951,
-        2955,
-        2956,
-        2957,
-        2958,
-        2961,
-        2969,
-        2971,
-        2974,
-        3027,
-        3028,
-        3035,
-        3037,
-        3038,
-        3044,
-        3051,
-        3053,
-        3054,
-        3058,
-        3065,
-        3068,
-        3070,
-        3077,
-        3080,
-        3082,
-        3084,
-        3087,
-        3100,
-        3122,
-        3124,
-        3127,
-        3132,
-        3134,
-        3136,
-        3137,
-        3143,
-        3145,
-        3148
-      ]
-    },
-    {
-      "id": "mc_stokes_med_03",
-      "printed": "0.300",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[0].stokes_cpr.median",
-      "artifact_value": 0.30013433480838186,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": null,
-      "tex_lines": [
-        413,
-        1998
-      ]
-    },
-    {
-      "id": "mc_stokes_med_07",
-      "printed": "0.700",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[1].stokes_cpr.median",
-      "artifact_value": 0.7004937964700277,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": null,
-      "tex_lines": [
-        414,
-        417,
-        418,
-        1999,
-        2002,
-        2003
-      ]
-    },
-    {
-      "id": "mc_stokes_med_10",
-      "printed": "1.000",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[2].stokes_cpr.median",
-      "artifact_value": 1.0002846792848286,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": null,
-      "tex_lines": [
-        415,
-        2000
-      ]
-    },
-    {
-      "id": "mc_stokes_med_15",
-      "printed": "1.500",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[3].stokes_cpr.median",
-      "artifact_value": 1.4996708980096973,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": null,
-      "tex_lines": [
-        416,
-        2001
-      ]
-    },
-    {
-      "id": "mc_proxy_med_07",
-      "printed": "0.00043",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[1].amplitude_proxy.median",
-      "artifact_value": 0.0004332543811427249,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": null,
-      "tex_lines": [
-        413,
-        414,
-        415,
-        416,
-        1998,
-        1999,
-        2000,
-        2001
-      ]
-    },
-    {
-      "id": "mc_proxy_1db",
-      "printed": "0.00331",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[4].amplitude_proxy.median",
-      "artifact_value": 0.0033095631676449857,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": "1 dB imbalance",
-      "tex_lines": [
-        417,
-        2002
-      ]
-    },
-    {
-      "id": "mc_proxy_3db",
-      "printed": "0.02922",
-      "artifact": "docs/cpr_significance.json",
-      "key": "monte_carlo[5].amplitude_proxy.median",
-      "artifact_value": 0.029222298703409498,
-      "verdict": "PASS",
-      "section": "IV",
-      "note": "3 dB imbalance",
-      "tex_lines": [
-        418,
-        2003
-      ]
-    },
-    {
-      "id": "bw_measured",
-      "printed": "1071.2",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "medians.measured_bandwidth_hz",
-      "artifact_value": 1071.22927281,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "median across windows",
-      "tex_lines": [
-        530,
-        1350,
-        2115,
-        2935
-      ]
-    },
-    {
-      "id": "bw_label",
-      "printed": "1071.336",
-      "artifact": "docs/enl_predictions.json",
-      "key": "predictions[0].declared.total_processed_azimuth_bandwidth",
-      "artifact_value": 1071.335975,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "label",
-      "tex_lines": [
-        170,
-        180,
-        531,
-        1755,
-        1765,
-        2116
-      ]
-    },
-    {
-      "id": "prf",
-      "printed": "3321.64",
-      "artifact": "docs/enl_predictions.json",
-      "key": "predictions[0].declared.pulse_repetition_frequency",
-      "artifact_value": 3321.641156,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "label",
-      "tex_lines": [
-        171,
-        537,
-        1351,
-        1756,
-        2122,
-        2936
-      ]
-    },
-    {
-      "id": "osamp",
-      "printed": "3.10",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "medians.oversampling_factor",
-      "artifact_value": 3.1007751937984493,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        53,
-        539,
-        541,
-        1137,
-        1638,
-        2124,
-        2126,
-        2722
-      ]
-    },
-    {
-      "id": "ceiling_677",
-      "printed": "6.77",
-      "artifact": "docs/enl_predictions.json",
-      "key": "predictions[0].predicted_ceiling",
-      "artifact_value": 6.773174590024859,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "21 / 3.1005",
-      "tex_lines": [
-        541,
-        560,
-        572,
-        685,
-        2126,
-        2145,
-        2157,
-        2270
+        131
       ]
     },
     {
@@ -731,2069 +32,257 @@
       "key": "predictions[0].declared.azimuth_looks",
       "artifact_value": 21.0,
       "verdict": "PASS",
-      "section": "V",
+      "section": "II",
       "note": "label field",
       "tex_lines": [
-        52,
-        91,
-        168,
-        171,
-        180,
-        182,
-        222,
-        251,
-        258,
-        348,
+        43,
+        82,
+        133,
+        135,
+        151,
+        188,
+        214,
+        220,
+        306,
+        397,
+        416,
+        447,
+        450,
+        483,
+        491,
+        493,
         495,
         497,
-        510,
-        526,
-        537,
-        539,
-        540,
-        541,
-        543,
-        549,
-        551,
-        564,
-        577,
-        578,
-        582,
-        602,
-        619,
-        661,
-        690,
-        729,
-        778,
-        787,
-        902,
-        998,
-        1009,
-        1106,
-        1136,
-        1143,
-        1216,
-        1225,
-        1228,
-        1232,
-        1307,
-        1314,
-        1319,
-        1351,
-        1361,
-        1373,
-        1450,
-        1502,
-        1508,
-        1558,
-        1637,
-        1676,
-        1753,
-        1756,
-        1765,
-        1767,
-        1807,
-        1836,
-        1843,
-        1933,
-        2080,
-        2082,
-        2095,
-        2111,
-        2122,
-        2124,
-        2125,
-        2126,
-        2128,
-        2134,
-        2136,
-        2149,
-        2162,
-        2163,
-        2167,
-        2187,
-        2204,
-        2246,
-        2275,
-        2314,
-        2363,
-        2372,
-        2487,
-        2583,
-        2594,
-        2691,
-        2721,
-        2728,
-        2801,
-        2810,
-        2813,
-        2817,
-        2892,
-        2899,
-        2904,
-        2936,
-        2946,
-        2958,
-        3035,
-        3087,
-        3093,
-        3143
-      ]
-    },
-    {
-      "id": "sl_median",
-      "printed": "1.04",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "medians.enl_single_look",
-      "artifact_value": 1.0439270941691363,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        533,
-        907,
-        2118,
-        2492
-      ]
-    },
-    {
-      "id": "sl_min",
-      "printed": "0.93",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "min.enl_single_look",
-      "artifact_value": 0.9311323269870798,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "range endpoint",
-      "tex_lines": [
-        534,
-        901,
-        1484,
-        2119,
-        2486,
-        3069
-      ]
-    },
-    {
-      "id": "sl_max",
-      "printed": "1.12",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "max.enl_single_look",
-      "artifact_value": 1.1174815817354526,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        534,
-        686,
-        766,
-        905,
-        1484,
-        2119,
-        2271,
-        2351,
-        2490,
-        3069
-      ]
-    },
-    {
-      "id": "spatial",
-      "printed": "4.52",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "medians.enl_spatial_21",
-      "artifact_value": 4.524020841500781,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        571,
-        1452,
-        2156,
-        3037
-      ]
-    },
-    {
-      "id": "subband",
-      "printed": "9.95",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "medians.enl_subband_21",
-      "artifact_value": 9.95251789007943,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        572,
-        2157
-      ]
-    },
-    {
-      "id": "ceiling_128",
-      "printed": "12.8",
-      "artifact": "docs/slc_multilook_control.json",
-      "key": "medians.enl_subband_unequal_power_ceiling",
-      "artifact_value": 12.813644460284092,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        582,
-        2167
-      ]
-    },
-    {
-      "id": "enl_lh",
-      "printed": "5.83",
-      "artifact": "docs/enl.json",
-      "key": "boxcar_gain.LH.enl_raw",
-      "artifact_value": 5.827582742508031,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        52,
-        493,
-        706,
-        714,
-        743,
-        1136,
-        1453,
-        1492,
-        1637,
-        2078,
-        2291,
-        2299,
-        2328,
-        2721,
-        3038,
-        3077
-      ]
-    },
-    {
-      "id": "enl_lv",
-      "printed": "5.14",
-      "artifact": "docs/enl.json",
-      "key": "boxcar_gain.LV.enl_raw",
-      "artifact_value": 5.141278456298767,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        52,
-        493,
-        1136,
-        1492,
-        1499,
-        1637,
-        2078,
-        2721,
-        3077,
-        3084
-      ]
-    },
-    {
-      "id": "lag_az",
-      "printed": "0.838",
-      "artifact": "docs/enl.json",
-      "key": "lag_correlation.LH.azimuth_lines[0]",
-      "artifact_value": 0.8382981178766415,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        617,
-        2202
-      ]
-    },
-    {
-      "id": "lag_rg",
-      "printed": "0.576",
-      "artifact": "docs/enl.json",
-      "key": "lag_correlation.LH.range_samples[0]",
-      "artifact_value": 0.5761794944483448,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        618,
-        2203
-      ]
-    },
-    {
-      "id": "gain_lh",
-      "printed": "2.35",
-      "artifact": "docs/enl.json",
-      "key": "boxcar_gain.LH.gain",
-      "artifact_value": 2.3537443028393765,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        624,
-        2209
-      ]
-    },
-    {
-      "id": "gain_lv",
-      "printed": "3.84",
-      "artifact": "docs/enl.json",
-      "key": "boxcar_gain.LV.gain",
-      "artifact_value": 3.844904630548288,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        1499,
-        3084
-      ]
-    },
-    {
-      "id": "enl5_lh",
-      "printed": "13.72",
-      "artifact": "docs/detection_statistics.json",
-      "key": "effective_looks.screened_field.lh",
-      "artifact_value": 13.72,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        624,
-        667,
-        687,
-        707,
-        714,
-        728,
-        741,
-        744,
-        766,
-        861,
-        1141,
-        2209,
-        2252,
-        2272,
-        2292,
-        2299,
-        2313,
-        2326,
-        2329,
-        2351,
-        2446,
-        2726
-      ]
-    },
-    {
-      "id": "enl5_lv",
-      "printed": "19.77",
-      "artifact": "docs/detection_statistics.json",
-      "key": "effective_looks.screened_field.lv",
-      "artifact_value": 19.77,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        624,
-        689,
-        744,
-        1499,
-        2209,
-        2274,
-        2329,
-        3084
-      ]
-    },
-    {
-      "id": "bias1079",
-      "printed": "1.079",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "VI",
-      "note": "N/(N-1) at N = 13.72; DERIVED",
-      "tex_lines": [
-        57,
-        687,
-        1141,
-        1642,
-        2272,
-        2726
-      ]
-    },
-    {
-      "id": "floor1895",
-      "printed": "1.895",
-      "artifact": "docs/detection_statistics.json",
-      "key": "per_pixel_significance.floor_at_low_N",
-      "artifact_value": 1.8946,
-      "verdict": "PASS",
-      "section": "VI",
-      "note": null,
-      "tex_lines": [
-        57,
-        687,
-        708,
-        714,
-        748,
-        755,
-        1142,
-        1560,
-        1642,
-        2272,
-        2293,
-        2299,
-        2333,
-        2340,
-        2727,
-        3145
-      ]
-    },
-    {
-      "id": "fp1779",
-      "printed": "17.79",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "VI",
-      "note": "upper bound at true CPR 0.7",
-      "tex_lines": [
-        688,
-        2273
-      ]
-    },
-    {
-      "id": "floor38",
-      "printed": "1.44",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "VI",
-      "note": "sqrt((2N-1)/(N-2)) at N=38, the ratio of relSD(R) to 1/sqrt(N); DERIVED",
-      "tex_lines": [
-        661,
-        1018,
-        2246,
-        2603
-      ]
-    },
-    {
-      "id": "floor6",
-      "printed": "1.66",
-      "artifact": null,
-      "key": null,
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
-      "section": "VI",
-      "note": "sqrt((2N-1)/(N-2)) at N=6; DERIVED",
-      "tex_lines": [
-        662,
-        2247
-      ]
-    },
-    {
-      "id": "null_area",
-      "printed": "0.0000",
-      "artifact": "docs/detection_statistics.json",
-      "key": "candidate_area.area_km2",
-      "artifact_value": 0.0,
-      "verdict": "ABSENT",
-      "section": "VIII",
-      "note": null,
-      "tex_lines": []
-    },
-    {
-      "id": "wilson_lo",
-      "printed": "0.0000",
-      "artifact": "docs/detection_statistics.json",
-      "key": "candidate_area.ci_km2[0]",
-      "artifact_value": 0.0,
-      "verdict": "ABSENT",
-      "section": "VIII",
-      "note": null,
-      "tex_lines": []
-    },
-    {
-      "id": "wilson_hi",
-      "printed": "0.147",
-      "artifact": "docs/detection_statistics.json",
-      "key": "candidate_area.ci_km2[1]",
-      "artifact_value": 0.147453,
-      "verdict": "PASS",
-      "section": "VIII",
-      "note": "effective-sample interval (Section 1)",
-      "tex_lines": [
-        1361,
-        2946
-      ]
-    },
-    {
-      "id": "n_eff",
-      "printed": "38,050",
-      "artifact": "docs/detection_statistics.json",
-      "key": "candidate_area.n_effective",
-      "artifact_value": 38050.0,
-      "verdict": "ABSENT",
-      "section": "VIII",
-      "note": "round(2337086 / 61.4207)",
-      "tex_lines": []
-    },
-    {
-      "id": "corr_area",
-      "printed": "61.42",
-      "artifact": "docs/cpr_significance.json",
-      "key": "effective_samples.area_all_lags",
-      "artifact_value": 61.420749918170166,
-      "verdict": "PASS",
-      "section": "VIII",
-      "note": null,
-      "tex_lines": [
-        777,
-        1362,
-        1404,
-        2362,
-        2947,
-        2989
-      ]
-    },
-    {
-      "id": "putrevu_inc",
-      "printed": "27.62",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.led_with_triple.incidence_deg",
-      "artifact_value": 27.619821701276745,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        808,
-        2393
-      ]
-    },
-    {
-      "id": "putrevu_grs",
-      "printed": "20.707",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.led_with_triple.ground_range_spacing_m",
-      "artifact_value": 20.707390650030295,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        809,
-        2394
-      ]
-    },
-    {
-      "id": "putrevu_N",
-      "printed": "54.88",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.led_with_triple.N",
-      "artifact_value": 54.87720087813063,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        809,
-        821,
-        1371,
-        1373,
-        2394,
-        2406,
-        2956,
-        2958
-      ]
-    },
-    {
-      "id": "putrevu_floor",
-      "printed": "0.1936",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.led_with_triple.independent_floor",
-      "artifact_value": 0.19359459040430219,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        812,
-        2397
-      ]
-    },
-    {
-      "id": "putrevu_rho",
-      "printed": "0.307",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.led_with_triple.rho_I_min",
-      "artifact_value": 0.3073844417075837,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        821,
-        1363,
-        1370,
-        2406,
-        2948,
-        2955
-      ]
-    },
-    {
-      "id": "obs_duration",
-      "printed": "107.106",
-      "artifact": "docs/data_provenance.json",
-      "key": "observation_duration_s",
-      "artifact_value": 107.106,
-      "verdict": "PASS",
-      "section": "II",
-      "note": null,
-      "tex_lines": [
-        142,
-        1727
-      ]
-    },
-    {
-      "id": "g2_hermite",
-      "printed": "6.12",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[0].excess_kurtosis",
-      "artifact_value": 6.12,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        900,
-        2485
-      ]
-    },
-    {
-      "id": "g2_rozh",
-      "printed": "7.66",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[1].excess_kurtosis",
-      "artifact_value": 7.66,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        901,
-        2486
-      ]
-    },
-    {
-      "id": "g2_main",
-      "printed": "7.06",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[2].excess_kurtosis",
-      "artifact_value": 7.06,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        902,
-        2487
-      ]
-    },
-    {
-      "id": "g2_schom",
-      "printed": "6.51",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[3].excess_kurtosis",
-      "artifact_value": 6.51,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        903,
-        2488
-      ]
-    },
-    {
-      "id": "g2_card",
-      "printed": "7.19",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[4].excess_kurtosis",
-      "artifact_value": 7.19,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        904,
-        2489
-      ]
-    },
-    {
-      "id": "g2_byrg",
-      "printed": "7.33",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[5].excess_kurtosis",
-      "artifact_value": 7.33,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        905,
-        1548,
-        2490,
-        3133
-      ]
-    },
-    {
-      "id": "g2_doll",
-      "printed": "7.00",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[6].excess_kurtosis",
-      "artifact_value": 7.0,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        906,
-        2491
-      ]
-    },
-    {
-      "id": "g2_stev",
-      "printed": "7.95",
-      "artifact": "docs/published_moments.json",
-      "key": "craters[7].excess_kurtosis",
-      "artifact_value": 7.95,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        907,
-        2492
-      ]
-    },
-    {
-      "id": "pm_med_sigma",
-      "printed": "8.75",
-      "artifact": "docs/published_moments.json",
-      "key": "median_N_from_dispersion",
-      "artifact_value": 8.754410943745066,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        61,
-        686,
-        909,
-        926,
-        968,
-        972,
-        1497,
-        1646,
-        2271,
-        2494,
-        2511,
-        2553,
-        2557,
-        3082
-      ]
-    },
-    {
-      "id": "pm_med_skew",
-      "printed": "9.08",
-      "artifact": "docs/published_moments.json",
-      "key": "median_N_from_skewness",
-      "artifact_value": 9.080159732247314,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        61,
-        909,
-        926,
-        1646,
-        2494,
-        2511
-      ]
-    },
-    {
-      "id": "pm_med_kurt",
-      "printed": "9.17",
-      "artifact": "docs/published_moments.json",
-      "key": "median_N_from_kurtosis",
-      "artifact_value": 9.167870398335886,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        61,
-        909,
-        926,
-        968,
-        1646,
-        2494,
-        2511,
-        2553
-      ]
-    },
-    {
-      "id": "lit_unique",
-      "printed": "34",
-      "artifact": "docs/literature_search.json",
-      "key": "counts.unique",
-      "artifact_value": 34.0,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": "presence check only; 34 is not a discriminating literal",
-      "tex_lines": [
-        441,
-        537,
-        544,
-        561,
-        572,
-        691,
-        821,
-        984,
-        986,
-        1076,
-        1228,
-        1261,
-        1272,
-        1355,
-        1361,
-        2026,
-        2122,
-        2129,
-        2146,
-        2157,
-        2276,
-        2406,
-        2569,
-        2571,
-        2661,
-        2813,
-        2846,
-        2857,
-        2940,
-        2946
-      ]
-    },
-    {
-      "id": "lit_relevant",
-      "printed": "25",
-      "artifact": "docs/literature_search.json",
-      "key": "counts.relevant",
-      "artifact_value": 25.0,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": "presence check only",
-      "tex_lines": [
-        103,
-        145,
-        174,
-        371,
-        599,
-        624,
-        666,
-        684,
-        685,
-        779,
-        786,
-        806,
-        809,
-        906,
-        1078,
-        1080,
-        1088,
-        1309,
-        1311,
-        1366,
-        1389,
-        1459,
-        1542,
-        1688,
-        1730,
-        1759,
-        1956,
-        2184,
-        2209,
-        2251,
-        2269,
-        2270,
-        2364,
-        2371,
-        2391,
-        2394,
-        2491,
-        2663,
-        2665,
-        2673,
-        2894,
-        2896,
-        2951,
-        2974,
-        3044,
-        3127
-      ]
-    },
-    {
-      "id": "lit_excluded",
-      "printed": "9",
-      "artifact": "docs/literature_search.json",
-      "key": "counts.excluded",
-      "artifact_value": 9.0,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": "presence check only",
-      "tex_lines": [
-        10,
-        51,
-        57,
-        59,
-        61,
-        78,
-        87,
-        138,
-        140,
-        141,
-        145,
-        148,
-        199,
-        209,
-        213,
-        220,
-        221,
-        223,
-        329,
-        331,
-        349,
-        371,
-        374,
-        397,
-        398,
-        418,
-        443,
-        455,
-        462,
-        464,
-        479,
-        497,
-        499,
+        502,
+        504,
+        506,
         516,
         534,
-        542,
-        563,
-        572,
-        597,
-        598,
-        600,
-        623,
-        624,
-        666,
-        674,
-        682,
-        684,
-        686,
-        687,
-        688,
-        689,
-        690,
-        698,
-        706,
-        708,
-        712,
-        713,
-        714,
+        541,
+        551,
+        565,
+        606,
+        634,
+        672,
+        719,
         725,
-        739,
-        744,
-        748,
-        750,
-        755,
-        756,
-        767,
-        787,
-        801,
-        805,
-        812,
-        821,
         829,
-        830,
-        831,
-        900,
-        901,
-        902,
-        903,
-        904,
-        905,
-        906,
-        907,
-        909,
-        926,
-        940,
-        968,
-        991,
-        1000,
-        1057,
-        1074,
-        1077,
-        1135,
-        1141,
-        1142,
-        1185,
-        1199,
-        1203,
-        1216,
-        1235,
-        1239,
-        1242,
-        1245,
-        1248,
-        1249,
-        1251,
-        1252,
-        1255,
-        1256,
-        1258,
-        1261,
-        1264,
-        1265,
-        1268,
-        1273,
-        1275,
-        1276,
-        1279,
-        1280,
-        1281,
-        1282,
-        1283,
-        1284,
-        1301,
-        1304,
-        1311,
-        1312,
-        1314,
-        1319,
-        1359,
-        1365,
-        1366,
-        1370,
-        1372,
-        1381,
-        1383,
-        1411,
-        1418,
-        1430,
-        1437,
-        1443,
-        1446,
-        1464,
-        1468,
-        1477,
-        1484,
-        1485,
-        1490,
-        1495,
-        1497,
-        1499,
-        1501,
-        1514,
-        1515,
-        1532,
-        1544,
-        1547,
-        1548,
-        1549,
-        1558,
-        1559,
-        1560,
-        1563,
-        1595,
-        1636,
-        1642,
-        1644,
-        1646,
-        1663,
-        1672,
-        1723,
-        1725,
-        1726,
-        1730,
-        1733,
-        1784,
-        1794,
-        1798,
-        1805,
-        1806,
-        1808,
-        1914,
-        1916,
-        1934,
-        1956,
-        1959,
-        1982,
-        1983,
-        2003,
-        2028,
-        2040,
-        2047,
-        2049,
-        2064,
-        2082,
-        2084,
-        2101,
-        2119,
-        2127,
-        2148,
-        2157,
-        2182,
-        2183,
-        2185,
-        2208,
-        2209,
-        2251,
-        2259,
-        2267,
-        2269,
-        2271,
-        2272,
-        2273,
-        2274,
-        2275,
-        2283,
-        2291,
-        2293,
-        2297,
-        2298,
-        2299,
-        2310,
-        2324,
-        2329,
-        2333,
-        2335,
-        2340,
-        2341,
-        2352,
-        2372,
-        2386,
-        2390,
-        2397,
-        2406,
-        2414,
-        2415,
-        2416,
-        2485,
-        2486,
-        2487,
-        2488,
-        2489,
-        2490,
-        2491,
-        2492,
-        2494,
-        2511,
-        2525,
-        2553,
-        2576,
-        2585,
-        2642,
-        2659,
-        2662,
-        2720,
-        2726,
-        2727,
-        2770,
-        2784,
-        2788,
-        2801,
-        2820,
-        2824,
-        2827,
-        2830,
-        2833,
-        2834,
-        2836,
-        2837,
-        2840,
-        2841,
-        2843,
-        2846,
-        2849,
-        2850,
-        2853,
-        2858,
-        2860,
-        2861,
-        2864,
-        2865,
-        2866,
-        2867,
-        2868,
-        2869,
-        2886,
-        2889,
-        2896,
-        2897,
-        2899,
-        2904,
-        2944,
-        2950,
-        2951,
-        2955,
-        2957,
-        2966,
-        2968,
-        2996,
-        3003,
-        3015,
-        3022,
-        3028,
-        3031,
-        3049,
-        3053,
-        3062,
-        3069,
-        3070,
-        3075,
-        3080,
-        3082,
-        3084,
-        3086,
-        3099,
-        3100,
-        3117,
-        3129,
-        3132,
-        3133,
-        3134,
-        3143,
-        3144,
-        3145,
-        3148
+        899,
+        908,
+        1024,
+        1030,
+        1122,
+        1148,
+        1151,
+        1171,
+        1190,
+        1200,
+        1230
       ]
     },
     {
-      "id": "lit_fulltext",
-      "printed": "12",
-      "artifact": "docs/literature_search.json",
-      "key": "counts.full_text",
-      "artifact_value": 12.0,
+      "id": "look_bw",
+      "printed": "51.016",
+      "artifact": "docs/enl_predictions.json",
+      "key": "predictions[0].declared.azimuth_look_bandwidth",
+      "artifact_value": 51.015999,
       "verdict": "PASS",
-      "section": "VII",
-      "note": "presence check only; P8 re-screen obtained two more, see docs/literature_screen.json",
-      "tex_lines": [
-        80,
-        86,
-        221,
-        396,
-        455,
-        500,
-        534,
-        582,
-        686,
-        690,
-        713,
-        750,
-        764,
-        766,
-        900,
-        904,
-        905,
-        919,
-        929,
-        940,
-        1079,
-        1084,
-        1143,
-        1207,
-        1209,
-        1216,
-        1223,
-        1229,
-        1232,
-        1233,
-        1235,
-        1248,
-        1278,
-        1281,
-        1301,
-        1314,
-        1319,
-        1361,
-        1370,
-        1372,
-        1376,
-        1437,
-        1484,
-        1665,
-        1671,
-        1806,
-        1981,
-        2040,
-        2085,
-        2119,
-        2167,
-        2271,
-        2275,
-        2298,
-        2335,
-        2349,
-        2351,
-        2485,
-        2489,
-        2490,
-        2504,
-        2514,
-        2525,
-        2664,
-        2669,
-        2728,
-        2792,
-        2794,
-        2801,
-        2808,
-        2814,
-        2817,
-        2818,
-        2820,
-        2833,
-        2863,
-        2866,
-        2886,
-        2899,
-        2904,
-        2946,
-        2955,
-        2957,
-        2961,
-        3022,
-        3069
-      ]
-    },
-    {
-      "id": "slepian_pr",
-      "printed": "7.34",
-      "artifact": "docs/slepian_ceiling.json",
-      "key": "participation_ratio_rectangular",
-      "artifact_value": 7.338628547910912,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        544,
-        561,
-        572,
-        1361,
-        2129,
-        2146,
-        2157,
-        2946
-      ]
-    },
-    {
-      "id": "slepian_hamm",
-      "printed": "4.07",
-      "artifact": "docs/slepian_ceiling.json",
-      "key": "enl_hamming_054",
-      "artifact_value": 4.065579018511823,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        547,
-        1361,
-        2132,
-        2946
-      ]
-    },
-    {
-      "id": "pb_16",
-      "printed": "6.61",
-      "artifact": "docs/patch_bias.json",
-      "key": "correlated.16.mode",
-      "artifact_value": 6.614794980047865,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        507,
-        2092
-      ]
-    },
-    {
-      "id": "pb_32",
-      "printed": "6.01",
-      "artifact": "docs/patch_bias.json",
-      "key": "correlated.32.mode",
-      "artifact_value": 6.007469921317313,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        507,
-        2092
-      ]
-    },
-    {
-      "id": "stat_lo",
-      "printed": "3.3",
-      "artifact": "docs/stationarity.json",
-      "key": "enl_min",
-      "artifact_value": 3.2874851079945477,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        514,
-        689,
-        2099,
-        2274
-      ]
-    },
-    {
-      "id": "stat_hi",
-      "printed": "8.0",
-      "artifact": "docs/stationarity.json",
-      "key": "enl_max",
-      "artifact_value": 7.954856529795322,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        371,
-        514,
-        691,
-        1956,
-        2099,
-        2276
-      ]
-    },
-    {
-      "id": "cr_0",
-      "printed": "17.6",
-      "artifact": "docs/correlated_ratio.json",
-      "key": "rows[0].fp_percent",
-      "artifact_value": 17.5806,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        830,
-        2415
-      ]
-    },
-    {
-      "id": "cr_05",
-      "printed": "14.1",
-      "artifact": "docs/correlated_ratio.json",
-      "key": "rows[1].fp_percent",
-      "artifact_value": 14.140533333333332,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        830,
-        2415
-      ]
-    },
-    {
-      "id": "cr_08",
-      "printed": "6.3",
-      "artifact": "docs/correlated_ratio.json",
-      "key": "rows[2].fp_percent",
-      "artifact_value": 6.2686,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        830,
-        2415
-      ]
-    },
-    {
-      "id": "cr_09",
-      "printed": "1.9",
-      "artifact": "docs/correlated_ratio.json",
-      "key": "rows[3].fp_percent",
-      "artifact_value": 1.9156666666666666,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        220,
-        713,
-        830,
-        907,
-        1372,
-        1805,
-        2298,
-        2415,
-        2492,
-        2957
-      ]
-    },
-    {
-      "id": "joint_18",
-      "printed": "1.8",
-      "artifact": "docs/joint_criterion.json",
-      "key": "headline.joint_fp_percent",
-      "artifact_value": 1.8145000000000002,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": null,
-      "tex_lines": [
-        57,
-        687,
-        708,
-        709,
-        714,
-        715,
-        748,
-        750,
-        755,
-        852,
-        901,
-        902,
-        905,
-        906,
-        1142,
-        1362,
-        1373,
-        1547,
-        1560,
-        1642,
-        2272,
-        2293,
-        2294,
-        2299,
-        2300,
-        2333,
-        2335,
-        2340,
-        2437,
-        2486,
-        2487,
-        2490,
-        2491,
-        2727,
-        2947,
-        2958,
-        3132,
-        3145
-      ]
-    },
-    {
-      "id": "boot_lh_lo",
-      "printed": "4.03",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LH.enl_raw_ci_block[0]",
-      "artifact_value": 4.031985555747318,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        499,
-        706,
-        1483,
-        2084,
-        2291,
-        3068
-      ]
-    },
-    {
-      "id": "boot_lh_hi",
-      "printed": "6.19",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LH.enl_raw_ci_block[1]",
-      "artifact_value": 6.192660025009096,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        499,
-        706,
-        2084,
-        2291
-      ]
-    },
-    {
-      "id": "boot_lv_lo",
-      "printed": "4.38",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LV.enl_raw_ci_block[0]",
-      "artifact_value": 4.384364048960974,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        499,
-        2084
-      ]
-    },
-    {
-      "id": "boot_lv_hi",
-      "printed": "7.29",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LV.enl_raw_ci_block[1]",
-      "artifact_value": 7.287695851202345,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        499,
-        2084
-      ]
-    },
-    {
-      "id": "boot_lh5_lo",
-      "printed": "10.7",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LH.enl_box_ci_block[0]",
-      "artifact_value": 10.692978512715843,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        500,
-        685,
-        707,
-        2085,
-        2270,
-        2292
-      ]
-    },
-    {
-      "id": "boot_lh5_hi",
-      "printed": "22.5",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LH.enl_box_ci_block[1]",
-      "artifact_value": 22.521364411451465,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        500,
-        707,
-        2085,
-        2292
-      ]
-    },
-    {
-      "id": "boot_lv5_lo",
-      "printed": "12.1",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LV.enl_box_ci_block[0]",
-      "artifact_value": 12.110323877834976,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        500,
-        2085
-      ]
-    },
-    {
-      "id": "boot_lv5_hi",
-      "printed": "24.8",
-      "artifact": "docs/bootstrap_enl.json",
-      "key": "LV.enl_box_ci_block[1]",
-      "artifact_value": 24.755349160394275,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        500,
-        2085
-      ]
-    },
-    {
-      "id": "p1_coherence",
-      "printed": "0.658",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.invariant.coherence.median",
-      "artifact_value": 0.6580423728429938,
-      "verdict": "ABSENT",
-      "section": "III",
-      "note": "P1; III-E",
-      "tex_lines": []
-    },
-    {
-      "id": "p1_dop_frac",
-      "printed": "1.50",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.invariant.dop_below_threshold.fraction",
-      "artifact_value": 0.015028399308313931,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "P1; fraction printed as %",
-      "tex_lines": [
-        416,
-        1483,
-        2001,
-        3068
-      ]
-    },
-    {
-      "id": "p1_phase",
-      "printed": "-88.33",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.sign.phase_evidence.circular_mean_deg",
-      "artifact_value": -88.32752899836606,
-      "verdict": "ABSENT",
-      "section": "III",
-      "note": "P1",
-      "tex_lines": []
-    },
-    {
-      "id": "p1_resultant",
-      "printed": "0.946",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.sign.phase_evidence.resultant_length",
-      "artifact_value": 0.946283829123395,
-      "verdict": "ABSENT",
-      "section": "III",
-      "note": "P1",
-      "tex_lines": []
-    },
-    {
-      "id": "p1_median_cpr",
-      "printed": "0.21",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.sign.physical_median_cpr",
-      "artifact_value": 0.21153825318506417,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "P1; physical sign",
-      "tex_lines": [
-        348,
-        998,
-        1319,
-        1558,
-        1933,
-        2583,
-        2904,
-        3143
-      ]
-    },
-    {
-      "id": "p1_3b",
-      "printed": "0.000000",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.t3b_180.violation_fraction",
-      "artifact_value": 0.0,
-      "verdict": "ABSENT",
-      "section": "III",
-      "note": "P1; Eq. (1) band",
-      "tex_lines": []
-    },
-    {
-      "id": "p1_joint_cond",
-      "printed": "29.93",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.joint_measured.conditional.fraction",
-      "artifact_value": 0.2992727971861888,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P1; fraction printed as %",
-      "tex_lines": []
-    },
-    {
-      "id": "p1_joint_all",
-      "printed": "0.45",
-      "artifact": "docs/stokes_from_slc.json",
-      "key": "results.joint_measured.unconditional.fraction",
-      "artifact_value": 0.0044975910982300955,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": "P1; fraction printed as %",
-      "tex_lines": [
-        149,
-        1734
-      ]
-    },
-    {
-      "id": "p2_tm",
-      "printed": "6.09",
-      "artifact": "docs/enl_benchmark.json",
-      "key": "slc_spatial_arm.estimators.trace_moment_2x2.mode",
-      "artifact_value": 6.087685151560327,
-      "verdict": "ABSENT",
-      "section": "V",
-      "note": "P2",
-      "tex_lines": []
-    },
-    {
-      "id": "p2_lc",
-      "printed": "4.83",
-      "artifact": "docs/enl_benchmark.json",
-      "key": "slc_spatial_arm.estimators.log_cumulant_2x2.mode",
-      "artifact_value": 4.825780832884927,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "P2",
-      "tex_lines": [
-        146,
-        1731
-      ]
-    },
-    {
-      "id": "p2_mom",
-      "printed": "4.64",
-      "artifact": "docs/enl_benchmark.json",
-      "key": "slc_spatial_arm.estimators.moment_LH.mode",
-      "artifact_value": 4.643111962530458,
-      "verdict": "ABSENT",
-      "section": "V",
-      "note": "P2",
-      "tex_lines": []
-    },
-    {
-      "id": "p3_paired",
-      "printed": "4.47",
-      "artifact": "docs/mechanism_controls.json",
-      "key": "paired_difference_subband_minus_spatial.mean",
-      "artifact_value": 4.472765338130636,
-      "verdict": "ABSENT",
-      "section": "V",
-      "note": "P3",
-      "tex_lines": []
-    },
-    {
-      "id": "p3_paired_se",
-      "printed": "0.43",
-      "artifact": "docs/mechanism_controls.json",
-      "key": "paired_difference_subband_minus_spatial.se",
-      "artifact_value": 0.42676124636478674,
-      "verdict": "ABSENT",
-      "section": "V",
-      "note": "P3",
-      "tex_lines": []
-    },
-    {
-      "id": "p3_matched",
-      "printed": "-1.00",
-      "artifact": "docs/mechanism_controls.json",
-      "key": "paired_difference_at_matched_width.mean",
-      "artifact_value": -0.996338401355669,
-      "verdict": "ABSENT",
-      "section": "V",
-      "note": "P3",
-      "tex_lines": []
-    },
-    {
-      "id": "p3_width_sp",
-      "printed": "0.95",
-      "artifact": "docs/mechanism_controls.json",
-      "key": "medians.width_az_spatial",
-      "artifact_value": 0.9501780235581622,
-      "verdict": "ABSENT",
-      "section": "V",
-      "note": "P3",
-      "tex_lines": []
-    },
-    {
-      "id": "p3_width_sb",
-      "printed": "2.79",
-      "artifact": "docs/mechanism_controls.json",
-      "key": "medians.width_az_subband",
-      "artifact_value": 2.7936566858381573,
-      "verdict": "ABSENT",
-      "section": "V",
-      "note": "P3",
-      "tex_lines": []
-    },
-    {
-      "id": "p4_8_ind",
-      "printed": "18.81",
-      "artifact": "docs/kclutter_within_cell.json",
-      "key": "rows[1].exceed_percent",
-      "artifact_value": 18.8115,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P4",
-      "tex_lines": []
-    },
-    {
-      "id": "p4_4_ind",
-      "printed": "19.69",
-      "artifact": "docs/kclutter_within_cell.json",
-      "key": "rows[4].exceed_percent",
-      "artifact_value": 19.6878,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P4",
-      "tex_lines": []
-    },
-    {
-      "id": "p4_enl_4",
-      "printed": "9.34",
-      "artifact": "docs/kclutter_within_cell.json",
-      "key": "rows[4].enl_of_textured_intensity",
-      "artifact_value": 9.336560189570907,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P4",
-      "tex_lines": []
-    },
-    {
-      "id": "p5_max_med",
-      "printed": "1.91",
-      "artifact": "docs/f2_maximum.json",
-      "key": "results.N13p72.correlated_max_over_amplitude_pixels.median",
-      "artifact_value": 1.9108827708008589,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P5",
-      "tex_lines": []
-    },
-    {
-      "id": "p5_max_p95",
-      "printed": "2.73",
-      "artifact": "docs/f2_maximum.json",
-      "key": "results.N13p72.correlated_max_over_amplitude_pixels.p95",
-      "artifact_value": 2.7291547003658008,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P5",
-      "tex_lines": []
-    },
-    {
-      "id": "p5_count",
-      "printed": "46.5",
-      "artifact": "docs/f2_maximum.json",
-      "key": "results.N13p72.exceedance_count_over_amplitude_pixels.mean",
-      "artifact_value": 46.4833,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P5",
-      "tex_lines": []
-    },
-    {
-      "id": "p6_dcpr_max",
-      "printed": "1.31e-2",
-      "artifact": "docs/propagation_percentiles.json",
-      "key": "cpr.over_amplitude_mask.max",
-      "artifact_value": 0.013095542788505554,
-      "verdict": "ABSENT",
       "section": "II",
-      "note": "P6",
-      "tex_lines": []
+      "note": "label field",
+      "tex_lines": [
+        134,
+        151
+      ]
     },
     {
-      "id": "p6_ddop_max",
-      "printed": "0.139",
-      "artifact": "docs/propagation_percentiles.json",
-      "key": "dop.over_amplitude_mask.max",
-      "artifact_value": 0.1392841339111328,
-      "verdict": "ABSENT",
+      "id": "bw_label",
+      "printed": "1071.336",
+      "artifact": "docs/enl_predictions.json",
+      "key": "predictions[0].declared.total_processed_azimuth_bandwidth",
+      "artifact_value": 1071.335975,
+      "verdict": "PASS",
       "section": "II",
-      "note": "P6",
-      "tex_lines": []
-    },
-    {
-      "id": "p7_joint_se",
-      "printed": "0.017",
-      "artifact": "docs/cpr_significance.json",
-      "key": "joint_criterion.headline_at_cpr_0p7.joint_se_percent",
-      "artifact_value": 0.017231637073998513,
-      "verdict": "ABSENT",
-      "section": "VII",
-      "note": "P7",
-      "tex_lines": []
-    },
-    {
-      "id": "p7_joint_max",
-      "printed": "3.4",
-      "artifact": "docs/cpr_significance.json",
-      "key": "joint_criterion.maximising_point_requested.joint_fp_percent",
-      "artifact_value": 3.3666666666666663,
-      "verdict": "PASS",
-      "section": "VII",
-      "note": "P7",
+      "note": "label field",
       "tex_lines": [
-        599,
-        1548,
-        2184,
-        3133
+        135,
+        151,
+        486
       ]
     },
     {
-      "id": "gen_lh",
-      "printed": "2.28",
-      "artifact": "docs/enl_generality.json",
-      "key": "measurements[4].measured_enl",
-      "artifact_value": 2.280562763611556,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "2020-03-05 L LH",
-      "tex_lines": [
-        602,
-        2187
-      ]
-    },
-    {
-      "id": "gen_lv",
-      "printed": "2.21",
-      "artifact": "docs/enl_generality.json",
-      "key": "measurements[5].measured_enl",
-      "artifact_value": 2.2084413069255153,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "2020-03-05 L LV",
-      "tex_lines": [
-        602,
-        2187
-      ]
-    },
-    {
-      "id": "gen_ceiling",
-      "printed": "13.42",
+      "id": "prf",
+      "printed": "3321.64",
       "artifact": "docs/enl_predictions.json",
-      "key": "predictions[2].predicted_ceiling",
-      "artifact_value": 13.424728080949187,
+      "key": "predictions[0].declared.pulse_repetition_frequency",
+      "artifact_value": 3321.641156,
       "verdict": "PASS",
-      "section": "V",
-      "note": "2020-03-05 L; predictions[2].label",
+      "section": "II",
+      "note": "label field",
       "tex_lines": [
-        599,
-        1548,
-        2184,
-        3133
+        135,
+        491
       ]
     },
     {
-      "id": "gen_osamp",
-      "printed": "2.905",
-      "artifact": "docs/enl_predictions.json",
-      "key": "predictions[2].oversampling",
-      "artifact_value": 2.9050867745577853,
+      "id": "kcal",
+      "printed": "70.308868",
+      "artifact": "docs/enl.json",
+      "key": "label.calibration_constant",
+      "artifact_value": 70.308868,
       "verdict": "PASS",
-      "section": "V",
-      "note": "2020-03-05 L",
+      "section": "II",
+      "note": "label field, sri product",
       "tex_lines": [
-        598,
-        2183
+        136,
+        148
       ]
     },
     {
-      "id": "gen_looks",
-      "printed": "39",
-      "artifact": "docs/enl_predictions.json",
-      "key": "predictions[2].declared.azimuth_looks",
-      "artifact_value": 39.0,
+      "id": "geo_nodes",
+      "printed": "937,296",
+      "artifact": "data/pradan/dfsar/metadata_real.json",
+      "key": "geodetic_frame.isro_geolocation_grid_agreement.nodes_compared",
+      "artifact_value": 937296.0,
       "verdict": "PASS",
-      "section": "V",
-      "note": "2020-03-05 L",
+      "section": "II",
+      "note": null,
       "tex_lines": [
-        209,
-        443,
-        597,
-        600,
-        767,
-        1235,
-        1261,
-        1443,
-        1548,
-        1794,
-        2028,
-        2182,
-        2185,
-        2352,
-        2820,
-        2846,
-        3028,
-        3133
+        141
+      ]
+    },
+    {
+      "id": "geo_rms_sample",
+      "printed": "0.2846",
+      "artifact": "data/pradan/dfsar/metadata_real.json",
+      "key": "geodetic_frame.isro_geolocation_grid_agreement.sample_residual_px.rms",
+      "artifact_value": 0.2846,
+      "verdict": "PASS",
+      "section": "II",
+      "note": null,
+      "tex_lines": [
+        142
+      ]
+    },
+    {
+      "id": "geo_rms_line",
+      "printed": "0.4550",
+      "artifact": "data/pradan/dfsar/metadata_real.json",
+      "key": "geodetic_frame.isro_geolocation_grid_agreement.line_residual_px.rms",
+      "artifact_value": 0.455,
+      "verdict": "PASS",
+      "section": "II",
+      "note": null,
+      "tex_lines": [
+        142
+      ]
+    },
+    {
+      "id": "psr_jaccard",
+      "printed": "0.714",
+      "artifact": "docs/psr_validation.json",
+      "key": "jaccard",
+      "artifact_value": 0.7142289156831217,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "against the LOLA team's published PSR mask",
+      "tex_lines": [
+        147
+      ]
+    },
+    {
+      "id": "frame_px",
+      "printed": "14,943,444",
+      "artifact": "docs/landing_sites.json",
+      "key": "search.pixels_evaluated",
+      "artifact_value": 14943444.0,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "2258 x 6618, the full frame",
+      "tex_lines": [
+        176
+      ]
+    },
+    {
+      "id": "frame_km2",
+      "printed": "9339.65",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "grid.frame_area_km2",
+      "artifact_value": 9339.65,
+      "verdict": "PASS",
+      "section": "II",
+      "note": null,
+      "tex_lines": [
+        176
+      ]
+    },
+    {
+      "id": "foot_px",
+      "printed": "5,324,544",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "masks.footprint.pixels",
+      "artifact_value": 5324545.0,
+      "verdict": "MISMATCH",
+      "section": "II",
+      "note": "ISRO sri_ma > 0",
+      "tex_lines": [
+        177
+      ]
+    },
+    {
+      "id": "foot_km2",
+      "printed": "3327.84",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "masks.footprint.area_km2",
+      "artifact_value": 3327.84,
+      "verdict": "PASS",
+      "section": "II",
+      "note": null,
+      "tex_lines": [
+        177
+      ]
+    },
+    {
+      "id": "foot_frac",
+      "printed": "35.63",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "masks.footprint.fraction",
+      "artifact_value": 0.35631310961515966,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "fraction stored; printed as a percentage",
+      "tex_lines": [
+        177
+      ]
+    },
+    {
+      "id": "valid_px",
+      "printed": "2,337,086",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "masks.amplitude.pixels",
+      "artifact_value": 2337086.0,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "(LH > 0) & (LV > 0)",
+      "tex_lines": [
+        178,
+        316,
+        326,
+        569,
+        886
+      ]
+    },
+    {
+      "id": "amp_km2",
+      "printed": "1460.68",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "masks.amplitude.area_km2",
+      "artifact_value": 1460.68,
+      "verdict": "PASS",
+      "section": "II",
+      "note": null,
+      "tex_lines": [
+        178,
+        898
       ]
     },
     {
@@ -2806,8 +295,61 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        211,
-        1796
+        178
+      ]
+    },
+    {
+      "id": "amp_over_pointed",
+      "printed": "43.89",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "masks.returned_over_pointed",
+      "artifact_value": 0.43892689422288667,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "fraction stored; printed as a percentage",
+      "tex_lines": [
+        180
+      ]
+    },
+    {
+      "id": "f2_line",
+      "printed": "1120.3",
+      "artifact": "docs/f2_footprint.json",
+      "key": "frame_pixel.line",
+      "artifact_value": 1120.2592294833287,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "validated forward projection",
+      "tex_lines": [
+        187
+      ]
+    },
+    {
+      "id": "f2_sample",
+      "printed": "3676.9",
+      "artifact": "docs/f2_footprint.json",
+      "key": "frame_pixel.sample",
+      "artifact_value": 3676.880851229477,
+      "verdict": "PASS",
+      "section": "II",
+      "note": null,
+      "tex_lines": [
+        187
+      ]
+    },
+    {
+      "id": "f2_disc",
+      "printed": "1521",
+      "artifact": "docs/f2_footprint.json",
+      "key": "disc_pixels",
+      "artifact_value": 1521.0,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "44 px diameter at 25 m",
+      "tex_lines": [
+        188,
+        719,
+        725
       ]
     },
     {
@@ -2817,15 +359,4160 @@
       "key": "disc_amplitude_fraction",
       "artifact_value": 0.17094017094017094,
       "verdict": "PASS",
-      "section": "VII",
+      "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
+        188,
+        726
+      ]
+    },
+    {
+      "id": "f2_cpr",
+      "printed": "1.95",
+      "artifact": "docs/detection_statistics.json",
+      "key": "published_reanalysis.rows[0].cpr",
+      "artifact_value": 1.95,
+      "verdict": "PASS",
+      "section": "II",
+      "note": "Sinha et al. 2026, transcribed",
+      "tex_lines": [
+        186
+      ]
+    },
+    {
+      "id": "slc_q5",
+      "printed": "0.89",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3a.slc_21look_boxcar5_sqrt_ratio[0]",
+      "artifact_value": 0.8869963756278365,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "5th percentile, SLC 21-look + boxcar5 sqrt(l_H/l_V)",
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "slc_q95",
+      "printed": "1.18",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3a.slc_21look_boxcar5_sqrt_ratio[4]",
+      "artifact_value": 1.177595118752786,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "95th percentile",
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "del_q5",
+      "printed": "0.93",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3a.delivered_boxcar5_sqrt_DN2_ratio[0]",
+      "artifact_value": 0.9345344606017016,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "5th percentile, sqrt(boxcar5(DN^2)) ratio at matched ENL",
+      "tex_lines": [
+        225,
+        488,
+        828
+      ]
+    },
+    {
+      "id": "del_q95",
+      "printed": "1.17",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3a.delivered_boxcar5_sqrt_DN2_ratio[4]",
+      "artifact_value": 1.1678685708382142,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "95th percentile",
+      "tex_lines": [
+        225,
+        629
+      ]
+    },
+    {
+      "id": "x_bound",
+      "printed": "0.2614797",
+      "artifact": null,
+      "key": null,
+      "artifact_value": null,
+      "verdict": "NO SOURCE",
+      "section": "III",
+      "note": "2*artanh(0.13); closed form, checked as DERIVED below",
+      "tex_lines": [
+        287,
+        290
+      ]
+    },
+    {
+      "id": "ceiling",
+      "printed": "4.261e-3",
+      "artifact": "docs/degeneracy_replication.json",
+      "key": "closed_form_ceiling",
+      "artifact_value": 0.004261082862785302,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "tanh^2(artanh(0.13)/2)",
+      "tex_lines": [
+        37,
+        320,
+        1015
+      ]
+    },
+    {
+      "id": "ceiling_full",
+      "printed": "4.2610829e-3",
+      "artifact": "docs/degeneracy_replication.json",
+      "key": "closed_form_ceiling",
+      "artifact_value": 0.004261082862785302,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "the same constant to eight figures",
+      "tex_lines": [
+        290
+      ]
+    },
+    {
+      "id": "factor",
+      "printed": "235",
+      "artifact": "frontend/public/analysis/sweep_grid.json",
+      "key": "crossing.factor_below_published",
+      "artifact_value": 234.68353413909173,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "1.00 / measured crossing",
+      "tex_lines": [
+        293,
+        1099
+      ]
+    },
+    {
+      "id": "dop_excluded",
+      "printed": "40.21",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "excluded_percent",
+      "artifact_value": 40.212084621618544,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "DOP_a >= 0.13, excluded whatever the phase",
+      "tex_lines": [
+        306,
+        899
+      ]
+    },
+    {
+      "id": "dop_undecidable",
+      "printed": "59.79",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "undecidable_percent",
+      "artifact_value": 59.787915378381456,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "the remainder; undecidable from amplitudes",
+      "tex_lines": [
+        307
+      ]
+    },
+    {
+      "id": "valid_px_fig",
+      "printed": "2,337,086",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "measured_pixels",
+      "artifact_value": 2337086.0,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "the same count, recomputed in Fig. 1's own path",
+      "tex_lines": [
+        178,
+        316,
+        326,
+        569,
+        886
+      ]
+    },
+    {
+      "id": "max_resid_stored",
+      "printed": "1.241e-6",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "cpr_dop_identity.max_abs_residual",
+      "artifact_value": 1.2414956257877224e-06,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "stored float32 field",
+      "tex_lines": [
+        326
+      ]
+    },
+    {
+      "id": "rms_resid",
+      "printed": "8.025e-9",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "cpr_dop_identity.rms_residual",
+      "artifact_value": 8.025280870672378e-09,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "stored float32 field",
+      "tex_lines": [
+        327
+      ]
+    },
+    {
+      "id": "crossing",
+      "printed": "4.2610574e-3",
+      "artifact": "frontend/public/analysis/sweep_grid.json",
+      "key": "crossing.cpr_value",
+      "artifact_value": 0.004261057358235121,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "max CPR where DOP < 0.13, screened field",
+      "tex_lines": [
+        328
+      ]
+    },
+    {
+      "id": "crossing_rel",
+      "printed": "5.99e-6",
+      "artifact": null,
+      "key": null,
+      "artifact_value": null,
+      "verdict": "NO SOURCE",
+      "section": "III",
+      "note": "relative agreement, crossing vs closed form; DERIVED",
+      "tex_lines": [
+        329
+      ]
+    },
+    {
+      "id": "gen_crossing",
+      "printed": "8.6e-5",
+      "artifact": "docs/degeneracy_replication.json",
+      "key": "products[1].relative_agreement",
+      "artifact_value": 8.636703467204308e-05,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "the 2020-03-05 acquisition's crossing, relative to the closed form",
+      "tex_lines": [
+        333
+      ]
+    },
+    {
+      "id": "mc_N",
+      "printed": "5",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[0].n_looks",
+      "artifact_value": 5.0,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "look count the simulator ran at",
+      "tex_lines": [
+        41,
+        42,
+        43,
+        48,
+        52,
+        90,
+        92,
+        127,
+        129,
+        130,
+        134,
+        137,
+        138,
+        142,
+        151,
+        159,
+        164,
+        176,
+        177,
+        178,
+        186,
+        188,
+        215,
         223,
-        787,
-        1808,
-        2372
+        225,
+        251,
+        293,
+        307,
+        327,
+        328,
+        329,
+        332,
+        333,
+        342,
+        348,
+        350,
+        362,
+        367,
+        369,
+        398,
+        404,
+        408,
+        419,
+        445,
+        446,
+        452,
+        453,
+        455,
+        458,
+        459,
+        465,
+        466,
+        469,
+        522,
+        523,
+        526,
+        529,
+        531,
+        536,
+        537,
+        548,
+        549,
+        564,
+        566,
+        569,
+        570,
+        611,
+        618,
+        619,
+        626,
+        628,
+        629,
+        630,
+        631,
+        633,
+        634,
+        651,
+        652,
+        653,
+        658,
+        659,
+        669,
+        671,
+        683,
+        687,
+        692,
+        699,
+        701,
+        703,
+        709,
+        719,
+        724,
+        725,
+        728,
+        729,
+        730,
+        742,
+        743,
+        745,
+        747,
+        759,
+        763,
+        765,
+        782,
+        791,
+        827,
+        828,
+        830,
+        832,
+        833,
+        834,
+        836,
+        841,
+        843,
+        851,
+        872,
+        875,
+        877,
+        887,
+        901,
+        922,
+        950,
+        951,
+        969,
+        970,
+        971,
+        978,
+        1021,
+        1022,
+        1023,
+        1024,
+        1029,
+        1056,
+        1066,
+        1087,
+        1099,
+        1108,
+        1118,
+        1129,
+        1142,
+        1161,
+        1163,
+        1165,
+        1175,
+        1178,
+        1181,
+        1195,
+        1209,
+        1217,
+        1221,
+        1226,
+        1230
+      ]
+    },
+    {
+      "id": "mc_trials",
+      "printed": "120 000",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo_run.trials_per_row",
+      "artifact_value": 120000.0,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "the run parameter, now recorded: the committed artifact reproduces bit-for-bit at --trials 120000 --coherence 0.9822",
+      "tex_lines": [
+        343
+      ]
+    },
+    {
+      "id": "rho",
+      "printed": "0.9822",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo_run.coherence",
+      "artifact_value": 0.9822,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "the coherence the run used; equal to sqrt(0.9647), checked as DERIVED",
+      "tex_lines": [
+        344
+      ]
+    },
+    {
+      "id": "lhlv_corr",
+      "printed": "0.9647",
+      "artifact": "docs/cpr_significance.json",
+      "key": "native_proxy.lh_lv_local_correlation",
+      "artifact_value": 0.9647125999763775,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        345
+      ]
+    },
+    {
+      "id": "mc_stokes_med_03",
+      "printed": "0.300",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[0].stokes_cpr.median",
+      "artifact_value": 0.30013433480838186,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        350
+      ]
+    },
+    {
+      "id": "mc_stokes_med_07",
+      "printed": "0.700",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[1].stokes_cpr.median",
+      "artifact_value": 0.7004937964700277,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        350
+      ]
+    },
+    {
+      "id": "mc_stokes_med_10",
+      "printed": "1.000",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[2].stokes_cpr.median",
+      "artifact_value": 1.0002846792848286,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        350
+      ]
+    },
+    {
+      "id": "mc_stokes_med_15",
+      "printed": "1.500",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[3].stokes_cpr.median",
+      "artifact_value": 1.4996708980096973,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        350
+      ]
+    },
+    {
+      "id": "mc_proxy_med_07",
+      "printed": "0.00043",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[1].amplitude_proxy.median",
+      "artifact_value": 0.0004332543811427249,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        349
+      ]
+    },
+    {
+      "id": "mc_proxy_1db",
+      "printed": "0.00331",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[4].amplitude_proxy.median",
+      "artifact_value": 0.0033095631676449857,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "1 dB imbalance",
+      "tex_lines": [
+        351
+      ]
+    },
+    {
+      "id": "mc_proxy_3db",
+      "printed": "0.02922",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[5].amplitude_proxy.median",
+      "artifact_value": 0.029222298703409498,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "3 dB imbalance",
+      "tex_lines": [
+        352
+      ]
+    },
+    {
+      "id": "cpr_with_sin",
+      "printed": "0.053411",
+      "artifact": "docs/incidence_audit.json",
+      "key": "screening_blast_radius.cpr_max_with_sin",
+      "artifact_value": 0.05341120436787605,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        367
+      ]
+    },
+    {
+      "id": "cpr_without_sin",
+      "printed": "0.053852",
+      "artifact": "docs/incidence_audit.json",
+      "key": "screening_blast_radius.cpr_max_without",
+      "artifact_value": 0.05385207012295723,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        367
+      ]
+    },
+    {
+      "id": "dcpr_max",
+      "printed": "1.310e-2",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "cpr.over_amplitude_mask.max",
+      "artifact_value": 0.013095542788505554,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        368
+      ]
+    },
+    {
+      "id": "ddop_max",
+      "printed": "1.393e-1",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "dop.over_amplitude_mask.max",
+      "artifact_value": 0.1392841339111328,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        368
+      ]
+    },
+    {
+      "id": "dcpr_med",
+      "printed": "2.3e-5",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "cpr.over_amplitude_mask.p50",
+      "artifact_value": 2.3256994609255344e-05,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        369
+      ]
+    },
+    {
+      "id": "ddop_med",
+      "printed": "1.1e-3",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "dop.over_amplitude_mask.p50",
+      "artifact_value": 0.0011439844965934753,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        369
+      ]
+    },
+    {
+      "id": "band_lo",
+      "printed": "0.7699",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.t3f_coupling_band.band[0]",
+      "artifact_value": 0.7699115044247788,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "(1-0.13)/(1+0.13)",
+      "tex_lines": [
+        388
+      ]
+    },
+    {
+      "id": "band_hi",
+      "printed": "1.2989",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.t3f_coupling_band.band[1]",
+      "artifact_value": 1.2988505747126435,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "(1+0.13)/(1-0.13)",
+      "tex_lines": [
+        388,
+        389
+      ]
+    },
+    {
+      "id": "slc_cells",
+      "printed": "5,883,594",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "slc.matched_cells",
+      "artifact_value": 5883594.0,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "21-look x 5x5 cells with both channels positive",
+      "tex_lines": [
+        398
+      ]
+    },
+    {
+      "id": "coh_med",
+      "printed": "0.658",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.coherence.median",
+      "artifact_value": 0.6580423728429938,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        404
+      ]
+    },
+    {
+      "id": "coh_q1",
+      "printed": "0.464",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.coherence.iqr[0]",
+      "artifact_value": 0.46390864957962463,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        404
+      ]
+    },
+    {
+      "id": "coh_q3",
+      "printed": "0.786",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.coherence.iqr[1]",
+      "artifact_value": 0.7861142288003706,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        404
+      ]
+    },
+    {
+      "id": "coh_win_med",
+      "printed": "0.174",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.coherence.per_window_summary.median",
+      "artifact_value": 0.1738394806109957,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "over the 20 most homogeneous 15x15 windows",
+      "tex_lines": [
+        404
+      ]
+    },
+    {
+      "id": "coh_win_min",
+      "printed": "0.09",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.coherence.per_window_summary.min",
+      "artifact_value": 0.09247348941674825,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        405
+      ]
+    },
+    {
+      "id": "coh_win_max",
+      "printed": "0.64",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.coherence.per_window_summary.max",
+      "artifact_value": 0.6365902869601319,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        405
+      ]
+    },
+    {
+      "id": "dop_frac",
+      "printed": "1.50",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.dop_below_threshold.fraction",
+      "artifact_value": 0.015028399308313931,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "fraction stored; printed as a percentage",
+      "tex_lines": [
+        348,
+        350,
+        408
+      ]
+    },
+    {
+      "id": "dop_win_med",
+      "printed": "11",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.dop_below_threshold.per_window_summary.median",
+      "artifact_value": 0.11333333333333334,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "fraction stored; printed as a percentage",
+      "tex_lines": [
+        67,
+        73,
+        90,
+        129,
+        130,
+        132,
+        159,
+        187,
+        216,
+        233,
+        254,
+        367,
+        408,
+        635,
+        654,
+        694,
+        707,
+        782,
+        827,
+        831,
+        971,
+        975,
+        1066,
+        1082,
+        1085,
+        1087,
+        1103,
+        1108,
+        1110,
+        1112,
+        1113,
+        1115,
+        1118,
+        1122,
+        1142,
+        1161,
+        1165,
+        1175,
+        1188,
+        1190,
+        1191,
+        1193,
+        1195,
+        1200,
+        1209
+      ]
+    },
+    {
+      "id": "dop_win_max",
+      "printed": "32",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.dop_below_threshold.per_window_summary.max",
+      "artifact_value": 0.31555555555555553,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "fraction stored; printed as a percentage",
+      "tex_lines": [
+        135,
+        177,
+        327,
+        409,
+        460,
+        467,
+        491,
+        633,
+        634,
+        657,
+        1165,
+        1226
+      ]
+    },
+    {
+      "id": "phase_mean",
+      "printed": "-88.3",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.sign.phase_evidence.circular_mean_deg",
+      "artifact_value": -88.32752899836606,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        410
+      ]
+    },
+    {
+      "id": "phase_R",
+      "printed": "0.946",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.sign.phase_evidence.resultant_length",
+      "artifact_value": 0.946283829123395,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        411
+      ]
+    },
+    {
+      "id": "quadrature",
+      "printed": "1.7",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.sign.phase_evidence.residual_from_quadrature_deg",
+      "artifact_value": 1.6724710016339372,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        411,
+        827,
+        830
+      ]
+    },
+    {
+      "id": "s3_effect",
+      "printed": "0.04",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.sign.phase_evidence.effect_on_S3_percent",
+      "artifact_value": 0.042600146728788424,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "100(1 - cos 1.67 deg)",
+      "tex_lines": [
+        413
+      ]
+    },
+    {
+      "id": "med_180",
+      "printed": "0.21",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.sign.admissible_readings.180_deg",
+      "artifact_value": 0.21153825318506417,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "the physical sign",
+      "tex_lines": [
+        306,
+        416,
+        899,
+        1171
+      ]
+    },
+    {
+      "id": "med_0",
+      "printed": "4.73",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.sign.admissible_readings.0_deg",
+      "artifact_value": 4.7272773833765065,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "its reciprocal",
+      "tex_lines": [
+        416
+      ]
+    },
+    {
+      "id": "joint_cond",
+      "printed": "29.9",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.joint_measured.conditional.fraction",
+      "artifact_value": 0.2992727971861888,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "P(CPR>1 | DOP<0.13); fraction stored, printed as a percentage",
+      "tex_lines": [
+        418
+      ]
+    },
+    {
+      "id": "joint_all",
+      "printed": "0.45",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.joint_measured.unconditional.fraction",
+      "artifact_value": 0.0044975910982300955,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "fraction stored; printed as a percentage",
+      "tex_lines": [
+        142,
+        419,
+        951,
+        1022
+      ]
+    },
+    {
+      "id": "enl16_lh",
+      "printed": "5.30",
+      "artifact": "docs/enl.json",
+      "key": "patch_sizes.16.LH.on_DN_squared.mode",
+      "artifact_value": 5.295996543442399,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "16x16 patches, delivered",
+      "tex_lines": [
+        445,
+        459,
+        658
+      ]
+    },
+    {
+      "id": "enl16_lv",
+      "printed": "6.46",
+      "artifact": "docs/enl.json",
+      "key": "patch_sizes.16.LV.on_DN_squared.mode",
+      "artifact_value": 6.462934189145101,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        445
+      ]
+    },
+    {
+      "id": "enl_lh",
+      "printed": "5.83",
+      "artifact": "docs/enl.json",
+      "key": "boxcar_gain.LH.enl_raw",
+      "artifact_value": 5.827582742508031,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "over the screening mask",
+      "tex_lines": [
+        43,
+        445,
+        458,
+        651,
+        659,
+        687,
+        1023
+      ]
+    },
+    {
+      "id": "enl_lv",
+      "printed": "5.14",
+      "artifact": "docs/enl.json",
+      "key": "boxcar_gain.LV.enl_raw",
+      "artifact_value": 5.141278456298767,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        43,
+        446,
+        1024
+      ]
+    },
+    {
+      "id": "patches",
+      "printed": "8,337",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.n_patches",
+      "artifact_value": 8337.0,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        451,
+        642
+      ]
+    },
+    {
+      "id": "boot_lh_lo",
+      "printed": "4.03",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_raw_ci_block[0]",
+      "artifact_value": 4.031985555747318,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "block bootstrap, B = 2000",
+      "tex_lines": [
+        452,
+        651
+      ]
+    },
+    {
+      "id": "boot_lh_hi",
+      "printed": "6.19",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_raw_ci_block[1]",
+      "artifact_value": 6.192660025009096,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        452,
+        651
+      ]
+    },
+    {
+      "id": "boot_lv_lo",
+      "printed": "4.38",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_raw_ci_block[0]",
+      "artifact_value": 4.384364048960974,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        452
+      ]
+    },
+    {
+      "id": "boot_lv_hi",
+      "printed": "7.29",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_raw_ci_block[1]",
+      "artifact_value": 7.287695851202345,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        452
+      ]
+    },
+    {
+      "id": "boot_lh5_lo",
+      "printed": "10.7",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_box_ci_block[0]",
+      "artifact_value": 10.692978512715843,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "after the 5x5 boxcar",
+      "tex_lines": [
+        453,
+        629,
+        652
+      ]
+    },
+    {
+      "id": "boot_lh5_hi",
+      "printed": "22.5",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_box_ci_block[1]",
+      "artifact_value": 22.521364411451465,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        453,
+        652
+      ]
+    },
+    {
+      "id": "boot_lv5_lo",
+      "printed": "12.1",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_box_ci_block[0]",
+      "artifact_value": 12.110323877834976,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        453
+      ]
+    },
+    {
+      "id": "boot_lv5_hi",
+      "printed": "24.8",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_box_ci_block[1]",
+      "artifact_value": 24.755349160394275,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        453
+      ]
+    },
+    {
+      "id": "cov_lo",
+      "printed": "12",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.coverage_percent_range[0]",
+      "artifact_value": 12.0,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "coverage of the nominally 95 % block bootstrap, synthetic speckle",
+      "tex_lines": [
+        71,
+        76,
+        187,
+        343,
+        381,
+        453,
+        456,
+        458,
+        488,
+        589,
+        630,
+        634,
+        643,
+        658,
+        694,
+        707,
+        819,
+        827,
+        831,
+        832,
+        844,
+        854,
+        1030,
+        1095,
+        1099,
+        1101,
+        1103,
+        1122,
+        1124,
+        1126,
+        1142,
+        1160,
+        1171,
+        1197,
+        1200,
+        1217,
+        1230
+      ]
+    },
+    {
+      "id": "cov_hi",
+      "printed": "26",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.coverage_percent_range[1]",
+      "artifact_value": 26.0,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        37,
+        83,
+        94,
+        129,
+        138,
+        185,
+        247,
+        287,
+        290,
+        320,
+        328,
+        389,
+        424,
+        456,
+        629,
+        643,
+        657,
+        726,
+        744,
+        788,
+        912,
+        952,
+        984,
+        1004,
+        1015,
+        1153,
+        1156,
+        1167,
+        1171
+      ]
+    },
+    {
+      "id": "mode_bias",
+      "printed": "16",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.relative_bias_percent_median",
+      "artifact_value": 16.020621585920104,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "the mode estimator's relative bias on correlated speckle",
+      "tex_lines": [
+        134,
+        151,
+        198,
+        217,
+        444,
+        457,
+        460,
+        466,
+        471,
+        628,
+        630,
+        658,
+        693,
+        694,
+        699,
+        702,
+        872,
+        877,
+        909,
+        1083,
+        1087,
+        1108,
+        1112,
+        1118,
+        1165,
+        1233
+      ]
+    },
+    {
+      "id": "bias_n4",
+      "printed": "0.69",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.bias_at_lowest_N.bias",
+      "artifact_value": 0.6846676555226114,
+      "verdict": "MISMATCH",
+      "section": "IV",
+      "note": "at N = 4",
+      "tex_lines": [
+        457
+      ]
+    },
+    {
+      "id": "bias_n12",
+      "printed": "1.86",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.bias_at_highest_N.bias",
+      "artifact_value": 1.8638403430251955,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "at N = 12",
+      "tex_lines": [
+        458,
+        660
+      ]
+    },
+    {
+      "id": "corrected_raw",
+      "printed": "5.0",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.raw_enl_5p83_corrected",
+      "artifact_value": 5.0249687687481845,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "5.83 read through the measured bias",
+      "tex_lines": [
+        459,
+        469,
+        537,
+        628
+      ]
+    },
+    {
+      "id": "enl32_lh",
+      "printed": "2.64",
+      "artifact": "docs/enl.json",
+      "key": "patch_sizes.32.LH.on_DN_squared.mode",
+      "artifact_value": 2.642121771483947,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        460,
+        657
+      ]
+    },
+    {
+      "id": "pb_field_az",
+      "printed": "0.84",
+      "artifact": "docs/patch_bias.json",
+      "key": "rho_az",
+      "artifact_value": 0.84,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "FIELD correlation used in the patch-bias run",
+      "tex_lines": [
+        465,
+        466
+      ]
+    },
+    {
+      "id": "pb_field_rg",
+      "printed": "0.58",
+      "artifact": "docs/patch_bias.json",
+      "key": "rho_rg",
+      "artifact_value": 0.58,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        465,
+        466
+      ]
+    },
+    {
+      "id": "pb_lag_az",
+      "printed": "0.71",
+      "artifact": "docs/patch_bias.json",
+      "key": "field_intensity_lag1.azimuth",
+      "artifact_value": 0.7053629097371009,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "the INTENSITY lag-one it produces",
+      "tex_lines": [
+        147,
+        465
+      ]
+    },
+    {
+      "id": "pb_lag_rg",
+      "printed": "0.34",
+      "artifact": "docs/patch_bias.json",
+      "key": "field_intensity_lag1.range",
+      "artifact_value": 0.33903721105660073,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        465
+      ]
+    },
+    {
+      "id": "pb_16",
+      "printed": "6.61",
+      "artifact": "docs/patch_bias.json",
+      "key": "correlated.16.mode",
+      "artifact_value": 6.614794980047865,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        466
+      ]
+    },
+    {
+      "id": "pb_32",
+      "printed": "6.01",
+      "artifact": "docs/patch_bias.json",
+      "key": "correlated.32.mode",
+      "artifact_value": 6.007469921317313,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        467
+      ]
+    },
+    {
+      "id": "pb_unc",
+      "printed": "6.00",
+      "artifact": "docs/patch_bias.json",
+      "key": "uncorrelated_control.16",
+      "artifact_value": 5.9982101453446734,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "uncorrelated control at both sizes",
+      "tex_lines": [
+        467
+      ]
+    },
+    {
+      "id": "stat_lo",
+      "printed": "3.3",
+      "artifact": "docs/stationarity.json",
+      "key": "enl_min",
+      "artifact_value": 3.2874851079945477,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "over the four blocks with coverage",
+      "tex_lines": [
+        471,
+        633
+      ]
+    },
+    {
+      "id": "stat_hi",
+      "printed": "8.0",
+      "artifact": "docs/stationarity.json",
+      "key": "enl_max",
+      "artifact_value": 7.954856529795322,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        327,
+        471,
+        635
+      ]
+    },
+    {
+      "id": "bw_measured",
+      "printed": "1071.2",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "medians.measured_bandwidth_hz",
+      "artifact_value": 1071.22927281,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "median across the nine windows",
+      "tex_lines": [
+        486
+      ]
+    },
+    {
+      "id": "sl_median",
+      "printed": "1.04",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "medians.enl_single_look",
+      "artifact_value": 1.0439270941691363,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "single-look intensity, answer known",
+      "tex_lines": [
+        488,
+        834
+      ]
+    },
+    {
+      "id": "sl_min",
+      "printed": "0.93",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "min.enl_single_look",
+      "artifact_value": 0.9311323269870798,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        225,
+        488,
+        828
+      ]
+    },
+    {
+      "id": "sl_max",
+      "printed": "1.12",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "max.enl_single_look",
+      "artifact_value": 1.1174815817354526,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        488,
+        630,
+        707,
+        832
+      ]
+    },
+    {
+      "id": "osamp",
+      "printed": "3.10",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "medians.oversampling_factor",
+      "artifact_value": 3.1007751937984493,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        44,
+        493,
+        495,
+        1025
+      ]
+    },
+    {
+      "id": "two_wt",
+      "printed": "6.77",
+      "artifact": "docs/slepian_ceiling.json",
+      "key": "two_WT_asymptotic",
+      "artifact_value": 6.773174590024859,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "21 / 3.10, asymptotic",
+      "tex_lines": [
+        495,
+        513,
+        522,
+        629
+      ]
+    },
+    {
+      "id": "part_ratio",
+      "printed": "7.34",
+      "artifact": "docs/slepian_ceiling.json",
+      "key": "participation_ratio_rectangular",
+      "artifact_value": 7.338628547910912,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "exact, rectangular spectrum",
+      "tex_lines": [
+        498,
+        513,
+        522
+      ]
+    },
+    {
+      "id": "shaped",
+      "printed": "7.38",
+      "artifact": "docs/slepian_ceiling.json",
+      "key": "enl_mildly_shaped_spectrum",
+      "artifact_value": 7.3764225342229865,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "1 - 0.1 cos(2 pi f / B)",
+      "tex_lines": [
+        500,
+        725
+      ]
+    },
+    {
+      "id": "hamming",
+      "printed": "4.07",
+      "artifact": "docs/slepian_ceiling.json",
+      "key": "enl_hamming_054",
+      "artifact_value": 4.065579018511823,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "the shape the label declares",
+      "tex_lines": [
+        500
+      ]
+    },
+    {
+      "id": "spatial",
+      "printed": "4.52",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "medians.enl_spatial_21",
+      "artifact_value": 4.524020841500781,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        522
+      ]
+    },
+    {
+      "id": "subband",
+      "printed": "9.95",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "medians.enl_subband_21",
+      "artifact_value": 9.95251789007943,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        523,
+        531
+      ]
+    },
+    {
+      "id": "width_sp",
+      "printed": "0.95",
+      "artifact": "docs/mechanism_controls.json",
+      "key": "medians.width_az_spatial",
+      "artifact_value": 0.9501780235581622,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "azimuth ACF half-width, output rows",
+      "tex_lines": [
+        526
+      ]
+    },
+    {
+      "id": "width_sb",
+      "printed": "2.79",
+      "artifact": "docs/mechanism_controls.json",
+      "key": "medians.width_az_subband",
+      "artifact_value": 2.7936566858381573,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        526
+      ]
+    },
+    {
+      "id": "paired",
+      "printed": "4.47",
+      "artifact": "docs/mechanism_controls.json",
+      "key": "paired_difference_subband_minus_spatial.mean",
+      "artifact_value": 4.472765338130636,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "nine windows, paired",
+      "tex_lines": [
+        528
+      ]
+    },
+    {
+      "id": "paired_se",
+      "printed": "0.43",
+      "artifact": "docs/mechanism_controls.json",
+      "key": "paired_difference_subband_minus_spatial.se",
+      "artifact_value": 0.42676124636478674,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        528
+      ]
+    },
+    {
+      "id": "matched",
+      "printed": "-1.00",
+      "artifact": "docs/mechanism_controls.json",
+      "key": "paired_difference_at_matched_width.mean",
+      "artifact_value": -0.996338401355669,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "sub-band minus spatial once the finer arm is smoothed to the coarser width",
+      "tex_lines": [
+        529
+      ]
+    },
+    {
+      "id": "matched_se",
+      "printed": "0.57",
+      "artifact": "docs/mechanism_controls.json",
+      "key": "paired_difference_at_matched_width.se",
+      "artifact_value": 0.5701100565248481,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        529,
+        564
+      ]
+    },
+    {
+      "id": "trace_moment",
+      "printed": "6.09",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "slc_spatial_arm.estimators.trace_moment_2x2.mode",
+      "artifact_value": 6.087685151560327,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        532
+      ]
+    },
+    {
+      "id": "log_cumulant",
+      "printed": "4.83",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "slc_spatial_arm.estimators.log_cumulant_2x2.mode",
+      "artifact_value": 4.825780832884927,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        138,
+        533
+      ]
+    },
+    {
+      "id": "moment_lh",
+      "printed": "4.64",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "slc_spatial_arm.estimators.moment_LH.mode",
+      "artifact_value": 4.643111962530458,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        533
+      ]
+    },
+    {
+      "id": "gen_looks",
+      "printed": "39",
+      "artifact": "docs/enl_predictions.json",
+      "key": "predictions[2].declared.azimuth_looks",
+      "artifact_value": 39.0,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "2020-03-05 L-band",
+      "tex_lines": [
+        176,
+        368,
+        548,
+        710,
+        1126,
+        1176
+      ]
+    },
+    {
+      "id": "gen_osamp",
+      "printed": "2.905",
+      "artifact": "docs/enl_predictions.json",
+      "key": "predictions[2].oversampling",
+      "artifact_value": 2.9050867745577853,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        549
+      ]
+    },
+    {
+      "id": "gen_reference",
+      "printed": "13.42",
+      "artifact": "docs/enl_predictions.json",
+      "key": "predictions[2].predicted_ceiling",
+      "artifact_value": 13.424728080949187,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "registered before the product was opened",
+      "tex_lines": [
+        549
+      ]
+    },
+    {
+      "id": "gen_part_ratio",
+      "printed": "14.04",
+      "artifact": "docs/slepian_ceiling.json",
+      "key": "other_products[1].participation_ratio_rectangular",
+      "artifact_value": 14.040324585549053,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "39 samples at oversampling 2.905",
+      "tex_lines": [
+        551
+      ]
+    },
+    {
+      "id": "gen_lh",
+      "printed": "2.28",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[4].measured_enl",
+      "artifact_value": 2.280562763611556,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        551
+      ]
+    },
+    {
+      "id": "gen_lv",
+      "printed": "2.21",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[5].measured_enl",
+      "artifact_value": 2.2084413069255153,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        551
+      ]
+    },
+    {
+      "id": "gen_attained",
+      "printed": "0.17",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[4].attained_fraction",
+      "artifact_value": 0.16987776213120215,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        404,
+        552,
+        742
+      ]
+    },
+    {
+      "id": "here_attained",
+      "printed": "0.86",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[0].attained_fraction",
+      "artifact_value": 0.8603916324688512,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "this pass, for comparison",
+      "tex_lines": [
+        552,
+        766
+      ]
+    },
+    {
+      "id": "lag_az",
+      "printed": "0.838",
+      "artifact": "docs/enl.json",
+      "key": "lag_correlation.LH.azimuth_lines[0]",
+      "artifact_value": 0.8382981178766415,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        563
+      ]
+    },
+    {
+      "id": "lag_rg",
+      "printed": "0.576",
+      "artifact": "docs/enl.json",
+      "key": "lag_correlation.LH.range_samples[0]",
+      "artifact_value": 0.5761794944483448,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        564
+      ]
+    },
+    {
+      "id": "eroded_px",
+      "printed": "2,294,084",
+      "artifact": "docs/enl_estimator_spec.json",
+      "key": "masks.enl_measurement_mask.n_px",
+      "artifact_value": 2294084.0,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "amplitude mask eroded by 5x5",
+      "tex_lines": [
+        569
+      ]
+    },
+    {
+      "id": "gain_lh",
+      "printed": "2.35",
+      "artifact": "docs/enl.json",
+      "key": "boxcar_gain.LH.gain",
+      "artifact_value": 2.3537443028393765,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        569
+      ]
+    },
+    {
+      "id": "gain_lv",
+      "printed": "3.85",
+      "artifact": "docs/enl.json",
+      "key": "boxcar_gain.LV.gain",
+      "artifact_value": 3.844904630548288,
+      "verdict": "MISMATCH",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        569
+      ]
+    },
+    {
+      "id": "enl5_lh",
+      "printed": "13.72",
+      "artifact": "docs/detection_statistics.json",
+      "key": "effective_looks.screened_field.lh",
+      "artifact_value": 13.72,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        570,
+        611,
+        631,
+        652,
+        659,
+        671,
+        685,
+        688,
+        709,
+        728,
+        1028
+      ]
+    },
+    {
+      "id": "enl5_lv",
+      "printed": "19.77",
+      "artifact": "docs/detection_statistics.json",
+      "key": "effective_looks.screened_field.lv",
+      "artifact_value": 19.77,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        570,
+        633,
+        688
+      ]
+    },
+    {
+      "id": "n_sc",
+      "printed": "12.7",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3d_180.enl_sc.enl",
+      "artifact_value": 12.694168055964193,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "same-sense circular ENL, physical sign",
+      "tex_lines": [
+        589
+      ]
+    },
+    {
+      "id": "n_oc",
+      "printed": "18.2",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3d_180.enl_oc.enl",
+      "artifact_value": 18.14911986093986,
+      "verdict": "MISMATCH",
+      "section": "V",
+      "note": "opposite-sense",
+      "tex_lines": [
+        589
+      ]
+    },
+    {
+      "id": "floor38",
+      "printed": "1.44",
+      "artifact": null,
+      "key": null,
+      "artifact_value": null,
+      "verdict": "NO SOURCE",
+      "section": "V",
+      "note": "sqrt((2N-1)/(N-2)) at N = 38, ratio of relSD(R) to 1/sqrt(N); DERIVED",
+      "tex_lines": [
+        606,
+        917
+      ]
+    },
+    {
+      "id": "floor6",
+      "printed": "1.66",
+      "artifact": null,
+      "key": null,
+      "artifact_value": null,
+      "verdict": "NO SOURCE",
+      "section": "V",
+      "note": "the same at N = 6; DERIVED",
+      "tex_lines": [
+        607
+      ]
+    },
+    {
+      "id": "t2_n5_sd",
+      "printed": "0.775",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[0].rel_sd",
+      "artifact_value": 0.775,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        628
+      ]
+    },
+    {
+      "id": "t2_n5_bias",
+      "printed": "1.250",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[0].bias",
+      "artifact_value": 1.25,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        628
+      ]
+    },
+    {
+      "id": "t2_n5_crit",
+      "printed": "2.978",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[0].crit_95",
+      "artifact_value": 2.978,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        628
+      ]
+    },
+    {
+      "id": "t2_n5_p07",
+      "printed": "29.16",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[0].p_exceed_true_cpr_0p7_percent",
+      "artifact_value": 29.16,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        628
+      ]
+    },
+    {
+      "id": "t2_n5_p05",
+      "printed": "14.48",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[0].p_exceed_true_cpr_0p5_percent",
+      "artifact_value": 14.48,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        628
+      ]
+    },
+    {
+      "id": "t2_n677_sd",
+      "printed": "0.623",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[1].rel_sd",
+      "artifact_value": 0.623,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        629
+      ]
+    },
+    {
+      "id": "t2_n677_bias",
+      "printed": "1.173",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[1].bias",
+      "artifact_value": 1.173,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        629
+      ]
+    },
+    {
+      "id": "t2_n677_crit",
+      "printed": "2.525",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[1].crit_95",
+      "artifact_value": 2.525,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        629
+      ]
+    },
+    {
+      "id": "t2_n677_p07",
+      "printed": "26.03",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[1].p_exceed_true_cpr_0p7_percent",
+      "artifact_value": 26.03,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        629
+      ]
+    },
+    {
+      "id": "t2_n677_p05",
+      "printed": "10.75",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[1].p_exceed_true_cpr_0p5_percent",
+      "artifact_value": 10.75,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        629
+      ]
+    },
+    {
+      "id": "t2_n875_sd",
+      "printed": "0.529",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[2].rel_sd",
+      "artifact_value": 0.529,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        630
+      ]
+    },
+    {
+      "id": "t2_n875_bias",
+      "printed": "1.129",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[2].bias",
+      "artifact_value": 1.129,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        630
+      ]
+    },
+    {
+      "id": "t2_n875_crit",
+      "printed": "2.243",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[2].at_measured_N.crit_95",
+      "artifact_value": 2.243,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "at the unrounded median 8.7544; the printed N gives 2.244",
+      "tex_lines": [
+        630
+      ]
+    },
+    {
+      "id": "t2_n875_p07",
+      "printed": "23.16",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[2].p_exceed_true_cpr_0p7_percent",
+      "artifact_value": 23.16,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        630,
+        877
+      ]
+    },
+    {
+      "id": "t2_n875_p05",
+      "printed": "7.84",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[2].at_measured_N.p_exceed_true_cpr_0p5_percent",
+      "artifact_value": 7.84,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "at the unrounded median; the printed N gives 7.85",
+      "tex_lines": [
+        177,
+        630
+      ]
+    },
+    {
+      "id": "t2_n1372_sd",
+      "printed": "0.406",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[3].at_measured_N.rel_sd",
+      "artifact_value": 0.406,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "at the unrounded ENL 13.7166; the printed N gives 0.405",
+      "tex_lines": [
+        631
+      ]
+    },
+    {
+      "id": "t2_n1372_bias",
+      "printed": "1.079",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[3].bias",
+      "artifact_value": 1.079,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        48,
+        631,
+        1029
+      ]
+    },
+    {
+      "id": "t2_n1372_crit",
+      "printed": "1.895",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[3].crit_95",
+      "artifact_value": 1.895,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        48,
+        631,
+        653,
+        659,
+        692,
+        699,
+        730,
+        1029
+      ]
+    },
+    {
+      "id": "t2_n1372_p07",
+      "printed": "17.79",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[3].p_exceed_true_cpr_0p7_percent",
+      "artifact_value": 17.79,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        632
+      ]
+    },
+    {
+      "id": "t2_n1372_p05",
+      "printed": "3.74",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[3].p_exceed_true_cpr_0p5_percent",
+      "artifact_value": 3.74,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        632
+      ]
+    },
+    {
+      "id": "t2_n1977_sd",
+      "printed": "0.331",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[4].rel_sd",
+      "artifact_value": 0.331,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        633
+      ]
+    },
+    {
+      "id": "t2_n1977_bias",
+      "printed": "1.053",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[4].bias",
+      "artifact_value": 1.053,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        633
+      ]
+    },
+    {
+      "id": "t2_n1977_crit",
+      "printed": "1.698",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[4].crit_95",
+      "artifact_value": 1.698,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        633
+      ]
+    },
+    {
+      "id": "t2_n1977_p07",
+      "printed": "13.32",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[4].p_exceed_true_cpr_0p7_percent",
+      "artifact_value": 13.32,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        633
+      ]
+    },
+    {
+      "id": "t2_n1977_p05",
+      "printed": "1.60",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[4].p_exceed_true_cpr_0p5_percent",
+      "artifact_value": 1.6,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        633
+      ]
+    },
+    {
+      "id": "t2_n21_sd",
+      "printed": "0.321",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[5].rel_sd",
+      "artifact_value": 0.321,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        634
+      ]
+    },
+    {
+      "id": "t2_n21_bias",
+      "printed": "1.050",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[5].bias",
+      "artifact_value": 1.05,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        634
+      ]
+    },
+    {
+      "id": "t2_n21_crit",
+      "printed": "1.671",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[5].crit_95",
+      "artifact_value": 1.671,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        634
+      ]
+    },
+    {
+      "id": "t2_n21_p07",
+      "printed": "12.59",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[5].p_exceed_true_cpr_0p7_percent",
+      "artifact_value": 12.59,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        634
+      ]
+    },
+    {
+      "id": "t2_n21_p05",
+      "printed": "1.35",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[5].p_exceed_true_cpr_0p5_percent",
+      "artifact_value": 1.35,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        634
+      ]
+    },
+    {
+      "id": "t2_n38_sd",
+      "printed": "0.234",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[6].rel_sd",
+      "artifact_value": 0.234,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        635
+      ]
+    },
+    {
+      "id": "t2_n38_bias",
+      "printed": "1.027",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[6].bias",
+      "artifact_value": 1.027,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        635
+      ]
+    },
+    {
+      "id": "t2_n38_crit",
+      "printed": "1.462",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[6].crit_95",
+      "artifact_value": 1.462,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        635
+      ]
+    },
+    {
+      "id": "t2_n38_p07",
+      "printed": "6.11",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[6].p_exceed_true_cpr_0p7_percent",
+      "artifact_value": 6.11,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        159,
+        635
+      ]
+    },
+    {
+      "id": "t2_n38_p05",
+      "printed": "0.14",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.rows[6].p_exceed_true_cpr_0p5_percent",
+      "artifact_value": 0.14,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        635
+      ]
+    },
+    {
+      "id": "t3_264_n",
+      "printed": "6.2",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[0].N",
+      "artifact_value": 6.212830188679246,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        657,
+        660
+      ]
+    },
+    {
+      "id": "t3_264_crit",
+      "printed": "2.64",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[0].floor_95",
+      "artifact_value": 2.6376363951273847,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        460,
+        657
+      ]
+    },
+    {
+      "id": "t3_264_p07",
+      "printed": "26.9",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[0].fp_percent_at_cpr_0p7",
+      "artifact_value": 26.94277683074322,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        657
+      ]
+    },
+    {
+      "id": "t3_530_n",
+      "printed": "12.5",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[1].N",
+      "artifact_value": 12.472727272727273,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        634,
+        658
+      ]
+    },
+    {
+      "id": "t3_530_crit",
+      "printed": "1.96",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[1].floor_95",
+      "artifact_value": 1.9569356492870122,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        658
+      ]
+    },
+    {
+      "id": "t3_530_p07",
+      "printed": "19.0",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[1].fp_percent_at_cpr_0p7",
+      "artifact_value": 18.955495475782293,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        658
+      ]
+    },
+    {
+      "id": "t3_583_p07",
+      "printed": "17.8",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[2].fp_percent_at_cpr_0p7",
+      "artifact_value": 17.7924239915343,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        654,
+        659,
+        781
+      ]
+    },
+    {
+      "id": "t3_622_raw",
+      "printed": "6.22",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[3].raw_enl",
+      "artifact_value": 6.22,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "amplitude-domain ENL",
+      "tex_lines": [
+        660
+      ]
+    },
+    {
+      "id": "t3_622_n",
+      "printed": "14.6",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[3].N",
+      "artifact_value": 14.637804459691253,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        660
+      ]
+    },
+    {
+      "id": "t3_622_crit",
+      "printed": "1.86",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[3].floor_95",
+      "artifact_value": 1.8551890270095572,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        458,
+        660
+      ]
+    },
+    {
+      "id": "t3_622_p07",
+      "printed": "17.0",
+      "artifact": "docs/table5_sensitivity.json",
+      "key": "rows[3].fp_percent_at_cpr_0p7",
+      "artifact_value": 16.998354884000456,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        188,
+        660,
+        726
+      ]
+    },
+    {
+      "id": "crit_lo",
+      "printed": "1.64",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.floor_ci_block[0]",
+      "artifact_value": 1.6411355530933682,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "block-bootstrap range of the critical value",
+      "tex_lines": [
+        135,
+        491,
+        653
+      ]
+    },
+    {
+      "id": "crit_hi",
+      "printed": "2.07",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.floor_ci_block[1]",
+      "artifact_value": 2.0697403511564207,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        653
+      ]
+    },
+    {
+      "id": "exceed_lo",
+      "printed": "11.8",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.fp_ci_block[0]",
+      "artifact_value": 11.758629858834201,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        654,
+        694
+      ]
+    },
+    {
+      "id": "exceed_hi",
+      "printed": "20.8",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.fp_ci_block[1]",
+      "artifact_value": 20.81032893500476,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        654,
+        694
+      ]
+    },
+    {
+      "id": "power_1299",
+      "printed": "16.4",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.power_at_operating_point.rows[1].power_percent",
+      "artifact_value": 16.43,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "at the largest true CPR the DOP condition admits",
+      "tex_lines": [
+        699,
+        702
+      ]
+    },
+    {
+      "id": "power_15",
+      "printed": "27",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.power_at_operating_point.rows[2].power_percent",
+      "artifact_value": 27.24,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        177,
+        635,
+        701,
+        893,
+        1099,
+        1129,
+        1228,
+        1230
+      ]
+    },
+    {
+      "id": "power_20",
+      "printed": "56",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.power_at_operating_point.rows[3].power_percent",
+      "artifact_value": 55.59,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        159,
+        701,
+        834
+      ]
+    },
+    {
+      "id": "power_30",
+      "printed": "88",
+      "artifact": "docs/detection_statistics.json",
+      "key": "sampling_statistics.power_at_operating_point.rows[4].power_percent",
+      "artifact_value": 88.25,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        136,
+        148,
+        398,
+        410,
+        701,
+        745,
+        832,
+        1090,
+        1186
+      ]
+    },
+    {
+      "id": "bg_05",
+      "printed": "3.7",
+      "artifact": "docs/background_cpr_sweep.json",
+      "key": "rows[2].fp_percent",
+      "artifact_value": 3.7404952843565153,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        570,
+        611,
+        631,
+        632,
+        652,
+        659,
+        671,
+        685,
+        688,
+        709,
+        728,
+        1028
+      ]
+    },
+    {
+      "id": "bg_08",
+      "printed": "28",
+      "artifact": "docs/background_cpr_sweep.json",
+      "key": "rows[5].fp_percent",
+      "artifact_value": 28.144449828672236,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        142,
+        551,
+        709,
+        1160,
+        1226
+      ]
+    },
+    {
+      "id": "bg_09",
+      "printed": "39",
+      "artifact": "docs/background_cpr_sweep.json",
+      "key": "rows[6].fp_percent",
+      "artifact_value": 39.22762419193012,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        176,
+        368,
+        548,
+        710,
+        1126,
+        1176
+      ]
+    },
+    {
+      "id": "corr_area",
+      "printed": "61.42",
+      "artifact": "docs/cpr_significance.json",
+      "key": "effective_samples.area_all_lags",
+      "artifact_value": 61.420749918170166,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "px per independent sample",
+      "tex_lines": [
+        718
+      ]
+    },
+    {
+      "id": "f2_eff",
+      "printed": "25",
+      "artifact": "docs/cpr_significance.json",
+      "key": "effective_samples.f2_effective_samples",
+      "artifact_value": 24.747337048555586,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "1521 px / 61.42",
+      "tex_lines": [
+        92,
+        137,
+        138,
+        327,
+        570,
+        611,
+        628,
+        629,
+        719,
+        725,
+        745,
+        833,
+        970,
+        971,
+        978,
+        1163,
+        1165
+      ]
+    },
+    {
+      "id": "f2_peak_eff",
+      "printed": "2.52",
+      "artifact": "docs/cpr_significance.json",
+      "key": "f2_peak_cpr.5.effective",
+      "artifact_value": 2.523386879191488,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "median peak, 25 effective samples, N = 5",
+      "tex_lines": [
+        629,
+        724
+      ]
+    },
+    {
+      "id": "f2_peak_raw",
+      "printed": "7.38",
+      "artifact": "docs/cpr_significance.json",
+      "key": "f2_peak_cpr.5.raw",
+      "artifact_value": 7.380808004093906,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "the same over 1521 raw pixels",
+      "tex_lines": [
+        500,
+        725
+      ]
+    },
+    {
+      "id": "f2_amp_px",
+      "printed": "260",
+      "artifact": "docs/f2_maximum.json",
+      "key": "disc.amplitude_pixels",
+      "artifact_value": 260.0,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "of the 1521-pixel disc",
+      "tex_lines": [
+        726
+      ]
+    },
+    {
+      "id": "f2_max_med",
+      "printed": "1.91",
+      "artifact": "docs/f2_maximum.json",
+      "key": "results.N13p72.correlated_max_over_amplitude_pixels.median",
+      "artifact_value": 1.9108827708008589,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        728
+      ]
+    },
+    {
+      "id": "f2_max_p95",
+      "printed": "2.73",
+      "artifact": "docs/f2_maximum.json",
+      "key": "results.N13p72.correlated_max_over_amplitude_pixels.p95",
+      "artifact_value": 2.7291547003658008,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        729
+      ]
+    },
+    {
+      "id": "f2_count",
+      "printed": "46.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "results.N13p72.exceedance_count_over_amplitude_pixels.mean",
+      "artifact_value": 46.4833,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        729
+      ]
+    },
+    {
+      "id": "f2_count_se",
+      "printed": "0.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "results.N13p72.exceedance_count_over_amplitude_pixels.se",
+      "artifact_value": 0.1602581054955964,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        142,
+        287,
+        290,
+        306,
+        416,
+        635,
+        729,
+        747,
+        879,
+        899,
+        1171
+      ]
+    },
+    {
+      "id": "putrevu_cpr",
+      "printed": "1.07",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.cpr_mean",
+      "artifact_value": 1.07,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "Byrgius C, transcribed from print",
+      "tex_lines": [
+        48,
+        371,
+        631,
+        742,
+        1029
+      ]
+    },
+    {
+      "id": "putrevu_relsd",
+      "printed": "0.159",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.cpr_rel_sd",
+      "artifact_value": 0.1588785046728972,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        742
+      ]
+    },
+    {
+      "id": "putrevu_az",
+      "printed": "0.55",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.slc_spacing_m.azimuth",
+      "artifact_value": 0.55,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        743
+      ]
+    },
+    {
+      "id": "putrevu_rg",
+      "printed": "9.6",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.slc_spacing_m.slant_range",
+      "artifact_value": 9.6,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        176,
+        743,
+        827,
+        830
+      ]
+    },
+    {
+      "id": "putrevu_n",
+      "printed": "54.88",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.led_with_triple.N",
+      "artifact_value": 54.87720087813063,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        745
+      ]
+    },
+    {
+      "id": "putrevu_floor",
+      "printed": "0.194",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.led_with_triple.independent_floor",
+      "artifact_value": 0.19359459040430219,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        746
+      ]
+    },
+    {
+      "id": "putrevu_rho",
+      "printed": "0.31",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.led_with_triple.rho_I_min",
+      "artifact_value": 0.3073844417075837,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        747
+      ]
+    },
+    {
+      "id": "putrevu_rho_lo",
+      "printed": "0.29",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.bound_range_over_altitudes[0]",
+      "artifact_value": 0.28853673412370373,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        747
+      ]
+    },
+    {
+      "id": "putrevu_rho_hi",
+      "printed": "0.35",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.bound_range_over_altitudes[1]",
+      "artifact_value": 0.34507985687534326,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        747
+      ]
+    },
+    {
+      "id": "putrevu_alt_n",
+      "printed": "81",
+      "artifact": "docs/cpr_dispersion.json",
+      "key": "external_check.N_from_dispersion_independent_channels",
+      "artifact_value": 80.74118073161875,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "the same dispersion with no correlation at all",
+      "tex_lines": [
+        749,
+        766,
+        1095,
+        1191
+      ]
+    },
+    {
+      "id": "cr_0",
+      "printed": "17.6",
+      "artifact": "docs/correlated_ratio.json",
+      "key": "rows[0].fp_percent",
+      "artifact_value": 17.5806,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        758
+      ]
+    },
+    {
+      "id": "cr_05",
+      "printed": "14.1",
+      "artifact": "docs/correlated_ratio.json",
+      "key": "rows[1].fp_percent",
+      "artifact_value": 14.140533333333332,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        758
+      ]
+    },
+    {
+      "id": "cr_08",
+      "printed": "6.3",
+      "artifact": "docs/correlated_ratio.json",
+      "key": "rows[2].fp_percent",
+      "artifact_value": 6.2686,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        758
+      ]
+    },
+    {
+      "id": "cr_09",
+      "printed": "1.9",
+      "artifact": "docs/correlated_ratio.json",
+      "key": "rows[3].fp_percent",
+      "artifact_value": 1.9156666666666666,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        186,
+        658,
+        728,
+        759,
+        834
+      ]
+    },
+    {
+      "id": "circ_corr",
+      "printed": "0.50",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3d_180.corr_sc_oc",
+      "artifact_value": 0.4990735996741713,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "|corr(SC, OC)| over the frame",
+      "tex_lines": [
+        42,
+        763,
+        827,
+        828,
+        830,
+        951,
+        1022
+      ]
+    },
+    {
+      "id": "blocks",
+      "printed": "109",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.blocks_64x64.n_selected",
+      "artifact_value": 109.0,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "64x64 blocks below the 10th CV pct",
+      "tex_lines": [
+        764
+      ]
+    },
+    {
+      "id": "tail_p95",
+      "printed": "0.86",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.blocks_64x64_summary.ratio_p95_median",
+      "artifact_value": 0.859035173822312,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "empirical / F, within blocks",
+      "tex_lines": [
+        552,
+        766
+      ]
+    },
+    {
+      "id": "tail_p99",
+      "printed": "0.81",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.blocks_64x64_summary.ratio_p99_median",
+      "artifact_value": 0.8052039479277788,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        766
+      ]
+    },
+    {
+      "id": "kc_sigma",
+      "printed": "0.02",
+      "artifact": "docs/kclutter.json",
+      "key": "mc_sigma_of_difference_points",
+      "artifact_value": 0.017009809633401332,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "sampling error of the difference of two tails at 10^7 trials",
+      "tex_lines": [
+        352,
+        777
+      ]
+    },
+    {
+      "id": "wc_nu8",
+      "printed": "18.8",
+      "artifact": "docs/kclutter_within_cell.json",
+      "key": "rows[1].exceed_percent",
+      "artifact_value": 18.8115,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "within-cell texture, order 8",
+      "tex_lines": [
+        780
+      ]
+    },
+    {
+      "id": "wc_nu4",
+      "printed": "19.7",
+      "artifact": "docs/kclutter_within_cell.json",
+      "key": "rows[4].exceed_percent",
+      "artifact_value": 19.6878,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "order 4",
+      "tex_lines": [
+        570,
+        633,
+        688,
+        781
+      ]
+    },
+    {
+      "id": "wc_base",
+      "printed": "17.8",
+      "artifact": "docs/kclutter_within_cell.json",
+      "key": "rows[0].exceed_percent",
+      "artifact_value": 17.518700000000003,
+      "verdict": "MISMATCH",
+      "section": "V",
+      "note": "no texture, same draw",
+      "tex_lines": [
+        654,
+        659,
+        781
+      ]
+    },
+    {
+      "id": "wc_enl8",
+      "printed": "11.2",
+      "artifact": "docs/kclutter_within_cell.json",
+      "key": "rows[1].enl_of_textured_intensity",
+      "artifact_value": 11.200177054653416,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        782
+      ]
+    },
+    {
+      "id": "wc_enl4",
+      "printed": "5.1",
+      "artifact": "docs/kclutter_within_cell.json",
+      "key": "rows[6].enl_of_textured_intensity",
+      "artifact_value": 5.046114738584557,
+      "verdict": "MISMATCH",
+      "section": "V",
+      "note": "order 4, lag-one 0.8",
+      "tex_lines": [
+        43,
+        446,
+        782,
+        1024
+      ]
+    },
+    {
+      "id": "joint_sim",
+      "printed": "1.8",
+      "artifact": "docs/joint_criterion.json",
+      "key": "headline.joint_fp_percent",
+      "artifact_value": 1.8145000000000002,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "simulated on the Stokes vector, N = 14",
+      "tex_lines": [
+        48,
+        458,
+        631,
+        653,
+        654,
+        659,
+        660,
+        692,
+        694,
+        699,
+        730,
+        791,
+        828,
+        829,
+        832,
+        833,
+        1029
+      ]
+    },
+    {
+      "id": "joint_marginal",
+      "printed": "17.5",
+      "artifact": "docs/joint_criterion.json",
+      "key": "marginal_fp_percent_analytic_F",
+      "artifact_value": 17.544925186078576,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        791
+      ]
+    },
+    {
+      "id": "g2_hermite",
+      "printed": "6.12",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].excess_kurtosis",
+      "artifact_value": 6.12,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "transcribed from Fa & Cai Table 1",
+      "tex_lines": [
+        827
+      ]
+    },
+    {
+      "id": "g2_rozh",
+      "printed": "7.66",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].excess_kurtosis",
+      "artifact_value": 7.66,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        828
+      ]
+    },
+    {
+      "id": "g2_main",
+      "printed": "7.06",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].excess_kurtosis",
+      "artifact_value": 7.06,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        829
+      ]
+    },
+    {
+      "id": "g2_schom",
+      "printed": "6.51",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].excess_kurtosis",
+      "artifact_value": 6.51,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        830
+      ]
+    },
+    {
+      "id": "g2_card",
+      "printed": "7.19",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].excess_kurtosis",
+      "artifact_value": 7.19,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        831
+      ]
+    },
+    {
+      "id": "g2_byrg",
+      "printed": "7.33",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].excess_kurtosis",
+      "artifact_value": 7.33,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        832
+      ]
+    },
+    {
+      "id": "g2_doll",
+      "printed": "7.00",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].excess_kurtosis",
+      "artifact_value": 7.0,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        833
+      ]
+    },
+    {
+      "id": "g2_stev",
+      "printed": "7.95",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].excess_kurtosis",
+      "artifact_value": 7.95,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        834
+      ]
+    },
+    {
+      "id": "n_hermite_sd",
+      "printed": "9.11",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].N_from_dispersion",
+      "artifact_value": 9.114264887117828,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        827
+      ]
+    },
+    {
+      "id": "n_hermite_g1",
+      "printed": "9.65",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].N_from_skewness",
+      "artifact_value": 9.647089771188682,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        176,
+        827
+      ]
+    },
+    {
+      "id": "n_hermite_g2",
+      "printed": "9.94",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].N_from_kurtosis",
+      "artifact_value": 9.944362801050335,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        827
+      ]
+    },
+    {
+      "id": "n_card_g1",
+      "printed": "7.49",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].N_from_skewness",
+      "artifact_value": 7.489350335857476,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "the widest per-crater spread",
+      "tex_lines": [
+        831,
+        854
+      ]
+    },
+    {
+      "id": "n_card_g2",
+      "printed": "9.12",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].N_from_kurtosis",
+      "artifact_value": 9.124595928335898,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        831,
+        854
+      ]
+    },
+    {
+      "id": "pm_med_sigma",
+      "printed": "8.75",
+      "artifact": "docs/published_moments.json",
+      "key": "median_N_from_dispersion",
+      "artifact_value": 8.754410943745066,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        52,
+        630,
+        836,
+        841,
+        875,
+        877
+      ]
+    },
+    {
+      "id": "pm_med_skew",
+      "printed": "9.08",
+      "artifact": "docs/published_moments.json",
+      "key": "median_N_from_skewness",
+      "artifact_value": 9.080159732247314,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        836,
+        842
+      ]
+    },
+    {
+      "id": "pm_med_kurt",
+      "printed": "9.17",
+      "artifact": "docs/published_moments.json",
+      "key": "median_N_from_kurtosis",
+      "artifact_value": 9.167870398335886,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        52,
+        836,
+        842,
+        875
+      ]
+    },
+    {
+      "id": "pm_spread",
+      "printed": "3.8",
+      "artifact": "docs/published_moments.json",
+      "key": "agreement_sd_vs_skew_percent_from_printed_medians",
+      "artifact_value": 3.7714285714285722,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "from the printed medians; from the unrounded ones it is 3.7",
+      "tex_lines": [
+        180,
+        569,
+        850
+      ]
+    },
+    {
+      "id": "pm_exceed",
+      "printed": "23.16",
+      "artifact": "docs/published_moments.json",
+      "key": "consequence_at_median_dispersion_N.fp_at_true_cpr_0p7",
+      "artifact_value": 23.155176961825287,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        630,
+        877
+      ]
+    },
+    {
+      "id": "minirf_zoom_looks",
+      "printed": "8",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.zoom.nominal_looks",
+      "artifact_value": 8.0,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        43,
+        48,
+        49,
+        52,
+        53,
+        74,
+        79,
+        129,
+        130,
+        136,
+        138,
+        142,
+        148,
+        164,
+        177,
+        178,
+        180,
+        223,
+        225,
+        290,
+        316,
+        326,
+        327,
+        333,
+        344,
+        367,
+        388,
+        389,
+        398,
+        404,
+        410,
+        445,
+        451,
+        452,
+        453,
+        458,
+        465,
+        466,
+        469,
+        471,
+        496,
+        500,
+        533,
+        537,
+        551,
+        552,
+        563,
+        569,
+        589,
+        607,
+        628,
+        630,
+        631,
+        633,
+        635,
+        642,
+        651,
+        653,
+        654,
+        659,
+        660,
+        683,
+        687,
+        692,
+        693,
+        694,
+        699,
+        701,
+        707,
+        709,
+        710,
+        725,
+        730,
+        745,
+        749,
+        759,
+        766,
+        780,
+        781,
+        791,
+        809,
+        818,
+        828,
+        829,
+        831,
+        832,
+        833,
+        834,
+        836,
+        841,
+        842,
+        843,
+        850,
+        859,
+        868,
+        870,
+        872,
+        874,
+        875,
+        877,
+        886,
+        889,
+        898,
+        909,
+        917,
+        920,
+        1023,
+        1029,
+        1030,
+        1066,
+        1070,
+        1082,
+        1090,
+        1095,
+        1103,
+        1108,
+        1120,
+        1122,
+        1129,
+        1134,
+        1138,
+        1140,
+        1142,
+        1146,
+        1160,
+        1186,
+        1191,
+        1195,
+        1209,
+        1219,
+        1221,
+        1226,
+        1230
+      ]
+    },
+    {
+      "id": "minirf_zoom_cdr",
+      "printed": "14.8",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.zoom.cdr_pixel_spacing_m",
+      "artifact_value": 14.8,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "the product Fa & Cai analysed",
+      "tex_lines": [
+        870
+      ]
+    },
+    {
+      "id": "minirf_base_looks",
+      "printed": "16",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.baseline.nominal_looks",
+      "artifact_value": 16.0,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        134,
+        151,
+        198,
+        217,
+        444,
+        457,
+        460,
+        466,
+        471,
+        628,
+        630,
+        658,
+        693,
+        694,
+        699,
+        702,
+        872,
+        877,
+        909,
+        1083,
+        1087,
+        1108,
+        1112,
+        1118,
+        1165,
+        1233
+      ]
+    },
+    {
+      "id": "minirf_base_res",
+      "printed": "150",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.baseline.resolution_m",
+      "artifact_value": 150.0,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        872
+      ]
+    },
+    {
+      "id": "minirf_effective",
+      "printed": "6.7",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.effective_looks_reported.value",
+      "artifact_value": 6.7,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "Spudis et al. 2013, attributed to unpublished analysis",
+      "tex_lines": [
+        495,
+        513,
+        522,
+        629,
+        873,
+        920
+      ]
+    },
+    {
+      "id": "swath_max",
+      "printed": "5.341e-2",
+      "artifact": "docs/detection_statistics.json",
+      "key": "per_pixel_significance.swath_max",
+      "artifact_value": 0.053411,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "peak CPR_a in the swath",
+      "tex_lines": [
+        887
+      ]
+    },
+    {
+      "id": "factor_full",
+      "printed": "234.68",
+      "artifact": "frontend/public/analysis/sweep_grid.json",
+      "key": "crossing.factor_below_published",
+      "artifact_value": 234.68353413909173,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": null,
+      "tex_lines": [
+        889
+      ]
+    },
+    {
+      "id": "scope_40",
+      "printed": "40",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "excluded_percent",
+      "artifact_value": 40.212084621618544,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "rounded in the scope table",
+      "tex_lines": [
+        252,
+        306,
+        569,
+        631,
+        899,
+        949,
+        1016,
+        1091,
+        1171,
+        1176
+      ]
+    },
+    {
+      "id": "lit_unique",
+      "printed": "34",
+      "artifact": "docs/literature_search.json",
+      "key": "counts.unique",
+      "artifact_value": 34.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        176,
+        367,
+        465,
+        491,
+        498,
+        513,
+        522,
+        635,
+        887,
+        889,
+        969,
+        1151,
+        1176,
+        1181
+      ]
+    },
+    {
+      "id": "lit_excluded",
+      "printed": "9",
+      "artifact": "docs/literature_search.json",
+      "key": "counts.excluded",
+      "artifact_value": 9.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        40,
+        48,
+        50,
+        52,
+        69,
+        77,
+        127,
+        129,
+        130,
+        138,
+        141,
+        165,
+        176,
+        180,
+        186,
+        187,
+        188,
+        225,
+        287,
+        290,
+        307,
+        327,
+        329,
+        344,
+        345,
+        352,
+        368,
+        381,
+        388,
+        389,
+        398,
+        405,
+        411,
+        418,
+        433,
+        452,
+        455,
+        457,
+        488,
+        496,
+        523,
+        526,
+        531,
+        532,
+        548,
+        549,
+        569,
+        570,
+        611,
+        618,
+        626,
+        628,
+        630,
+        631,
+        632,
+        633,
+        634,
+        651,
+        653,
+        657,
+        658,
+        659,
+        669,
+        683,
+        688,
+        692,
+        693,
+        699,
+        700,
+        710,
+        726,
+        728,
+        730,
+        742,
+        743,
+        746,
+        747,
+        757,
+        759,
+        764,
+        765,
+        781,
+        827,
+        828,
+        829,
+        830,
+        831,
+        832,
+        833,
+        834,
+        836,
+        842,
+        854,
+        875,
+        893,
+        950,
+        967,
+        969,
+        1020,
+        1029,
+        1066,
+        1079,
+        1083,
+        1089,
+        1091,
+        1093,
+        1096,
+        1098,
+        1099,
+        1122,
+        1126,
+        1128,
+        1129,
+        1130,
+        1142,
+        1146,
+        1165,
+        1171,
+        1176,
+        1183,
+        1186,
+        1195,
+        1202,
+        1204,
+        1206,
+        1209,
+        1214,
+        1217,
+        1219,
+        1221,
+        1223,
+        1226,
+        1228,
+        1230
+      ]
+    },
+    {
+      "id": "lit_relevant",
+      "printed": "25",
+      "artifact": "docs/literature_search.json",
+      "key": "counts.relevant",
+      "artifact_value": 25.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        92,
+        137,
+        138,
+        327,
+        570,
+        611,
+        628,
+        629,
+        719,
+        725,
+        745,
+        833,
+        970,
+        971,
+        978,
+        1163,
+        1165
+      ]
+    },
+    {
+      "id": "lit_fulltext",
+      "printed": "14",
+      "artifact": "docs/literature_screen.json",
+      "key": "counts.access.full_text",
+      "artifact_value": 14.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "after the 2026-09-16 re-screen",
+      "tex_lines": [
+        43,
+        147,
+        176,
+        178,
+        287,
+        290,
+        446,
+        551,
+        628,
+        635,
+        660,
+        758,
+        767,
+        780,
+        790,
+        828,
+        870,
+        898,
+        971,
+        1024,
+        1126,
+        1129,
+        1221
+      ]
+    },
+    {
+      "id": "lit_abstract",
+      "printed": "11",
+      "artifact": "docs/literature_screen.json",
+      "key": "counts.access.abstract_only",
+      "artifact_value": 11.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": null,
+      "tex_lines": [
+        67,
+        73,
+        90,
+        129,
+        130,
+        132,
+        159,
+        187,
+        216,
+        233,
+        254,
+        367,
+        408,
+        635,
+        654,
+        694,
+        707,
+        782,
+        827,
+        831,
+        971,
+        975,
+        1066,
+        1082,
+        1085,
+        1087,
+        1103,
+        1108,
+        1110,
+        1112,
+        1113,
+        1115,
+        1118,
+        1122,
+        1142,
+        1161,
+        1165,
+        1175,
+        1188,
+        1190,
+        1191,
+        1193,
+        1195,
+        1200,
+        1209
+      ]
+    },
+    {
+      "id": "lit_links",
+      "printed": "75",
+      "artifact": "docs/literature_screen.json",
+      "key": "original_search.raw_links_returned",
+      "artifact_value": 75.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "from the search-flow record",
+      "tex_lines": [
+        52,
+        628,
+        629,
+        630,
+        827,
+        836,
+        841,
+        875,
+        877,
+        969
       ]
     }
   ],
-  "derived_checks_failed": []
+  "derived_checks_failed": [
+    [
+      "tail_gap_hi",
+      20.0,
+      19.479605207222118
+    ]
+  ]
 }

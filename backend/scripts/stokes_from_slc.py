@@ -440,10 +440,19 @@ def main() -> int:
     res["invariant"] = {
         "coherence": {"median": float(np.median(coh_m)),
                       "iqr": [float(np.percentile(coh_m, 25)), float(np.percentile(coh_m, 75))],
-                      "per_window_median": per_win_coh},
+                      "per_window_median": per_win_coh,
+                      # the per-window spread as three numbers, because a list is
+                      # not a figure anything can be audited against
+                      "per_window_summary": {"median": float(np.median(per_win_coh)),
+                                             "min": float(min(per_win_coh)),
+                                             "max": float(max(per_win_coh))}},
         "dop_below_threshold": {"n": n_below, "of": n_m, "fraction": frac_below,
                                 "binomial_se": se_below,
-                                "per_window_fraction": per_win_dop},
+                                "per_window_fraction": per_win_dop,
+                                "per_window_summary": {"median": float(np.median(per_win_dop)),
+                                                       "min": float(min(per_win_dop)),
+                                                       "max": float(max(per_win_dop))},
+                                "one_cell_in": float(1.0 / frac_below)},
         "t3f_coupling_band": {"n": int(v_b.size), "fraction_outside": out_band,
                               "band": [lo_c, hi_c]},
         "t3c": {"fraction_dop_a_ge": float(excl_a.sum() / n_m),
@@ -467,7 +476,7 @@ def main() -> int:
           f"{100 * ju_se:.4f} pp   ({n_both:,} of {n_m:,})")
     print("  These are measured over THIS terrain; the DOP < 0.13 cells are, by the")
     print("  coupling identity, cells whose CPR already lies in (0.77, 1.30). Neither")
-    print("  is the simulated joint false-positive rate at a 0.7 background (P7).")
+    print("  is the simulated joint noise exceedance rate at a 0.7 background (P7).")
     res["joint_measured"] = {
         "conditional": {"fraction": j, "binomial_se": j_se, "n": int(v_b.size),
                         "definition": "P(CPR_S > 1 | DOP_S < 0.13)"},

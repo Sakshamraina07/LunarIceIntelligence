@@ -83,7 +83,7 @@ ASSUMPTIONS = [
     "in the source and is not our inference.",
     "The look count for their product is NOT STATED in the open text. The table "
     "is therefore computed ACROSS a range of N rather than at one value, and no "
-    "single detection floor is quoted for their data.",
+    "single critical value is quoted for their data.",
     "OUR measured ENL cannot be transferred to their product. Ours is a "
     "compact-pol sri product from one pass; theirs is full-polarimetric L- and "
     "S-band from a different acquisition and a different processing chain. The "
@@ -111,6 +111,44 @@ def ratio_sd(n: float) -> float:
 def floor_95(n: float) -> float:
     """True CPR needed for a single pixel to read above 1.0 with 95 % confidence."""
     return 1.0 / fdist.ppf(0.05, 2 * n, 2 * n)
+
+
+#: The look counts of the manuscript's sampling-statistics table, each with the
+#: reason it is in the table. They are NOT a smooth grid: every row is a number
+#: this project measured, read from a label, or took from print, and the table
+#: is read DOWN a column because the published look count is not stated.
+#: (N as the table prints it, N as the measurement carries it, why)
+#: Four of the seven are rounded in print, and the rounding is not cosmetic:
+#: at three decimals it moves a cell. Both columns are computed and emitted,
+#: because a reader can only reproduce from the printed value while the
+#: measurement is the unrounded one.
+SAMPLING_TABLE_N = [
+    (5.00, 5.00, "the raw product's ENL rounded down (5.83 LH, 5.14 LV) — METHODS 7.3"),
+    (6.77, 6.77, "2WT = 21 / 3.10, the asymptotic value for a 21-sample average of an "
+                 "oversampled band — docs/slepian_ceiling.json::two_WT_asymptotic "
+                 "carries 6.773174590024859"),
+    (8.75, 8.754410943745066,
+     "median N inverted from the published CPR dispersion of Fa & Cai 2013 — "
+     "docs/published_moments.json::median_N_from_dispersion"),
+    (13.72, 13.716639679503347,
+     "THE OPERATING POINT: the ENL of the boxcar-smoothed LH field, the field the "
+     "screen is formed on — docs/enl.json::boxcar_gain.LH.enl_boxcar5"),
+    (19.77, 19.76772534356128,
+     "the same for LV; the two smoothed channels differ — "
+     "docs/enl.json::boxcar_gain.LV.enl_boxcar5"),
+    (21.00, 21.00, "the label's declared azimuth_looks — a processing parameter"),
+    (38.00, 38.00, "the '~38 look average' quoted for Peary crater in the DFSAR "
+                   "instrument paper (Bhiravarasu et al. 2021)"),
+]
+
+#: True CPR values at which the test's POWER is quoted. 1.2989 is the largest
+#: the DOP < 0.13 coupling admits, which is why it is the interesting one.
+POWER_AT_TRUE_CPR = [1.00, 1.2988505747126435, 1.5, 2.0, 3.0]
+
+
+def exceedance(n: float, true_cpr: float, threshold: float = 1.0) -> float:
+    """P(R > threshold) as a percentage, R/CPR ~ F(2N, 2N)."""
+    return float((1.0 - fdist.cdf(threshold / true_cpr, 2 * n, 2 * n)) * 100.0)
 
 
 def _correlation_area() -> float:
@@ -228,6 +266,47 @@ def main() -> int:
     print("  [0, 0] -- it would report a measured zero as having no uncertainty at")
     print("  all, which is the single most misleading thing this table could say.")
 
+    hr("B2. THE SAMPLING-STATISTICS TABLE — every cell, from the closed forms")
+    print("  R/CPR ~ F(2N, 2N) for a ratio of two independent N-look intensities.")
+    print("  rel.SD = sqrt((2N-1)/(N(N-2))),  bias = N/(N-1),")
+    print("  95 % crit. = F^-1(0.95; 2N, 2N),  P_c = 1 - F(1/c; 2N, 2N).\n")
+    print(f"  {'N':>7}{'rel.SD':>9}{'bias':>8}{'95% crit':>10}"
+          f"{'P(0.7)':>9}{'P(0.5)':>9}   cells that move at the unrounded N")
+
+    def cells(n: float) -> dict:
+        return {"rel_sd": round(ratio_sd(n), 3), "bias": round(n / (n - 1), 3),
+                "crit_95": round(floor_95(n), 3),
+                "p_exceed_true_cpr_0p7_percent": round(exceedance(n, 0.7), 2),
+                "p_exceed_true_cpr_0p5_percent": round(exceedance(n, 0.5), 2)}
+
+    table_rows = []
+    for n_pr, n_ex, why in SAMPLING_TABLE_N:
+        at_printed, at_measured = cells(n_pr), cells(n_ex)
+        moved = {k: [v, at_measured[k]] for k, v in at_printed.items()
+                 if at_measured[k] != v}
+        table_rows.append({"N": n_pr, "N_measured": n_ex, **at_printed,
+                           "at_measured_N": at_measured,
+                           "cells_that_move_at_measured_N": moved, "why": why})
+        print(f"  {n_pr:>7.2f}{at_printed['rel_sd']:>9.3f}{at_printed['bias']:>8.3f}"
+              f"{at_printed['crit_95']:>10.3f}"
+              f"{at_printed['p_exceed_true_cpr_0p7_percent']:>8.2f}%"
+              f"{at_printed['p_exceed_true_cpr_0p5_percent']:>8.2f}%   "
+              + (", ".join(f"{k} {v[0]}->{v[1]}" for k, v in moved.items()) or "-"))
+
+    n_op = ENL_SCREENING[0]
+    crit_op = floor_95(n_op)
+    print(f"\n  POWER at the operating point N = {n_op}, against the critical value "
+          f"{crit_op:.4f}:")
+    power = []
+    for c in POWER_AT_TRUE_CPR:
+        p = exceedance(n_op, c, crit_op)
+        power.append({"true_cpr": c, "power_percent": round(p, 2)})
+        tag = ("  <- the largest true CPR the DOP < 0.13 coupling admits"
+               if abs(c - 1.2988505747126435) < 1e-9 else
+               "  <- the size of the test at the null" if c == 1.0 else "")
+        print(f"    true CPR {c:<8.4f}  P(R > {crit_op:.3f}) = {p:6.2f} %{tag}")
+    print("  Inside the band the coupling admits, the test has almost no power.")
+
     hr("C. THE PUBLISHED DETECTIONS AGAINST THEIR OWN FLOORS")
     print("  Published CPR is sigma_SC/sigma_OC and IS F(2N,2N)-distributed, so the")
     print("  F machinery applies to these values and not to ours.\n")
@@ -274,31 +353,85 @@ def main() -> int:
                        "sigma_SC/sigma_OC would have to clear, not a p-value on our "
                        "own quantity."),
         },
+        "sampling_statistics": {
+            "model": ("R/CPR ~ F(2N, 2N) for a ratio of two independent N-look "
+                      "intensities; rel.SD = sqrt((2N-1)/(N(N-2))), bias = N/(N-1), "
+                      "95 % crit. = F^-1(0.95; 2N, 2N), P_c = 1 - F(1/c; 2N, 2N)"),
+            "columns": ["N", "rel_sd", "bias", "crit_95",
+                        "p_exceed_true_cpr_0p7_percent", "p_exceed_true_cpr_0p5_percent"],
+            "rows": table_rows,
+            "convention": ("each row is computed at the N the table PRINTS; "
+                           "`at_measured_N` repeats it at the unrounded "
+                           "measurement and `cells_that_move_at_measured_N` names "
+                           "every cell that differs at three decimals"),
+            "read_down_a_column": ("the published look count is not stated, so the "
+                                   "table spans N rather than asserting one"),
+            "all_exceedances_are_upper_bounds": (
+                "within the correlated circular-Gaussian model and over the "
+                "coherence range tested — docs/correlated_ratio.json; and an upper "
+                "bound over coherence only, not over within-cell texture, which "
+                "adds up to two points — docs/kclutter_within_cell.json"),
+            "power_at_operating_point": {
+                "N": n_op, "critical_value": round(crit_op, 4), "rows": power,
+                "note": ("P(R > crit) at each true CPR. The 1.2989 row is the "
+                         "largest true CPR the DOP < 0.13 coupling admits, so it "
+                         "bounds the power of the joint criterion."),
+            },
+        },
         "candidate_area": {
             "pixels": k, "measured_pixels": n_px,
             "area_km2": round(k * cell_km2, 6),
             "confidence": args.confidence,
             "correlation_area_px": area_px,
             "n_effective": n_eff,
-            "ci_km2_raw_pixels": [round(lo_raw * n_px * cell_km2, 6),
-                                  round(hi_raw * n_px * cell_km2, 6)],
-            "ci_km2_effective": [round(lo_eff * n_px * cell_km2, 6),
-                                 round(hi_eff * n_px * cell_km2, 6)],
-            "ci_km2": [round(lo * n_px * cell_km2, 6), round(hi * n_px * cell_km2, 6)],
-            "note": ("raw-pixel interval is 61x too narrow; pixels are not "
-                     "independent (61.42 px per independent sample)"),
+            "note": ("the raw-pixel interval was 61x too narrow because pixels are "
+                     "not independent (61.42 px per independent sample); both "
+                     "intervals are now withdrawn — see withdrawn_interval"),
             "n_effective_rounding": ("round. 2337086 / 61.420749918170166 = "
                                      "38050.43089 -> 38050. An earlier revision used "
                                      "ceil to match a manuscript that printed 38051; "
-                                     "the manuscript was corrected. The upper bound "
-                                     "is 0.147 km2 either way."),
+                                     "the manuscript was corrected."),
             "method": "Wilson score interval on the pass proportion, on EFFECTIVE samples",
-            "why_wilson": ("The normal approximation gives [0, 0] at k = 0 and would "
-                           "report a measured zero as carrying no uncertainty."),
             "why_effective": ("METHODS 7.9.1 measures 61.42 px per independent "
                               "sample by integrating the CPR autocorrelation. "
                               "Treating pixels as trials overstates n by ~61x and "
                               "narrows the interval by the same factor."),
+            # THE INTERVAL IS WITHDRAWN AS A REPORTED FIGURE, 2026-09-16.
+            # A Wilson interval answers "a detector fired k of n times; what is
+            # its rate?". This screen is not that detector: METHODS 1 proves its
+            # firing rate is zero ALGEBRAICALLY for every admissible input, so
+            # the zero carries no sampling uncertainty to quantify and an
+            # interval on it invites a reader to treat a structural zero as a
+            # measured rate that happened to land on zero. The numbers stay for
+            # the record, under a key that cannot be mistaken for a result.
+            "reported_interval": None,
+            "withdrawn_interval": {
+                "what": "a 95 % Wilson interval on the candidate area",
+                "values_km2": {
+                    "on_raw_pixels": [round(lo_raw * n_px * cell_km2, 6),
+                                      round(hi_raw * n_px * cell_km2, 6)],
+                    "on_effective_samples": [round(lo_eff * n_px * cell_km2, 6),
+                                             round(hi_eff * n_px * cell_km2, 6)]},
+                "withdrawn_on": "2026-09-16",
+                "why": ("the amplitude screen is not a detector with an unknown "
+                        "success probability: its rate is zero by construction for "
+                        "every admissible input (METHODS 1), so there is no "
+                        "sampling uncertainty for an interval to express"),
+                "manuscript": ("Sec. VII: 'the amplitude screen is not such a "
+                               "detector, since its firing rate is zero "
+                               "algebraically for every admissible input, and an "
+                               "earlier draft that attached one has been "
+                               "corrected. No candidate-area estimate is "
+                               "reported.'"),
+                "what_stands_instead": ("the measured zero itself, the 234.68x "
+                                        "margin between the threshold and the "
+                                        "field's largest CPR_a, and the 40.21 % "
+                                        "excluded / 59.79 % undecidable split"),
+            },
+            "still_consumed_by": ("backend/app/services/pdf_generator.py renders "
+                                  "ci_km2 in the operator report; that surface has "
+                                  "not been changed by this pass and is reported "
+                                  "rather than edited"),
             "provenance": "MEASURED",
         },
         "published_reanalysis": {"rows": rows, "assumptions": ASSUMPTIONS,

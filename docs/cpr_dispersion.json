@@ -1,6 +1,6 @@
 {
   "schema": "cpr_dispersion/1",
-  "generated_utc": "2026-09-13T10:56:45.400066+00:00",
+  "generated_utc": "2026-09-16T09:20:49.392467+00:00",
   "generator": "backend/scripts/cpr_dispersion.py",
   "window_px": 15,
   "windows_ranked": 9711,
@@ -234,6 +234,8 @@
     "also_reported_row": "h=105376",
     "implied_intensity_correlation_min": 0.30535793618816476,
     "estimator": "rho_I >= 1 - N relSD^2 / 2, the large-N form of rho_I = 1 - (relSD_obs/relSD_indep)^2. The exact-floor form gives a LARGER number, so the large-N one is the conservative bound and is what is reported.",
+    "N_from_dispersion_independent_channels": 80.74118073161875,
+    "N_from_dispersion_note": "the look count that reproduces their relative SD with NO channel correlation: an averaging kernel overlapping neighbouring output cells. The alternative reading to rho_I >= 0.307 at N = 54.88, and the processing detail that would decide between them is not published.",
     "bound_range_over_altitudes": [
       0.28853673412370373,
       0.34507985687534326

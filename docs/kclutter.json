@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/kclutter/1",
-  "generated_utc": "2026-09-16T07:12:22.057608+00:00",
+  "generated_utc": "2026-09-16T09:11:58.751211+00:00",
   "generator": "backend/scripts/kclutter.py",
   "seed": 7,
   "trials_per_row": 10000000,
@@ -52,6 +52,7 @@
     39.344249999999995
   ],
   "mc_sigma_points": 0.012027751738470342,
+  "mc_sigma_of_difference_points": 0.017009809633401332,
   "shared_minus_F_max_points": 0.004055186078574025,
   "claim_gated": "|fp_shared - fp_F| <= 3 sigma_MC at this trial count for every texture order (the manuscript states the identity holds to within the simulation's own sampling error), and the independent-texture rows span 27-40 % across nu = 1.5..10",
   "reproducibility": "These are what the reference block produces from a FRESH default_rng(7). The reference's own printed digits (17.53 / 27.5-39.5) came from a generator already advanced by earlier blocks of the script it lived in; the manuscript prints none of those digits and makes a qualitative claim, so the gate asserts the claim at the recorded trial count rather than any digit.",

@@ -1,0 +1,29 @@
+{
+  "schema": "lunar-ice/dop-exclusion/1",
+  "generated_utc": "2026-09-16T09:07:27.166218+00:00",
+  "generator": "backend/scripts/dop_exclusion.py",
+  "dop_threshold": 0.13,
+  "gain_imbalance": {
+    "LH": 1.018442,
+    "LV": 1.000923
+  },
+  "formula": "l_X = (DN_X / G_X)^2; DOP_a = |l_H - l_V| / (l_H + l_V); CPR_a = ((sqrt l_H - sqrt l_V)/(sqrt l_H + sqrt l_V))^2; K and sin(theta) are common to both channels and cancel",
+  "smoothing": "none \u2014 the delivered pixels, before the 5x5 boxcar, as in Fig. 1",
+  "measured_pixels": 2337086,
+  "excluded_pixels": 939791,
+  "excluded_fraction": 0.40212084621618543,
+  "excluded_percent": 40.212084621618544,
+  "undecidable_pixels": 1397295,
+  "undecidable_fraction": 0.5978791537838145,
+  "undecidable_percent": 59.787915378381456,
+  "max_cpr_a_among_undecidable": 0.004261041477680499,
+  "why_one_sided": "the true DOP is at least DOP_a, so DOP_a >= threshold excludes a pixel whatever its phase; DOP_a < threshold decides nothing",
+  "figure_cache_cross_check": {
+    "present": true,
+    "path": "Claude outputs/grsl/fig1_density.npz",
+    "n": 2337086,
+    "n_band": 1397295,
+    "max_cpr_in_band": 0.004261041525751352,
+    "agrees_with_this_run": true
+  }
+}

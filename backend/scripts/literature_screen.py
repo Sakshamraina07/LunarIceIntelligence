@@ -51,6 +51,9 @@ NF = "not_found_in_accessible_material"
 #: The original search, verbatim from the record kept beside the CSV.
 ORIGINAL_SEARCH = {
     "executed": "2026-09-09",
+    #: from the search-flow record kept with the screen: "raw links returned
+    #: ~75 ... unique scholarly records 34". Transcribed, not measured.
+    "raw_links_returned": 75,
     "index": "web search index (Google-class) returning ADS, IEEE Xplore, Wiley/AGU, "
              "ScienceDirect, Springer, MDPI, ResearchGate, NTRS, LPI/USRA records",
     "not_queried": "Scopus, IEEE Xplore native search, ADS API (institutional/API access)",

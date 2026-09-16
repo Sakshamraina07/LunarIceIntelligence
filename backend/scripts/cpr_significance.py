@@ -256,6 +256,19 @@ def main() -> int:
               f"{s['p95']:>8.3f} | {p['median']:>15.5f}{p['p95']:>9.5f}"
               f"{r['proxy_population_value']:>8.5f}")
     out["monte_carlo"] = mc
+    # THE RUN PARAMETERS, RECORDED. The trial count and the coherence are not
+    # measurements, which is why they were never written down -- and that is
+    # exactly why the manuscript's "120 000 trials at |rho| = 0.9822" had
+    # nothing on disk to check it against. A figure reproducible only by
+    # guessing two command-line flags is not reproducible.
+    out["monte_carlo_run"] = {
+        "trials_per_row": args.trials,
+        "coherence": args.coherence,
+        "seed": 20200808,
+        "rows": len(mc),
+        "note": ("the committed artifact is the run with these exact values; "
+                 "changing either changes every row"),
+    }
 
     hr("WHAT THE MONTE CARLO SHOWS")
     flat = [r for r in mc if r["imbalance_db"] == 0.0]

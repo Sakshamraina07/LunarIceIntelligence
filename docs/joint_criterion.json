@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/joint-criterion/2",
-  "generated_utc": "2026-09-16T06:57:43.791985+00:00",
+  "generated_utc": "2026-09-16T09:20:47.827423+00:00",
   "generator": "backend/scripts/joint_criterion.py",
   "seed": 7,
   "trials_per_row": 600000,

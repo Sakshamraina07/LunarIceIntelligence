@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/literature-screen/1",
-  "generated_utc": "2026-09-16T07:02:08.643070+00:00",
+  "generated_utc": "2026-09-16T09:20:47.213434+00:00",
   "generator": "backend/scripts/literature_screen.py",
   "record_csv": "docs/literature_search_record.csv (unmodified; G29 asserts its counts)",
   "value_set": [
@@ -16,6 +16,7 @@
   },
   "original_search": {
     "executed": "2026-09-09",
+    "raw_links_returned": 75,
     "index": "web search index (Google-class) returning ADS, IEEE Xplore, Wiley/AGU, ScienceDirect, Springer, MDPI, ResearchGate, NTRS, LPI/USRA records",
     "not_queried": "Scopus, IEEE Xplore native search, ADS API (institutional/API access)",
     "date_range": "1994 - 2026-09-09",

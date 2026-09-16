@@ -1,11 +1,42 @@
 {
+  "schema": "lunar-ice/published-moments/2",
+  "generated_utc": "2026-09-16T09:12:01.021908+00:00",
+  "generator": "backend/scripts/published_moments.py",
   "source": {
     "citation": "Fa, W. and Cai, Y. (2013), J. Geophys. Res. Planets, 118(8), 1582-1608, doi:10.1002/jgre.20110",
     "table": "Table 1, p. 1585, interior region",
     "transcribed_by_hand": true
   },
   "documented_looks": 8.0,
-  "documented_note": "Raney et al. 2012, para. [4], quotes 8 looks for the S-band ZOOM mode at 7.5 m. Fa & Cai used the 14.8 m baseline CDR. These are adjacent products of one instrument, not the same product.",
+  "mode_table": {
+    "instrument": "Mini-RF, Lunar Reconnaissance Orbiter, S-band (12.6 cm)",
+    "zoom": {
+      "nominal_looks": 8,
+      "resolution_m": 7.5,
+      "cdr_pixel_spacing_m": 14.8,
+      "source": "Raney, Cahill, Patterson & Bussey (2012), JGR Planets 117(E12), E00H21, para. [4]: the S-band zoom mode has 7.5-m pixels and 8 looks"
+    },
+    "baseline": {
+      "nominal_looks": 16,
+      "resolution_m": 150,
+      "source": "Spudis et al. (2013), JGR Planets, Mini-RF mode table"
+    },
+    "effective_looks_reported": {
+      "value": 6.7,
+      "source": "Spudis et al. (2013), para. [13]: an effective number of looks of about 6.7 against 8 planned",
+      "caveat": "attributed there to unpublished analysis; not reproducible from print"
+    },
+    "which_mode_fa_and_cai_analysed": {
+      "reading": "the 14.8 m calibrated data record is the zoom mode's, nominal 8 looks \u2014 14.8 m is twice the 7.5 m zoom resolution and an order of magnitude finer than the 150 m baseline",
+      "rests_on": "the mode table above, not on Fa & Cai's own text",
+      "status": "UNVERIFIED against the source \u2014 see mode_verification"
+    },
+    "superseded": {
+      "was": "Raney et al. 2012, para. [4], quotes 8 looks for the S-band ZOOM mode at 7.5 m. Fa & Cai used the 14.8 m baseline CDR. These are adjacent products of one instrument, not the same product.",
+      "corrected_on": "2026-09-16",
+      "why": "the baseline mode images at 150 m, so a 14.8 m product is not a baseline product; the earlier note put the analysed data in the wrong mode and would have compared the inverted N against the wrong nominal count"
+    }
+  },
   "craters": [
     {
       "name": "Hermite B",
@@ -100,6 +131,9 @@
   "median_N_from_skewness": 9.080159732247314,
   "median_N_from_kurtosis": 9.167870398335886,
   "agreement_sd_vs_skew_percent": 3.720967528203499,
+  "agreement_sd_vs_skew_percent_from_printed_medians": 3.7714285714285722,
+  "ordering_holds": true,
+  "ordering_note": "under a multiplicative-heterogeneity model the three estimates fall in the order N_sigma < N_gamma1 < N_gamma2; that is the order observed",
   "consequence_at_median_dispersion_N": {
     "N": 8.754410943745066,
     "bias": 1.1289588606090872,

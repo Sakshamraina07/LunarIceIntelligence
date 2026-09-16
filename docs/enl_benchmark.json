@@ -281,7 +281,34 @@
     },
     "field_model": "N independent complex circular-Gaussian looks, each separable AR(1) with field rho = sqrt(target intensity lag-1); intensity = mean |x|^2; texture = Gamma(nu, 1/nu) per cell multiplying the N-look intensity; burn-in 64 rows/cols dropped",
     "pipeline": "measure_enl.patch_ratios + mode_of; bootstrap_enl.block_boot / simple_boot / ci -- all imported unmodified; no boxcar",
-    "caveat_lag2": "AR(1) gives lag-2 intensity correlation rho^2 (0.702 az) against the product's 0.565: the synthetic field is more correlated at longer lags than the product"
+    "caveat_lag2": "AR(1) gives lag-2 intensity correlation rho^2 (0.702 az) against the product's 0.565: the synthetic field is more correlated at longer lags than the product",
+    "speckle_only_summary": {
+      "configurations": [
+        4,
+        6,
+        8,
+        12
+      ],
+      "coverage_block_95_min": 0.12,
+      "coverage_block_95_max": 0.26,
+      "coverage_percent_range": [
+        12.0,
+        26.0
+      ],
+      "relative_bias_median": 0.16020621585920103,
+      "relative_bias_percent_median": 16.020621585920104,
+      "bias_at_lowest_N": {
+        "N": 4,
+        "bias": 0.6846676555226114
+      },
+      "bias_at_highest_N": {
+        "N": 12,
+        "bias": 1.8638403430251955
+      },
+      "reading": "on pure correlated speckle the mode estimator reads about 16 % high at every look count tested, and the nominally 95 % block-bootstrap procedure covers the true ENL 12-26 % of the time: the ranges state precision, not confidence",
+      "raw_enl_corrected": "5.83 / (1 + relative_bias_median) \u2014 the delivered product's raw ENL read through the measured bias",
+      "raw_enl_5p83_corrected": 5.0249687687481845
+    }
   },
   "slc_spatial_arm": {
     "estimators": {

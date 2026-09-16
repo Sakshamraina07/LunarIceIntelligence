@@ -164,6 +164,13 @@
       "proxy_population_value": 0.029240096218501346
     }
   ],
+  "monte_carlo_run": {
+    "trials_per_row": 120000,
+    "coherence": 0.9822,
+    "seed": 20200808,
+    "rows": 6,
+    "note": "the committed artifact is the run with these exact values; changing either changes every row"
+  },
   "native_proxy": {
     "n": 2294084,
     "median": 0.0005608982611202348,

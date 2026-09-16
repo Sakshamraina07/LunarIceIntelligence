@@ -1,6 +1,6 @@
 {
   "schema": "detection_statistics/1",
-  "generated_utc": "2026-09-16T08:07:25.419680+00:00",
+  "generated_utc": "2026-09-16T10:05:14.760309+00:00",
   "generator": "backend/scripts/detection_statistics.py",
   "effective_looks": {
     "screened_field": {
@@ -23,6 +23,197 @@
     "raster": "data/pradan/native/cpr_significance.tif",
     "caveat": "Our proxy is NOT F(2N,2N)-distributed \u2014 METHODS 7.9.2. This raster is the ratio of the measured value to the floor a true sigma_SC/sigma_OC would have to clear, not a p-value on our own quantity."
   },
+  "sampling_statistics": {
+    "model": "R/CPR ~ F(2N, 2N) for a ratio of two independent N-look intensities; rel.SD = sqrt((2N-1)/(N(N-2))), bias = N/(N-1), 95 % crit. = F^-1(0.95; 2N, 2N), P_c = 1 - F(1/c; 2N, 2N)",
+    "columns": [
+      "N",
+      "rel_sd",
+      "bias",
+      "crit_95",
+      "p_exceed_true_cpr_0p7_percent",
+      "p_exceed_true_cpr_0p5_percent"
+    ],
+    "rows": [
+      {
+        "N": 5.0,
+        "N_measured": 5.0,
+        "rel_sd": 0.775,
+        "bias": 1.25,
+        "crit_95": 2.978,
+        "p_exceed_true_cpr_0p7_percent": 29.16,
+        "p_exceed_true_cpr_0p5_percent": 14.48,
+        "at_measured_N": {
+          "rel_sd": 0.775,
+          "bias": 1.25,
+          "crit_95": 2.978,
+          "p_exceed_true_cpr_0p7_percent": 29.16,
+          "p_exceed_true_cpr_0p5_percent": 14.48
+        },
+        "cells_that_move_at_measured_N": {},
+        "why": "the raw product's ENL rounded down (5.83 LH, 5.14 LV) \u2014 METHODS 7.3"
+      },
+      {
+        "N": 6.77,
+        "N_measured": 6.77,
+        "rel_sd": 0.623,
+        "bias": 1.173,
+        "crit_95": 2.525,
+        "p_exceed_true_cpr_0p7_percent": 26.03,
+        "p_exceed_true_cpr_0p5_percent": 10.75,
+        "at_measured_N": {
+          "rel_sd": 0.623,
+          "bias": 1.173,
+          "crit_95": 2.525,
+          "p_exceed_true_cpr_0p7_percent": 26.03,
+          "p_exceed_true_cpr_0p5_percent": 10.75
+        },
+        "cells_that_move_at_measured_N": {},
+        "why": "2WT = 21 / 3.10, the asymptotic value for a 21-sample average of an oversampled band \u2014 docs/slepian_ceiling.json::two_WT_asymptotic carries 6.773174590024859"
+      },
+      {
+        "N": 8.75,
+        "N_measured": 8.754410943745066,
+        "rel_sd": 0.529,
+        "bias": 1.129,
+        "crit_95": 2.244,
+        "p_exceed_true_cpr_0p7_percent": 23.16,
+        "p_exceed_true_cpr_0p5_percent": 7.85,
+        "at_measured_N": {
+          "rel_sd": 0.528,
+          "bias": 1.129,
+          "crit_95": 2.243,
+          "p_exceed_true_cpr_0p7_percent": 23.16,
+          "p_exceed_true_cpr_0p5_percent": 7.84
+        },
+        "cells_that_move_at_measured_N": {
+          "rel_sd": [
+            0.529,
+            0.528
+          ],
+          "crit_95": [
+            2.244,
+            2.243
+          ],
+          "p_exceed_true_cpr_0p5_percent": [
+            7.85,
+            7.84
+          ]
+        },
+        "why": "median N inverted from the published CPR dispersion of Fa & Cai 2013 \u2014 docs/published_moments.json::median_N_from_dispersion"
+      },
+      {
+        "N": 13.72,
+        "N_measured": 13.716639679503347,
+        "rel_sd": 0.405,
+        "bias": 1.079,
+        "crit_95": 1.895,
+        "p_exceed_true_cpr_0p7_percent": 17.79,
+        "p_exceed_true_cpr_0p5_percent": 3.74,
+        "at_measured_N": {
+          "rel_sd": 0.406,
+          "bias": 1.079,
+          "crit_95": 1.895,
+          "p_exceed_true_cpr_0p7_percent": 17.8,
+          "p_exceed_true_cpr_0p5_percent": 3.74
+        },
+        "cells_that_move_at_measured_N": {
+          "rel_sd": [
+            0.405,
+            0.406
+          ],
+          "p_exceed_true_cpr_0p7_percent": [
+            17.79,
+            17.8
+          ]
+        },
+        "why": "THE OPERATING POINT: the ENL of the boxcar-smoothed LH field, the field the screen is formed on \u2014 docs/enl.json::boxcar_gain.LH.enl_boxcar5"
+      },
+      {
+        "N": 19.77,
+        "N_measured": 19.76772534356128,
+        "rel_sd": 0.331,
+        "bias": 1.053,
+        "crit_95": 1.698,
+        "p_exceed_true_cpr_0p7_percent": 13.32,
+        "p_exceed_true_cpr_0p5_percent": 1.6,
+        "at_measured_N": {
+          "rel_sd": 0.331,
+          "bias": 1.053,
+          "crit_95": 1.698,
+          "p_exceed_true_cpr_0p7_percent": 13.32,
+          "p_exceed_true_cpr_0p5_percent": 1.6
+        },
+        "cells_that_move_at_measured_N": {},
+        "why": "the same for LV; the two smoothed channels differ \u2014 docs/enl.json::boxcar_gain.LV.enl_boxcar5"
+      },
+      {
+        "N": 21.0,
+        "N_measured": 21.0,
+        "rel_sd": 0.321,
+        "bias": 1.05,
+        "crit_95": 1.671,
+        "p_exceed_true_cpr_0p7_percent": 12.59,
+        "p_exceed_true_cpr_0p5_percent": 1.35,
+        "at_measured_N": {
+          "rel_sd": 0.321,
+          "bias": 1.05,
+          "crit_95": 1.671,
+          "p_exceed_true_cpr_0p7_percent": 12.59,
+          "p_exceed_true_cpr_0p5_percent": 1.35
+        },
+        "cells_that_move_at_measured_N": {},
+        "why": "the label's declared azimuth_looks \u2014 a processing parameter"
+      },
+      {
+        "N": 38.0,
+        "N_measured": 38.0,
+        "rel_sd": 0.234,
+        "bias": 1.027,
+        "crit_95": 1.462,
+        "p_exceed_true_cpr_0p7_percent": 6.11,
+        "p_exceed_true_cpr_0p5_percent": 0.14,
+        "at_measured_N": {
+          "rel_sd": 0.234,
+          "bias": 1.027,
+          "crit_95": 1.462,
+          "p_exceed_true_cpr_0p7_percent": 6.11,
+          "p_exceed_true_cpr_0p5_percent": 0.14
+        },
+        "cells_that_move_at_measured_N": {},
+        "why": "the '~38 look average' quoted for Peary crater in the DFSAR instrument paper (Bhiravarasu et al. 2021)"
+      }
+    ],
+    "convention": "each row is computed at the N the table PRINTS; `at_measured_N` repeats it at the unrounded measurement and `cells_that_move_at_measured_N` names every cell that differs at three decimals",
+    "read_down_a_column": "the published look count is not stated, so the table spans N rather than asserting one",
+    "all_exceedances_are_upper_bounds": "within the correlated circular-Gaussian model and over the coherence range tested \u2014 docs/correlated_ratio.json; and an upper bound over coherence only, not over within-cell texture, which adds up to two points \u2014 docs/kclutter_within_cell.json",
+    "power_at_operating_point": {
+      "N": 13.72,
+      "critical_value": 1.8946,
+      "rows": [
+        {
+          "true_cpr": 1.0,
+          "power_percent": 5.0
+        },
+        {
+          "true_cpr": 1.2988505747126435,
+          "power_percent": 16.43
+        },
+        {
+          "true_cpr": 1.5,
+          "power_percent": 27.24
+        },
+        {
+          "true_cpr": 2.0,
+          "power_percent": 55.59
+        },
+        {
+          "true_cpr": 3.0,
+          "power_percent": 88.25
+        }
+      ],
+      "note": "P(R > crit) at each true CPR. The 1.2989 row is the largest true CPR the DOP < 0.13 coupling admits, so it bounds the power of the joint criterion."
+    }
+  },
   "candidate_area": {
     "pixels": 0,
     "measured_pixels": 2337086,
@@ -30,23 +221,29 @@
     "confidence": 0.95,
     "correlation_area_px": 61.420749918170166,
     "n_effective": 38050,
-    "ci_km2_raw_pixels": [
-      0.0,
-      0.002401
-    ],
-    "ci_km2_effective": [
-      0.0,
-      0.147453
-    ],
-    "ci_km2": [
-      0.0,
-      0.147453
-    ],
-    "note": "raw-pixel interval is 61x too narrow; pixels are not independent (61.42 px per independent sample)",
-    "n_effective_rounding": "round. 2337086 / 61.420749918170166 = 38050.43089 -> 38050. An earlier revision used ceil to match a manuscript that printed 38051; the manuscript was corrected. The upper bound is 0.147 km2 either way.",
+    "note": "the raw-pixel interval was 61x too narrow because pixels are not independent (61.42 px per independent sample); both intervals are now withdrawn \u2014 see withdrawn_interval",
+    "n_effective_rounding": "round. 2337086 / 61.420749918170166 = 38050.43089 -> 38050. An earlier revision used ceil to match a manuscript that printed 38051; the manuscript was corrected.",
     "method": "Wilson score interval on the pass proportion, on EFFECTIVE samples",
-    "why_wilson": "The normal approximation gives [0, 0] at k = 0 and would report a measured zero as carrying no uncertainty.",
     "why_effective": "METHODS 7.9.1 measures 61.42 px per independent sample by integrating the CPR autocorrelation. Treating pixels as trials overstates n by ~61x and narrows the interval by the same factor.",
+    "reported_interval": null,
+    "withdrawn_interval": {
+      "what": "a 95 % Wilson interval on the candidate area",
+      "values_km2": {
+        "on_raw_pixels": [
+          0.0,
+          0.002401
+        ],
+        "on_effective_samples": [
+          0.0,
+          0.147453
+        ]
+      },
+      "withdrawn_on": "2026-09-16",
+      "why": "the amplitude screen is not a detector with an unknown success probability: its rate is zero by construction for every admissible input (METHODS 1), so there is no sampling uncertainty for an interval to express",
+      "manuscript": "Sec. VII: 'the amplitude screen is not such a detector, since its firing rate is zero algebraically for every admissible input, and an earlier draft that attached one has been corrected. No candidate-area estimate is reported.'",
+      "what_stands_instead": "the measured zero itself, the 234.68x margin between the threshold and the field's largest CPR_a, and the 40.21 % excluded / 59.79 % undecidable split"
+    },
+    "still_consumed_by": "backend/app/services/pdf_generator.py renders ci_km2 in the operator report; that surface has not been changed by this pass and is reported rather than edited",
     "provenance": "MEASURED"
   },
   "published_reanalysis": {
@@ -138,7 +335,7 @@
     ],
     "assumptions": [
       "Published CPR is sigma_SC/sigma_OC from the Stokes vector, so it is a ratio of two N-look intensities and distributed as CPR * F(2N,2N). This is stated in the source and is not our inference.",
-      "The look count for their product is NOT STATED in the open text. The table is therefore computed ACROSS a range of N rather than at one value, and no single detection floor is quoted for their data.",
+      "The look count for their product is NOT STATED in the open text. The table is therefore computed ACROSS a range of N rather than at one value, and no single critical value is quoted for their data.",
       "OUR measured ENL cannot be transferred to their product. Ours is a compact-pol sri product from one pass; theirs is full-polarimetric L- and S-band from a different acquisition and a different processing chain. The point is not that their N is ours -- it is that NOBODY HAS MEASURED THEIRS.",
       "The floors below are for a SINGLE PIXEL at 95 % confidence. A detection averaged over many pixels has a lower floor, by roughly sqrt(n_eff) -- and n_eff, not n, because CPR pixels are correlated (METHODS 7.9.1 measures 61.5 px per independent sample in our own field).",
       "No claim is made that any published detection is wrong. The claim is that the floor is not reported alongside it, so a reader cannot tell."

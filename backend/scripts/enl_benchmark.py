@@ -319,14 +319,53 @@ def part_b(args, rng) -> dict:
                             f"patch grid, B = {args.B}"}}
 
 
+def speckle_only_summary(rows: list) -> dict:
+    """The two sentences the paper makes of Part A, as keys.
+
+    A pure function of the rows, so it can be recomputed from the artifact
+    without re-running an 83-minute Monte Carlo (--summarise-only).
+    """
+    clean = [r for r in rows if r["texture_order"] is None]
+    cov = [r["coverage_block_95"] for r in clean]
+    rel = [r["relative_bias"] for r in clean]
+    return {
+        "configurations": [r["true_enl"] for r in clean],
+        "coverage_block_95_min": min(cov), "coverage_block_95_max": max(cov),
+        "coverage_percent_range": [100 * min(cov), 100 * max(cov)],
+        "relative_bias_median": float(np.median(rel)),
+        "relative_bias_percent_median": float(100 * np.median(rel)),
+        "bias_at_lowest_N": {"N": clean[0]["true_enl"], "bias": clean[0]["bias"]},
+        "bias_at_highest_N": {"N": clean[-1]["true_enl"], "bias": clean[-1]["bias"]},
+        "reading": ("on pure correlated speckle the mode estimator reads about "
+                    "16 % high at every look count tested, and the nominally "
+                    "95 % block-bootstrap procedure covers the true ENL 12-26 % "
+                    "of the time: the ranges state precision, not confidence"),
+        "raw_enl_corrected": ("5.83 / (1 + relative_bias_median) — the delivered "
+                              "product's raw ENL read through the measured bias"),
+    }
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
+    ap.add_argument("--summarise-only", action="store_true",
+                    help="recompute the summary block from the stored rows and "
+                         "rewrite the artifact; runs no Monte Carlo")
     ap.add_argument("--replicates", type=int, default=200)
     ap.add_argument("--B", type=int, default=BE.B_DEFAULT)
     ap.add_argument("--rows", type=int, default=1024)
     ap.add_argument("--cols", type=int, default=512)
     ap.add_argument("--skip-slc", action="store_true")
     args = ap.parse_args()
+
+    if args.summarise_only:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        s = speckle_only_summary(doc["synthetic"]["rows"])
+        doc["synthetic"]["speckle_only_summary"] = s
+        s["raw_enl_5p83_corrected"] = 5.83 / (1.0 + s["relative_bias_median"])
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(json.dumps(s, indent=2, default=float))
+        print(f"\n  rewrote {OUT.relative_to(BASE_DIR)} (summary only; no Monte Carlo run)")
+        return 0
 
     enl = json.loads(ENL_JSON.read_text(encoding="utf-8"))
     rho_i_az = float(enl["lag_correlation"]["LH"]["azimuth_lines"][0])
@@ -360,7 +399,8 @@ def main() -> int:
             "caveat_lag2": "AR(1) gives lag-2 intensity correlation rho^2 (0.702 az) against "
                            "the product's 0.565: the synthetic field is more correlated at "
                            "longer lags than the product",
-            "rows": rows},
+            "rows": rows,
+            "speckle_only_summary": speckle_only_summary(rows)},
         "slc_spatial_arm": part_b_res,
     }, indent=2, default=float), encoding="utf-8")
     beat(f"wrote {OUT.relative_to(BASE_DIR)}")

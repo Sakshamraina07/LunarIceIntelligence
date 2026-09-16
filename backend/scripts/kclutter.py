@@ -7,7 +7,7 @@ WHY
 ---
 Lunar regolith is not a homogeneous scatterer, so the speckle model underlying
 F(2N, 2N) -- Gaussian clutter, no texture -- is an idealisation. The obvious
-worry is that real texture inflates the false-positive rate and every figure in
+worry is that real texture inflates the exceedance rate and every figure in
 this work is optimistic.
 
 It does not, and the reason is worth stating precisely. If the same-sense and
@@ -124,6 +124,9 @@ def main() -> int:
         "independent_texture_range": [min(indep), max(indep)],
         "independent_texture_range_finite_nu": [min(indep_finite), max(indep_finite)],
         "mc_sigma_points": sigma_mc,
+        # The claim compares TWO estimates of the same tail, so the sampling
+        # error that matters is that of their difference: sigma * sqrt(2).
+        "mc_sigma_of_difference_points": sigma_mc * math.sqrt(2.0),
         "shared_minus_F_max_points": diff_max,
         "claim_gated": ("|fp_shared - fp_F| <= 3 sigma_MC at this trial count for every "
                         "texture order (the manuscript states the identity holds to "

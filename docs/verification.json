@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-13T11:15:15.769822+00:00",
+  "generated_utc": "2026-09-16T08:11:35.322196+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 25.1
+      "seconds": 25.7
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 21.1
+      "seconds": 20.6
     },
     {
       "id": "G4",
@@ -32,7 +32,7 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 27.6
+      "seconds": 28.8
     },
     {
       "id": "G5",
@@ -40,7 +40,7 @@
       "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 3.8
+      "seconds": 3.9
     },
     {
       "id": "G6",
@@ -48,7 +48,7 @@
       "gate": "hillshade_histogram.py + composite_contrast.py",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 3.0
+      "seconds": 3.3
     },
     {
       "id": "G6b",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 42.7
+      "seconds": 46.8
     },
     {
       "id": "G7",
@@ -64,15 +64,15 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 21.9
+      "seconds": 20.2
     },
     {
       "id": "G8",
       "statement": "Every measured figure quoted in METHODS.md still matches the artifact it was transcribed from",
-      "gate": "stamp_methods.py --check \u2014 26 artifacts",
+      "gate": "stamp_methods.py --check \u2014 40 artifacts",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.3
+      "seconds": 0.7
     },
     {
       "id": "G9",
@@ -80,7 +80,7 @@
       "gate": "assert_pdf_agrees_with_analysis.py \u2014 the rendered bytes, not the inputs",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.7
+      "seconds": 1.6
     },
     {
       "id": "G10",
@@ -88,7 +88,7 @@
       "gate": "assert_upper_bounds_labelled.py \u2014 every occurrence, every tracked source",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.3
+      "seconds": 0.5
     },
     {
       "id": "G12",
@@ -112,7 +112,7 @@
       "gate": "verify_production.mjs --all-states \u2014 the built bundle, all three backend states",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 90.5
+      "seconds": 92.9
     },
     {
       "id": "G16",
@@ -120,7 +120,7 @@
       "gate": "assert_pdf_refuses_without_rasters.py \u2014 the loader, the 409, the rendered bytes",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.6
+      "seconds": 0.7
     },
     {
       "id": "G17",
@@ -144,7 +144,7 @@
       "gate": "assert_withdrawn_claims_absent.py --list prints each term with the sentence it forbids",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 1.0
+      "seconds": 1.3
     },
     {
       "id": "G20",
@@ -157,7 +157,7 @@
     {
       "id": "G23",
       "statement": "The candidate-area confidence interval is taken on effective samples, not on correlated pixels",
-      "gate": "assert_wilson_on_effective_samples.py - 38,051 effective samples, upper bound 0.147 km2",
+      "gate": "assert_wilson_on_effective_samples.py - 38,050 effective samples, upper bound 0.147 km2",
       "verdict": "PASS",
       "returncode": 0,
       "seconds": 0.2
@@ -184,7 +184,7 @@
       "gate": "verify_data_provenance.py - 7 checks, emits docs/data_provenance.json",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 45.9
+      "seconds": 28.9
     },
     {
       "id": "G28",
@@ -192,7 +192,7 @@
       "gate": "check_repo_complete.py - C1-C7, C7 scans every path ever committed",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 9.7
+      "seconds": 11.7
     },
     {
       "id": "G26",
@@ -200,7 +200,47 @@
       "gate": "paper/assert_figures_embed_fonts.py - rebuilt, then read from the PDF itself",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 7.6
+      "seconds": 8.3
+    },
+    {
+      "id": "G30",
+      "statement": "Every sensitivity claim in Sections V-VI is the number its artifact holds",
+      "gate": "assert_manuscript_claims.py - S1-S8, claims not remembered digits",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.1
+    },
+    {
+      "id": "G31",
+      "statement": "The amplitude-CPR ceiling survives shuffled, mis-scaled and random inputs, and no pixel passes in any case",
+      "gate": "robustness_gate.py - nine corruptions, crossing within 1e-4, zero passing",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 7.7
+    },
+    {
+      "id": "G21",
+      "statement": "Every artifact with a stated reproduction command holds the number of runs that command produces",
+      "gate": "assert_artifact_matches_repro_command.py - the artifact is the run METHODS names",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.2
+    },
+    {
+      "id": "G22",
+      "statement": "Every ENL ceiling is predicted from its own product's own label",
+      "gate": "assert_ceilings_have_own_label.py - no ceiling borrowed from another product",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.2
+    },
+    {
+      "id": "G29",
+      "statement": "The literature-search record holds the counts the manuscript claims, and no relevant paper reports any of the three criteria",
+      "gate": "literature_search_gate.py - counts read from the screening CSV",
+      "verdict": "PASS",
+      "returncode": 0,
+      "seconds": 0.2
     }
   ],
   "all_pass": true

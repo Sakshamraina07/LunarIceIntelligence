@@ -1,0 +1,103 @@
+{
+  "LH": {
+    "n_patches": 8337,
+    "patch_grid_rows": 141,
+    "patch_grid_cols": 413,
+    "rows_with_any_patch": 108,
+    "enl_raw": 5.827582742508031,
+    "enl_raw_ci_simple": [
+      4.040929286667655,
+      6.145894771572612
+    ],
+    "enl_raw_ci_block": [
+      4.031985555747318,
+      6.192660025009096
+    ],
+    "enl_box": 13.716639679503347,
+    "enl_box_ci_simple": [
+      10.692978512715843,
+      24.39585564011421
+    ],
+    "enl_box_ci_block": [
+      10.692978512715843,
+      22.521364411451465
+    ],
+    "fp_point": 17.79542316504329,
+    "fp_ci_simple": [
+      10.821149970480104,
+      20.81032893500476
+    ],
+    "fp_ci_block": [
+      11.758629858834201,
+      20.81032893500476
+    ],
+    "floor_point": 1.8947771653258858,
+    "floor_ci_simple": [
+      1.6089484034937611,
+      2.0697403511564207
+    ],
+    "floor_ci_block": [
+      1.6411355530933682,
+      2.0697403511564207
+    ],
+    "bootstrap_sd_block_raw": 0.6983379139225264,
+    "bootstrap_sd_block_box": 3.8584662050814416
+  },
+  "LV": {
+    "n_patches": 8337,
+    "patch_grid_rows": 141,
+    "patch_grid_cols": 413,
+    "rows_with_any_patch": 108,
+    "enl_raw": 5.141278456298767,
+    "enl_raw_ci_simple": [
+      4.384940973584428,
+      6.787609890369531
+    ],
+    "enl_raw_ci_block": [
+      4.384364048960974,
+      7.287695851202345
+    ],
+    "enl_box": 19.76772534356128,
+    "enl_box_ci_simple": [
+      12.17890171956376,
+      24.755349160394275
+    ],
+    "enl_box_ci_block": [
+      12.110323877834976,
+      24.755349160394275
+    ],
+    "fp_point": 13.320770036149776,
+    "fp_ci_simple": [
+      10.651768946750117,
+      19.244911929589836
+    ],
+    "fp_ci_block": [
+      10.651768946750117,
+      19.31336500771148
+    ],
+    "floor_point": 1.698151172636081,
+    "floor_ci_simple": [
+      1.6032742834503233,
+      1.9733742873291464
+    ],
+    "floor_ci_block": [
+      1.6032742834503233,
+      1.9773209652335664
+    ],
+    "bootstrap_sd_block_raw": 0.7613240200763922,
+    "bootstrap_sd_block_box": 3.5724482171158023
+  },
+  "schema": "lunar-ice/bootstrap-enl/1",
+  "generated_utc": "2026-09-16T06:35:28.228338+00:00",
+  "generator": "backend/scripts/bootstrap_enl.py",
+  "seed": 2026,
+  "B": 2000,
+  "patch": 16,
+  "resampling_unit_block": "whole rows of the 16x16 patch grid: one row is an azimuth band 16 px = 400 m high spanning the full range extent",
+  "resampling_unit_simple": "individual patches, i.i.d.",
+  "interval_method": "percentile, 2.5 / 97.5; not BCa",
+  "mask": "amplitude mask (LH>0 & LV>0) eroded by the 5x5 boxcar footprint, so no window reaches a zero-fill pixel",
+  "estimator": "measure_enl.patch_ratios (ddof=1) + measure_enl.mode_of (120-bin log-space histogram), imported unmodified",
+  "propagation": "FP = 1 - F(1/0.7; 2N, 2N) and floor = F^-1(0.95; 2N, 2N) at each replicate's post-boxcar ENL",
+  "true_cpr": 0.7
+}

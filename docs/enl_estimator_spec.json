@@ -1,0 +1,88 @@
+{
+  "schema": "lunar-ice/enl-estimator-spec/1",
+  "generated_utc": "2026-09-16T06:35:58.364580+00:00",
+  "generator": "backend/scripts/enl_estimator_spec.py",
+  "read_from": [
+    "backend/scripts/measure_enl.py",
+    "backend/scripts/bootstrap_enl.py",
+    "backend/scripts/process_real_sar_pipeline.py"
+  ],
+  "statistic": "mean^2 / var of intensity (DN^2) per patch",
+  "patch": {
+    "sizes_px": [
+      16,
+      32,
+      64
+    ],
+    "sizes_m_on_25m_grid": [
+      400,
+      800,
+      1600
+    ],
+    "stride_px": "equal to the patch size",
+    "overlap_px": 0,
+    "tiling": "non-overlapping tiles anchored at the raster origin; a partial tile at the right or bottom edge is dropped",
+    "inclusion_rule": "a patch is used only if EVERY pixel is inside the mask",
+    "variance_ddof": 1,
+    "headline_patch_px": 16
+  },
+  "mode_estimator": {
+    "domain": "ln(mean^2/var)",
+    "histogram_bins": 120,
+    "bin_edges": "numpy.histogram default: equal width over [min, max] of the per-patch values",
+    "location": "exp of the midpoint of the fullest bin",
+    "why_mode": "texture only lowers mean^2/var, so the homogeneous population is the upper mode, not the centre",
+    "alternative_reported": "mean, p5, p25, median, p75, p95 of the same per-patch distribution"
+  },
+  "masks": {
+    "amplitude_mask": {
+      "definition": "lh > 0) & (lv > 0",
+      "where": "process_real_sar_pipeline.py; aliased to `valid` (valid = amplitude)",
+      "n_px": 2337086,
+      "used_for": "every per-pixel statistic, the screening (CPR > 1 and DOP < 0.13) and the Wilson denominator (measured_pixels)"
+    },
+    "screening_mask": {
+      "definition": "identical to the amplitude mask -- valid_native.tif is the amplitude mask written to disk",
+      "n_px": 2337086
+    },
+    "enl_measurement_mask": {
+      "definition": "amplitude mask eroded by a 5x5 structuring element (the 5x5 boxcar footprint), so no window reaches a zero-fill pixel",
+      "n_px": 2294084,
+      "used_for": "the raw and boxcar ENL rows (enl.json::boxcar_gain) and every bootstrap interval"
+    },
+    "patches_16x16_wholly_inside": {
+      "amplitude_mask": 8495,
+      "enl_measurement_mask": 8337
+    }
+  },
+  "bootstrap": {
+    "replicates_B": 2000,
+    "seed": 2026,
+    "generator": "numpy.random.default_rng",
+    "simple": {
+      "resampling_unit": "one patch",
+      "scheme": "i.i.d. with replacement"
+    },
+    "block": {
+      "resampling_unit": "one row of the 16x16 patch grid",
+      "row_height_px": 16,
+      "row_height_m": 400,
+      "construction": "the patch grid is (rows, cols); a replicate draws rows with replacement and pools every finite positive patch ratio in the drawn rows",
+      "why": "azimuth lag-1 correlation is +0.838; a row keeps the along-azimuth dependence inside the unit"
+    },
+    "interval": {
+      "method": "percentile",
+      "percentiles": [
+        2.5,
+        97.5
+      ],
+      "bca": false
+    },
+    "statistic_bootstrapped": "mode_of over the resampled patch ratios"
+  },
+  "boxcar": {
+    "size_px": 5,
+    "filter": "scipy.ndimage.uniform_filter, reflect boundary (default)",
+    "applied_to": "DN^2 before the patch statistic, for the post-boxcar ENL only"
+  }
+}

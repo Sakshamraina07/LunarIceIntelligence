@@ -88,7 +88,7 @@ GATES = [
 
     ("G5", "CPR is an explicitly-labelled amplitude-only ratio with the claim "
            "withdrawn, and CANDIDATE AREA is a measurement including a zero",
-     "detection_statistics.py — the floor, and the confidence interval",
+     "detection_statistics.py — the critical value, the table, and the withdrawn interval",
      [sys.executable, str(SCRIPTS / "detection_statistics.py")], False),
 
     ("G6", "The map's relief is real at 25 m, lit from more than one direction, "
@@ -226,9 +226,10 @@ GATES = [
     # A confidence interval that is too narrow is worse than none: it states a
     # precision the data does not have, on the one number this project exists to
     # report honestly.
-    ("G23", "The candidate-area confidence interval is taken on effective "
-            "samples, not on correlated pixels",
-     "assert_wilson_on_effective_samples.py - 38,050 effective samples, upper bound 0.147 km2",
+    ("G23", "No interval is reported on the candidate area, the withdrawal is on "
+            "the record, and the effective-sample count is read not copied",
+     "assert_wilson_on_effective_samples.py - no interval on a structural zero, "
+     "38,050 effective samples",
      [sys.executable, str(SCRIPTS / "assert_wilson_on_effective_samples.py")], False),
 
     # METHODS 3 said the frame DEM was LDEM_80S_80M at 80 m; it is LDEM_80S_20M
@@ -280,7 +281,7 @@ GATES = [
     # asserts against is a file. This asserts each CLAIM against its artifact;
     # where the digits depend on RNG state the claim is gated, not the digit.
     ("G30", "Every sensitivity claim in Sections V-VI is the number its artifact holds",
-     "assert_manuscript_claims.py - S1-S8, claims not remembered digits",
+     "assert_manuscript_claims.py - S1-S14, the CURRENT claims, not remembered digits",
      [sys.executable, str(SCRIPTS / "assert_manuscript_claims.py")], False),
 
     # The degeneracy is a property of the computation, not of these data, so it
@@ -306,6 +307,17 @@ GATES = [
             "and no relevant paper reports any of the three criteria",
      "literature_search_gate.py - counts read from the screening CSV",
      [sys.executable, str(SCRIPTS / "literature_search_gate.py")], False),
+
+    # The number audit compares a printed figure against a STORED value, which
+    # is blind to an artifact and a manuscript inheriting the same arithmetic
+    # error from the same script. This recomputes all 74 cells of the three
+    # closed-form tables from the pipeline's own functions, reading nothing
+    # from an artifact, and diffs them against the .tex.
+    ("G32", "Every cell of the manuscript's closed-form tables recomputes from "
+            "the pipeline's own functions",
+     "recompute_manuscript_tables.py - Tables II, III and IV, cell by cell",
+     [sys.executable, str(SCRIPTS / "recompute_manuscript_tables.py"),
+      "--assert-none-differ"], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

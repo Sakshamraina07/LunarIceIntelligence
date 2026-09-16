@@ -117,6 +117,65 @@ WITHDRAWN = [
      "Two different pre-registrations. The 8-of-8 scores the solar-disc A/B and "
      "is TRUE. The band is scored separately as NOT A HIT at 1.174x. Forbidden "
      "only as one claim. METHODS 5.10."),
+
+    # ---- withdrawn 2026-09-16, by the 10-page revision --------------------
+    # Five claims the manuscript itself retracted after the peer review. The
+    # repository must not go on asserting what the paper stopped asserting.
+    # The quoting varies -- "21 looks", '21 looks', *"21 looks"* -- and the
+    # first version of this term only matched the apostrophe form, so it passed
+    # over the two documents that still made the claim.
+    ("arms-deliver-different-looks",
+     r"(?is)(?:do not deliver the same number of looks"
+     r"|[\"'“‘*]?21\s+looks[\"'”’*]?\s+names a method"
+     r"|(?:two )?methods deliver(?:ing)? different numbers? of looks)",
+     '"the two methods do not deliver the same number of looks" / "21 looks '
+     'names a method", read off the 4.52-against-9.95 gap.',
+     "The arms differ in effective azimuth RESOLUTION (ACF half-widths 0.95 vs "
+     "2.79 rows), not in delivered looks: smoothed to a common width the paired "
+     "difference is -1.00 +/- 0.57. METHODS 7.4b."),
+
+    ("enl-range-is-a-confidence-interval",
+     r"(?is)(?:95\s*%|95\\?\s*%|nominal(?:ly)?\s*95)[^;\n]{0,60}"
+     r"(?:bootstrap|interval)[^;\n]{0,60}(?:enl|look)"
+     r"|(?:enl|look\s*count)[^;\n]{0,60}95\s*%\s*(?:confidence\s*)?interval",
+     'a "95 % confidence interval" on a measured ENL.',
+     "The benchmark measures the nominally 95 % procedure covering the true ENL "
+     "12-26 % of the time on correlated speckle, so the ranges state PRECISION, "
+     "not confidence. METHODS 7.3.2."),
+
+    # The word must stand alone: `"predicted_ceiling":` is a key that other
+    # artifacts address by name, and a key is not a claim. What is forbidden is
+    # the PROSE that calls the number a bound.
+    ("look-count-ceiling",
+     r"(?is)(?<![\w\"'])(?:ceiling|upper bound)(?![\w\"'])[^.\n]{0,70}"
+     r"(?:6\.77|7\.34|13\.42|2WT)"
+     r"|(?:6\.77|7\.34|13\.42|2WT)[^.\n]{0,70}(?<![\w\"'])ceiling(?![\w\"'])",
+     'calling 6.77 / 7.34 / 13.42 a "ceiling" on the look count.',
+     "None of them is a bound: a mildly shaped spectrum of the same support "
+     "gives 7.38, above the rectangular value, and 2WT is asymptotic. They are "
+     "REFERENCE VALUES for a multilooking scheme. METHODS 7.4."),
+
+    # The gap is [^;\n], not [^.\n]: every sentence that makes this claim has a
+    # decimal point in it ("0.0000 with a 95 % interval"), and a gap that stops
+    # at a full stop stops at the number too. The first version of this term
+    # could not catch its own specimen.
+    ("wilson-on-the-amplitude-screen",
+     r"(?is)(?:wilson|confidence interval)[^;\n]{0,90}"
+     r"(?:candidate[ _]area|detected area|ice[ _]area)"
+     r"|candidate[ _]area[^;\n]{0,90}(?:wilson|95\s*%\s*(?:ci|confidence))",
+     'a Wilson interval, or any confidence interval, on the candidate ice area.',
+     "The screen is not a detector with an unknown success probability: its "
+     "firing rate is zero ALGEBRAICALLY for every admissible input, so there is "
+     "no sampling uncertainty for an interval to express. No candidate-area "
+     "estimate is reported. detection_statistics.json::withdrawn_interval."),
+
+    ("exceedance-called-a-false-positive-rate",
+     r"(?is)false[- ]positive rate[^.\n]{0,50}(?:17\.8|17\.79|18\s*%|for ice)"
+     r"|(?:17\.8|17\.79)\s*%[^.\n]{0,40}false[- ]positive rate",
+     'calling the 17.8 % noise exceedance a "false-positive rate".',
+     "It is P(R > 1) at a STATED true CPR under a sampling model. A "
+     "false-positive rate for ice would need a distribution over ice-free "
+     "terrain, which no study supplies. Manuscript Sec. V-A."),
 ]
 
 #: A hit is EXCUSED when retraction language sits within RETRACTION_WINDOW
@@ -334,6 +393,19 @@ _SPECIMENS = {
     "preregistration-conflation":
         "We pre-registered " + "1.2-1.6" + "x and the prediction held "
         + "8 of 8" + ".",
+    "arms-deliver-different-looks":
+        "The two arms " + "do not deliver the same number of looks" + ".",
+    "enl-range-is-a-confidence-interval":
+        "The " + "95 %" + " block-" + "bootstrap" + " interval on the "
+        + "ENL" + " is 4.03 to 6.19.",
+    "look-count-ceiling":
+        "The spatial arm sits under its " + "ceiling" + " of " + "6.77" + ".",
+    "wilson-on-the-amplitude-screen":
+        "The " + "candidate area" + " is 0.0000 with a " + "95 % confidence"
+        + " interval of [0, 0.147].",
+    "exceedance-called-a-false-positive-rate":
+        "The " + "false-positive rate" + " at the operating point is "
+        + "17.8" + " %.",
 }
 
 

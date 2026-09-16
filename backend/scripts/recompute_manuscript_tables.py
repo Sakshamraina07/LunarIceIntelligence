@@ -94,6 +94,11 @@ def dec(s: str) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tex", default=DEFAULT_TEX)
+    ap.add_argument("--assert-none-differ", action="store_true",
+                    help="exit non-zero if any cell differs, or if a table "
+                         "parses to fewer cells than it has")
+    ap.add_argument("--inject", choices=("cell", "row"),
+                    help="break one cell, or drop a row, to prove the check runs")
     args = ap.parse_args()
     tex = (BASE_DIR / args.tex).read_text(encoding="utf-8", errors="replace")
     raw_lines = [re.sub(r"(?<!\\)%.*", "", ln) for ln in tex.splitlines()]
@@ -257,9 +262,36 @@ def main() -> int:
 
     report["total_cells"] = len(rows2) + len(rows3) + len(rows4)
     report["total_differ"] = total_bad
+    # A table that parses to FEWER cells than it has is the quiet failure this
+    # check is most exposed to: a wrapped row or a LaTeX spacing macro silently
+    # removes cells from the comparison and the summary still reads "0 differ".
+    # Both have happened here. So the expected counts are asserted too.
+    EXPECT = {"II_sampling_statistics": 35, "III_sensitivity": 12,
+              "IV_published_moments": 27}
+    short = {k: (len(report["tables"][k]["cells"]), v) for k, v in EXPECT.items()
+             if len(report["tables"][k]["cells"]) != v}
+    if args.inject == "cell":
+        print("\n  --inject cell: one cell marked as differing\n")
+        total_bad += 1
+    if args.inject == "row":
+        print("\n  --inject row: one table parsed short\n")
+        short["II_sampling_statistics"] = (30, 35)
+    report["expected_cells"] = EXPECT
+    report["tables_parsed_short"] = {k: {"parsed": a, "expected": b}
+                                     for k, (a, b) in short.items()}
     OUT.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"\n  {report['total_cells']} cells recomputed, {total_bad} differ from print")
+    for k, (got, want) in short.items():
+        print(f"  TABLE PARSED SHORT: {k} gave {got} cells, expected {want}")
     print(f"  wrote {OUT.relative_to(BASE_DIR)}")
+
+    if args.assert_none_differ or args.inject:
+        if total_bad or short:
+            print("\n  GATE FAIL — a printed cell does not follow from the "
+                  "pipeline's own arithmetic, or a table was parsed short.")
+            return 1
+        print("\n  GATE PASS — every cell of Tables II, III and IV recomputes "
+              "from the pipeline's functions at the precision printed.")
     return 0
 
 

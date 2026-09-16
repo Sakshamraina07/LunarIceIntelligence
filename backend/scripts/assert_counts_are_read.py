@@ -47,14 +47,26 @@ for _s in (sys.stdout, sys.stderr):
     except (AttributeError, OSError):
         pass
 
-WORDS = {
-    1: "one", 2: "two", 3: "three", 4: "four", 5: "five", 6: "six", 7: "seven",
-    8: "eight", 9: "nine", 10: "ten", 11: "eleven", 12: "twelve",
-    13: "thirteen", 14: "fourteen", 15: "fifteen", 16: "sixteen",
-    17: "seventeen", 18: "eighteen", 19: "nineteen", 20: "twenty",
-    21: "twenty-one", 22: "twenty-two", 23: "twenty-three", 24: "twenty-four",
-    25: "twenty-five", 26: "twenty-six", 27: "twenty-seven",
-}
+#: THIS TABLE ONCE STOPPED AT TWENTY-SEVEN, AND THAT IS HOW THIS GATE WENT
+#: BLIND. When the suite reached thirty, README and viva.md said "thirty",
+#: `verify_all.GATES` held 31, and G25 reported PASS -- because "thirty" was not
+#: in this map, the lookup returned None, and an unreadable count was treated as
+#: no count at all. The gate written to stop a spelled count going stale went
+#: stale itself, in the one way it could not report.
+#:
+#: Two changes. The table runs to ninety-nine, built rather than typed; and an
+#: unrecognised word in a "<N> gates" phrase is now a FAILURE, not a skip,
+#: because a count this gate cannot read is a count it is not checking.
+_UNITS = ["zero", "one", "two", "three", "four", "five", "six", "seven",
+          "eight", "nine", "ten", "eleven", "twelve", "thirteen", "fourteen",
+          "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"]
+_TENS = {20: "twenty", 30: "thirty", 40: "forty", 50: "fifty", 60: "sixty",
+         70: "seventy", 80: "eighty", 90: "ninety"}
+WORDS = {i: _UNITS[i] for i in range(1, 20)}
+for _t, _w in _TENS.items():
+    WORDS[_t] = _w
+    for _u in range(1, 10):
+        WORDS[_t + _u] = f"{_w}-{_UNITS[_u]}"
 WORD_TO_N = {w: n for n, w in WORDS.items()}
 
 DOCS = ["README.md", "docs/viva.md", "docs/METHODS.md", "docs/testing.md",
@@ -145,6 +157,20 @@ def main() -> int:
                         val = WORD_TO_N.get(tok)
                         if val is None:
                             if not tok.isdigit():
+                                # A WORD THIS GATE CANNOT READ IS NOT A PASS.
+                                # Skipping it is how "thirty" slipped past a
+                                # table that stopped at twenty-seven. Articles
+                                # and quantifiers are the one exception: they
+                                # are not counts at all.
+                                if tok in ("the", "a", "all", "these", "those",
+                                           "its", "our", "every", "some", "no",
+                                           "many", "both", "such", "other",
+                                           "remaining", "further", "more"):
+                                    continue
+                                bad.append(
+                                    f"{rel}:{i} states {tok!r} {label}, which "
+                                    f"this gate cannot read as a number; the "
+                                    f"count is {truth}  |  {line.strip()[:64]}")
                                 continue
                             val = int(tok)
                         if val != truth:

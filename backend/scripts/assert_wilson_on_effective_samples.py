@@ -1,34 +1,42 @@
 """
-assert_wilson_on_effective_samples.py -- G23. The interval counts samples, not pixels.
+assert_wilson_on_effective_samples.py -- G23. No interval is reported on a
+structural zero, and the sample count that survives it is a measurement.
 
     python backend/scripts/assert_wilson_on_effective_samples.py [--inject WHICH]
 
-WHY
----
-`docs/detection_statistics.json` carried `ci_km2 = [0, 0.002401]`, a Wilson
-interval on 2,337,086 raw pixels. METHODS 7.9.1 measures the correlation area of
-that same field at 61.42 px per independent sample, so the pixel count overstates
-the sample size by about sixty-one, and the interval came out about sixty-one
-times too narrow.
+WHY, IN TWO CORRECTIONS
+-----------------------
+FIRST: `docs/detection_statistics.json` carried `ci_km2 = [0, 0.002401]`, a
+score interval on 2,337,086 raw pixels. METHODS 7.9.1 measures the correlation
+area of that same field at 61.42 px per independent sample, so the pixel count
+overstated the sample size by about sixty-one and the interval came out about
+sixty-one times too narrow. This gate was written to hold the corrected
+interval, on 38 050 effective samples, in the headline slot.
 
-**A confidence interval that is too narrow is worse than no interval.** It states
-a precision the data does not have, and it does so on the single number this
-project exists to report honestly: the measured zero. The bare zero was never the
-risk; the risk was a zero wearing a tight error bar.
+SECOND, 2026-09-16, and it supersedes the first: there should be no interval in
+that slot at all. An interval of that kind answers "a detector fired k of n
+times; what is its rate?". This screen is not that detector -- METHODS 1 proves
+its firing rate is zero ALGEBRAICALLY for every admissible input -- so the zero
+carries no sampling uncertainty for an interval to express, and the manuscript
+has withdrawn it. A gate that REQUIRED the interval would now be holding a
+withdrawn claim in place, which is the failure mode this project names in
+METHODS 0.
 
-WHAT IT ASSERTS
-  1. ci_km2 is the EFFECTIVE-sample interval, not the raw-pixel one
-  2. its upper bound rounds to 0.147 km2 at three decimals
+WHAT IT ASSERTS NOW
+  1. no interval is reported: `reported_interval` is null and no `ci_km2` key
+     sits in the candidate-area block where a reader would quote it
+  2. the withdrawal is recorded, with its reason and its date, and BOTH
+     superseded intervals are kept inside it -- a wrong number that vanishes
+     cannot be audited and its correction cannot be checked
   3. n_effective == round(measured_pixels / correlation_area), and the
-     correlation area matches cpr_significance.json rather than a second copy
-  4. the raw-pixel interval is retained and labelled, not deleted -- a
-     superseded computation that vanishes cannot be audited
+     correlation area is READ from cpr_significance.json rather than copied
+  4. the effective-sample count still lands on 38 050, because that half of the
+     first correction was right and stands as a measurement
 """
 from __future__ import annotations
 
 import argparse
 import json
-import math
 import sys
 from pathlib import Path
 
@@ -42,8 +50,9 @@ for _s in (sys.stdout, sys.stderr):
     except (AttributeError, OSError):
         pass
 
-EXPECTED_UPPER_3DP = 0.147
-INJECTIONS = ("rawpixels", "wrongn", "droppedraw", "copiedarea")
+EXPECTED_N_EFFECTIVE = 38050
+INJECTIONS = ("reportinterval", "wrongn", "droppedwithdrawal", "copiedarea",
+              "unexplained")
 
 
 def main() -> int:
@@ -52,7 +61,7 @@ def main() -> int:
     args = ap.parse_args()
 
     print("=" * 78)
-    print("G23 — the candidate-area interval is taken on effective samples")
+    print("G23 — a structural zero carries no interval, and the sample count is read")
     print("=" * 78)
 
     for f in (DET, SIG):
@@ -63,33 +72,67 @@ def main() -> int:
     sig = json.loads(SIG.read_text(encoding="utf-8"))
     ca = dict(det.get("candidate_area") or {})
 
-    if args.inject == "rawpixels":
-        print("  --inject rawpixels: headline reverted to the raw-pixel interval\n")
-        ca["ci_km2"] = list(ca["ci_km2_raw_pixels"])
+    if args.inject == "reportinterval":
+        print("  --inject reportinterval: the withdrawn interval put back in the "
+              "headline slot\n")
+        ca["ci_km2"] = list(ca["withdrawn_interval"]["values_km2"]["on_effective_samples"])
     elif args.inject == "wrongn":
         print("  --inject wrongn: n_effective off by the rounding\n")
         ca["n_effective"] = int(ca["n_effective"]) - 1
-    elif args.inject == "droppedraw":
-        print("  --inject droppedraw: the superseded interval deleted\n")
-        ca.pop("ci_km2_raw_pixels", None)
+    elif args.inject == "droppedwithdrawal":
+        print("  --inject droppedwithdrawal: the withdrawn interval deleted "
+              "rather than labelled\n")
+        ca.pop("withdrawn_interval", None)
     elif args.inject == "copiedarea":
         print("  --inject copiedarea: a second copy of the correlation area\n")
         ca["correlation_area_px"] = 61.5
+    elif args.inject == "unexplained":
+        print("  --inject unexplained: the withdrawal kept, its reason removed\n")
+        ca["withdrawn_interval"] = dict(ca["withdrawn_interval"])
+        ca["withdrawn_interval"].pop("why", None)
 
     bad: list[str] = []
     truth_area = float(sig["effective_samples"]["area_all_lags"])
     n_px = int(ca["measured_pixels"])
     area = float(ca.get("correlation_area_px", 0.0))
     n_eff = int(ca.get("n_effective", 0))
-    hi = float(ca["ci_km2"][1])
-    hi_eff = float(ca["ci_km2_effective"][1])
+    w = ca.get("withdrawn_interval")
 
     print(f"  correlation area   {area!r}")
     print(f"  cpr_significance   {truth_area!r}")
     print(f"  measured pixels    {n_px:,}")
     print(f"  n_effective        {n_eff:,}   round -> {round(n_px / truth_area):,}")
-    print(f"  ci_km2             [{ca['ci_km2'][0]}, {hi}]")
-    print(f"  ci_km2_raw_pixels  {ca.get('ci_km2_raw_pixels', 'ABSENT')}")
+    print(f"  candidate area     {ca.get('area_km2')} km2 from {ca.get('pixels')} pixels")
+    print(f"  reported interval  {ca.get('reported_interval', 'KEY ABSENT')}")
+    print(f"  withdrawn interval {'present' if w else 'ABSENT'}"
+          + (f", {w.get('withdrawn_on')}" if w else ""))
+
+    # 1. nothing in this block may read as a reported interval
+    leaked = [k for k in ca if k.startswith("ci_km2")]
+    if leaked:
+        bad.append(f"the candidate-area block still carries {leaked}. A key a "
+                   f"reader would quote is a reported interval whatever the "
+                   f"surrounding prose says; the withdrawn values belong inside "
+                   f"withdrawn_interval.")
+    if ca.get("reported_interval", "missing") is not None:
+        bad.append("reported_interval must be present and null: the absence of an "
+                   "interval is a decision, and a decision that is merely implicit "
+                   "is indistinguishable from an oversight.")
+
+    # 2. the withdrawal is recorded with its reason and both superseded values
+    if not w:
+        bad.append("withdrawn_interval is absent. The superseded computation is "
+                   "kept and labelled, not deleted: a wrong number that vanishes "
+                   "cannot be audited and its correction cannot be checked.")
+    else:
+        for field in ("why", "withdrawn_on", "values_km2"):
+            if not w.get(field):
+                bad.append(f"withdrawn_interval has no {field}")
+        vals = w.get("values_km2") or {}
+        for key in ("on_raw_pixels", "on_effective_samples"):
+            if key not in vals:
+                bad.append(f"withdrawn_interval.values_km2 has no {key}: both "
+                           f"superseded intervals are part of the record")
 
     # 3. the correlation area is READ, not re-transcribed
     if abs(area - truth_area) > 1e-12:
@@ -100,22 +143,9 @@ def main() -> int:
         bad.append(f"n_effective {n_eff} != round({n_px} / {truth_area}) = "
                    f"{round(n_px / truth_area)}")
 
-    # 1 + 2. the headline is the effective interval and lands on 0.147
-    if abs(hi - hi_eff) > 1e-12:
-        bad.append(f"ci_km2 upper {hi} is not ci_km2_effective {hi_eff}; the "
-                   f"headline interval is not the one taken on effective samples")
-    if round(hi, 3) != EXPECTED_UPPER_3DP:
-        bad.append(f"ci_km2 upper rounds to {round(hi, 3)} at three decimals, "
-                   f"not {EXPECTED_UPPER_3DP}")
-
-    # 4. the superseded computation is retained and labelled
-    if "ci_km2_raw_pixels" not in ca:
-        bad.append("ci_km2_raw_pixels is absent. The superseded computation is "
-                   "kept and labelled, not deleted: a wrong number that vanishes "
-                   "cannot be audited and its correction cannot be checked.")
-    elif "note" not in ca or "too narrow" not in str(ca.get("note", "")).lower():
-        bad.append("the raw-pixel interval is retained without a note saying why "
-                   "it is superseded")
+    # 4. the count that survived the first correction
+    if n_eff != EXPECTED_N_EFFECTIVE:
+        bad.append(f"n_effective is {n_eff}, not {EXPECTED_N_EFFECTIVE}")
 
     print()
     if args.inject:
@@ -132,9 +162,10 @@ def main() -> int:
         for b in bad:
             print(f"    - {b}")
         return 1
-    print("  GATE PASS — the interval is taken on effective samples, its upper")
-    print("  bound is 0.147 km2, the sample count follows from the measured")
-    print("  correlation area, and the superseded interval is kept and labelled.")
+    print("  GATE PASS — no interval is reported on the candidate area, the")
+    print("  withdrawal is on the record with its reason and both superseded")
+    print("  values, and the 38 050 effective samples follow from the measured")
+    print("  correlation area rather than from a second copy of it.")
     return 0
 
 

@@ -216,18 +216,28 @@ def assert_marks(doc: dict, crater: str) -> dict:
 
 
 def assert_detection_area_has_interval(doc: dict, crater: str) -> None:
-    """A REPORTED DETECTION AREA MUST CARRY ITS CONFIDENCE INTERVAL.
+    """A REPORTED DETECTION AREA MUST CARRY ITS UNCERTAINTY, OR A REASON IT HAS NONE.
 
     Phase 8's whole argument is that this literature reports areas without
-    uncertainty, so shipping one ourselves would be the thing we are objecting
-    to. This fails the build if `candidate_area_km2` reaches the UI without an
-    interval alongside it in docs/detection_statistics.json.
+    uncertainty, so shipping a bare number ourselves would be the thing we are
+    objecting to. This fails the build if `candidate_area_km2` reaches the UI
+    with neither.
 
-    A MEASURED ZERO IS NOT EXEMPT. It is the case that most needs the interval:
-    a bare 0.00 km2 reads as "there is none", when what the data supports is
-    "none, and anything up to X would have looked the same". Exempting zero
-    would remove the interval from the only number this project actually
-    reports.
+    WHAT CHANGED, 2026-09-16, AND WHY THIS IS NOT A LOOSENING.
+    This gate used to require an interval, full stop, and a measured zero was
+    explicitly not exempt. That was right about the danger and wrong about the
+    statistic. A score interval answers "a detector fired k of n times; what is
+    its rate?" -- and METHODS 1 proves this screen's rate is zero ALGEBRAICALLY
+    for every admissible input, so there is no unknown parameter and no
+    sampling uncertainty for an interval to express. The manuscript withdrew it.
+    A gate that went on REQUIRING it would have forced the build to keep
+    publishing a statistic the paper had retracted.
+
+    So the requirement is now the thing the old one was protecting: a reported
+    area may not be bare. It carries either an interval that brackets it, or a
+    WITHDRAWAL RECORD -- a reason, a date, and the superseded values -- so that
+    the absence is a decision a reader can read and disagree with, rather than
+    an omission.
     """
     v = (doc.get("values") or {}).get("candidate_area_km2")
     if v is None:
@@ -236,31 +246,48 @@ def assert_detection_area_has_interval(doc: dict, crater: str) -> None:
     if not side.is_file():
         raise SystemExit(
             f"GATE FAIL [{crater}]: candidate_area_km2 = {v.get('value')} reaches the "
-            f"UI but docs/detection_statistics.json does not exist, so it carries no "
-            f"confidence interval. Run backend/scripts/detection_statistics.py.\n"
-            f"An area without an interval is the exact reporting practice Phase 8 "
-            f"objects to, and a measured zero needs it most.")
+            f"UI but docs/detection_statistics.json does not exist, so it carries "
+            f"neither an interval nor a reason it has none. Run "
+            f"backend/scripts/detection_statistics.py.")
     try:
         ci = json.loads(side.read_text(encoding="utf-8"))["candidate_area"]
-        lo, hi = ci["ci_km2"]
         area = float(ci["area_km2"])
     except (ValueError, KeyError, TypeError) as exc:
         raise SystemExit(
             f"GATE FAIL [{crater}]: docs/detection_statistics.json has no usable "
-            f"candidate_area.ci_km2 ({exc}).")
+            f"candidate_area ({exc}).")
     if abs(area - float(v.get("value", -1))) > 1e-6:
         raise SystemExit(
             f"GATE FAIL [{crater}]: candidate_area_km2 in the analysis is "
             f"{v.get('value')} but detection_statistics.json reports {area}. The "
-            f"area and its interval were computed from different runs.")
-    if not (lo <= area <= hi) or hi <= lo:
+            f"area and its uncertainty were computed from different runs.")
+
+    interval = ci.get("ci_km2") or ci.get("reported_interval")
+    if interval:
+        lo, hi = interval
+        if not (lo <= area <= hi) or hi <= lo:
+            raise SystemExit(
+                f"GATE FAIL [{crater}]: the interval [{lo}, {hi}] does not bracket "
+                f"the reported area {area}, or has zero width. A zero-width "
+                f"interval on a measured zero is the normal approximation's "
+                f"[0, 0], which claims the observation carries no uncertainty.")
+        print(f"  candidate area {area:.4f} km² carries a "
+              f"{ci.get('confidence', 0.95):.0%} interval [{lo:.4f}, {hi:.4f}] km²"
+              f"  -> OK")
+        return
+
+    w = ci.get("withdrawn_interval") or {}
+    missing = [k for k in ("why", "withdrawn_on", "values_km2") if not w.get(k)]
+    if missing:
         raise SystemExit(
-            f"GATE FAIL [{crater}]: the interval [{lo}, {hi}] does not bracket the "
-            f"reported area {area}, or has zero width. A zero-width interval on a "
-            f"measured zero is the normal approximation's [0, 0], which claims the "
-            f"observation carries no uncertainty at all.")
-    print(f"  candidate area {area:.4f} km² carries a "
-          f"{ci['confidence']:.0%} interval [{lo:.4f}, {hi:.4f}] km²  -> OK")
+            f"GATE FAIL [{crater}]: candidate_area_km2 = {area} reaches the UI with "
+            f"no interval and no complete withdrawal record (missing {missing}). "
+            f"An area may be reported without an interval only when the absence is "
+            f"itself on the record, with its reason, its date, and the superseded "
+            f"values -- otherwise a withdrawn statistic and a forgotten one look "
+            f"the same.")
+    print(f"  candidate area {area:.4f} km² carries no interval, withdrawn "
+          f"{w['withdrawn_on']}, reason on the record  -> OK")
 
 
 def assert_units(doc: dict, crater: str) -> None:

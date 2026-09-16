@@ -1,0 +1,625 @@
+{
+  "schema": "lunar-ice/table-recompute/1",
+  "generated_utc": "2026-09-16T10:09:23.036774+00:00",
+  "generator": "backend/scripts/recompute_manuscript_tables.py",
+  "manuscript": "Claude outputs/dfsar_detection_limits_submission.tex",
+  "recomputed_from": [
+    "backend/scripts/detection_statistics.py",
+    "backend/scripts/published_moments.py"
+  ],
+  "tables": {
+    "II_sampling_statistics": {
+      "cells": [
+        {
+          "N": 5.0,
+          "N_measured": 5.0,
+          "cell": "rel_sd",
+          "printed": 0.775,
+          "at_printed_N": 0.7746,
+          "at_measured_N": 0.7746,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 5.0,
+          "N_measured": 5.0,
+          "cell": "bias",
+          "printed": 1.25,
+          "at_printed_N": 1.25,
+          "at_measured_N": 1.25,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 5.0,
+          "N_measured": 5.0,
+          "cell": "crit_95",
+          "printed": 2.978,
+          "at_printed_N": 2.97824,
+          "at_measured_N": 2.97824,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 5.0,
+          "N_measured": 5.0,
+          "cell": "p_0.7",
+          "printed": 29.16,
+          "at_printed_N": 29.1626,
+          "at_measured_N": 29.1626,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 5.0,
+          "N_measured": 5.0,
+          "cell": "p_0.5",
+          "printed": 14.48,
+          "at_printed_N": 14.4846,
+          "at_measured_N": 14.4846,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 6.77,
+          "N_measured": 6.773174590024859,
+          "cell": "rel_sd",
+          "printed": 0.623,
+          "at_printed_N": 0.62315,
+          "at_measured_N": 0.62296,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 6.77,
+          "N_measured": 6.773174590024859,
+          "cell": "bias",
+          "printed": 1.173,
+          "at_printed_N": 1.17331,
+          "at_measured_N": 1.17321,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 6.77,
+          "N_measured": 6.773174590024859,
+          "cell": "crit_95",
+          "printed": 2.525,
+          "at_printed_N": 2.5248,
+          "at_measured_N": 2.52422,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 6.77,
+          "N_measured": 6.773174590024859,
+          "cell": "p_0.7",
+          "printed": 26.03,
+          "at_printed_N": 26.0253,
+          "at_measured_N": 26.0202,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 6.77,
+          "N_measured": 6.773174590024859,
+          "cell": "p_0.5",
+          "printed": 10.75,
+          "at_printed_N": 10.7488,
+          "at_measured_N": 10.7433,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 8.75,
+          "N_measured": 8.754410943745066,
+          "cell": "rel_sd",
+          "printed": 0.529,
+          "at_printed_N": 0.52855,
+          "at_measured_N": 0.52839,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 8.75,
+          "N_measured": 8.754410943745066,
+          "cell": "bias",
+          "printed": 1.129,
+          "at_printed_N": 1.12903,
+          "at_measured_N": 1.12896,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 8.75,
+          "N_measured": 8.754410943745066,
+          "cell": "crit_95",
+          "printed": 2.243,
+          "at_printed_N": 2.24376,
+          "at_measured_N": 2.24328,
+          "verdict": "MATCH (measured N only)"
+        },
+        {
+          "N": 8.75,
+          "N_measured": 8.754410943745066,
+          "cell": "p_0.7",
+          "printed": 23.16,
+          "at_printed_N": 23.161,
+          "at_measured_N": 23.1552,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 8.75,
+          "N_measured": 8.754410943745066,
+          "cell": "p_0.5",
+          "printed": 7.84,
+          "at_printed_N": 7.8455,
+          "at_measured_N": 7.8401,
+          "verdict": "MATCH (measured N only)"
+        },
+        {
+          "N": 13.72,
+          "N_measured": 13.716639679503347,
+          "cell": "rel_sd",
+          "printed": 0.406,
+          "at_printed_N": 0.4055,
+          "at_measured_N": 0.40556,
+          "verdict": "MATCH (measured N only)"
+        },
+        {
+          "N": 13.72,
+          "N_measured": 13.716639679503347,
+          "cell": "bias",
+          "printed": 1.079,
+          "at_printed_N": 1.07862,
+          "at_measured_N": 1.07864,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 13.72,
+          "N_measured": 13.716639679503347,
+          "cell": "crit_95",
+          "printed": 1.895,
+          "at_printed_N": 1.89462,
+          "at_measured_N": 1.89478,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 13.72,
+          "N_measured": 13.716639679503347,
+          "cell": "p_0.7",
+          "printed": 17.79,
+          "at_printed_N": 17.7924,
+          "at_measured_N": 17.7954,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 13.72,
+          "N_measured": 13.716639679503347,
+          "cell": "p_0.5",
+          "printed": 3.74,
+          "at_printed_N": 3.7405,
+          "at_measured_N": 3.7423,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 19.77,
+          "N_measured": 19.76772534356128,
+          "cell": "rel_sd",
+          "printed": 0.331,
+          "at_printed_N": 0.33121,
+          "at_measured_N": 0.33123,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 19.77,
+          "N_measured": 19.76772534356128,
+          "cell": "bias",
+          "printed": 1.053,
+          "at_printed_N": 1.05328,
+          "at_measured_N": 1.05328,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 19.77,
+          "N_measured": 19.76772534356128,
+          "cell": "crit_95",
+          "printed": 1.698,
+          "at_printed_N": 1.6981,
+          "at_measured_N": 1.69815,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 19.77,
+          "N_measured": 19.76772534356128,
+          "cell": "p_0.7",
+          "printed": 13.32,
+          "at_printed_N": 13.3194,
+          "at_measured_N": 13.3208,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 19.77,
+          "N_measured": 19.76772534356128,
+          "cell": "p_0.5",
+          "printed": 1.6,
+          "at_printed_N": 1.5993,
+          "at_measured_N": 1.5998,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 21.0,
+          "N_measured": 21.0,
+          "cell": "rel_sd",
+          "printed": 0.321,
+          "at_printed_N": 0.32056,
+          "at_measured_N": 0.32056,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 21.0,
+          "N_measured": 21.0,
+          "cell": "bias",
+          "printed": 1.05,
+          "at_printed_N": 1.05,
+          "at_measured_N": 1.05,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 21.0,
+          "N_measured": 21.0,
+          "cell": "crit_95",
+          "printed": 1.671,
+          "at_printed_N": 1.67097,
+          "at_measured_N": 1.67097,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 21.0,
+          "N_measured": 21.0,
+          "cell": "p_0.7",
+          "printed": 12.59,
+          "at_printed_N": 12.5919,
+          "at_measured_N": 12.5919,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 21.0,
+          "N_measured": 21.0,
+          "cell": "p_0.5",
+          "printed": 1.35,
+          "at_printed_N": 1.3515,
+          "at_measured_N": 1.3515,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 38.0,
+          "N_measured": 38.0,
+          "cell": "rel_sd",
+          "printed": 0.234,
+          "at_printed_N": 0.23415,
+          "at_measured_N": 0.23415,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 38.0,
+          "N_measured": 38.0,
+          "cell": "bias",
+          "printed": 1.027,
+          "at_printed_N": 1.02703,
+          "at_measured_N": 1.02703,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 38.0,
+          "N_measured": 38.0,
+          "cell": "crit_95",
+          "printed": 1.462,
+          "at_printed_N": 1.46188,
+          "at_measured_N": 1.46188,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 38.0,
+          "N_measured": 38.0,
+          "cell": "p_0.7",
+          "printed": 6.11,
+          "at_printed_N": 6.1108,
+          "at_measured_N": 6.1108,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 38.0,
+          "N_measured": 38.0,
+          "cell": "p_0.5",
+          "printed": 0.14,
+          "at_printed_N": 0.1431,
+          "at_measured_N": 0.1431,
+          "verdict": "MATCH (printed N)"
+        }
+      ],
+      "differ": 0
+    },
+    "III_sensitivity": {
+      "cells": [
+        {
+          "raw_enl": 2.64,
+          "cell": "N",
+          "printed": 6.2,
+          "computed": 6.213,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 2.64,
+          "cell": "crit",
+          "printed": 2.64,
+          "computed": 2.6376,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 2.64,
+          "cell": "P_0.7",
+          "printed": 26.9,
+          "computed": 26.943,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 5.3,
+          "cell": "N",
+          "printed": 12.5,
+          "computed": 12.473,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 5.3,
+          "cell": "crit",
+          "printed": 1.96,
+          "computed": 1.9569,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 5.3,
+          "cell": "P_0.7",
+          "printed": 19.0,
+          "computed": 18.955,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 5.83,
+          "cell": "N",
+          "printed": 13.72,
+          "computed": 13.72,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 5.83,
+          "cell": "crit",
+          "printed": 1.895,
+          "computed": 1.89462,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 5.83,
+          "cell": "P_0.7",
+          "printed": 17.8,
+          "computed": 17.792,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 6.22,
+          "cell": "N",
+          "printed": 14.6,
+          "computed": 14.638,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 6.22,
+          "cell": "crit",
+          "printed": 1.86,
+          "computed": 1.8552,
+          "verdict": "MATCH"
+        },
+        {
+          "raw_enl": 6.22,
+          "cell": "P_0.7",
+          "printed": 17.0,
+          "computed": 16.998,
+          "verdict": "MATCH"
+        }
+      ],
+      "differ": 0,
+      "scaling": "N = raw x 13.72 / 5.83"
+    },
+    "IV_published_moments": {
+      "cells": [
+        {
+          "crater": "Hermite B",
+          "cell": "N_sigma",
+          "printed": 9.11,
+          "computed": 9.1143,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Hermite B",
+          "cell": "N_gamma1",
+          "printed": 9.65,
+          "computed": 9.6471,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Hermite B",
+          "cell": "N_gamma2",
+          "printed": 9.94,
+          "computed": 9.9444,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Rozhdestvenskiy N",
+          "cell": "N_sigma",
+          "printed": 8.51,
+          "computed": 8.5128,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Rozhdestvenskiy N",
+          "cell": "N_gamma1",
+          "printed": 9.14,
+          "computed": 9.1387,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Rozhdestvenskiy N",
+          "cell": "N_gamma2",
+          "printed": 8.84,
+          "computed": 8.8358,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Main L",
+          "cell": "N_sigma",
+          "printed": 8.94,
+          "computed": 8.9361,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Main L",
+          "cell": "N_gamma1",
+          "printed": 9.2,
+          "computed": 9.1986,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Main L",
+          "cell": "N_gamma2",
+          "printed": 9.21,
+          "computed": 9.2111,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Schomberger A",
+          "cell": "N_sigma",
+          "printed": 9.42,
+          "computed": 9.4248,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Schomberger A",
+          "cell": "N_gamma1",
+          "printed": 9.51,
+          "computed": 9.5136,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Schomberger A",
+          "cell": "N_gamma2",
+          "printed": 9.61,
+          "computed": 9.6149,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Cardanus E",
+          "cell": "N_sigma",
+          "printed": 8.11,
+          "computed": 8.1099,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Cardanus E",
+          "cell": "N_gamma1",
+          "printed": 7.49,
+          "computed": 7.4894,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Cardanus E",
+          "cell": "N_gamma2",
+          "printed": 9.12,
+          "computed": 9.1246,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Byrgius C",
+          "cell": "N_sigma",
+          "printed": 8.8,
+          "computed": 8.7975,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Byrgius C",
+          "cell": "N_gamma1",
+          "printed": 8.85,
+          "computed": 8.8529,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Byrgius C",
+          "cell": "N_gamma2",
+          "printed": 9.03,
+          "computed": 9.0348,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Dollond E",
+          "cell": "N_sigma",
+          "printed": 8.71,
+          "computed": 8.7113,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Dollond E",
+          "cell": "N_gamma1",
+          "printed": 9.02,
+          "computed": 9.0216,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Dollond E",
+          "cell": "N_gamma2",
+          "printed": 9.25,
+          "computed": 9.2522,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Stevinus A",
+          "cell": "N_sigma",
+          "printed": 8.49,
+          "computed": 8.4918,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Stevinus A",
+          "cell": "N_gamma1",
+          "printed": 8.59,
+          "computed": 8.5887,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "Stevinus A",
+          "cell": "N_gamma2",
+          "printed": 8.67,
+          "computed": 8.6743,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "median",
+          "cell": "N_sigma",
+          "printed": 8.75,
+          "computed": 8.7544,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "median",
+          "cell": "N_gamma1",
+          "printed": 9.08,
+          "computed": 9.0802,
+          "verdict": "MATCH"
+        },
+        {
+          "crater": "median",
+          "cell": "N_gamma2",
+          "printed": 9.17,
+          "computed": 9.1679,
+          "verdict": "MATCH"
+        }
+      ],
+      "differ": 0,
+      "craters": 8
+    }
+  },
+  "total_cells": 74,
+  "total_differ": 0,
+  "expected_cells": {
+    "II_sampling_statistics": 35,
+    "III_sensitivity": 12,
+    "IV_published_moments": 27
+  },
+  "tables_parsed_short": {}
+}

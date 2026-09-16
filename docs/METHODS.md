@@ -807,6 +807,79 @@ our scene.
 
 ---
 
+### 1.11 The Stokes vector from the single-look complex
+
+Everything above is proved from the delivered amplitude rasters — about the
+product, using the product. The single-look complex from the same pass retains
+the H–V cross-product, so `backend/scripts/stokes_from_slc.py` forms the
+21-look coherency matrix ⟨|E_H|²⟩, ⟨|E_V|²⟩, ⟨E_H E_V*⟩ over the whole swath,
+applies the same 5 × 5 boxcar to all three elements, and computes the genuine
+Stokes quantities and the amplitude proxy **from the same samples**
+(`docs/stokes_from_slc.json`; 5 883 594 matched cells).
+
+**The sign of S₃ is the one convention the product admits, and it is fixed.**
+CPR = (S₀ − S₃)/(S₀ + S₃) with S₃ = ±2 Im⟨E_H E_V*⟩; the two readings are
+reciprocals (medians 4.7273 and 0.2115, product 1.0000). CPR is defined so
+that single-bounce reflection, which reverses handedness, gives CPR < 1; the
+reading with median 0.2115 is physical, and the artifact records that
+reasoning. Rotations other than 0°/180° mistake S₂ for S₃ and are kept only
+as non-admissible diagnostics. The inter-channel phase clusters at −88.33°
+with resultant 0.9463 — 1.67° from the quadrature single bounce requires, so
+the residual phase-calibration error is bounded by the data at cos 1.67° =
+0.99957, 0.043 % on |S₃|. That is calibration *evidence*, not a failure.
+
+**Eq. (1)'s band holds exactly.** With c = ((√l_H − √l_V)/(√l_H + √l_V))² —
+which is CPR_a itself — the Stokes CPR lies in [c, 1/c] on every cell, at both
+signs: violation fraction 0.000000, maximum excursion 0. (An earlier run tested
+the coupling band built from DOP_a instead, reported 80 % violations and
+explained the wrong formula's failure as algebra; that report was withdrawn.)
+
+**Rotation-invariant results.** Cross-channel coherence
+|⟨E_H E_V*⟩|/√(l_H l_V): median 0.6580, IQR [0.4639, 0.7861]; over the 20
+lowest-CV non-overlapping 15 × 15 windows (the criterion of §7.10 on the SLC
+grid) median 0.1738, range [0.0925, 0.6366]. The published DOP < 0.13
+condition, evaluated on the Stokes vector, admits 88 421 of 5 883 594 cells =
+1.5028 % (binomial SE 0.0050 pp); per window median 11.33 %, range
+[0.00, 31.56] %. Of the 13.5605 % of cells with DOP_a ≥ 0.13, 100.0000 % also
+have Stokes DOP ≥ 0.13. Of the 88 421 cells with Stokes DOP < 0.13, 0.000000
+lie outside (0.7699, 1.2989): the coupling identity holds on data.
+
+**The measured joint rate, physical sign.** P(CPR > 1 | DOP < 0.13) =
+29.9273 ± 0.1540 % over 88 421 cells; P(CPR > 1 AND DOP < 0.13) =
+0.4498 ± 0.0028 % of all cells (26 462). These are rates on this terrain,
+where the DOP < 0.13 cells already have CPR inside (0.77, 1.30) by the coupling
+identity; they are not the simulated false-positive rate at a 0.7 background
+(§7.9.4).
+
+**Circular ENLs and the within-window tail.** At the physical sign N_SC =
+12.69 ± 0.15, N_OC = 18.15 ± 0.17 (moment, 16 × 16 patches), |corr(SC, OC)| =
+0.4991 frame-wide. The tail test of the sampling model is made *within*
+homogeneous windows, where terrain cannot enter: the empirical Stokes-CPR
+quantiles about each window's median against F(2N_SC, 2N_OC) at the window's
+own ENLs. Over the 109 64 × 64 blocks below the 10th CV percentile (N_SC
+median 14.78, near the operating point) the p95 ratio is 0.859 (range
+[0.679, 1.091]) and the p99 ratio 0.805 ([0.535, 1.139]) with per-block
+|corr(SC, OC)| median 0.500: the measured tail is **narrower** than F by
+14–20 %, which is what channel correlation does and is the reviewer's 4.5
+answered on data. The 20 15 × 15 windows selected by lowest CV have within-window
+ENLs near 100 (the selection favours flat smoothed fields) and ratios of 1.018
+/ 0.978 — consistent with F at their own ENL, but not a test at the operating
+look count. The whole-frame quantiles of the first run were a test of terrain,
+not speckle, and are withdrawn.
+
+**Against the delivered rasters (partial).** The grids differ (slant-range vs
+selenoreferenced), so the comparison is distributional, at matched ENL, with
+the delivered DN read as amplitude: LH/LV amplitude-ratio quantiles [5, 25, 50,
+75, 95] % are [0.7925, 0.9407, 1.0425, 1.1547, 1.3711] raw (ENL ≈ 5.8),
+[0.9345, 0.996, 1.0411, 1.0895, 1.1679] after √(boxcar₅(DN²)) (ENL ≈ 13.7),
+against [0.887, 0.965, 1.0194, 1.0779, 1.1776] for the SLC's 21-look +
+boxcar₅ field. A per-cell slope and r² need a geocoding step whose own error
+would dominate the residual, and are not claimed.
+
+What this does to the paper: Section V remains a sensitivity calculation and
+is labelled so; the measured coherence, the 1.50 %, the exact band, the sign
+and the measured joint rate are measured facts for Section III-E.
+
 ## 2 · Georeferencing
 
 The frame is south polar stereographic on a sphere of radius 1,737,400 m
@@ -1484,6 +1557,34 @@ Over the 260 pixels of F2 that *did* return amplitude:
 | CPR (amplitude-only) | 0.001442 | 0.000798 | max **0.015383** |
 | DOP | 0.061965 | 0.056468 | min 0.000455 |
 
+### 6.2a The maximum over F2's actual amplitude mask
+
+The paper's F2 figures are expected maxima of *independent* F(2N, 2N) draws
+at true CPR 0.7 — over the 1521-pixel disc, or over 24.7 effective samples.
+The crater as measured is neither: 260 of the 1521 disc pixels returned
+amplitude (17.1 %), and neighbouring CPR pixels are correlated (lag-one 0.884
+azimuth, 0.509 range; §7.9.1). `backend/scripts/f2_maximum.py` fits a
+correlogram per axis to the measured lag-1 and lag-2 values — Gaussian in
+azimuth (ℓ = 3.159 px), exponential in range (ℓ = 1.312 px), both fits and
+their residuals recorded — and draws the CPR field over the disc as 0.7 X/Y
+with X, Y independent Gamma(N, 1/N) fields sharing that correlation (Gaussian
+copula, Cholesky of the 1521 × 1521 matrix), 10 000 trials, seed 7
+(`docs/f2_maximum.json`).
+
+| N | correlated, 260 amplitude px: max median / p95 | count > 1.00 per trial | correlated, full disc | independent 25 / 260 / 1521 samples, max median |
+|---|---|---|---|---|
+| 5 | 4.035 ± 0.018 / 8.085 | 75.8 ± 0.2 | 6.358 / 12.064 | 2.528 / 4.821 / 7.377 |
+| 13.72 | 1.911 ± 0.004 / 2.729 | 46.5 ± 0.2 | 2.428 / 3.330 | 1.485 / 2.105 / 2.627 |
+
+The independent 25- and 1521-sample rows reproduce the paper's 2.52 and 7.38
+at N = 5. On the mask actually measured, at the operating look count, a
+speckle-only field with true CPR 0.7 has a maximum above 1.00 in every trial
+and 46 of its 260 pixels above the threshold on average; correlation lowers
+the maximum relative to 260 independent samples (1.91 against 2.11) because
+the correlated field holds fewer independent draws. The achieved lag-one
+correlation of the simulated CPR field is 0.897 (az) and 0.447 (rg) against
+the targets 0.884 and 0.509.
+
 ### 6.3 It is a different pass, and that is the point
 
 Their detection is almost certainly **not** a different reduction of our data. It
@@ -1708,6 +1809,48 @@ prediction, because bright scatterers dominate the third moment long before they
 dominate the second. It is recorded here as attempted and uninformative rather
 than quietly dropped.
 
+#### 7.3.1 The estimator, specified by reading the code
+
+`docs/enl_estimator_spec.json` is emitted by `backend/scripts/enl_estimator_spec.py`,
+which imports `measure_enl.py` and `bootstrap_enl.py` and reports what they
+do — a specification typed from memory drifts from the code; one read from it
+cannot. Statistic: mean²/var of DN² per patch. Patches 16 × 16 (headline),
+32 × 32, 64 × 64 (400, 800, 1600 m on the 25 m grid); stride equal to the patch,
+overlap 0, tiles anchored at the raster origin, partial edge tiles dropped; a
+patch is used only if every pixel is inside the mask; variance with ddof = 1.
+Mode: 120 equal-width bins of ln(mean²/var) over [min, max], the estimate is
+exp of the midpoint of the fullest bin; mean and quantiles are reported beside
+it. Masks: the amplitude mask (LH > 0) & (LV > 0), 2 337 086 px, is also the
+screening mask (`valid_native.tif`); the ENL-measurement mask is the amplitude
+mask eroded by the 5 × 5 boxcar footprint, 2 294 084 px, holding 8 337 wholly
+inside 16 × 16 patches. Bootstrap (`docs/bootstrap_enl.json`, ported from the
+reference and reproducing it): B = 2000, seed 2026; simple = patches i.i.d.;
+block = whole rows of the 16 × 16 patch grid, one row an azimuth band 16 px =
+400 m high across the full range extent; percentile interval at 2.5 / 97.5, not
+BCa. LH raw 5.8276, block [4.03, 6.19] (simple [4.04, 6.15]); boxcar 13.7166,
+block [10.69, 22.52]; LV raw 5.1413, block [4.38, 7.29]; boxcar 19.7677, block
+[12.11, 24.76]. Propagated through F(2N, 2N) at each replicate's boxcar ENL: LH
+FP at true CPR 0.7 17.80 %, block [11.76, 20.81]; floor 1.895, block
+[1.641, 2.070].
+
+#### 7.3.3 Patch bias and stationarity
+
+`backend/scripts/patch_bias.py` (block B3 of the reference, ported with its RNG
+state replayed so the digits reproduce) draws pure correlated speckle at
+N = 6.00 with field AR(1) correlations 0.84 (az) and 0.58 (rg) and runs the
+estimator unchanged: mode 7.08 at 8 × 8, **6.61 at 16 × 16, 6.01 at 32 × 32**,
+5.95 at 64 × 64; uncorrelated Gamma(6, 1/6) control 6.00 and 6.06 at 16 and 32
+(`docs/patch_bias.json`). Lag correlation inflates the small-patch mode.
+One qualification the manuscript's sentence does not make: the reference set
+the *field* correlation to 0.84/0.58, so the simulated *intensity* lag-one is
+0.705/0.339 — below the product's 0.838/0.576 — and the inflation it reports
+is a lower bound (§7.3.2 matches the intensity lag-one properly and finds more).
+`backend/scripts/stationarity.py` (block D3, no randomness) splits the frame
+into azimuth thirds × range halves: four blocks have ≥ 5000 valid pixels and
+their 16 × 16 modes are 3.29, 4.02, 7.95 and 7.53 — **3.3 to 8.0** — with
+lag-one 0.849–0.952 (az) and 0.754–0.897 (rg) (`docs/stationarity.json`). The
+frame-wide ENL is a mode over a heterogeneous population.
+
 ### 7.4 The control: forming 21 looks ourselves, from the single-look complex
 
 The single-look complex from the **same pass** is on disk — 355,768 azimuth
@@ -1881,6 +2024,38 @@ address:
 construct an explanation after seeing the answer, which is the failure the
 pre-registration exists to prevent. §7.4b states what will be tested next and
 commits to it in advance.
+
+### 7.4b Mechanism control: the two arms do not have the same azimuth resolution
+
+The reading in §7.4 — that "21 looks" names a method — has an alternative the
+reviewer (4.9) put plainly: each sub-band look is band-limited to 1/21 of the
+processed spectrum, so its impulse response is ~21 × the full-band one, and on
+the same decimated grid its cells are correlated over several rows; a patch of
+correlated cells returns a smaller sample variance and therefore a larger
+mean²/var. `backend/scripts/mechanism_controls.py` imports the control's own
+windows, crop and look-forming code and measures, per window
+(`docs/mechanism_controls.json`):
+
+* the half-maximum width of the intensity autocorrelation along azimuth, in
+  decimated rows: **spatial 0.95, sub-band 2.79** (medians of nine; window 3's
+  sub-band profile does not cross 0.5 within ten lags and is recorded as
+  undefined); along range 1.62 and 1.72 bins — the arms differ in azimuth
+  resolution by about 3 ×, and only there;
+* the 2-D normalised autocovariance to lag 10 on both axes for each arm
+  (lag-one azimuth 0.316 spatial, 0.635 sub-band);
+* the **paired** difference sub-band − spatial over the nine windows:
+  +4.473 ± 0.427 (sd 1.280, t = 10.5) — the gap is real;
+* the same difference after Gaussian-smoothing the finer (spatial) arm along
+  azimuth until its width matches the sub-band arm's in that window (σ found by
+  bisection, 0.63–1.03 rows): **−0.996 ± 0.570 over the eight windows where a
+  match exists**, the smoothed spatial arm measuring a median 10.99.
+
+At matched azimuth resolution the two arms agree within one look. The 4.52
+against 9.95 of §7.4 is therefore a difference of **resolution on the
+estimator**, not of look count delivered by the method, and the sentence in the
+manuscript that reads it as the latter needs to change. The delivered product's
+5–6 still sits with the spatial arm as measured; what the control now shows is
+why the sub-band arm reads higher.
 
 ### 7.5 Neighbouring pixels are not independent
 
@@ -2219,6 +2394,27 @@ and then written up, is nothing at all — and from the inside the two feel
 identical unless the prediction was committed first.
 
 
+#### 7.9.4 The joint criterion: specification, maximiser, and the measured rate
+
+The 1.8 % joint rate (`backend/scripts/joint_criterion.py`, seed 7, 600 000
+trials per row, N = 14) is now fully specified in `docs/joint_criterion.json::specification`
+and copied into `docs/cpr_significance.json::joint_criterion`. Population at
+true CPR 0.7, true m = m_min + 10⁻⁶ = 0.17647: E|H|² = E|V|² = 1,
+E[H V*] = 0.000594 − 0.176471 i (|c| 0.17647, arg −89.81°); Stokes S₀ = 2,
+S₁ = 0, S₂ = 0.00119, S₃ = 0.35294; CPR 0.7, DOP 0.17647. Draw: E_H = z₁,
+E_V = c* z₁ + √(1 − |c|²) z₂, z ~ CN(0, 1) i.i.d. per look; S₃ = −2 Im⟨E_H E_V*⟩,
+the physical sign of §1.11. Result: marginal 17.69 %, **joint 1.815 ± 0.017 %**.
+At the requested maximiser — true CPR just below the band edge, 1.29875, with
+m = 0.12996 just below the threshold (E[H V*] = 0.00051 + 0.12996 i, S₃ =
+−0.25992) — the joint rate is 3.367 ± 0.023 % (marginal 75.25 %). A scan at
+m = m_min + 10⁻⁶ shows the joint rate is nearly flat across the band, 3.72 ±
+0.06 % at CPR 1.05 falling to 3.29 ± 0.06 % at the edge, so the edge point is
+not the maximiser; the maximum inside DOP < 0.13 is ≈ 3.7 %. Beside the
+simulation, the **measured** rate from the SLC (§1.11): 29.93 ± 0.15 % of the
+88 421 cells with Stokes DOP < 0.13 have CPR > 1 at the physical sign, and
+0.4498 ± 0.0028 % of all cells satisfy both — rates on this terrain, not at a
+0.7 background, and printed as such.
+
 ### 7.10 External check: Putrevu et al. 2023, and why 29.16 % is an upper bound
 
 *Generated by `backend/scripts/cpr_dispersion.py`; figures in
@@ -2443,6 +2639,37 @@ model in order to reach a criterion is the thing this project refuses everywhere
 else**, and it is refused here, with the arithmetic shown rather than a sentence
 about judgement.
 
+
+### 7.13 Texture that varies within the cell
+
+§7.10's K-clutter argument draws one texture value per multilook cell, shared
+by both circular channels, and the ratio tail is then exactly the F model's
+(`docs/kclutter.json`: at 10⁷ trials, max |shared − F| = 0.0041 points against
+a Monte Carlo σ of 0.0120; the independent-texture rows span 27.47–39.34 %
+over ν = 1.5–10). That cancellation needs the texture to be constant over the
+averaging cell. `backend/scripts/kclutter_within_cell.py` (seed 7, 10⁶ trials
+per row, N = 14, true CPR 0.7) lets each of the 14 looks carry its own texture
+t_k, shared between the channels, so R = Σ t_k g₁ₖ / Σ t_k g₂ₖ and t_k no
+longer cancels; t_k is i.i.d. Gamma(ν, 1/ν) or AR(1)-correlated across the
+look index through a Gaussian copula at nominal lag-one 0.5 and 0.8 (achieved
+Pearson 0.49 and 0.79) (`docs/kclutter_within_cell.json`):
+
+| ν | texture across looks | exceedance P(0.7 R > 1) | − F model (points) | moment ENL of the textured cell |
+|---|---|---|---|---|
+| ∞ | none | 17.519 ± 0.038 % | −0.026 | 13.98 |
+| 8 | independent | 18.811 ± 0.039 % | +1.267 | 11.20 |
+| 8 | lag-one 0.5 | 18.558 ± 0.039 % | +1.013 | 9.56 |
+| 8 | lag-one 0.8 | 18.273 ± 0.039 % | +0.728 | 7.34 |
+| 4 | independent | 19.688 ± 0.040 % | +2.143 | 9.34 |
+| 4 | lag-one 0.5 | 19.432 ± 0.040 % | +1.887 | 7.31 |
+| 4 | lag-one 0.8 | 18.984 ± 0.039 % | +1.439 | 5.05 |
+
+Within-cell texture does not cancel: it lifts the exceedance by 0.7–2.1 points
+above the F model at these orders and lowers the textured cell's own moment
+ENL well below N — which is the direction in which the measured 5.83 differs
+from the nominal count. Correlating the texture across looks moves the rate
+back toward the whole-cell case where it cancels exactly, and the ENL further
+down.
 
 ## 8 · The 20 m DEM, and what it actually bought
 
@@ -3046,7 +3273,7 @@ in this literature reported with one.**
 |---|---|
 | candidate pixels | **0** of 2,337,086 measured |
 | candidate area | **0.0000 km²** |
-| 95 % Wilson interval, on **38 051 effective samples** | **[0.0000, 0.147] km²** |
+| 95 % Wilson interval, on **38 050 effective samples** | **[0.0000, 0.147] km²** |
 | the same interval on 2,337,086 **raw pixels** — SUPERSEDED, ~61× too narrow | [0.0000, 0.0024] km² |
 
 The measurement is zero, **and the data would not have distinguished anything up
@@ -3056,7 +3283,7 @@ against it. That interval treats 2,337,086 correlated pixels as 2,337,086
 independent trials. §7.9.1 measures the correlation area of this very field at
 **61.42 px per independent sample**, so the pixel count overstates the sample
 size by about sixty-one and the interval comes out about sixty-one times too
-narrow. `ceil(2 337 086 / 61.420749918170166) = 38 051` effective samples, and
+narrow. `round(2 337 086 / 61.420749918170166) = 38 050` effective samples, and
 the Wilson upper bound at k = 0 on that count is **0.147 km²**.
 
 > **A confidence interval that is too narrow is worse than no interval at all.**
@@ -3283,6 +3510,73 @@ detection statistics. The Stokes derivation is Phase 5b and is not written,
 because it is not computed — the complex `sli` products are on disk and not
 ingested, and §1 states exactly what having them would change.*
 
+### 12.6 How far sin θ propagates
+
+§12.5 reports the maximum |ΔCPR_a| and |ΔDOP_a| between the with-sin θ and
+without-sin θ pipelines. `backend/scripts/propagation_percentiles.py` re-runs
+`incidence_audit.screen()` verbatim and reports the distribution over the
+amplitude mask, and where the maximum sits (`docs/propagation_percentiles.json`;
+map `docs/propagation_ddop_map.png`, log₁₀ |ΔDOP_a| with the maximum marked):
+
+| | p50 | p90 | p99 | max | maximum at | on the mask edge? |
+|---|---|---|---|---|---|---|
+| \|ΔCPR_a\| | 2.326 × 10⁻⁵ | 2.721 × 10⁻⁴ | 1.407 × 10⁻³ | 1.310 × 10⁻² | line 1522, sample 1136 | no (interior) |
+| \|ΔDOP_a\| | 1.144 × 10⁻³ | 9.531 × 10⁻³ | 3.376 × 10⁻² | 1.393 × 10⁻¹ | line 1285, sample 2573 | no (interior) |
+
+The edge band (amplitude mask minus its 5 × 5 erosion) has maxima 8.768 × 10⁻³
+and 1.187 × 10⁻¹, below the interior maxima, so the maximum is not a boundary
+artefact. Zero pixels pass CPR > 1 and DOP < 0.13 in either pipeline. sin θ is
+common to both channels and cancels algebraically; everything in the table is
+float32 round-off through the boxcar, and the median is five orders below the
+maximum.
+
+## 13 · Literature screen, reproducibility, and the one primary source not reached
+
+### 13.1 The literature screen, rebuilt
+
+`backend/scripts/literature_screen.py` reads `docs/literature_search_record.csv`
+(unchanged; G29 asserts its counts) and writes `docs/literature_screen.json`
+and `docs/literature_screen.md` with, per record, `access` ∈ {full_text,
+abstract_only, inaccessible} and the four claims measured_ENL_reported,
+critical_value_reported, exceedance_rate_reported, ratio_bias_corrected ∈
+{yes, no, not_found_in_accessible_material, not_assessed}. Of the 34 unique
+records 25 are relevant; on re-screening the abstract-only records on
+2026-09-16 (every URL and outcome recorded) full text was obtained for two
+(Raney et al. 2012 LPSC 2676; the EGU2020-11285 abstract, which is the whole
+item) and not for twelve (publisher 403s, one unresolvable host, a rate-limited
+index). Access on the relevant set is now 14 full text, 11 abstract only, 0
+inaccessible — the manuscript's sentence "full text for 12, abstracts for 12,
+one not accessible" is the original screen and is reported for correction.
+`spudis2013.measured_ENL_reported = yes` with the quotation "effective number
+of looks of about 6.7 … as opposed to the planned 8 looks" (para. [13]),
+attributed there to unpublished analysis. No record reports a critical value,
+an exceedance rate, or a ratio bias correction; `ratio_bias_corrected` is
+`not_assessed` for the twelve cited full texts, which the original screen did
+not examine for it.
+
+### 13.2 Reproducibility manifest
+
+`docs/REPRODUCIBILITY.md`: one section per row of the reviewer's table —
+products with SHA-256 (both acquisitions and the SLC), commit, licence,
+environment (`requirements-analysis.txt`), the DN→σ⁰ equation and order, masks,
+georeferencing, filter kernel and boundary rules, ENL patch and bootstrap
+parameters, sub-band FFT parameters, simulation covariances and seeds, the S₃
+sign convention as a documented parameter, hypotheses and sidedness, literature
+queries, and the command behind each table and figure.
+
+### 13.3 Fa & Cai (2013): the data section could not be read
+
+The manuscript attributes the 14.8 m product to the Mini-RF S-band zoom mode
+(8 looks) on the strength of Raney et al. 2012 and the PDS catalogue, not on
+Fa & Cai's own text. P10 asked for their data section verbatim. From this
+host the full text was not reachable (Wiley 403 on the article and the PDF,
+ADS 405, Semantic Scholar with no open-access copy, Crossref with the abstract
+only), and the abstract names no product level, spacing, mode or look count.
+`docs/published_moments.json::mode_verification` records every attempt, the
+two abstract sentences that were reached, and that the discrepancy check
+**could not be performed** — the attribution stands unverified against its
+primary source until the author reads Section 2 from an institutional copy.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -3300,32 +3594,45 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `ec0566e`.
+Stamped at commit `7acb7e4`.
 
 | artifact | sha256 | sections |
 |---|---|---|
 | `data/pradan/lola/horizon_240m.provenance.json` | `f84a64b1ae849b27…` | §5.4, §5.6, §8.4 |
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
+| `docs/bootstrap_enl.json` | `5f4239f07f372c3f…` | §7.3.1 |
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `66bcd45b9e3c0333…` | §7.10 |
-| `docs/cpr_significance.json` | `0c440b1811442128…` | §7.7, §7.9.1, §7.9.2, §7.9.3 |
+| `docs/cpr_significance.json` | `5b3eb61eb47047b3…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
-| `docs/detection_statistics.json` | `8f48a4d7d7dc6666…` | §11.1, §11.2, §11.3 |
+| `docs/detection_statistics.json` | `b5dfaa2a9520e941…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/enl_estimator_spec.json` | `8fd6dd6552233401…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
+| `docs/f2_maximum.json` | `849cd7f9c88ea47a…` | §6.2a |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
+| `docs/joint_criterion.json` | `c0db2bc0013a9c73…` | §7.9.4 |
+| `docs/kclutter.json` | `14d8a3bdcd2efabe…` | §7.13 |
+| `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
+| `docs/literature_screen.json` | `c25c5a11341611aa…` | §13.1 |
+| `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
+| `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
+| `docs/propagation_percentiles.json` | `847af0a883190b4b…` | §12.6 |
 | `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
+| `docs/published_moments.json` | `6d83a08d26469dab…` | §13.3 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
+| `docs/stationarity.json` | `4d72eb5cd1877932…` | §7.3.3 |
+| `docs/stokes_from_slc.json` | `43dfd70d3ed40605…` | §1.11 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |

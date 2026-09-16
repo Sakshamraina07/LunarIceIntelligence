@@ -61,8 +61,21 @@ END = "<!-- END GENERATED STAMP -->"
 #: When an artifact's digest changes, these are the sections to re-read.
 ARTIFACTS: dict[str, list[str]] = {
     "docs/enl.json": ["7.1", "7.3", "7.5", "7.6"],
+    "docs/enl_estimator_spec.json": ["7.3.1"],
+    "docs/bootstrap_enl.json": ["7.3.1"],
+    "docs/patch_bias.json": ["7.3.3"],
+    "docs/stationarity.json": ["7.3.3"],
     "docs/slc_multilook_control.json": ["7.4"],
-    "docs/cpr_significance.json": ["7.7", "7.9.1", "7.9.2", "7.9.3"],
+    "docs/mechanism_controls.json": ["7.4b"],
+    "docs/cpr_significance.json": ["7.7", "7.9.1", "7.9.2", "7.9.3", "7.9.4"],
+    "docs/joint_criterion.json": ["7.9.4"],
+    "docs/kclutter.json": ["7.13"],
+    "docs/kclutter_within_cell.json": ["7.13"],
+    "docs/stokes_from_slc.json": ["1.11"],
+    "docs/f2_maximum.json": ["6.2a"],
+    "docs/propagation_percentiles.json": ["12.6"],
+    "docs/literature_screen.json": ["13.1"],
+    "docs/published_moments.json": ["13.3"],
     "docs/rover_coverage.json": ["6.5"],
     "docs/landing_sites.json": ["9.6", "9.7"],
     "docs/traverse.json": ["10.1", "10.2", "10.3", "10.4", "10.5"],
@@ -392,6 +405,8 @@ def check_labelled_figures(text: str) -> list:
 SECTIONS_WITHOUT_ARTIFACTS: dict = {
     "0": "the defect register. Its numbers are counts of instances and quotations "
          "of figures that are checked where they are computed.",
+    "13.2": "a pointer to docs/REPRODUCIBILITY.md; its only figure is the 256 of "
+            "SHA-256, a hash name, not a measurement.",
     "1.1": "prose describing which expressions the build evaluates; the figures "
            "are checked in 1.2 and 1.4.",
     "1.2": "a closed-form derivation. artanh and tanh of a config constant, "

@@ -1,0 +1,218 @@
+{
+  "schema": "lunar-ice/f2-maximum/1",
+  "generated_utc": "2026-09-16T07:14:35.470557+00:00",
+  "generator": "backend/scripts/f2_maximum.py",
+  "seed": 7,
+  "trials": 10000,
+  "true_cpr": 0.7,
+  "threshold": 1.0,
+  "disc": {
+    "centre_line": 1120.2592294833287,
+    "centre_sample": 3676.880851229477,
+    "radius_px": 22.0,
+    "pixels": 1521,
+    "amplitude_pixels": 260,
+    "built_as": "check_f2_footprint.py: validated forward projection, disc of radius 22 px at 25 m, amplitude = valid_native.tif"
+  },
+  "correlation": {
+    "measured": {
+      "rho_lag1_axis0": 0.8844250707622416,
+      "rho_lag2_axis0": 0.6765265904294944,
+      "rho_lag1_axis1": 0.5090421470848477,
+      "rho_lag2_axis1": 0.17239393450072255
+    },
+    "measured_from": "docs/cpr_significance.json::effective_samples (CPR field, 64-px patches)",
+    "fit_azimuth": {
+      "exponential": {
+        "length_px": 5.691138547038784,
+        "sse": 0.0028138146117024964,
+        "fitted_lag1": 0.8388597370774595,
+        "fitted_lag2": 0.7036856584896646
+      },
+      "gaussian": {
+        "length_px": 3.1586466270257185,
+        "sse": 0.0004547647838008854,
+        "fitted_lag1": 0.9046292906081634,
+        "fitted_lag2": 0.6697035204299601
+      },
+      "chosen": "gaussian"
+    },
+    "fit_range": {
+      "exponential": {
+        "length_px": 1.3121272807323998,
+        "sse": 0.003855374420007667,
+        "fitted_lag1": 0.46667547068255044,
+        "fitted_lag2": 0.21778599493678
+      },
+      "gaussian": {
+        "length_px": 1.3150310939771999,
+        "sse": 0.008079031940763065,
+        "fitted_lag1": 0.5608698498592533,
+        "fitted_lag2": 0.09895742337791018
+      },
+      "chosen": "exponential"
+    },
+    "model": "separable product of the chosen per-axis correlograms; Gaussian copula on Gamma(N, 1/N) for X and Y independently; CPR = 0.7 X / Y"
+  },
+  "results": {
+    "N5": {
+      "n_looks": 5.0,
+      "correlated_max_over_amplitude_pixels": {
+        "median": 4.035059190058007,
+        "median_se": 0.017985529224112853,
+        "p95": 8.085318447786344,
+        "p95_se": 0.0923399736487291,
+        "p_exceeds_threshold": 1.0,
+        "p_exceeds_se": 0.0,
+        "n_trials": 10000
+      },
+      "correlated_max_over_full_disc": {
+        "median": 6.358068453940454,
+        "median_se": 0.023206407930944962,
+        "p95": 12.063831508051939,
+        "p95_se": 0.11353910341528675,
+        "p_exceeds_threshold": 1.0,
+        "p_exceeds_se": 0.0,
+        "n_trials": 10000
+      },
+      "exceedance_count_over_amplitude_pixels": {
+        "mean": 75.8187,
+        "se": 0.19896196022647575,
+        "p_at_least_one": 1.0,
+        "p95": 110.0,
+        "max": 156
+      },
+      "achieved_lag1_of_simulated_cpr": {
+        "azimuth": 0.8774858191808635,
+        "range": 0.3946170713983473
+      },
+      "independent_max_true_cpr_0p7": {
+        "25": {
+          "median": 2.527917649319833,
+          "median_se": 0.010627715943845628,
+          "p95": 5.155688625130819,
+          "p95_se": 0.05528911351417745,
+          "p_exceeds_threshold": 0.9999,
+          "p_exceeds_se": 9.999499987498824e-05,
+          "n_trials": 10000
+        },
+        "260": {
+          "median": 4.821041799561458,
+          "median_se": 0.014948106621497741,
+          "p95": 9.166122577302113,
+          "p95_se": 0.10203996385269053,
+          "p_exceeds_threshold": 1.0,
+          "p_exceeds_se": 0.0,
+          "n_trials": 10000
+        },
+        "1521": {
+          "median": 7.3774506940794105,
+          "median_se": 0.02416677839300159,
+          "p95": 13.49070536799352,
+          "p95_se": 0.14960209676750078,
+          "p_exceeds_threshold": 1.0,
+          "p_exceeds_se": 0.0,
+          "n_trials": 10000
+        }
+      },
+      "independent_max_true_cpr_1p0_over_disc": {
+        "median": 10.542564385858283,
+        "median_se": 0.03704618188711196,
+        "p95": 19.191699050657586,
+        "p95_se": 0.18453830336754434,
+        "p_exceeds_threshold": 1.0,
+        "p_exceeds_se": 0.0,
+        "n_trials": 10000
+      }
+    },
+    "N13p72": {
+      "n_looks": 13.72,
+      "correlated_max_over_amplitude_pixels": {
+        "median": 1.9108827708008589,
+        "median_se": 0.00411490259265865,
+        "p95": 2.7291547003658008,
+        "p95_se": 0.015812700897131216,
+        "p_exceeds_threshold": 1.0,
+        "p_exceeds_se": 0.0,
+        "n_trials": 10000
+      },
+      "correlated_max_over_full_disc": {
+        "median": 2.428263308605798,
+        "median_se": 0.004980438416240824,
+        "p95": 3.3295457087376223,
+        "p95_se": 0.020133292546230606,
+        "p_exceeds_threshold": 1.0,
+        "p_exceeds_se": 0.0,
+        "n_trials": 10000
+      },
+      "exceedance_count_over_amplitude_pixels": {
+        "mean": 46.4833,
+        "se": 0.1602581054955964,
+        "p_at_least_one": 1.0,
+        "p95": 75.0,
+        "max": 127
+      },
+      "achieved_lag1_of_simulated_cpr": {
+        "azimuth": 0.8968423100612707,
+        "range": 0.44660726088826086
+      },
+      "independent_max_true_cpr_0p7": {
+        "25": {
+          "median": 1.4848129590317936,
+          "median_se": 0.0033466100505716513,
+          "p95": 2.192534389899821,
+          "p95_se": 0.01067274878987416,
+          "p_exceeds_threshold": 0.993,
+          "p_exceeds_se": 0.0008337265738837887,
+          "n_trials": 10000
+        },
+        "260": {
+          "median": 2.1051553953965216,
+          "median_se": 0.0034293008078828437,
+          "p95": 2.893500235168322,
+          "p95_se": 0.0126802635798653,
+          "p_exceeds_threshold": 1.0,
+          "p_exceeds_se": 0.0,
+          "n_trials": 10000
+        },
+        "1521": {
+          "median": 2.6266890850613884,
+          "median_se": 0.004684334490947207,
+          "p95": 3.5122569153573266,
+          "p95_se": 0.01947474954844919,
+          "p_exceeds_threshold": 1.0,
+          "p_exceeds_se": 0.0,
+          "n_trials": 10000
+        }
+      },
+      "independent_max_true_cpr_1p0_over_disc": {
+        "median": 3.743659430441414,
+        "median_se": 0.0056537666476829136,
+        "p95": 4.96659277716897,
+        "p95_se": 0.021790112584945384,
+        "p_exceeds_threshold": 1.0,
+        "p_exceeds_se": 0.0,
+        "n_trials": 10000
+      }
+    }
+  },
+  "paper_f2_peak_cpr_verbatim": {
+    "5": {
+      "raw": 7.380808004093906,
+      "effective": 2.523386879191488
+    },
+    "6": {
+      "raw": 5.771500775394687,
+      "effective": 2.232127024151357
+    },
+    "9": {
+      "raw": 3.711113008324334,
+      "effective": 1.7780158129353585
+    },
+    "21": {
+      "raw": 2.004981486440907,
+      "effective": 1.274842529247089
+    }
+  },
+  "paper_convention": "f2_peak_cpr is the expected maximum of independent F(2N,2N) draws at TRUE CPR 0.7 over 1520 pixels (raw) or 24.7 effective samples: its N = 5 rows, 7.38 and 2.52, are reproduced here by independent_max_true_cpr_0p7 at 1521 and 25 samples (7.377, 2.528). independent_max_true_cpr_1p0_over_disc is the same quantity at true CPR 1 and is NOT the paper's convention"
+}

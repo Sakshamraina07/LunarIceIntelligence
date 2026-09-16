@@ -14,7 +14,8 @@ depend on RNG state (kclutter, patch_bias: see those scripts).
     S1 slepian     2WT = 6.77, participation ratio 7.34, Hamming 4.07;
                    Hamming < measured spatial arm < rectangular
     S2 table5      the row at the raw ENL 5.83 reproduces the screened field's
-                   N = 13.72, floor 1.895 and FP 17.79 %
+                   N = 13.72, floor 1.895 and the 17.79 % upper bound on the
+                   false-positive rate (an upper bound: independent channels)
     S3 background  FP rises monotonically with the assumed background and
                    spans more than a hundred-fold from 0.3 to 0.9
     S4 correlated  17.6 / 14.1 / 6.3 / 1.9 % at |rho| = 0 / 0.5 / 0.8 / 0.9

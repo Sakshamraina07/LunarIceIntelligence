@@ -1,0 +1,1059 @@
+{
+  "schema": "lunar-ice/literature-screen/1",
+  "generated_utc": "2026-09-16T07:02:08.643070+00:00",
+  "generator": "backend/scripts/literature_screen.py",
+  "record_csv": "docs/literature_search_record.csv (unmodified; G29 asserts its counts)",
+  "value_set": [
+    "yes",
+    "no",
+    "not_found_in_accessible_material",
+    "not_assessed"
+  ],
+  "value_rules": {
+    "no": "the whole item was read and the claim is absent",
+    "not_found_in_accessible_material": "only an abstract (or nothing) was reachable in this pass; a statement about access, not about the paper",
+    "not_assessed": "not examined for this claim (excluded records; and ratio_bias_corrected for the twelve cited full texts, which the original screen did not assess)"
+  },
+  "original_search": {
+    "executed": "2026-09-09",
+    "index": "web search index (Google-class) returning ADS, IEEE Xplore, Wiley/AGU, ScienceDirect, Springer, MDPI, ResearchGate, NTRS, LPI/USRA records",
+    "not_queried": "Scopus, IEEE Xplore native search, ADS API (institutional/API access)",
+    "date_range": "1994 - 2026-09-09",
+    "language": "none excluded",
+    "types": "journal, conference abstracts, preprints, agency reports",
+    "strings": [
+      "\"circular polarization ratio\" lunar \"Mini-RF\" ice crater",
+      "\"circular polarization ratio\" \"permanently shadowed\" Moon radar ice",
+      "Chandrayaan-2 DFSAR \"circular polarization ratio\" polar crater water ice",
+      "\"Mini-SAR\" Chandrayaan-1 \"circular polarization ratio\" north pole ice",
+      "\"equivalent number of looks\" OR \"effective number of looks\" Mini-RF OR DFSAR OR \"Mini-SAR\" lunar",
+      "lunar radar \"circular polarization ratio\" \"false alarm\" OR \"false positive\" OR \"detection threshold\" ice",
+      "\"m-chi\" OR \"m-delta\" decomposition lunar crater ice Mini-RF DFSAR",
+      "Mini-RF \"CPR\" lunar polar craters Thomson OR Neish OR Campbell OR Patterson OR Cahill"
+    ]
+  },
+  "rescreen": {
+    "date": "2026-09-16",
+    "tool": "WebSearch / WebFetch from the analysis host; no institutional access",
+    "records": {
+      "3": {
+        "query": "Spudis 2010 GRL \"Initial results for the north pole of the Moon from Mini-SAR, Chandrayaan-1\"",
+        "attempts": [
+          [
+            "https://repository.si.edu/items/8c4e325a-34f1-4a82-bbe3-22072072d0db",
+            "HTTP 403"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1029/2009GL042259",
+            "isOpenAccess false, no OA PDF"
+          ]
+        ],
+        "obtained": null,
+        "doi": "10.1029/2009GL042259"
+      },
+      "9": {
+        "query": "Kumar 2022 Advances in Space Research polarimetric analysis L-band DFSAR water ice permanently shadowed regions Chandrayaan-2",
+        "attempts": [
+          [
+            "https://www.sciencedirect.com/science/article/abs/pii/S0273117722000758",
+            "abstract page only (subscription)"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "HTTP 429 rate-limited"
+          ]
+        ],
+        "obtained": null,
+        "note": "Adv. Space Res. 70(12) 4000-4029"
+      },
+      "11": {
+        "query": "\"Backscatter Coefficients and Circular Polarization Ratio\" permanently shadowed region lunar south pole Chandrayaan-2 DFSAR 2025 preprint",
+        "attempts": [
+          [
+            "https://www.researchgate.net/publication/391614433_...",
+            "ResearchGate blocks non-browser fetches; not attempted beyond the index"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "HTTP 429 rate-limited"
+          ]
+        ],
+        "obtained": null
+      },
+      "12": {
+        "query": "\"Detection of water ice\" Faustini crater floor DFSAR IEEE 2024 10641024",
+        "attempts": [
+          [
+            "https://ieeexplore.ieee.org/document/10641024/",
+            "subscription; not fetched"
+          ],
+          [
+            "https://ui.adsabs.harvard.edu/abs/2024igar.conf.1390S/abstract",
+            "ADS abstract record only"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "HTTP 429 rate-limited"
+          ]
+        ],
+        "obtained": null,
+        "note": "IGARSS 2024; Shroff, Shukla, Patel, Mohan"
+      },
+      "13": {
+        "query": "\"Hermite-A\" crater dielectric polarimetric analysis Mini-SAR Mini-RF DFSAR Advances in Space Research 2022",
+        "attempts": [
+          [
+            "https://www.sciencedirect.com/science/article/abs/pii/S0273117722003362",
+            "abstract page only (subscription)"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "HTTP 429 rate-limited"
+          ]
+        ],
+        "obtained": null
+      },
+      "14": {
+        "query": "\"Erlanger\" crater water ice integrated analysis Mini-SAR DFSAR Remote Sensing 2025 17(1) 31",
+        "attempts": [
+          [
+            "https://www.mdpi.com/2072-4292/17/1/31",
+            "HTTP 403 from this host (journal is open access)"
+          ],
+          [
+            "https://www.mdpi.com/2072-4292/17/1/31/htm",
+            "HTTP 403 from this host"
+          ]
+        ],
+        "obtained": null,
+        "doi": "10.3390/rs17010031",
+        "note": "open-access venue; a browser session will obtain it -- flagged for the author"
+      },
+      "15": {
+        "query": "Ohm Stevinus craters Mini-RF circular polarization ratio m-chi Journal of Earth System Science 2020",
+        "attempts": [
+          [
+            "https://www.ias.ac.in/public/Volumes/jess/129/00/0105.pdf",
+            "DNS EAI_AGAIN (host unresolvable from this pass), twice"
+          ],
+          [
+            "https://link.springer.com/article/10.1007/s12040-020-1370-8",
+            "303 to idp.springer.com authorisation"
+          ]
+        ],
+        "obtained": null,
+        "doi": "10.1007/s12040-020-1370-8",
+        "note": "open PDF exists at ias.ac.in; host did not resolve in this pass -- flagged for the author"
+      },
+      "16": {
+        "query": "Spudis 2013 \"excess\" enhanced CPR craters polar regions Mini-RF abstract",
+        "attempts": [
+          [
+            "https://www.researchgate.net/publication/258674786_...",
+            "ResearchGate; not fetched"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "HTTP 429 rate-limited"
+          ]
+        ],
+        "obtained": null
+      },
+      "18": {
+        "query": "Raney 2012 LPSC abstract \"m-chi\" characterization lunar craters Mini-RF",
+        "attempts": [
+          [
+            "https://www.lpi.usra.edu/meetings/lpsc2012/pdf/2676.pdf",
+            "PDF obtained (260 KB), text extracted"
+          ]
+        ],
+        "obtained": "full text (2-page LPSC abstract 2676)",
+        "extract": {
+          "measured_ENL_reported": "no",
+          "critical_value_reported": "no",
+          "exceedance_rate_reported": "no",
+          "ratio_bias_corrected": "no",
+          "data_statement": "Mini-RF S1 data shown over a '100 m/pixel simple cylindrical LROC WAC image'; no radar product level, spacing, mode or look count is stated"
+        }
+      },
+      "19": {
+        "query": "\"Studies of polarimetric properties of lunar surface using Mini-SAR data\" 2013",
+        "attempts": [
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/0a688093a7a12c35198425a2aa6f2b5261b3bfb8",
+            "HTTP 429 rate-limited"
+          ],
+          [
+            "academia.edu / researchgate.net",
+            "login-walled; not fetched"
+          ]
+        ],
+        "obtained": null
+      },
+      "21": {
+        "query": "EGU General Assembly 2020 Mini-RF observations polar craters ice distribution Moon abstract",
+        "attempts": [
+          [
+            "https://meetingorganizer.copernicus.org/EGU2020/EGU2020-11285.html",
+            "abstract obtained in full"
+          ]
+        ],
+        "obtained": "full text (the item is a conference abstract, EGU2020-11285; Jozwiak & Patterson)",
+        "extract": {
+          "measured_ENL_reported": "no",
+          "critical_value_reported": "no",
+          "exceedance_rate_reported": "no",
+          "ratio_bias_corrected": "no",
+          "data_statement": "monostatic and bistatic Mini-RF observations of the poles; no product level, spacing or look count stated"
+        }
+      },
+      "22": {
+        "query": "Science Bulletin 2025 upper limit water ice lunar south pole SYISR FAST bistatic radar",
+        "attempts": [
+          [
+            "https://www.sciencedirect.com/science/article/pii/S2095927325001999",
+            "HTTP 403 from this host"
+          ],
+          [
+            "https://pubmed.ncbi.nlm.nih.gov/40069062/",
+            "abstract record only"
+          ]
+        ],
+        "obtained": null
+      },
+      "26": {
+        "query": "IEEE JSTARS 2023 Pol-SAR image simulation lunar surface DFSAR Mini-RF equivalent number of looks",
+        "attempts": [
+          [
+            "https://ieeexplore.ieee.org/document/10298630/",
+            "subscription; not fetched"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "HTTP 429 rate-limited"
+          ]
+        ],
+        "obtained": null,
+        "doi": "10.1109/JSTARS.2023.3328063"
+      },
+      "29": {
+        "query": "\"Characterization of the Moon's South polar craters using optical, microwave and thermal remote sensing\" Advances in Space Research 2023",
+        "attempts": [
+          [
+            "https://www.sciencedirect.com/science/article/abs/pii/S0273117723008955",
+            "abstract page only (subscription)"
+          ],
+          [
+            "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "HTTP 429 rate-limited"
+          ]
+        ],
+        "obtained": null,
+        "doi": "10.1016/j.asr.2023.11.009"
+      }
+    }
+  },
+  "counts": {
+    "unique": 34,
+    "relevant": 25,
+    "access": {
+      "full_text": 14,
+      "abstract_only": 11,
+      "inaccessible": 0
+    },
+    "rescreened": 14,
+    "full_text_obtained_on_rescreen": 2,
+    "claims_yes": {
+      "measured_ENL_reported": [
+        2
+      ],
+      "critical_value_reported": [],
+      "exceedance_rate_reported": [],
+      "ratio_bias_corrected": []
+    }
+  },
+  "records": [
+    {
+      "id": 1,
+      "first_author": "Fa & Cai",
+      "year": "2013",
+      "venue": "JGR Planets",
+      "title_short": "CPR characteristics of impact craters from Mini-RF",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited in manuscript)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "reports CPR moments descriptively; no look-count inversion; no floor"
+    },
+    {
+      "id": 2,
+      "first_author": "Spudis et al.",
+      "year": "2013",
+      "venue": "JGR Planets",
+      "title_short": "Evidence for water ice: anomalous polar craters",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "yes",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "",
+      "measured_ENL_quote": "effective number of looks of about 6.7 … as opposed to the planned 8 looks",
+      "measured_ENL_note": "para. [13]; the figure is attributed to unpublished analysis, not to a stated estimator"
+    },
+    {
+      "id": 3,
+      "first_author": "Spudis et al.",
+      "year": "2010",
+      "venue": "GRL",
+      "title_short": "Initial results north pole Mini-SAR",
+      "instrument": "Mini-SAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "Spudis 2010 GRL \"Initial results for the north pole of the Moon from Mini-SAR, Chandrayaan-1\"",
+        "attempts": [
+          {
+            "url": "https://repository.si.edu/items/8c4e325a-34f1-4a82-bbe3-22072072d0db",
+            "outcome": "HTTP 403"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1029/2009GL042259",
+            "outcome": "isOpenAccess false, no OA PDF"
+          }
+        ],
+        "obtained": null,
+        "doi": "10.1029/2009GL042259",
+        "note": null
+      }
+    },
+    {
+      "id": 4,
+      "first_author": "Sinha et al.",
+      "year": "2026",
+      "venue": "npj Space Exploration",
+      "title_short": "Subsurface ice in doubly shadowed craters",
+      "instrument": "DFSAR full-pol",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "criterion CPR>1 and m<0.13; look count not stated"
+    },
+    {
+      "id": 5,
+      "first_author": "Bhiravarasu et al.",
+      "year": "2026",
+      "venue": "Research Square preprint",
+      "title_short": "Volume scattering not a single diagnostic indicator",
+      "instrument": "DFSAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": ""
+    },
+    {
+      "id": 6,
+      "first_author": "Thomson et al.",
+      "year": "2012",
+      "venue": "GRL",
+      "title_short": "Upper limit for ice in Shackleton",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "mixing-model upper limit on ice fraction; no per-pixel significance floor"
+    },
+    {
+      "id": 7,
+      "first_author": "Fa & Eke",
+      "year": "2018",
+      "venue": "JGR Planets",
+      "title_short": "Unravelling the mystery of lunar anomalous craters",
+      "instrument": "Mini-RF + Diviner",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": ""
+    },
+    {
+      "id": 8,
+      "first_author": "Putrevu et al.",
+      "year": "2023",
+      "venue": "JGR Planets",
+      "title_short": "Lunar impact craters: full-polarimetric DFSAR",
+      "instrument": "DFSAR full-pol",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": ""
+    },
+    {
+      "id": 9,
+      "first_author": "Kumar et al.",
+      "year": "2022",
+      "venue": "Adv. Space Res.",
+      "title_short": "Polarimetric analysis of L-band DFSAR for ice in PSRs",
+      "instrument": "DFSAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "Kumar 2022 Advances in Space Research polarimetric analysis L-band DFSAR water ice permanently shadowed regions Chandrayaan-2",
+        "attempts": [
+          {
+            "url": "https://www.sciencedirect.com/science/article/abs/pii/S0273117722000758",
+            "outcome": "abstract page only (subscription)"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "outcome": "HTTP 429 rate-limited"
+          }
+        ],
+        "obtained": null,
+        "doi": null,
+        "note": "Adv. Space Res. 70(12) 4000-4029"
+      }
+    },
+    {
+      "id": 10,
+      "first_author": "Verma et al.",
+      "year": "2025",
+      "venue": "Icarus",
+      "title_short": "Exploring water-ice deposits in lunar polar craters with DFSAR",
+      "instrument": "DFSAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": ""
+    },
+    {
+      "id": 11,
+      "first_author": "(ResearchGate preprint)",
+      "year": "2025",
+      "venue": "preprint",
+      "title_short": "Backscatter coefficients and CPR study of PSR craters DFSAR",
+      "instrument": "DFSAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "\"Backscatter Coefficients and Circular Polarization Ratio\" permanently shadowed region lunar south pole Chandrayaan-2 DFSAR 2025 preprint",
+        "attempts": [
+          {
+            "url": "https://www.researchgate.net/publication/391614433_...",
+            "outcome": "ResearchGate blocks non-browser fetches; not attempted beyond the index"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "outcome": "HTTP 429 rate-limited"
+          }
+        ],
+        "obtained": null,
+        "doi": null,
+        "note": null
+      }
+    },
+    {
+      "id": 12,
+      "first_author": "(IEEE conference)",
+      "year": "2024",
+      "venue": "IEEE conference (10641024)",
+      "title_short": "Detection of water ice in Faustini crater floor using DFSAR",
+      "instrument": "DFSAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "\"Detection of water ice\" Faustini crater floor DFSAR IEEE 2024 10641024",
+        "attempts": [
+          {
+            "url": "https://ieeexplore.ieee.org/document/10641024/",
+            "outcome": "subscription; not fetched"
+          },
+          {
+            "url": "https://ui.adsabs.harvard.edu/abs/2024igar.conf.1390S/abstract",
+            "outcome": "ADS abstract record only"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "outcome": "HTTP 429 rate-limited"
+          }
+        ],
+        "obtained": null,
+        "doi": null,
+        "note": "IGARSS 2024; Shroff, Shukla, Patel, Mohan"
+      }
+    },
+    {
+      "id": 13,
+      "first_author": "(AdSpR)",
+      "year": "2022",
+      "venue": "Adv. Space Res.",
+      "title_short": "Dielectric and polarimetric analysis of Hermite-A",
+      "instrument": "Mini-SAR/Mini-RF/DFSAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "\"Hermite-A\" crater dielectric polarimetric analysis Mini-SAR Mini-RF DFSAR Advances in Space Research 2022",
+        "attempts": [
+          {
+            "url": "https://www.sciencedirect.com/science/article/abs/pii/S0273117722003362",
+            "outcome": "abstract page only (subscription)"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "outcome": "HTTP 429 rate-limited"
+          }
+        ],
+        "obtained": null,
+        "doi": null,
+        "note": null
+      }
+    },
+    {
+      "id": 14,
+      "first_author": "(Remote Sensing)",
+      "year": "2025",
+      "venue": "Remote Sensing 17(1):31",
+      "title_short": "Integrated analysis of water ice in Erlanger crater",
+      "instrument": "Mini-SAR + DFSAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "FULL TEXT NOT ACCESSED",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "abstract only; full text behind provenance/rate limits in this pass",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "\"Erlanger\" crater water ice integrated analysis Mini-SAR DFSAR Remote Sensing 2025 17(1) 31",
+        "attempts": [
+          {
+            "url": "https://www.mdpi.com/2072-4292/17/1/31",
+            "outcome": "HTTP 403 from this host (journal is open access)"
+          },
+          {
+            "url": "https://www.mdpi.com/2072-4292/17/1/31/htm",
+            "outcome": "HTTP 403 from this host"
+          }
+        ],
+        "obtained": null,
+        "doi": "10.3390/rs17010031",
+        "note": "open-access venue; a browser session will obtain it -- flagged for the author"
+      }
+    },
+    {
+      "id": 15,
+      "first_author": "(JESS)",
+      "year": "2020",
+      "venue": "J. Earth Syst. Sci.",
+      "title_short": "Mini-RF Ohm and Stevinus craters CPR and m-chi",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "Ohm Stevinus craters Mini-RF circular polarization ratio m-chi Journal of Earth System Science 2020",
+        "attempts": [
+          {
+            "url": "https://www.ias.ac.in/public/Volumes/jess/129/00/0105.pdf",
+            "outcome": "DNS EAI_AGAIN (host unresolvable from this pass), twice"
+          },
+          {
+            "url": "https://link.springer.com/article/10.1007/s12040-020-1370-8",
+            "outcome": "303 to idp.springer.com authorisation"
+          }
+        ],
+        "obtained": null,
+        "doi": "10.1007/s12040-020-1370-8",
+        "note": "open PDF exists at ias.ac.in; host did not resolve in this pass -- flagged for the author"
+      }
+    },
+    {
+      "id": 16,
+      "first_author": "(Spudis et al.)",
+      "year": "2013",
+      "venue": "(conference/JGR)",
+      "title_short": "Excess numbers of enhanced-CPR craters in polar regions",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "Spudis 2013 \"excess\" enhanced CPR craters polar regions Mini-RF abstract",
+        "attempts": [
+          {
+            "url": "https://www.researchgate.net/publication/258674786_...",
+            "outcome": "ResearchGate; not fetched"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "outcome": "HTTP 429 rate-limited"
+          }
+        ],
+        "obtained": null,
+        "doi": null,
+        "note": null
+      }
+    },
+    {
+      "id": 17,
+      "first_author": "Raney et al.",
+      "year": "2012",
+      "venue": "JGR Planets",
+      "title_short": "m-chi decomposition applied to lunar craters",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "documents 8 looks for S-band zoom mode"
+    },
+    {
+      "id": 18,
+      "first_author": "Raney et al.",
+      "year": "2012",
+      "venue": "LPSC abstract",
+      "title_short": "Characterization of lunar craters using m-chi",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "no",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "Raney 2012 LPSC abstract \"m-chi\" characterization lunar craters Mini-RF",
+        "attempts": [
+          {
+            "url": "https://www.lpi.usra.edu/meetings/lpsc2012/pdf/2676.pdf",
+            "outcome": "PDF obtained (260 KB), text extracted"
+          }
+        ],
+        "obtained": "full text (2-page LPSC abstract 2676)",
+        "doi": null,
+        "note": null
+      },
+      "data_statement": "Mini-RF S1 data shown over a '100 m/pixel simple cylindrical LROC WAC image'; no radar product level, spacing, mode or look count is stated"
+    },
+    {
+      "id": 19,
+      "first_author": "(Mini-SAR polarimetric study)",
+      "year": "2013",
+      "venue": "(journal)",
+      "title_short": "Polarimetric properties of lunar surface using Mini-SAR",
+      "instrument": "Mini-SAR",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "\"Studies of polarimetric properties of lunar surface using Mini-SAR data\" 2013",
+        "attempts": [
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/0a688093a7a12c35198425a2aa6f2b5261b3bfb8",
+            "outcome": "HTTP 429 rate-limited"
+          },
+          {
+            "url": "academia.edu / researchgate.net",
+            "outcome": "login-walled; not fetched"
+          }
+        ],
+        "obtained": null,
+        "doi": null,
+        "note": null
+      }
+    },
+    {
+      "id": 20,
+      "first_author": "(Mini-SAR equatorial)",
+      "year": "2012",
+      "venue": "(journal)",
+      "title_short": "Scattering characteristics of lunar equatorial region Mini-SAR",
+      "instrument": "Mini-SAR",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "equatorial scattering; excluded as not an ice study"
+    },
+    {
+      "id": 21,
+      "first_author": "(EGU abstract)",
+      "year": "2020",
+      "venue": "EGU General Assembly",
+      "title_short": "Mini-RF observations of polar craters and ice distribution",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "no",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "EGU General Assembly 2020 Mini-RF observations polar craters ice distribution Moon abstract",
+        "attempts": [
+          {
+            "url": "https://meetingorganizer.copernicus.org/EGU2020/EGU2020-11285.html",
+            "outcome": "abstract obtained in full"
+          }
+        ],
+        "obtained": "full text (the item is a conference abstract, EGU2020-11285; Jozwiak & Patterson)",
+        "doi": null,
+        "note": null
+      },
+      "data_statement": "monostatic and bistatic Mini-RF observations of the poles; no product level, spacing or look count stated"
+    },
+    {
+      "id": 22,
+      "first_author": "(Science Bulletin)",
+      "year": "2025",
+      "venue": "Science Bulletin",
+      "title_short": "Upper limit of ice at south pole from SYISR-FAST bistatic radar",
+      "instrument": "Earth-based bistatic",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "Earth-based; not an orbital product",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "Science Bulletin 2025 upper limit water ice lunar south pole SYISR FAST bistatic radar",
+        "attempts": [
+          {
+            "url": "https://www.sciencedirect.com/science/article/pii/S2095927325001999",
+            "outcome": "HTTP 403 from this host"
+          },
+          {
+            "url": "https://pubmed.ncbi.nlm.nih.gov/40069062/",
+            "outcome": "abstract record only"
+          }
+        ],
+        "obtained": null,
+        "doi": null,
+        "note": null
+      }
+    },
+    {
+      "id": 23,
+      "first_author": "(Univ. Arizona)",
+      "year": "n/a",
+      "venue": "(conference)",
+      "title_short": "Comparison of Mini-RF and Earth-based radar polarimetry",
+      "instrument": "Mini-RF + Earth-based",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "cross-calibration; excluded"
+    },
+    {
+      "id": 24,
+      "first_author": "(NTRS)",
+      "year": "2012",
+      "venue": "NASA NTRS",
+      "title_short": "Radar scattering and block size of crater ejecta",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "ejecta blocks; excluded"
+    },
+    {
+      "id": 25,
+      "first_author": "Cahill et al.",
+      "year": "2014",
+      "venue": "Icarus",
+      "title_short": "Mini-RF global observations of the Moon",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "global mapping; excluded"
+    },
+    {
+      "id": 26,
+      "first_author": "(JSTARS)",
+      "year": "2023",
+      "venue": "IEEE JSTARS",
+      "title_short": "Pol-SAR image simulation of lunar surface with DFSAR and Mini-RF data",
+      "instrument": "DFSAR + Mini-RF",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "FULL TEXT NOT ACCESSED",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "simulation study; ENL appears in index snippet as a simulation parameter; abstract does not report a measured ENL on real data",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "IEEE JSTARS 2023 Pol-SAR image simulation lunar surface DFSAR Mini-RF equivalent number of looks",
+        "attempts": [
+          {
+            "url": "https://ieeexplore.ieee.org/document/10298630/",
+            "outcome": "subscription; not fetched"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "outcome": "HTTP 429 rate-limited"
+          }
+        ],
+        "obtained": null,
+        "doi": "10.1109/JSTARS.2023.3328063",
+        "note": null
+      }
+    },
+    {
+      "id": 27,
+      "first_author": "(JSTARS)",
+      "year": "2021",
+      "venue": "IEEE JSTARS",
+      "title_short": "Simulation of Pol-SAR imaging and Mini-RF data analysis",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "simulation; excluded"
+    },
+    {
+      "id": 28,
+      "first_author": "(conference)",
+      "year": "2024",
+      "venue": "(conference)",
+      "title_short": "Polarimetric characterization of Chandrayaan-3 landing site with DFSAR",
+      "instrument": "DFSAR",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "landing-site characterisation; excluded"
+    },
+    {
+      "id": 29,
+      "first_author": "(AdSpR)",
+      "year": "2023",
+      "venue": "Adv. Space Res.",
+      "title_short": "South polar craters via optical microwave thermal",
+      "instrument": "multi",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_found_in_accessible_material",
+      "critical_value_reported": "not_found_in_accessible_material",
+      "exceedance_rate_reported": "not_found_in_accessible_material",
+      "ratio_bias_corrected": "not_found_in_accessible_material",
+      "note": "",
+      "rescreen": {
+        "date": "2026-09-16",
+        "query": "\"Characterization of the Moon's South polar craters using optical, microwave and thermal remote sensing\" Advances in Space Research 2023",
+        "attempts": [
+          {
+            "url": "https://www.sciencedirect.com/science/article/abs/pii/S0273117723008955",
+            "outcome": "abstract page only (subscription)"
+          },
+          {
+            "url": "https://api.semanticscholar.org/graph/v1/paper/search?query=...",
+            "outcome": "HTTP 429 rate-limited"
+          }
+        ],
+        "obtained": null,
+        "doi": "10.1016/j.asr.2023.11.009",
+        "note": null
+      }
+    },
+    {
+      "id": 30,
+      "first_author": "(LPSC)",
+      "year": "2011",
+      "venue": "LPSC abstract",
+      "title_short": "New insights from global mapping by Mini-RF",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "abstract",
+      "access": "abstract_only",
+      "measured_ENL_reported": "not_assessed",
+      "critical_value_reported": "not_assessed",
+      "exceedance_rate_reported": "not_assessed",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "excluded"
+    },
+    {
+      "id": 31,
+      "first_author": "Nozette et al.",
+      "year": "1996",
+      "venue": "Science",
+      "title_short": "Clementine bistatic radar experiment",
+      "instrument": "Clementine",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": ""
+    },
+    {
+      "id": 32,
+      "first_author": "Neish et al.",
+      "year": "2011",
+      "venue": "JGR",
+      "title_short": "Nature of lunar volatiles as revealed by Mini-RF",
+      "instrument": "Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": ""
+    },
+    {
+      "id": 33,
+      "first_author": "Campbell",
+      "year": "2012",
+      "venue": "JGR",
+      "title_short": "High circular polarization ratios in radar scattering from geologic targets",
+      "instrument": "Earth-based/Mini-RF",
+      "relevant_lunar_cpr_ice_study": true,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": ""
+    },
+    {
+      "id": 34,
+      "first_author": "Bhiravarasu et al.",
+      "year": "2021",
+      "venue": "Planet. Sci. J.",
+      "title_short": "DFSAR performance characterization",
+      "instrument": "DFSAR",
+      "relevant_lunar_cpr_ice_study": false,
+      "screen_level_original": "full text (cited)",
+      "access": "full_text",
+      "measured_ENL_reported": "no",
+      "critical_value_reported": "no",
+      "exceedance_rate_reported": "no",
+      "ratio_bias_corrected": "not_assessed",
+      "note": "instrument paper; declares nominal looks; excluded from CPR-ice set"
+    }
+  ]
+}

@@ -1,9 +1,9 @@
 {
   "schema": "lunar-ice/number-crosscheck/1",
-  "generated_utc": "2026-09-16T10:10:29.642781+00:00",
+  "generated_utc": "2026-09-16T10:25:47.422044+00:00",
   "generator": "backend/scripts/number_crosscheck.py",
   "manuscript": "Claude outputs/dfsar_detection_limits_submission.tex",
-  "artifact_numbers_loaded": 19074,
+  "artifact_numbers_loaded": 19469,
   "artifact_trees": [
     "docs",
     "frontend/public/analysis",
@@ -273,7 +273,7 @@
       "lines": [
         138
       ],
-      "example_key": "number_crosscheck.json.matched_rows[24].literal:str"
+      "example_key": "manuscript_number_audit.json.rows[264].tex_lines[6]"
     },
     {
       "literal": "937\\,296",
@@ -329,7 +329,7 @@
       "lines": [
         164
       ],
-      "example_key": "number_crosscheck.json.matched_rows[1].lines[1]"
+      "example_key": "manuscript_number_audit.json.rows[90].tex_lines[1]"
     },
     {
       "literal": "64.37",
@@ -1238,7 +1238,7 @@
       "lines": [
         549
       ],
-      "example_key": "enl_generality.json.measurements[4].predicted_ceiling"
+      "example_key": "degeneracy_replication.json.generated_utc:str"
     },
     {
       "literal": "14.04",
@@ -1350,7 +1350,7 @@
       "lines": [
         589
       ],
-      "example_key": "degeneracy_replication.json.generated_utc:str"
+      "example_key": "kclutter_within_cell.json.rows[3].exceed_percent"
     },
     {
       "literal": "1.44",
@@ -2353,14 +2353,14 @@
       "lines": [
         870
       ],
-      "example_key": "detection_statistics.json.generated_utc:str"
+      "example_key": "enl.json.patch_sizes.32.LH.on_DN.mean"
     },
     {
       "literal": "150",
       "lines": [
         872
       ],
-      "example_key": "manuscript_number_audit.json.rows[258].artifact_value"
+      "example_key": "manuscript_number_audit.json.rows[7].tex_lines[0]"
     },
     {
       "literal": "6.7",

@@ -1,8 +1,8 @@
 {
   "schema": "lunar-ice/manuscript-audit/1",
-  "generated_utc": "2026-09-16T10:10:28.978685+00:00",
+  "generated_utc": "2026-09-16T10:25:46.639790+00:00",
   "computed_by": "backend/scripts/audit_manuscript_numbers.py",
-  "manuscript": "Claude outputs/dfsar_detection_limits_submission.tex",
+  "manuscript": "Claude outputs/dfsar_detection_limits_full.tex",
   "manuscript_is_read_only": true,
   "n_audited": 269,
   "counts": {
@@ -22,7 +22,7 @@
       "section": "II",
       "note": "label start/stop, verified per line by G27",
       "tex_lines": [
-        131
+        139
       ]
     },
     {
@@ -35,49 +35,58 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        43,
-        82,
-        133,
-        135,
-        151,
-        188,
-        214,
-        220,
-        306,
-        397,
-        416,
-        447,
-        450,
-        483,
+        51,
+        90,
+        141,
+        143,
+        159,
+        196,
+        222,
+        228,
+        314,
+        405,
+        424,
+        455,
+        458,
         491,
-        493,
-        495,
-        497,
-        502,
-        504,
-        506,
-        516,
-        534,
-        541,
-        551,
-        565,
-        606,
-        634,
-        672,
-        719,
-        725,
-        829,
-        899,
-        908,
-        1024,
-        1030,
-        1122,
-        1148,
-        1151,
-        1171,
-        1190,
-        1200,
-        1230
+        499,
+        501,
+        503,
+        505,
+        510,
+        512,
+        514,
+        524,
+        542,
+        549,
+        559,
+        573,
+        614,
+        642,
+        680,
+        727,
+        733,
+        837,
+        907,
+        916,
+        1032,
+        1038,
+        1135,
+        1161,
+        1164,
+        1184,
+        1203,
+        1213,
+        1243,
+        1279,
+        1289,
+        1301,
+        1378,
+        1430,
+        1436,
+        1486,
+        1512,
+        1561
       ]
     },
     {
@@ -90,8 +99,8 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        134,
-        151
+        142,
+        159
       ]
     },
     {
@@ -104,9 +113,9 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        135,
-        151,
-        486
+        143,
+        159,
+        494
       ]
     },
     {
@@ -119,8 +128,9 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        135,
-        491
+        143,
+        499,
+        1279
       ]
     },
     {
@@ -133,8 +143,8 @@
       "section": "II",
       "note": "label field, sri product",
       "tex_lines": [
-        136,
-        148
+        144,
+        156
       ]
     },
     {
@@ -147,7 +157,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        141
+        149
       ]
     },
     {
@@ -160,7 +170,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        142
+        150
       ]
     },
     {
@@ -173,7 +183,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        142
+        150
       ]
     },
     {
@@ -186,7 +196,7 @@
       "section": "II",
       "note": "against the LOLA team's published PSR mask",
       "tex_lines": [
-        147
+        155
       ]
     },
     {
@@ -199,7 +209,7 @@
       "section": "II",
       "note": "2258 x 6618, the full frame",
       "tex_lines": [
-        176
+        184
       ]
     },
     {
@@ -212,7 +222,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        176
+        184
       ]
     },
     {
@@ -225,7 +235,7 @@
       "section": "II",
       "note": "ISRO sri_ma > 0",
       "tex_lines": [
-        177
+        185
       ]
     },
     {
@@ -238,7 +248,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        177
+        185
       ]
     },
     {
@@ -251,7 +261,7 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        177
+        185
       ]
     },
     {
@@ -264,11 +274,13 @@
       "section": "II",
       "note": "(LH > 0) & (LV > 0)",
       "tex_lines": [
-        178,
-        316,
-        326,
-        569,
-        886
+        186,
+        324,
+        334,
+        577,
+        894,
+        1274,
+        1394
       ]
     },
     {
@@ -281,8 +293,8 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        178,
-        898
+        186,
+        906
       ]
     },
     {
@@ -295,7 +307,7 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        178
+        186
       ]
     },
     {
@@ -308,7 +320,7 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        180
+        188
       ]
     },
     {
@@ -321,7 +333,7 @@
       "section": "II",
       "note": "validated forward projection",
       "tex_lines": [
-        187
+        195
       ]
     },
     {
@@ -334,7 +346,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        187
+        195
       ]
     },
     {
@@ -347,9 +359,10 @@
       "section": "II",
       "note": "44 px diameter at 25 m",
       "tex_lines": [
-        188,
-        719,
-        725
+        196,
+        727,
+        733,
+        1430
       ]
     },
     {
@@ -362,8 +375,8 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        188,
-        726
+        196,
+        734
       ]
     },
     {
@@ -376,7 +389,7 @@
       "section": "II",
       "note": "Sinha et al. 2026, transcribed",
       "tex_lines": [
-        186
+        194
       ]
     },
     {
@@ -389,7 +402,7 @@
       "section": "III",
       "note": "5th percentile, SLC 21-look + boxcar5 sqrt(l_H/l_V)",
       "tex_lines": [
-        225
+        233
       ]
     },
     {
@@ -402,7 +415,7 @@
       "section": "III",
       "note": "95th percentile",
       "tex_lines": [
-        225
+        233
       ]
     },
     {
@@ -415,9 +428,10 @@
       "section": "III",
       "note": "5th percentile, sqrt(boxcar5(DN^2)) ratio at matched ENL",
       "tex_lines": [
-        225,
-        488,
-        828
+        233,
+        496,
+        836,
+        1412
       ]
     },
     {
@@ -430,8 +444,8 @@
       "section": "III",
       "note": "95th percentile",
       "tex_lines": [
-        225,
-        629
+        233,
+        637
       ]
     },
     {
@@ -444,8 +458,8 @@
       "section": "III",
       "note": "2*artanh(0.13); closed form, checked as DERIVED below",
       "tex_lines": [
-        287,
-        290
+        295,
+        298
       ]
     },
     {
@@ -458,9 +472,9 @@
       "section": "III",
       "note": "tanh^2(artanh(0.13)/2)",
       "tex_lines": [
-        37,
-        320,
-        1015
+        45,
+        328,
+        1023
       ]
     },
     {
@@ -473,7 +487,7 @@
       "section": "III",
       "note": "the same constant to eight figures",
       "tex_lines": [
-        290
+        298
       ]
     },
     {
@@ -486,8 +500,8 @@
       "section": "III",
       "note": "1.00 / measured crossing",
       "tex_lines": [
-        293,
-        1099
+        301,
+        1112
       ]
     },
     {
@@ -500,8 +514,9 @@
       "section": "III",
       "note": "DOP_a >= 0.13, excluded whatever the phase",
       "tex_lines": [
-        306,
-        899
+        314,
+        907,
+        1486
       ]
     },
     {
@@ -514,7 +529,9 @@
       "section": "III",
       "note": "the remainder; undecidable from amplitudes",
       "tex_lines": [
-        307
+        315,
+        1396,
+        1486
       ]
     },
     {
@@ -527,11 +544,13 @@
       "section": "III",
       "note": "the same count, recomputed in Fig. 1's own path",
       "tex_lines": [
-        178,
-        316,
-        326,
-        569,
-        886
+        186,
+        324,
+        334,
+        577,
+        894,
+        1274,
+        1394
       ]
     },
     {
@@ -544,7 +563,7 @@
       "section": "III",
       "note": "stored float32 field",
       "tex_lines": [
-        326
+        334
       ]
     },
     {
@@ -557,7 +576,7 @@
       "section": "III",
       "note": "stored float32 field",
       "tex_lines": [
-        327
+        335
       ]
     },
     {
@@ -570,7 +589,7 @@
       "section": "III",
       "note": "max CPR where DOP < 0.13, screened field",
       "tex_lines": [
-        328
+        336
       ]
     },
     {
@@ -583,7 +602,7 @@
       "section": "III",
       "note": "relative agreement, crossing vs closed form; DERIVED",
       "tex_lines": [
-        329
+        337
       ]
     },
     {
@@ -596,7 +615,7 @@
       "section": "III",
       "note": "the 2020-03-05 acquisition's crossing, relative to the closed form",
       "tex_lines": [
-        333
+        341
       ]
     },
     {
@@ -609,158 +628,216 @@
       "section": "III",
       "note": "look count the simulator ran at",
       "tex_lines": [
-        41,
-        42,
-        43,
-        48,
-        52,
-        90,
-        92,
-        127,
-        129,
-        130,
-        134,
+        49,
+        50,
+        51,
+        56,
+        60,
+        98,
+        100,
+        135,
         137,
         138,
         142,
-        151,
+        145,
+        146,
+        150,
         159,
-        164,
-        176,
-        177,
-        178,
+        167,
+        172,
+        184,
+        185,
         186,
-        188,
-        215,
+        194,
+        196,
         223,
-        225,
-        251,
-        293,
-        307,
-        327,
-        328,
-        329,
-        332,
-        333,
-        342,
-        348,
+        231,
+        233,
+        259,
+        301,
+        315,
+        335,
+        336,
+        337,
+        340,
+        341,
         350,
-        362,
-        367,
-        369,
-        398,
-        404,
-        408,
-        419,
-        445,
-        446,
-        452,
+        356,
+        358,
+        370,
+        375,
+        377,
+        406,
+        412,
+        416,
+        427,
         453,
-        455,
-        458,
-        459,
-        465,
+        454,
+        460,
+        461,
+        463,
         466,
-        469,
-        522,
-        523,
-        526,
-        529,
+        467,
+        473,
+        474,
+        477,
+        530,
         531,
-        536,
+        534,
         537,
-        548,
-        549,
-        564,
-        566,
-        569,
-        570,
-        611,
-        618,
+        539,
+        544,
+        545,
+        556,
+        557,
+        572,
+        574,
+        577,
+        578,
         619,
         626,
-        628,
-        629,
-        630,
-        631,
-        633,
+        627,
         634,
-        651,
-        652,
-        653,
-        658,
+        636,
+        637,
+        638,
+        639,
+        641,
+        642,
         659,
-        669,
-        671,
-        683,
-        687,
-        692,
-        699,
-        701,
-        703,
+        660,
+        661,
+        666,
+        667,
+        677,
+        679,
+        691,
+        695,
+        700,
+        707,
         709,
-        719,
-        724,
-        725,
-        728,
-        729,
-        730,
-        742,
-        743,
-        745,
-        747,
-        759,
-        763,
-        765,
-        782,
-        791,
-        827,
-        828,
-        830,
-        832,
-        833,
-        834,
+        711,
+        717,
+        727,
+        732,
+        733,
+        736,
+        737,
+        738,
+        750,
+        751,
+        753,
+        755,
+        767,
+        771,
+        773,
+        790,
+        799,
+        835,
         836,
+        838,
+        840,
         841,
-        843,
+        842,
+        844,
+        849,
         851,
-        872,
-        875,
-        877,
-        887,
-        901,
-        922,
-        950,
-        951,
-        969,
-        970,
-        971,
+        859,
+        880,
+        883,
+        885,
+        895,
+        909,
+        930,
+        958,
+        959,
+        977,
         978,
-        1021,
-        1022,
-        1023,
-        1024,
+        979,
+        986,
         1029,
-        1056,
-        1066,
-        1087,
-        1099,
-        1108,
-        1118,
-        1129,
+        1030,
+        1031,
+        1032,
+        1037,
+        1069,
+        1079,
+        1100,
+        1112,
+        1121,
+        1131,
         1142,
-        1161,
-        1163,
-        1165,
-        1175,
+        1155,
+        1174,
+        1176,
         1178,
-        1181,
-        1195,
-        1209,
-        1217,
-        1221,
-        1226,
-        1230
+        1188,
+        1191,
+        1194,
+        1208,
+        1222,
+        1230,
+        1234,
+        1239,
+        1243,
+        1284,
+        1287,
+        1290,
+        1294,
+        1298,
+        1299,
+        1300,
+        1301,
+        1304,
+        1312,
+        1314,
+        1317,
+        1370,
+        1371,
+        1378,
+        1380,
+        1381,
+        1387,
+        1394,
+        1396,
+        1397,
+        1401,
+        1408,
+        1411,
+        1413,
+        1420,
+        1423,
+        1425,
+        1427,
+        1430,
+        1443,
+        1465,
+        1467,
+        1470,
+        1475,
+        1477,
+        1479,
+        1480,
+        1486,
+        1488,
+        1491,
+        1509,
+        1510,
+        1512,
+        1513,
+        1514,
+        1515,
+        1517,
+        1519,
+        1520,
+        1521,
+        1522,
+        1525,
+        1533,
+        1538,
+        1555,
+        1559,
+        1562
       ]
     },
     {
@@ -773,7 +850,7 @@
       "section": "III",
       "note": "the run parameter, now recorded: the committed artifact reproduces bit-for-bit at --trials 120000 --coherence 0.9822",
       "tex_lines": [
-        343
+        351
       ]
     },
     {
@@ -786,7 +863,7 @@
       "section": "III",
       "note": "the coherence the run used; equal to sqrt(0.9647), checked as DERIVED",
       "tex_lines": [
-        344
+        352
       ]
     },
     {
@@ -799,7 +876,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        345
+        353
       ]
     },
     {
@@ -812,7 +889,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        350
+        358
       ]
     },
     {
@@ -825,7 +902,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        350
+        358
       ]
     },
     {
@@ -838,7 +915,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        350
+        358
       ]
     },
     {
@@ -851,7 +928,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        350
+        358
       ]
     },
     {
@@ -864,7 +941,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        349
+        357
       ]
     },
     {
@@ -877,7 +954,7 @@
       "section": "III",
       "note": "1 dB imbalance",
       "tex_lines": [
-        351
+        359
       ]
     },
     {
@@ -890,7 +967,7 @@
       "section": "III",
       "note": "3 dB imbalance",
       "tex_lines": [
-        352
+        360
       ]
     },
     {
@@ -903,7 +980,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        367
+        375
       ]
     },
     {
@@ -916,7 +993,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        367
+        375
       ]
     },
     {
@@ -929,7 +1006,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        368
+        376
       ]
     },
     {
@@ -942,7 +1019,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        368
+        376
       ]
     },
     {
@@ -955,7 +1032,8 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        369
+        377,
+        1525
       ]
     },
     {
@@ -968,7 +1046,8 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        369
+        377,
+        1525
       ]
     },
     {
@@ -981,7 +1060,8 @@
       "section": "III",
       "note": "(1-0.13)/(1+0.13)",
       "tex_lines": [
-        388
+        396,
+        1475
       ]
     },
     {
@@ -994,8 +1074,9 @@
       "section": "III",
       "note": "(1+0.13)/(1-0.13)",
       "tex_lines": [
-        388,
-        389
+        396,
+        397,
+        1487
       ]
     },
     {
@@ -1008,7 +1089,8 @@
       "section": "III",
       "note": "21-look x 5x5 cells with both channels positive",
       "tex_lines": [
-        398
+        406,
+        1509
       ]
     },
     {
@@ -1021,7 +1103,8 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        404
+        412,
+        1510
       ]
     },
     {
@@ -1034,7 +1117,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        404
+        412
       ]
     },
     {
@@ -1047,7 +1130,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        404
+        412
       ]
     },
     {
@@ -1060,7 +1143,8 @@
       "section": "III",
       "note": "over the 20 most homogeneous 15x15 windows",
       "tex_lines": [
-        404
+        412,
+        1510
       ]
     },
     {
@@ -1073,7 +1157,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        405
+        413
       ]
     },
     {
@@ -1086,7 +1170,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        405
+        413
       ]
     },
     {
@@ -1099,9 +1183,11 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        348,
-        350,
-        408
+        356,
+        358,
+        416,
+        1411,
+        1510
       ]
     },
     {
@@ -1114,51 +1200,61 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        67,
-        73,
-        90,
-        129,
-        130,
-        132,
-        159,
-        187,
-        216,
-        233,
-        254,
-        367,
-        408,
-        635,
-        654,
-        694,
-        707,
-        782,
-        827,
-        831,
-        971,
-        975,
-        1066,
-        1082,
-        1085,
-        1087,
-        1103,
-        1108,
-        1110,
-        1112,
-        1113,
-        1115,
-        1118,
-        1122,
-        1142,
-        1161,
-        1165,
-        1175,
+        75,
+        81,
+        98,
+        137,
+        138,
+        140,
+        167,
+        195,
+        224,
+        241,
+        262,
+        375,
+        416,
+        643,
+        662,
+        702,
+        715,
+        790,
+        835,
+        839,
+        979,
+        983,
+        1079,
+        1095,
+        1098,
+        1100,
+        1116,
+        1121,
+        1123,
+        1125,
+        1126,
+        1128,
+        1131,
+        1135,
+        1155,
+        1174,
+        1178,
         1188,
-        1190,
-        1191,
-        1193,
-        1195,
-        1200,
-        1209
+        1201,
+        1203,
+        1204,
+        1206,
+        1208,
+        1213,
+        1222,
+        1265,
+        1346,
+        1408,
+        1411,
+        1506,
+        1526,
+        1529,
+        1532,
+        1533,
+        1554
       ]
     },
     {
@@ -1171,18 +1267,19 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        135,
-        177,
-        327,
-        409,
-        460,
-        467,
-        491,
-        633,
-        634,
-        657,
-        1165,
-        1226
+        143,
+        185,
+        335,
+        417,
+        468,
+        475,
+        499,
+        641,
+        642,
+        665,
+        1178,
+        1239,
+        1279
       ]
     },
     {
@@ -1195,7 +1292,8 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        410
+        418,
+        1511
       ]
     },
     {
@@ -1208,7 +1306,8 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        411
+        419,
+        1511
       ]
     },
     {
@@ -1221,9 +1320,9 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        411,
-        827,
-        830
+        419,
+        835,
+        838
       ]
     },
     {
@@ -1236,7 +1335,7 @@
       "section": "III",
       "note": "100(1 - cos 1.67 deg)",
       "tex_lines": [
-        413
+        421
       ]
     },
     {
@@ -1249,10 +1348,12 @@
       "section": "III",
       "note": "the physical sign",
       "tex_lines": [
-        306,
-        416,
-        899,
-        1171
+        314,
+        424,
+        907,
+        1184,
+        1486,
+        1512
       ]
     },
     {
@@ -1265,7 +1366,7 @@
       "section": "III",
       "note": "its reciprocal",
       "tex_lines": [
-        416
+        424
       ]
     },
     {
@@ -1278,7 +1379,8 @@
       "section": "III",
       "note": "P(CPR>1 | DOP<0.13); fraction stored, printed as a percentage",
       "tex_lines": [
-        418
+        426,
+        1512
       ]
     },
     {
@@ -1291,10 +1393,11 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        142,
-        419,
-        951,
-        1022
+        150,
+        427,
+        959,
+        1030,
+        1512
       ]
     },
     {
@@ -1307,9 +1410,9 @@
       "section": "IV",
       "note": "16x16 patches, delivered",
       "tex_lines": [
-        445,
-        459,
-        658
+        453,
+        467,
+        666
       ]
     },
     {
@@ -1322,7 +1425,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        445
+        453
       ]
     },
     {
@@ -1335,13 +1438,16 @@
       "section": "IV",
       "note": "over the screening mask",
       "tex_lines": [
-        43,
-        445,
-        458,
-        651,
+        51,
+        453,
+        466,
         659,
-        687,
-        1023
+        667,
+        695,
+        1031,
+        1381,
+        1420,
+        1519
       ]
     },
     {
@@ -1354,9 +1460,11 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        43,
-        446,
-        1024
+        51,
+        454,
+        1032,
+        1420,
+        1427
       ]
     },
     {
@@ -1369,8 +1477,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        451,
-        642
+        459,
+        650
       ]
     },
     {
@@ -1383,8 +1491,9 @@
       "section": "IV",
       "note": "block bootstrap, B = 2000",
       "tex_lines": [
-        452,
-        651
+        460,
+        659,
+        1411
       ]
     },
     {
@@ -1397,8 +1506,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        452,
-        651
+        460,
+        659
       ]
     },
     {
@@ -1411,7 +1520,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        452
+        460
       ]
     },
     {
@@ -1424,7 +1533,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        452
+        460
       ]
     },
     {
@@ -1437,9 +1546,9 @@
       "section": "IV",
       "note": "after the 5x5 boxcar",
       "tex_lines": [
-        453,
-        629,
-        652
+        461,
+        637,
+        660
       ]
     },
     {
@@ -1452,8 +1561,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        453,
-        652
+        461,
+        660
       ]
     },
     {
@@ -1466,7 +1575,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        453
+        461
       ]
     },
     {
@@ -1479,7 +1588,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        453
+        461
       ]
     },
     {
@@ -1492,43 +1601,51 @@
       "section": "IV",
       "note": "coverage of the nominally 95 % block bootstrap, synthetic speckle",
       "tex_lines": [
-        71,
-        76,
-        187,
-        343,
-        381,
-        453,
-        456,
-        458,
-        488,
-        589,
-        630,
-        634,
-        643,
-        658,
-        694,
-        707,
-        819,
+        79,
+        84,
+        195,
+        351,
+        389,
+        461,
+        464,
+        466,
+        496,
+        597,
+        638,
+        642,
+        651,
+        666,
+        702,
+        715,
         827,
-        831,
-        832,
-        844,
-        854,
-        1030,
-        1095,
-        1099,
-        1101,
-        1103,
-        1122,
-        1124,
-        1126,
-        1142,
-        1160,
-        1171,
-        1197,
-        1200,
-        1217,
-        1230
+        835,
+        839,
+        840,
+        852,
+        862,
+        1038,
+        1108,
+        1112,
+        1114,
+        1116,
+        1135,
+        1137,
+        1139,
+        1155,
+        1173,
+        1184,
+        1210,
+        1213,
+        1230,
+        1243,
+        1289,
+        1298,
+        1300,
+        1304,
+        1365,
+        1412,
+        1518,
+        1521
       ]
     },
     {
@@ -1541,35 +1658,56 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        37,
-        83,
-        94,
-        129,
-        138,
-        185,
-        247,
-        287,
-        290,
-        320,
+        10,
+        45,
+        91,
+        102,
+        137,
+        146,
+        193,
+        255,
+        295,
+        298,
         328,
-        389,
-        424,
-        456,
-        629,
-        643,
-        657,
-        726,
-        744,
-        788,
-        912,
-        952,
-        984,
-        1004,
-        1015,
-        1153,
-        1156,
-        1167,
-        1171
+        336,
+        397,
+        432,
+        464,
+        637,
+        651,
+        665,
+        734,
+        752,
+        796,
+        920,
+        960,
+        992,
+        1012,
+        1023,
+        1166,
+        1169,
+        1180,
+        1184,
+        1287,
+        1293,
+        1309,
+        1317,
+        1346,
+        1365,
+        1374,
+        1397,
+        1413,
+        1423,
+        1443,
+        1472,
+        1493,
+        1508,
+        1518,
+        1521,
+        1531,
+        1544,
+        1561,
+        1562
       ]
     },
     {
@@ -1582,32 +1720,48 @@
       "section": "IV",
       "note": "the mode estimator's relative bias on correlated speckle",
       "tex_lines": [
-        134,
-        151,
-        198,
-        217,
-        444,
-        457,
-        460,
-        466,
-        471,
-        628,
-        630,
-        658,
-        693,
-        694,
-        699,
+        142,
+        159,
+        206,
+        225,
+        452,
+        465,
+        468,
+        474,
+        479,
+        636,
+        638,
+        666,
+        701,
         702,
-        872,
-        877,
-        909,
-        1083,
-        1087,
-        1108,
-        1112,
-        1118,
-        1165,
-        1233
+        707,
+        710,
+        880,
+        885,
+        917,
+        1096,
+        1100,
+        1121,
+        1125,
+        1131,
+        1178,
+        1246,
+        1303,
+        1380,
+        1408,
+        1443,
+        1472,
+        1475,
+        1479,
+        1508,
+        1518,
+        1531,
+        1543,
+        1544,
+        1546,
+        1555,
+        1558,
+        1561
       ]
     },
     {
@@ -1620,7 +1774,7 @@
       "section": "IV",
       "note": "at N = 4",
       "tex_lines": [
-        457
+        465
       ]
     },
     {
@@ -1633,8 +1787,9 @@
       "section": "IV",
       "note": "at N = 12",
       "tex_lines": [
-        458,
-        660
+        466,
+        668,
+        1301
       ]
     },
     {
@@ -1647,10 +1802,12 @@
       "section": "IV",
       "note": "5.83 read through the measured bias",
       "tex_lines": [
-        459,
-        469,
-        537,
-        628
+        467,
+        477,
+        545,
+        636,
+        1317,
+        1519
       ]
     },
     {
@@ -1663,8 +1820,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        460,
-        657
+        468,
+        665
       ]
     },
     {
@@ -1677,8 +1834,9 @@
       "section": "IV",
       "note": "FIELD correlation used in the patch-bias run",
       "tex_lines": [
-        465,
-        466
+        473,
+        474,
+        1520
       ]
     },
     {
@@ -1691,8 +1849,10 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        465,
-        466
+        473,
+        474,
+        1520,
+        1538
       ]
     },
     {
@@ -1705,8 +1865,9 @@
       "section": "IV",
       "note": "the INTENSITY lag-one it produces",
       "tex_lines": [
-        147,
-        465
+        155,
+        473,
+        1520
       ]
     },
     {
@@ -1719,7 +1880,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        465
+        473,
+        1520
       ]
     },
     {
@@ -1732,7 +1894,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        466
+        474
       ]
     },
     {
@@ -1745,7 +1907,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        467
+        475
       ]
     },
     {
@@ -1758,7 +1920,7 @@
       "section": "IV",
       "note": "uncorrelated control at both sizes",
       "tex_lines": [
-        467
+        475
       ]
     },
     {
@@ -1771,8 +1933,8 @@
       "section": "IV",
       "note": "over the four blocks with coverage",
       "tex_lines": [
-        471,
-        633
+        479,
+        641
       ]
     },
     {
@@ -1785,9 +1947,9 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        327,
-        471,
-        635
+        335,
+        479,
+        643
       ]
     },
     {
@@ -1800,7 +1962,8 @@
       "section": "IV",
       "note": "median across the nine windows",
       "tex_lines": [
-        486
+        494,
+        1278
       ]
     },
     {
@@ -1813,8 +1976,8 @@
       "section": "IV",
       "note": "single-look intensity, answer known",
       "tex_lines": [
-        488,
-        834
+        496,
+        842
       ]
     },
     {
@@ -1827,9 +1990,10 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        225,
-        488,
-        828
+        233,
+        496,
+        836,
+        1412
       ]
     },
     {
@@ -1842,10 +2006,11 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        488,
-        630,
-        707,
-        832
+        496,
+        638,
+        715,
+        840,
+        1412
       ]
     },
     {
@@ -1858,10 +2023,10 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        44,
-        493,
-        495,
-        1025
+        52,
+        501,
+        503,
+        1033
       ]
     },
     {
@@ -1874,10 +2039,10 @@
       "section": "IV",
       "note": "21 / 3.10, asymptotic",
       "tex_lines": [
-        495,
-        513,
-        522,
-        629
+        503,
+        521,
+        530,
+        637
       ]
     },
     {
@@ -1890,9 +2055,10 @@
       "section": "IV",
       "note": "exact, rectangular spectrum",
       "tex_lines": [
-        498,
-        513,
-        522
+        506,
+        521,
+        530,
+        1289
       ]
     },
     {
@@ -1905,8 +2071,8 @@
       "section": "IV",
       "note": "1 - 0.1 cos(2 pi f / B)",
       "tex_lines": [
-        500,
-        725
+        508,
+        733
       ]
     },
     {
@@ -1919,7 +2085,8 @@
       "section": "IV",
       "note": "the shape the label declares",
       "tex_lines": [
-        500
+        508,
+        1289
       ]
     },
     {
@@ -1932,7 +2099,9 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        522
+        530,
+        1380,
+        1513
       ]
     },
     {
@@ -1945,8 +2114,9 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        523,
-        531
+        531,
+        539,
+        1513
       ]
     },
     {
@@ -1959,7 +2129,8 @@
       "section": "IV",
       "note": "azimuth ACF half-width, output rows",
       "tex_lines": [
-        526
+        534,
+        1514
       ]
     },
     {
@@ -1972,7 +2143,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        526
+        534,
+        1514
       ]
     },
     {
@@ -1985,7 +2157,8 @@
       "section": "IV",
       "note": "nine windows, paired",
       "tex_lines": [
-        528
+        536,
+        1514
       ]
     },
     {
@@ -1998,7 +2171,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        528
+        536,
+        1514
       ]
     },
     {
@@ -2011,7 +2185,8 @@
       "section": "IV",
       "note": "sub-band minus spatial once the finer arm is smoothed to the coarser width",
       "tex_lines": [
-        529
+        537,
+        1515
       ]
     },
     {
@@ -2024,8 +2199,9 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        529,
-        564
+        537,
+        572,
+        1515
       ]
     },
     {
@@ -2038,7 +2214,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        532
+        540
       ]
     },
     {
@@ -2051,8 +2227,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        138,
-        533
+        146,
+        541
       ]
     },
     {
@@ -2065,7 +2241,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        533
+        541
       ]
     },
     {
@@ -2078,12 +2254,16 @@
       "section": "IV",
       "note": "2020-03-05 L-band",
       "tex_lines": [
-        176,
-        368,
-        548,
-        710,
-        1126,
-        1176
+        184,
+        376,
+        556,
+        718,
+        1139,
+        1189,
+        1371,
+        1476,
+        1533,
+        1554
       ]
     },
     {
@@ -2096,7 +2276,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        549
+        557
       ]
     },
     {
@@ -2109,7 +2289,8 @@
       "section": "IV",
       "note": "registered before the product was opened",
       "tex_lines": [
-        549
+        557,
+        1476
       ]
     },
     {
@@ -2122,7 +2303,8 @@
       "section": "IV",
       "note": "39 samples at oversampling 2.905",
       "tex_lines": [
-        551
+        559,
+        1476
       ]
     },
     {
@@ -2135,7 +2317,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        551
+        559
       ]
     },
     {
@@ -2148,7 +2330,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        551
+        559
       ]
     },
     {
@@ -2161,9 +2343,10 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        404,
-        552,
-        742
+        412,
+        560,
+        750,
+        1510
       ]
     },
     {
@@ -2176,8 +2359,9 @@
       "section": "IV",
       "note": "this pass, for comparison",
       "tex_lines": [
-        552,
-        766
+        560,
+        774,
+        1523
       ]
     },
     {
@@ -2190,7 +2374,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        563
+        571
       ]
     },
     {
@@ -2203,7 +2387,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        564
+        572
       ]
     },
     {
@@ -2216,7 +2400,7 @@
       "section": "IV",
       "note": "amplitude mask eroded by 5x5",
       "tex_lines": [
-        569
+        577
       ]
     },
     {
@@ -2229,7 +2413,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        569
+        577
       ]
     },
     {
@@ -2242,7 +2426,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        569
+        577,
+        1427
       ]
     },
     {
@@ -2255,17 +2440,17 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        570,
-        611,
-        631,
-        652,
-        659,
-        671,
-        685,
-        688,
-        709,
-        728,
-        1028
+        578,
+        619,
+        639,
+        660,
+        667,
+        679,
+        693,
+        696,
+        717,
+        736,
+        1036
       ]
     },
     {
@@ -2278,9 +2463,10 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        570,
-        633,
-        688
+        578,
+        641,
+        696,
+        1427
       ]
     },
     {
@@ -2293,7 +2479,8 @@
       "section": "V",
       "note": "same-sense circular ENL, physical sign",
       "tex_lines": [
-        589
+        597,
+        1521
       ]
     },
     {
@@ -2306,7 +2493,8 @@
       "section": "V",
       "note": "opposite-sense",
       "tex_lines": [
-        589
+        597,
+        1521
       ]
     },
     {
@@ -2319,8 +2507,8 @@
       "section": "V",
       "note": "sqrt((2N-1)/(N-2)) at N = 38, ratio of relSD(R) to 1/sqrt(N); DERIVED",
       "tex_lines": [
-        606,
-        917
+        614,
+        925
       ]
     },
     {
@@ -2333,7 +2521,7 @@
       "section": "V",
       "note": "the same at N = 6; DERIVED",
       "tex_lines": [
-        607
+        615
       ]
     },
     {
@@ -2346,7 +2534,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        628
+        636
       ]
     },
     {
@@ -2359,7 +2547,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        628
+        636
       ]
     },
     {
@@ -2372,7 +2560,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        628
+        636
       ]
     },
     {
@@ -2385,7 +2573,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        628
+        636
       ]
     },
     {
@@ -2398,7 +2586,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        628
+        636
       ]
     },
     {
@@ -2411,7 +2599,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        629
+        637
       ]
     },
     {
@@ -2424,7 +2612,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        629
+        637
       ]
     },
     {
@@ -2437,7 +2625,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        629
+        637
       ]
     },
     {
@@ -2450,7 +2638,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        629
+        637
       ]
     },
     {
@@ -2463,7 +2651,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        629
+        637
       ]
     },
     {
@@ -2476,7 +2664,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630
+        638,
+        1425
       ]
     },
     {
@@ -2489,7 +2678,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630
+        638
       ]
     },
     {
@@ -2502,7 +2691,7 @@
       "section": "V",
       "note": "at the unrounded median 8.7544; the printed N gives 2.244",
       "tex_lines": [
-        630
+        638
       ]
     },
     {
@@ -2515,8 +2704,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630,
-        877
+        638,
+        885
       ]
     },
     {
@@ -2529,8 +2718,8 @@
       "section": "V",
       "note": "at the unrounded median; the printed N gives 7.85",
       "tex_lines": [
-        177,
-        630
+        185,
+        638
       ]
     },
     {
@@ -2543,7 +2732,7 @@
       "section": "V",
       "note": "at the unrounded ENL 13.7166; the printed N gives 0.405",
       "tex_lines": [
-        631
+        639
       ]
     },
     {
@@ -2556,9 +2745,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        48,
-        631,
-        1029
+        56,
+        639,
+        1037
       ]
     },
     {
@@ -2571,14 +2760,15 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        48,
-        631,
-        653,
-        659,
-        692,
-        699,
-        730,
-        1029
+        56,
+        639,
+        661,
+        667,
+        700,
+        707,
+        738,
+        1037,
+        1488
       ]
     },
     {
@@ -2591,7 +2781,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        632
+        640
       ]
     },
     {
@@ -2604,7 +2794,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        632
+        640
       ]
     },
     {
@@ -2617,7 +2807,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        633
+        641
       ]
     },
     {
@@ -2630,7 +2820,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        633
+        641
       ]
     },
     {
@@ -2643,7 +2833,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        633
+        641
       ]
     },
     {
@@ -2656,7 +2846,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        633
+        641
       ]
     },
     {
@@ -2669,7 +2859,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        633
+        641
       ]
     },
     {
@@ -2682,7 +2872,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        634
+        642
       ]
     },
     {
@@ -2695,7 +2885,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        634
+        642
       ]
     },
     {
@@ -2708,7 +2898,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        634
+        642
       ]
     },
     {
@@ -2721,7 +2911,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        634
+        642
       ]
     },
     {
@@ -2734,7 +2924,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        634
+        642
       ]
     },
     {
@@ -2747,7 +2937,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        635
+        643
       ]
     },
     {
@@ -2760,7 +2950,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        635
+        643
       ]
     },
     {
@@ -2773,7 +2963,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        635
+        643
       ]
     },
     {
@@ -2786,8 +2976,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        159,
-        635
+        167,
+        643
       ]
     },
     {
@@ -2800,7 +2990,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        635
+        643,
+        1289
       ]
     },
     {
@@ -2813,8 +3004,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        657,
-        660
+        665,
+        668
       ]
     },
     {
@@ -2827,8 +3018,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        460,
-        657
+        468,
+        665
       ]
     },
     {
@@ -2841,7 +3032,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        657
+        665
       ]
     },
     {
@@ -2854,8 +3045,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        634,
-        658
+        642,
+        666,
+        1300
       ]
     },
     {
@@ -2868,7 +3060,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        658
+        666,
+        1300
       ]
     },
     {
@@ -2881,7 +3074,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        658
+        666,
+        1300
       ]
     },
     {
@@ -2894,9 +3088,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        654,
-        659,
-        781
+        662,
+        667,
+        789
       ]
     },
     {
@@ -2909,7 +3103,7 @@
       "section": "V",
       "note": "amplitude-domain ENL",
       "tex_lines": [
-        660
+        668
       ]
     },
     {
@@ -2922,7 +3116,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        660
+        668,
+        1301
       ]
     },
     {
@@ -2935,8 +3130,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        458,
-        660
+        466,
+        668,
+        1301
       ]
     },
     {
@@ -2949,9 +3145,10 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        188,
-        660,
-        726
+        196,
+        668,
+        734,
+        1301
       ]
     },
     {
@@ -2964,9 +3161,10 @@
       "section": "V",
       "note": "block-bootstrap range of the critical value",
       "tex_lines": [
-        135,
-        491,
-        653
+        143,
+        499,
+        661,
+        1279
       ]
     },
     {
@@ -2979,7 +3177,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        653
+        661
       ]
     },
     {
@@ -2992,8 +3190,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        654,
-        694
+        662,
+        702
       ]
     },
     {
@@ -3006,8 +3204,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        654,
-        694
+        662,
+        702
       ]
     },
     {
@@ -3020,8 +3218,11 @@
       "section": "V",
       "note": "at the largest true CPR the DOP condition admits",
       "tex_lines": [
-        699,
-        702
+        707,
+        710,
+        1475,
+        1546,
+        1555
       ]
     },
     {
@@ -3034,14 +3235,16 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        177,
-        635,
-        701,
-        893,
-        1099,
-        1129,
-        1228,
-        1230
+        185,
+        643,
+        709,
+        901,
+        1112,
+        1142,
+        1241,
+        1243,
+        1371,
+        1509
       ]
     },
     {
@@ -3054,9 +3257,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        159,
-        701,
-        834
+        167,
+        709,
+        842
       ]
     },
     {
@@ -3069,15 +3272,20 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        136,
-        148,
-        398,
-        410,
-        701,
-        745,
-        832,
-        1090,
-        1186
+        144,
+        156,
+        406,
+        418,
+        709,
+        753,
+        840,
+        1103,
+        1199,
+        1299,
+        1301,
+        1475,
+        1509,
+        1511
       ]
     },
     {
@@ -3090,18 +3298,18 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        570,
-        611,
-        631,
-        632,
-        652,
-        659,
-        671,
-        685,
-        688,
-        709,
-        728,
-        1028
+        578,
+        619,
+        639,
+        640,
+        660,
+        667,
+        679,
+        693,
+        696,
+        717,
+        736,
+        1036
       ]
     },
     {
@@ -3114,11 +3322,11 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        142,
-        551,
-        709,
-        1160,
-        1226
+        150,
+        559,
+        717,
+        1173,
+        1239
       ]
     },
     {
@@ -3131,12 +3339,16 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        176,
-        368,
-        548,
-        710,
-        1126,
-        1176
+        184,
+        376,
+        556,
+        718,
+        1139,
+        1189,
+        1371,
+        1476,
+        1533,
+        1554
       ]
     },
     {
@@ -3149,7 +3361,9 @@
       "section": "V",
       "note": "px per independent sample",
       "tex_lines": [
-        718
+        726,
+        1290,
+        1332
       ]
     },
     {
@@ -3162,23 +3376,27 @@
       "section": "V",
       "note": "1521 px / 61.42",
       "tex_lines": [
-        92,
-        137,
-        138,
-        327,
-        570,
-        611,
-        628,
-        629,
-        719,
-        725,
-        745,
-        833,
-        970,
-        971,
+        100,
+        145,
+        146,
+        335,
+        578,
+        619,
+        636,
+        637,
+        727,
+        733,
+        753,
+        841,
         978,
-        1163,
-        1165
+        979,
+        986,
+        1176,
+        1178,
+        1294,
+        1317,
+        1387,
+        1470
       ]
     },
     {
@@ -3191,8 +3409,8 @@
       "section": "V",
       "note": "median peak, 25 effective samples, N = 5",
       "tex_lines": [
-        629,
-        724
+        637,
+        732
       ]
     },
     {
@@ -3205,8 +3423,8 @@
       "section": "V",
       "note": "the same over 1521 raw pixels",
       "tex_lines": [
-        500,
-        725
+        508,
+        733
       ]
     },
     {
@@ -3219,7 +3437,9 @@
       "section": "V",
       "note": "of the 1521-pixel disc",
       "tex_lines": [
-        726
+        734,
+        1493,
+        1521
       ]
     },
     {
@@ -3232,7 +3452,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        728
+        736,
+        1521
       ]
     },
     {
@@ -3245,7 +3466,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        729
+        737,
+        1521
       ]
     },
     {
@@ -3258,7 +3480,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        729
+        737,
+        1521
       ]
     },
     {
@@ -3271,17 +3494,19 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        142,
-        287,
-        290,
-        306,
-        416,
-        635,
-        729,
-        747,
-        879,
-        899,
-        1171
+        150,
+        295,
+        298,
+        314,
+        424,
+        643,
+        737,
+        755,
+        887,
+        907,
+        1184,
+        1486,
+        1512
       ]
     },
     {
@@ -3294,11 +3519,12 @@
       "section": "V",
       "note": "Byrgius C, transcribed from print",
       "tex_lines": [
-        48,
-        371,
-        631,
-        742,
-        1029
+        56,
+        379,
+        639,
+        750,
+        1037,
+        1460
       ]
     },
     {
@@ -3311,7 +3537,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        742
+        750
       ]
     },
     {
@@ -3324,7 +3550,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        743
+        751
       ]
     },
     {
@@ -3337,10 +3563,10 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        176,
-        743,
-        827,
-        830
+        184,
+        751,
+        835,
+        838
       ]
     },
     {
@@ -3353,7 +3579,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        745
+        753,
+        1299,
+        1301
       ]
     },
     {
@@ -3366,7 +3594,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        746
+        754
       ]
     },
     {
@@ -3379,7 +3607,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        747
+        755
       ]
     },
     {
@@ -3392,7 +3620,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        747
+        755
       ]
     },
     {
@@ -3405,7 +3633,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        747
+        755
       ]
     },
     {
@@ -3418,10 +3646,11 @@
       "section": "V",
       "note": "the same dispersion with no correlation at all",
       "tex_lines": [
-        749,
-        766,
-        1095,
-        1191
+        757,
+        774,
+        1108,
+        1204,
+        1523
       ]
     },
     {
@@ -3434,7 +3663,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        758
+        766
       ]
     },
     {
@@ -3447,7 +3676,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        758
+        766
       ]
     },
     {
@@ -3460,7 +3689,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        758
+        766
       ]
     },
     {
@@ -3473,11 +3702,13 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        186,
-        658,
-        728,
-        759,
-        834
+        194,
+        666,
+        736,
+        767,
+        842,
+        1300,
+        1521
       ]
     },
     {
@@ -3490,13 +3721,15 @@
       "section": "V",
       "note": "|corr(SC, OC)| over the frame",
       "tex_lines": [
-        42,
-        763,
-        827,
-        828,
-        830,
-        951,
-        1022
+        50,
+        771,
+        835,
+        836,
+        838,
+        959,
+        1030,
+        1522,
+        1538
       ]
     },
     {
@@ -3509,7 +3742,7 @@
       "section": "V",
       "note": "64x64 blocks below the 10th CV pct",
       "tex_lines": [
-        764
+        772
       ]
     },
     {
@@ -3522,8 +3755,9 @@
       "section": "V",
       "note": "empirical / F, within blocks",
       "tex_lines": [
-        552,
-        766
+        560,
+        774,
+        1523
       ]
     },
     {
@@ -3536,7 +3770,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        766
+        774,
+        1523
       ]
     },
     {
@@ -3549,8 +3784,9 @@
       "section": "V",
       "note": "sampling error of the difference of two tails at 10^7 trials",
       "tex_lines": [
-        352,
-        777
+        360,
+        785,
+        1371
       ]
     },
     {
@@ -3563,7 +3799,7 @@
       "section": "V",
       "note": "within-cell texture, order 8",
       "tex_lines": [
-        780
+        788
       ]
     },
     {
@@ -3576,10 +3812,11 @@
       "section": "V",
       "note": "order 4",
       "tex_lines": [
-        570,
-        633,
-        688,
-        781
+        578,
+        641,
+        696,
+        789,
+        1427
       ]
     },
     {
@@ -3592,9 +3829,9 @@
       "section": "V",
       "note": "no texture, same draw",
       "tex_lines": [
-        654,
-        659,
-        781
+        662,
+        667,
+        789
       ]
     },
     {
@@ -3607,7 +3844,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        782
+        790
       ]
     },
     {
@@ -3620,10 +3857,12 @@
       "section": "V",
       "note": "order 4, lag-one 0.8",
       "tex_lines": [
-        43,
-        446,
-        782,
-        1024
+        51,
+        454,
+        790,
+        1032,
+        1420,
+        1427
       ]
     },
     {
@@ -3636,23 +3875,27 @@
       "section": "V",
       "note": "simulated on the Stokes vector, N = 14",
       "tex_lines": [
-        48,
-        458,
-        631,
-        653,
-        654,
-        659,
-        660,
-        692,
-        694,
-        699,
-        730,
-        791,
-        828,
-        829,
-        832,
-        833,
-        1029
+        56,
+        466,
+        639,
+        661,
+        662,
+        667,
+        668,
+        700,
+        702,
+        707,
+        738,
+        799,
+        836,
+        837,
+        840,
+        841,
+        1037,
+        1290,
+        1301,
+        1475,
+        1488
       ]
     },
     {
@@ -3665,7 +3908,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        791
+        799,
+        1370
       ]
     },
     {
@@ -3678,7 +3922,7 @@
       "section": "VI",
       "note": "transcribed from Fa & Cai Table 1",
       "tex_lines": [
-        827
+        835
       ]
     },
     {
@@ -3691,7 +3935,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        828
+        836
       ]
     },
     {
@@ -3704,7 +3948,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        829
+        837
       ]
     },
     {
@@ -3717,7 +3961,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        830
+        838
       ]
     },
     {
@@ -3730,7 +3974,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        831
+        839
       ]
     },
     {
@@ -3743,7 +3987,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        832
+        840,
+        1476
       ]
     },
     {
@@ -3756,7 +4001,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        833
+        841
       ]
     },
     {
@@ -3769,7 +4014,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        834
+        842
       ]
     },
     {
@@ -3782,7 +4027,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        827
+        835
       ]
     },
     {
@@ -3795,8 +4040,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        176,
-        827
+        184,
+        835
       ]
     },
     {
@@ -3809,7 +4054,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        827
+        835
       ]
     },
     {
@@ -3822,8 +4067,9 @@
       "section": "VI",
       "note": "the widest per-crater spread",
       "tex_lines": [
-        831,
-        854
+        839,
+        862,
+        1418
       ]
     },
     {
@@ -3836,8 +4082,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        831,
-        854
+        839,
+        862
       ]
     },
     {
@@ -3850,12 +4096,13 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        52,
-        630,
-        836,
-        841,
-        875,
-        877
+        60,
+        638,
+        844,
+        849,
+        883,
+        885,
+        1425
       ]
     },
     {
@@ -3868,8 +4115,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        836,
-        842
+        844,
+        850
       ]
     },
     {
@@ -3882,10 +4129,10 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        52,
-        836,
-        842,
-        875
+        60,
+        844,
+        850,
+        883
       ]
     },
     {
@@ -3898,9 +4145,10 @@
       "section": "VI",
       "note": "from the printed medians; from the unrounded ones it is 3.7",
       "tex_lines": [
-        180,
-        569,
-        850
+        188,
+        577,
+        858,
+        1427
       ]
     },
     {
@@ -3913,8 +4161,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        630,
-        877
+        638,
+        885
       ]
     },
     {
@@ -3927,139 +4175,182 @@
       "section": "VI",
       "note": "presence check only; small integer",
       "tex_lines": [
-        43,
-        48,
-        49,
-        52,
-        53,
-        74,
-        79,
-        129,
-        130,
-        136,
+        51,
+        56,
+        57,
+        60,
+        61,
+        82,
+        87,
+        137,
         138,
-        142,
-        148,
-        164,
-        177,
-        178,
-        180,
-        223,
-        225,
-        290,
-        316,
-        326,
-        327,
-        333,
-        344,
-        367,
-        388,
-        389,
-        398,
-        404,
-        410,
-        445,
-        451,
-        452,
+        144,
+        146,
+        150,
+        156,
+        172,
+        185,
+        186,
+        188,
+        231,
+        233,
+        298,
+        324,
+        334,
+        335,
+        341,
+        352,
+        375,
+        396,
+        397,
+        406,
+        412,
+        418,
         453,
-        458,
-        465,
+        459,
+        460,
+        461,
         466,
-        469,
-        471,
-        496,
-        500,
-        533,
-        537,
-        551,
-        552,
-        563,
-        569,
-        589,
-        607,
-        628,
-        630,
-        631,
-        633,
-        635,
-        642,
-        651,
-        653,
-        654,
+        473,
+        474,
+        477,
+        479,
+        504,
+        508,
+        541,
+        545,
+        559,
+        560,
+        571,
+        577,
+        597,
+        615,
+        636,
+        638,
+        639,
+        641,
+        643,
+        650,
         659,
-        660,
-        683,
-        687,
-        692,
-        693,
-        694,
-        699,
+        661,
+        662,
+        667,
+        668,
+        691,
+        695,
+        700,
         701,
+        702,
         707,
         709,
-        710,
-        725,
-        730,
-        745,
-        749,
-        759,
-        766,
-        780,
-        781,
-        791,
-        809,
-        818,
-        828,
-        829,
-        831,
-        832,
-        833,
-        834,
+        715,
+        717,
+        718,
+        733,
+        738,
+        753,
+        757,
+        767,
+        774,
+        788,
+        789,
+        799,
+        817,
+        826,
         836,
+        837,
+        839,
+        840,
         841,
         842,
-        843,
+        844,
+        849,
         850,
-        859,
-        868,
-        870,
-        872,
-        874,
-        875,
-        877,
-        886,
-        889,
-        898,
-        909,
+        851,
+        858,
+        867,
+        876,
+        878,
+        880,
+        882,
+        883,
+        885,
+        894,
+        897,
+        906,
         917,
-        920,
-        1023,
-        1029,
-        1030,
-        1066,
-        1070,
-        1082,
-        1090,
+        925,
+        928,
+        1031,
+        1037,
+        1038,
+        1079,
+        1083,
         1095,
         1103,
         1108,
-        1120,
-        1122,
-        1129,
-        1134,
-        1138,
-        1140,
+        1116,
+        1121,
+        1133,
+        1135,
         1142,
-        1146,
-        1160,
-        1186,
-        1191,
-        1195,
-        1209,
-        1219,
-        1221,
-        1226,
-        1230
+        1147,
+        1151,
+        1153,
+        1155,
+        1159,
+        1173,
+        1199,
+        1204,
+        1208,
+        1222,
+        1232,
+        1234,
+        1239,
+        1243,
+        1274,
+        1283,
+        1287,
+        1288,
+        1290,
+        1293,
+        1299,
+        1301,
+        1304,
+        1314,
+        1367,
+        1381,
+        1392,
+        1394,
+        1411,
+        1416,
+        1418,
+        1420,
+        1425,
+        1427,
+        1428,
+        1475,
+        1477,
+        1479,
+        1480,
+        1487,
+        1488,
+        1494,
+        1508,
+        1509,
+        1510,
+        1511,
+        1519,
+        1520,
+        1521,
+        1523,
+        1527,
+        1529,
+        1534,
+        1536,
+        1538,
+        1543,
+        1562
       ]
     },
     {
@@ -4072,7 +4363,8 @@
       "section": "VI",
       "note": "the product Fa & Cai analysed",
       "tex_lines": [
-        870
+        878,
+        1480
       ]
     },
     {
@@ -4085,32 +4377,48 @@
       "section": "VI",
       "note": "presence check only; small integer",
       "tex_lines": [
-        134,
-        151,
-        198,
-        217,
-        444,
-        457,
-        460,
-        466,
-        471,
-        628,
-        630,
-        658,
-        693,
-        694,
-        699,
+        142,
+        159,
+        206,
+        225,
+        452,
+        465,
+        468,
+        474,
+        479,
+        636,
+        638,
+        666,
+        701,
         702,
-        872,
-        877,
-        909,
-        1083,
-        1087,
-        1108,
-        1112,
-        1118,
-        1165,
-        1233
+        707,
+        710,
+        880,
+        885,
+        917,
+        1096,
+        1100,
+        1121,
+        1125,
+        1131,
+        1178,
+        1246,
+        1303,
+        1380,
+        1408,
+        1443,
+        1472,
+        1475,
+        1479,
+        1508,
+        1518,
+        1531,
+        1543,
+        1544,
+        1546,
+        1555,
+        1558,
+        1561
       ]
     },
     {
@@ -4123,7 +4431,9 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        872
+        880,
+        1294,
+        1479
       ]
     },
     {
@@ -4136,12 +4446,14 @@
       "section": "VI",
       "note": "Spudis et al. 2013, attributed to unpublished analysis",
       "tex_lines": [
-        495,
-        513,
-        522,
-        629,
-        873,
-        920
+        503,
+        521,
+        530,
+        637,
+        881,
+        928,
+        1479,
+        1498
       ]
     },
     {
@@ -4154,7 +4466,7 @@
       "section": "VIII",
       "note": "peak CPR_a in the swath",
       "tex_lines": [
-        887
+        895
       ]
     },
     {
@@ -4167,7 +4479,8 @@
       "section": "VIII",
       "note": null,
       "tex_lines": [
-        889
+        897,
+        1283
       ]
     },
     {
@@ -4180,16 +4493,19 @@
       "section": "VIII",
       "note": "rounded in the scope table",
       "tex_lines": [
-        252,
-        306,
-        569,
-        631,
-        899,
-        949,
-        1016,
-        1091,
-        1171,
-        1176
+        260,
+        314,
+        577,
+        639,
+        907,
+        957,
+        1024,
+        1104,
+        1184,
+        1189,
+        1294,
+        1395,
+        1486
       ]
     },
     {
@@ -4202,20 +4518,23 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        176,
-        367,
-        465,
-        491,
-        498,
-        513,
-        522,
-        635,
-        887,
-        889,
-        969,
-        1151,
-        1176,
-        1181
+        184,
+        375,
+        473,
+        499,
+        506,
+        521,
+        530,
+        643,
+        895,
+        897,
+        977,
+        1164,
+        1189,
+        1194,
+        1283,
+        1289,
+        1520
       ]
     },
     {
@@ -4228,140 +4547,191 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        40,
+        10,
         48,
-        50,
-        52,
-        69,
+        56,
+        58,
+        60,
         77,
-        127,
-        129,
-        130,
+        85,
+        135,
+        137,
         138,
-        141,
-        165,
-        176,
-        180,
-        186,
-        187,
+        146,
+        149,
+        173,
+        184,
         188,
-        225,
-        287,
-        290,
-        307,
-        327,
-        329,
-        344,
-        345,
+        194,
+        195,
+        196,
+        233,
+        295,
+        298,
+        315,
+        335,
+        337,
         352,
-        368,
-        381,
-        388,
+        353,
+        360,
+        376,
         389,
-        398,
-        405,
-        411,
-        418,
-        433,
-        452,
-        455,
-        457,
-        488,
+        396,
+        397,
+        406,
+        413,
+        419,
+        426,
+        441,
+        460,
+        463,
+        465,
         496,
-        523,
-        526,
+        504,
         531,
-        532,
-        548,
-        549,
-        569,
-        570,
-        611,
-        618,
+        534,
+        539,
+        540,
+        556,
+        557,
+        577,
+        578,
+        619,
         626,
-        628,
-        630,
-        631,
-        632,
-        633,
         634,
-        651,
-        653,
-        657,
-        658,
+        636,
+        638,
+        639,
+        640,
+        641,
+        642,
         659,
-        669,
-        683,
-        688,
-        692,
-        693,
-        699,
+        661,
+        665,
+        666,
+        667,
+        677,
+        691,
+        696,
         700,
-        710,
-        726,
-        728,
-        730,
-        742,
-        743,
-        746,
-        747,
-        757,
-        759,
-        764,
+        701,
+        707,
+        708,
+        718,
+        734,
+        736,
+        738,
+        750,
+        751,
+        754,
+        755,
         765,
-        781,
-        827,
-        828,
-        829,
-        830,
-        831,
-        832,
-        833,
-        834,
+        767,
+        772,
+        773,
+        789,
+        835,
         836,
+        837,
+        838,
+        839,
+        840,
+        841,
         842,
-        854,
-        875,
-        893,
-        950,
-        967,
-        969,
-        1020,
-        1029,
-        1066,
+        844,
+        850,
+        862,
+        883,
+        901,
+        958,
+        975,
+        977,
+        1028,
+        1037,
         1079,
-        1083,
-        1089,
-        1091,
-        1093,
+        1092,
         1096,
-        1098,
-        1099,
-        1122,
-        1126,
-        1128,
-        1129,
-        1130,
+        1102,
+        1104,
+        1106,
+        1109,
+        1111,
+        1112,
+        1135,
+        1139,
+        1141,
         1142,
-        1146,
-        1165,
-        1171,
-        1176,
-        1183,
-        1186,
-        1195,
-        1202,
-        1204,
-        1206,
-        1209,
-        1214,
+        1143,
+        1155,
+        1159,
+        1178,
+        1184,
+        1189,
+        1196,
+        1199,
+        1208,
+        1215,
         1217,
         1219,
-        1221,
-        1223,
-        1226,
-        1228,
-        1230
+        1222,
+        1227,
+        1230,
+        1232,
+        1234,
+        1236,
+        1239,
+        1241,
+        1243,
+        1287,
+        1293,
+        1294,
+        1298,
+        1300,
+        1309,
+        1311,
+        1339,
+        1346,
+        1358,
+        1365,
+        1371,
+        1374,
+        1392,
+        1396,
+        1405,
+        1412,
+        1413,
+        1418,
+        1423,
+        1425,
+        1427,
+        1429,
+        1442,
+        1443,
+        1460,
+        1472,
+        1475,
+        1476,
+        1477,
+        1486,
+        1487,
+        1488,
+        1491,
+        1508,
+        1509,
+        1511,
+        1512,
+        1513,
+        1514,
+        1517,
+        1521,
+        1531,
+        1533,
+        1544,
+        1546,
+        1554,
+        1556,
+        1561,
+        1562
       ]
     },
     {
@@ -4374,23 +4744,27 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        92,
-        137,
-        138,
-        327,
-        570,
-        611,
-        628,
-        629,
-        719,
-        725,
-        745,
-        833,
-        970,
-        971,
+        100,
+        145,
+        146,
+        335,
+        578,
+        619,
+        636,
+        637,
+        727,
+        733,
+        753,
+        841,
         978,
-        1163,
-        1165
+        979,
+        986,
+        1176,
+        1178,
+        1294,
+        1317,
+        1387,
+        1470
       ]
     },
     {
@@ -4403,29 +4777,39 @@
       "section": "VIII",
       "note": "after the 2026-09-16 re-screen",
       "tex_lines": [
-        43,
-        147,
-        176,
-        178,
-        287,
-        290,
-        446,
-        551,
-        628,
-        635,
-        660,
-        758,
-        767,
-        780,
-        790,
-        828,
-        870,
-        898,
-        971,
-        1024,
-        1126,
-        1129,
-        1221
+        51,
+        155,
+        184,
+        186,
+        295,
+        298,
+        454,
+        559,
+        636,
+        643,
+        668,
+        766,
+        775,
+        788,
+        798,
+        836,
+        878,
+        906,
+        979,
+        1032,
+        1139,
+        1142,
+        1234,
+        1289,
+        1301,
+        1358,
+        1374,
+        1413,
+        1420,
+        1427,
+        1476,
+        1480,
+        1526
       ]
     },
     {
@@ -4438,51 +4822,61 @@
       "section": "VIII",
       "note": null,
       "tex_lines": [
-        67,
-        73,
-        90,
-        129,
-        130,
-        132,
-        159,
-        187,
-        216,
-        233,
-        254,
-        367,
-        408,
-        635,
-        654,
-        694,
-        707,
-        782,
-        827,
-        831,
-        971,
-        975,
-        1066,
-        1082,
-        1085,
-        1087,
-        1103,
-        1108,
-        1110,
-        1112,
-        1113,
-        1115,
-        1118,
-        1122,
-        1142,
-        1161,
-        1165,
-        1175,
+        75,
+        81,
+        98,
+        137,
+        138,
+        140,
+        167,
+        195,
+        224,
+        241,
+        262,
+        375,
+        416,
+        643,
+        662,
+        702,
+        715,
+        790,
+        835,
+        839,
+        979,
+        983,
+        1079,
+        1095,
+        1098,
+        1100,
+        1116,
+        1121,
+        1123,
+        1125,
+        1126,
+        1128,
+        1131,
+        1135,
+        1155,
+        1174,
+        1178,
         1188,
-        1190,
-        1191,
-        1193,
-        1195,
-        1200,
-        1209
+        1201,
+        1203,
+        1204,
+        1206,
+        1208,
+        1213,
+        1222,
+        1265,
+        1346,
+        1408,
+        1411,
+        1506,
+        1526,
+        1529,
+        1532,
+        1533,
+        1554
       ]
     },
     {
@@ -4495,16 +4889,18 @@
       "section": "VIII",
       "note": "from the search-flow record",
       "tex_lines": [
-        52,
-        628,
-        629,
-        630,
-        827,
-        836,
-        841,
-        875,
-        877,
-        969
+        60,
+        636,
+        637,
+        638,
+        835,
+        844,
+        849,
+        883,
+        885,
+        977,
+        1411,
+        1425
       ]
     }
   ],

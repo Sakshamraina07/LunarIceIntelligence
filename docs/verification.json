@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-16T10:09:23.242068+00:00",
+  "generated_utc": "2026-09-16T10:25:40.506188+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 23.9
+      "seconds": 29.6
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 18.1
+      "seconds": 24.8
     },
     {
       "id": "G4",
@@ -32,15 +32,15 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 24.8
+      "seconds": 29.1
     },
     {
       "id": "G5",
       "statement": "CPR is an explicitly-labelled amplitude-only ratio with the claim withdrawn, and CANDIDATE AREA is a measurement including a zero",
-      "gate": "detection_statistics.py \u2014 the floor, and the confidence interval",
+      "gate": "detection_statistics.py \u2014 the critical value, the table, and the withdrawn interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 3.4
+      "seconds": 4.3
     },
     {
       "id": "G6",
@@ -48,7 +48,7 @@
       "gate": "hillshade_histogram.py + composite_contrast.py",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 2.4
+      "seconds": 3.1
     },
     {
       "id": "G6b",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 39.7
+      "seconds": 44.2
     },
     {
       "id": "G7",
@@ -64,7 +64,7 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 20.0
+      "seconds": 20.1
     },
     {
       "id": "G8",
@@ -72,7 +72,7 @@
       "gate": "stamp_methods.py --check \u2014 40 artifacts",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.3
+      "seconds": 0.4
     },
     {
       "id": "G9",
@@ -80,7 +80,7 @@
       "gate": "assert_pdf_agrees_with_analysis.py \u2014 the rendered bytes, not the inputs",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.7
+      "seconds": 0.8
     },
     {
       "id": "G10",
@@ -112,7 +112,7 @@
       "gate": "verify_production.mjs --all-states \u2014 the built bundle, all three backend states",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 93.2
+      "seconds": 96.1
     },
     {
       "id": "G16",
@@ -120,7 +120,7 @@
       "gate": "assert_pdf_refuses_without_rasters.py \u2014 the loader, the 409, the rendered bytes",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.7
+      "seconds": 1.1
     },
     {
       "id": "G17",
@@ -128,7 +128,7 @@
       "gate": "assert_sweep_grid_discriminates.py - agreement, measured axes, it moves, the crossing",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.5
+      "seconds": 0.7
     },
     {
       "id": "G18",
@@ -136,7 +136,7 @@
       "gate": "assert_report_state_is_its_own.py - independent, not derived, honest doc, probe works",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 19.9
+      "seconds": 20.3
     },
     {
       "id": "G19",
@@ -156,8 +156,8 @@
     },
     {
       "id": "G23",
-      "statement": "The candidate-area confidence interval is taken on effective samples, not on correlated pixels",
-      "gate": "assert_wilson_on_effective_samples.py - 38,050 effective samples, upper bound 0.147 km2",
+      "statement": "No interval is reported on the candidate area, the withdrawal is on the record, and the effective-sample count is read not copied",
+      "gate": "assert_wilson_on_effective_samples.py - no interval on a structural zero, 38,050 effective samples",
       "verdict": "PASS",
       "returncode": 0,
       "seconds": 0.2
@@ -184,7 +184,7 @@
       "gate": "verify_data_provenance.py - 7 checks, emits docs/data_provenance.json",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 33.0
+      "seconds": 55.7
     },
     {
       "id": "G28",
@@ -192,7 +192,7 @@
       "gate": "check_repo_complete.py - C1-C7, C7 scans every path ever committed",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 12.2
+      "seconds": 10.5
     },
     {
       "id": "G26",
@@ -200,15 +200,15 @@
       "gate": "paper/assert_figures_embed_fonts.py - rebuilt, then read from the PDF itself",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 8.2
+      "seconds": 8.5
     },
     {
       "id": "G30",
       "statement": "Every sensitivity claim in Sections V-VI is the number its artifact holds",
-      "gate": "assert_manuscript_claims.py - S1-S8, claims not remembered digits",
+      "gate": "assert_manuscript_claims.py - S1-S14, the CURRENT claims, not remembered digits",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.2
+      "seconds": 0.1
     },
     {
       "id": "G31",
@@ -216,7 +216,7 @@
       "gate": "robustness_gate.py - nine corruptions, crossing within 1e-4, zero passing",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 7.9
+      "seconds": 8.2
     },
     {
       "id": "G21",
@@ -248,7 +248,7 @@
       "gate": "recompute_manuscript_tables.py - Tables II, III and IV, cell by cell",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 2.3
+      "seconds": 2.7
     }
   ],
   "all_pass": true

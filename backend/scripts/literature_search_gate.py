@@ -7,7 +7,7 @@ WHY
 ---
 The manuscript's central negative claim about the field is that no lunar CPR ice
 study reports the measured ENL of the product it analysed, a per-pixel floor at a
-stated look count, or a false-positive rate for the CPR criterion. "We searched
+stated look count, or a noise exceedance rate for the CPR criterion. "We searched
 and found none" is the least checkable sentence a paper can contain, and the
 easiest to be wrong about.
 

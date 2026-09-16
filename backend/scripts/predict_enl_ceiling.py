@@ -1,16 +1,26 @@
 """
-predict_enl_ceiling.py -- what the label says the ENL cannot exceed.
+predict_enl_ceiling.py -- the reference value the label implies for the ENL.
 
     python backend/scripts/predict_enl_ceiling.py LABEL.xml [LABEL2.xml ...]
                                                  [--out docs/enl_predictions.json]
 
+NOT A BOUND, AND THE NAME IS A CORRECTION DATED 2026-09-16
+----------------------------------------------------------
+This script and its artifact key were written as `ceiling`, and the word was
+wrong. 21 / 3.10 = 6.77 is the ASYMPTOTIC time-bandwidth product; the exact
+finite-sample participation ratio for the same band is 7.34, and a mildly
+shaped spectrum of the same support gives 7.38 -- above both. Nothing here is
+an upper bound the ENL cannot exceed. It is a REFERENCE VALUE for a
+multilooking scheme, and the key name is kept only because other artifacts
+address it by name (docs/slepian_ceiling.json carries the exact companions).
+
 WHY, AND WHY IT IS RUN BEFORE THE MEASUREMENT
 ---------------------------------------------
 METHODS 7.3 measured 5.3-6.5 effective looks in a product whose label declares
-21, and derived a CEILING of 6.77 from the label's own numbers:
+21, and derived a reference value of 6.77 from the label's own numbers:
 
     oversampling      = PRF / total_processed_azimuth_bandwidth
-    predicted ceiling = azimuth_looks / oversampling
+    reference value   = azimuth_looks / oversampling
 
 Azimuth looks are formed by splitting the processed Doppler bandwidth. When the
 PRF exceeds that bandwidth the looks overlap in frequency, so they are not
@@ -21,8 +31,8 @@ oversampling factor. For the 2020-08-08 product: 3321.641156 / 1071.335975 =
 THIS SCRIPT COMPUTES THAT FROM THE LABEL AND NOTHING ELSE. It opens no raster.
 It is run, and its output committed, BEFORE measure_enl.py touches a new
 product, so the prediction cannot be adjusted after seeing the answer. That
-ordering is the whole point: a ceiling derived after the measurement is a
-description of the measurement, not a test of it.
+ordering is the whole point: a reference value derived after the measurement is
+a description of the measurement, not a test of it.
 
 The prediction can be wrong. That is what makes it worth writing down.
 """

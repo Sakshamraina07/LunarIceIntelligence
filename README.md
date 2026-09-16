@@ -16,16 +16,20 @@ carries a mark — `MEASURED`, `DERIVED` or `NO DATA` — and the build fails if
 does not.**
 
 **The headline result is a null result with a proof.** The screen returns
-0.0000 km² of candidate ice, 95 % CI [0.0000, 0.147] km² on 38 050 effective
-samples, and the reason is
+0.0000 km² of candidate ice, and the reason is
 closed-form rather than empirical: with CPR derived from amplitude alone it is a
 strictly increasing function of DOP, so `CPR > 1.00 AND DOP < 0.13` is
 arithmetically empty. That is not a failure to find ice. It is a measurement of
-what this product can decide.
+what this product can decide. No interval is attached to that zero, and the
+absence is deliberate: a zero forced by arithmetic has no sampling uncertainty
+to quantify (METHODS §11.2, corrected 2026-09-16). What the amplitudes *do*
+decide is the split — **40.21 %** of measured pixels excluded from the DOP
+condition outright, **59.79 %** undecidable.
 
 **And you do not have to take that on trust.** The map carries a probe: click
 anywhere and it reports the measured CPR and DOP at that point, each against its
-threshold, and how far below the detection floor the reading falls. It is not a
+threshold, and how far below the one-sided 95 % critical value the reading
+falls. It is not a
 predictor — there is nothing to predict — but it turns the null from something
 asserted into something checkable, everywhere in the frame.
 
@@ -40,20 +44,22 @@ carrying CPR's name. (`docs/METHODS.md` §7.9.2)
 
 **2. The equivalent number of looks is 5–6, not the nominal 21** — and forming
 21 looks from the single-look complex two different ways gives 4.5 and 9.9, so
-*"21 looks" names a method, not a count*. As far as this project's literature
-sweep found, this is the first ENL measured on a DFSAR product. (§7.3–7.4)
+*Corrected 2026-09-16:* that gap is a difference in effective azimuth
+**resolution**, not in delivered looks — smoothed to a common width the two
+arms agree to −1.00 ± 0.57 looks (§7.4b). In the records examined, this is the
+first ENL measured on a DFSAR product. (§7.3–7.4)
 
 **3. The look count decides whether a published detection clears its own
 significance floor, and it is not reported.**
 
 | feature | CPR | N=6 | N=9 | N=21 | N=38 | N=100 |
 |---|---|---|---|---|---|---|
-| *95 % floor* | | *2.69* | *2.22* | *1.67* | *1.46* | *1.26* |
+| *95 % critical value* | | *2.69* | *2.22* | *1.67* | *1.46* | *1.26* |
 | F2 | 1.95 | no | no | **yes** | yes | yes |
 | H3 | 1.30 | no | no | no | no | **yes** |
 
-Read *down* a column. This accuses nobody of being wrong; it says the floor is
-not reported, so a reader cannot tell. (§11.3)
+Read *down* a column. This accuses nobody of being wrong; it says that in the
+records examined the critical value is not reported, so a reader cannot tell. (§11.3)
 
 **4. The distributed L2 product ships an incidence-angle raster that fails three
 geometric tests.** 80.53 % of its values sit below the spacecraft look angle,
@@ -72,7 +78,7 @@ A Bragg-domain criterion therefore cannot be applied to this product, and ours i
 | **radar** | Chandrayaan-2 DFSAR L-band compact-pol, one pass, **15.64 %** of the frame returned amplitude |
 | **landing sites** | argmax of a six-criterion search over all **14,943,444** native 25 m pixels, each with per-criterion evidence and an interpolation verdict |
 | **traverse** | Dijkstra at a stated 100 m planning resolution, connectivity reported **before** any distance, `UNREACHABLE` an explicit state — all **177 waypoints** drawn on the map, each one hoverable |
-| **the probe** | click any point and read the **measured** CPR and DOP there against their thresholds and the detection floor — a 200 m block mean, labelled as one, with `NO DATA` where the radar returned nothing |
+| **the probe** | click any point and read the **measured** CPR and DOP there against their thresholds and the one-sided 95 % critical value — a 200 m block mean, labelled as one, with `NO DATA` where the radar returned nothing |
 | **incidence** | Putrevu et al. 2023's 20° Bragg criterion is **withheld**: the product's incidence raster has **80.53 %** of its values below the label's own look angle, which is geometrically impossible, and the field cannot be re-derived from a label with no ephemeris (`docs/METHODS.md` §7.12) |
 
 ## Quick start
@@ -105,7 +111,7 @@ bytes and fails the build on any figure that is not in the artifacts.
 
 ## Verification
 
-`verify_all.py` runs thirty gates and maps each to a statement in PRD section 6.
+`verify_all.py` runs thirty-one gates and maps each to a statement in PRD section 6.
 One of them loads the **production build** in a browser, in all three backend
 states, and fails on a blank page.
 Five of them also run on every rebuild, and any non-zero exit stops the build.
@@ -117,7 +123,7 @@ of them an injection that passed for a reason that was not its own claim.
 
 | document | what it holds |
 |---|---|
-| [`docs/METHODS.md`](docs/METHODS.md) | **the single methodological record** — 12 sections, every measured figure under a staleness stamp over 19 artifacts |
+| [`docs/METHODS.md`](docs/METHODS.md) | **the single methodological record** — 13 sections, every measured figure under a staleness stamp over 40 artifacts |
 | [`docs/PROVENANCE.md`](docs/PROVENANCE.md) | generated, not written: every value, its mark, its source raster and the line that produced it |
 | [`docs/assumptions.md`](docs/assumptions.md) | the register of what is **not** measured |
 | [`docs/testing.md`](docs/testing.md) | the gates, and what each refuses to let ship |

@@ -38,13 +38,15 @@ The energy proxy is reported **per kilogram** so that no rover mass is invented.
 - **No boulder count.** There is no OHRC product for this frame, so the hazard
   blend is slope + roughness renormalised, with the boulder weight zeroed rather
   than fed an unmeasured zero.
-- **No ice.** Candidate area is 0.0000 km², 95 % CI **[0.0000, 0.147] km²** on
-  **38 050 effective samples**. The interval is taken on independent samples, not
-  on the 2,337,086 raw pixels: METHODS §7.9.1 measures 61.42 px per independent
-  sample, so a pixel-count interval — the superseded [0.0000, 0.0024] km² — is
-  about 61× too narrow and states a precision the data does not have.
-- **No detection floor for the published values**, because their look count is
-  not stated in the open text (§11.3).
+- **No ice.** Candidate area is **0.0000 km²**, and **no interval is reported on
+  it** (corrected 2026-09-16; METHODS §11.2). The screen's firing rate is zero
+  algebraically for every admissible input, so the zero carries no sampling
+  uncertainty for an interval to express. The effective-sample count stands as a
+  measurement — **38 050** = 2,337,086 px / 61.42 px per independent sample
+  (§7.9.1) — and the two superseded intervals are kept, labelled, in
+  `detection_statistics.json::candidate_area.withdrawn_interval`.
+- **No one-sided critical value for the published values**, because their look
+  count is not stated in the open text (§11.3).
 
 ## Limitations that bound every result here
 

@@ -6,7 +6,7 @@ joint_criterion.py -- the DOP half of the criterion does most of the work.
 WHY
 ---
 The published criterion is a PAIR of thresholds, CPR > 1 AND DOP < 0.13, but its
-false-positive rate is always quoted for the CPR half alone. That understates the
+noise exceedance rate is always quoted for the CPR half alone. That understates the
 screen and overstates the problem: on a properly formed Stokes vector the two
 conditions are not independent, and requiring both is far stricter than requiring
 the first.

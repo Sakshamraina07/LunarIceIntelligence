@@ -4,7 +4,7 @@
   "crater_name": "Faustini Crater (Chandrayaan-2 SAR Swath)",
   "latitude_deg": -87.69,
   "longitude_deg": 81.46,
-  "generated_utc": "2026-09-06T20:44:20.237629+00:00",
+  "generated_utc": "2026-09-16T09:55:13.214887+00:00",
   "generator": "backend/scripts/build_analysis.py",
   "data_mode": "REAL",
   "why_static": "Computed offline from the native rasters and served as a static asset. The deployed backend has no access to these files (/data/ and *.tif are gitignored, and the paths in mission_service.py are Windows absolutes), so on Render it degrades to a seeded DEMO generator and returns fabricated values with HTTP 200. The headline verdict must not depend on that path.",
@@ -543,7 +543,7 @@
     "screen_is_empty_by_construction": true,
     "threshold_over_ceiling_ratio": 234.68212944968158,
     "consequence": "No pixel with DOP < 0.13 can exhibit CPR > 0.0042611, whatever the terrain and whatever the instrument. The configured CPR_THRESHOLD of 1 is 235x above that ceiling, so this screen is LOGICALLY EMPTY, not merely unsatisfied. A candidate area of exactly 0.0 is the only arithmetically possible answer, and a non-zero value here would be a bug rather than a detection.",
-    "what_fixes_it": "The true Stokes forms are built from DIFFERENT combinations of the four Stokes parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so they are genuinely independent and their conjunction selects a real population. The amplitude proxy's defect is not that it is small: it collapses two independent physical observables onto one degree of freedom. Phase 5b."
+    "what_fixes_it": "The true Stokes forms are built from DIFFERENT combinations of the four Stokes parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so they are DISTINCT observables and their conjunction selects a real population. Distinct, not independent, and the difference is measurable: DOP >= |1 - CPR| / (1 + CPR) couples them, so DOP < 0.13 admits only 0.7699 < CPR < 1.2989 (corrected 2026-09-16). The amplitude proxy's defect is not that it is small: it collapses two distinct physical observables onto one degree of freedom. Phase 5b."
   },
   "evidence": [
     {

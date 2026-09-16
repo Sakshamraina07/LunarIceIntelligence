@@ -184,11 +184,19 @@ def generate_mission_pdf_report(bundle: Dict[str, Any]) -> bytes:
         body_style))
     story.append(Spacer(1, 6))
 
+    # THE INTERVAL HERE IS WITHDRAWN, 2026-09-16, and the reason is the point.
+    # This report used to print a score interval on the candidate area. That is
+    # not a quantity this screen has: an interval of that kind answers "a
+    # detector fired k of n times; what is its rate?", and this screen's rate is
+    # zero ALGEBRAICALLY for every admissible input, so there is no sampling
+    # uncertainty to express and the number would dress a structural zero as a
+    # measured one. Superseded by the statement below, as in the manuscript.
     ci = None
     if not absent(detect_doc):
         ca = detect_doc["candidate_area"]
-        ci = (f"95% CI [{ca['ci_km2'][0]:.4f}, {ca['ci_km2'][1]:.4f}] km&sup2; "
-              f"({ca['method']})")
+        w = ca.get("withdrawn_interval")
+        ci = (f"no interval: {w['why']}" if w else
+              f"{ca['measured_pixels']:,} measured pixels, {ca['pixels']} passing")
 
     head = verdict["headline"]
     key_rows = [
@@ -259,11 +267,19 @@ def generate_mission_pdf_report(bundle: Dict[str, Any]) -> bytes:
             ["Swath maximum",
              f"{ps['swath_max']:.6f}", "MEASURED",
              f"short of the floor by a factor of {ps['shortfall_factor']:.1f}"],
-            ["Candidate area interval",
-             f"[{ca['ci_km2'][0]:.4f}, {ca['ci_km2'][1]:.4f}] km²",
+            ["Candidate area",
+             f"{ca['area_km2']:.4f} km²",
              ca["provenance"],
-             f"{ca['method']} on {ca['measured_pixels']:,} measured pixels, "
-             f"{ca['pixels']} passing. {ca['why_wilson']}"],
+             f"{ca['pixels']} of {ca['measured_pixels']:,} measured pixels pass. "
+             f"No interval is reported: "
+             f"{ca['withdrawn_interval']['why']}."
+             if ca.get("withdrawn_interval") else
+             f"{ca['pixels']} of {ca['measured_pixels']:,} measured pixels pass."],
+            ["Effective samples",
+             f"{ca['n_effective']:,}",
+             "MEASURED",
+             f"{ca['measured_pixels']:,} pixels / {ca['correlation_area_px']:.2f} px "
+             f"per independent sample, from the CPR field's own autocorrelation"],
         ]
         story.append(table(
             [[Paragraph(c, note_style) if i == 3 else c for i, c in enumerate(r)] for r in det_rows],

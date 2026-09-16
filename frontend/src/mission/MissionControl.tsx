@@ -655,7 +655,7 @@ export default function MissionControl() {
               <Crosshair size={11} style={{ color: '#4fd1e6' }} /> Criteria Probe
               <span className="mc-layer-tag" title={
                 'Click anywhere and read the MEASURED CPR and DOP there, each against '
-                + 'its threshold, and the Phase 8 detection floor. It does not locate '
+                + 'its threshold, and the Phase 8 critical value. It does not locate '
                 + 'ice: candidate area is 0.00 km2 and METHODS section 1 shows the '
                 + 'screen is empty by construction.'
               }>MEASURE</span>

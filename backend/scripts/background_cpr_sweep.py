@@ -1,17 +1,17 @@
 """
-background_cpr_sweep.py -- the false-positive rate is a function of the terrain.
+background_cpr_sweep.py -- the noise exceedance rate is a function of the terrain.
 
     python backend/scripts/background_cpr_sweep.py
 
 WHY
 ---
-"17.79 % false positives" -- an UPPER BOUND, for the reason below -- is quoted
+"17.79 % exceedance" -- an UPPER BOUND, for the reason below -- is quoted
 against a single assumed background, true CPR = 0.7. That choice is doing a great
 deal of work and is easy to miss: the
 rate at 0.3 is 0.12 %, and at 0.9 it is 39.23 %. Three hundred-fold, across a
 range of ordinary lunar regolith.
 
-Reporting one number invites the reader to treat the false-positive rate as a
+Reporting one number invites the reader to treat the exceedance rate as a
 property of the METHOD. It is a property of the method AND the terrain it is
 pointed at, and a screen quoted without its assumed background is not a screen
 with a stated error rate.
@@ -48,7 +48,7 @@ def main() -> int:
     n = float(det["effective_looks"]["screened_field"]["lh"])
 
     print("=" * 78)
-    print(f"FALSE POSITIVES vs ASSUMED BACKGROUND CPR, at N = {n:g}")
+    print(f"NOISE EXCEEDANCE vs ASSUMED BACKGROUND CPR, at N = {n:g}")
     print("=" * 78)
     print(f"  N read from detection_statistics.json::effective_looks.screened_field.lh")
     print()
@@ -62,7 +62,7 @@ def main() -> int:
     lo, hi = rows[0]["fp_percent"], rows[-1]["fp_percent"]
     print()
     print(f"  0.3 -> {lo:.2f} %   0.9 -> {hi:.2f} %   a factor of {hi / lo:,.0f}")
-    print("  The false-positive rate is a property of the method AND the terrain")
+    print("  The exceedance rate is a property of the method AND the terrain")
     print("  it is pointed at. Quoted without its assumed background it is not a")
     print("  stated error rate.")
 

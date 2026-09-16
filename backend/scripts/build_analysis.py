@@ -1507,9 +1507,12 @@ def build(crater_id: str = "faustini") -> dict:
         "what_fixes_it": (
             "The true Stokes forms are built from DIFFERENT combinations of the four Stokes "
             "parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so "
-            "they are genuinely independent and their conjunction selects a real population. The "
-            "amplitude proxy's defect is not that it is small: it collapses two independent "
-            "physical observables onto one degree of freedom. Phase 5b."
+            "they are DISTINCT observables and their conjunction selects a real population. "
+            "Distinct, not independent, and the difference is measurable: DOP >= "
+            "|1 - CPR| / (1 + CPR) couples them, so DOP < 0.13 admits only "
+            "0.7699 < CPR < 1.2989 (corrected 2026-09-16). The amplitude proxy's defect is "
+            "not that it is small: it collapses two distinct physical observables onto one "
+            "degree of freedom. Phase 5b."
         ),
     }
     doc["cpr_dop_identity"] = identity

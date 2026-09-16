@@ -16,5 +16,5 @@ What replaces it, with the measurements:
 |---|---|
 | why the screen returns nothing | `METHODS.md` §1 |
 | what the amplitude proxy actually measures | `METHODS.md` §7.9.2 |
-| false-positive rates, and a real one | `METHODS.md` §7.7, §11.3 |
-| candidate area with a confidence interval | `METHODS.md` §11.2 |
+| noise exceedance rates at a stated true CPR | `METHODS.md` §7.7, §11.3 |
+| the candidate area, and why it carries no interval | `METHODS.md` §11.2 |

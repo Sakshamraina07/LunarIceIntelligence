@@ -1,11 +1,11 @@
 """
-correlated_ratio.py -- what channel coherence does to the false-positive rate.
+correlated_ratio.py -- what channel coherence does to the noise exceedance rate.
 
     python backend/scripts/correlated_ratio.py [--trials N]
 
 WHY
 ---
-Every false-positive rate in this work is computed from F(2N, 2N), which assumes
+Every noise exceedance rate in this work is computed from F(2N, 2N), which assumes
 the same-sense and opposite-sense intensities are INDEPENDENT. They are not: the
 two circular channels are formed from the same illumination of the same ground,
 and METHODS 7.10 bounds their correlation at |rho|^2 >= 0.3052 from Putrevu et
@@ -25,7 +25,7 @@ directly (Lee et al. 1994's model) gives:
     |rho| = 0.98   0.00 %
 
 The bound is not nearly tight. At the coherence this swath actually shows the
-F-based rate overstates the false-positive rate by more than an order of
+F-based rate overstates the exceedance by more than an order of
 magnitude, and saying "upper bound" without saying that invites a reader to treat
 17.79 % as an estimate.
 """
@@ -110,7 +110,7 @@ def main() -> int:
 
     print()
     print("  The F-based rate is an UPPER BOUND and it is not a tight one: at")
-    print("  high coherence it overstates the false-positive rate by more than an")
+    print("  high coherence it overstates the exceedance by more than an")
     print("  order of magnitude.")
 
     OUT.write_text(json.dumps({

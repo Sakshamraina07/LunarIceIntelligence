@@ -25,7 +25,7 @@ is marked `MODELLED`, or if an absent value carries no reason.
 | Frame | 2258 × 6618 @ 25 m/px = 9,340 km² |
 | Measured swath | 1,460.68 km² (15.640 % of frame) — every MEASURED radar figure uses this mask only |
 | Thresholds | CPR > 1, DOP < 0.13 — read from backend/app/core/config.py (CPR_THRESHOLD, DOP_THRESHOLD, MAX_TRAVERSABLE_SLOPE_DEG, CRITICAL_LANDING_SLOPE_DEG), **not retuned** |
-| Generated | 2026-09-06T20:44:20.237629+00:00 |
+| Generated | 2026-09-16T09:55:13.214887+00:00 |
 
 ## Mark counts
 
@@ -149,7 +149,7 @@ ceiling on achievable CPR:
 
 No pixel with DOP < 0.13 can exhibit CPR > 0.0042611, whatever the terrain and whatever the instrument. The configured CPR_THRESHOLD of 1 is 235x above that ceiling, so this screen is LOGICALLY EMPTY, not merely unsatisfied. A candidate area of exactly 0.0 is the only arithmetically possible answer, and a non-zero value here would be a bug rather than a detection.
 
-The true Stokes forms are built from DIFFERENT combinations of the four Stokes parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so they are genuinely independent and their conjunction selects a real population. The amplitude proxy's defect is not that it is small: it collapses two independent physical observables onto one degree of freedom. Phase 5b.
+The true Stokes forms are built from DIFFERENT combinations of the four Stokes parameters -- CPR = (S0 - S3)/(S0 + S3) and DOP = sqrt(S1^2 + S2^2 + S3^2)/S0 -- so they are DISTINCT observables and their conjunction selects a real population. Distinct, not independent, and the difference is measurable: DOP >= |1 - CPR| / (1 + CPR) couples them, so DOP < 0.13 admits only 0.7699 < CPR < 1.2989 (corrected 2026-09-16). The amplitude proxy's defect is not that it is small: it collapses two distinct physical observables onto one degree of freedom. Phase 5b.
 
 ---
 

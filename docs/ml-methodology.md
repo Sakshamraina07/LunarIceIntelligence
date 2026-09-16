@@ -12,7 +12,8 @@ regression.
 
 The full account is in **`METHODS.md` §1** — why an amplitude-only screen is
 empty by construction — and **§11**, which replaces a probability with a
-detection floor and a confidence interval.
+one-sided critical value at a named look count, and states why the resulting
+zero carries no interval.
 
 *This stub is deliberate. A document describing deleted code is worse than no
 document: an examiner opening it finds a description, written by us, of a thing

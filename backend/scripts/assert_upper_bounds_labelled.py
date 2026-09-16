@@ -5,7 +5,7 @@ assert_upper_bounds_labelled.py -- a bound may not be quoted as a rate.
 
 WHY
 ---
-The false-positive rates in METHODS 7.7 come from `CPR * F(2N,2N)`, which assumes
+The noise exceedance rates in METHODS 7.7 come from `CPR * F(2N,2N)`, which assumes
 the two circular channels are INDEPENDENT. Section 7.10 shows, from Putrevu et
 al. 2023's own Byrgius C dispersion, that they are correlated at |rho|^2 >= 0.36
 -- and correlation between numerator and denominator narrows a ratio, so every
@@ -59,17 +59,17 @@ for _s in (sys.stdout, sys.stderr):
 # remembering, which is what this file exists to replace.
 BOUNDED = [
     (r"29\.16\s*%",
-     "false-positive rate at true CPR 0.7, N = 5 — an upper bound because it "
+     "noise exceedance rate at true CPR 0.7, N = 5 — an upper bound because it "
      "assumes independent circular channels (7.10), AND the wrong look count "
      "for this screen: the threshold touches the boxcar-smoothed field at "
      "N = 13.72, not the raw product's 5.83 (7.7)",
      ("upper bound", "upper-bound", "up to", "at most")),
     (r"17\.79\s*%",
-     "false-positive rate at true CPR 0.7 at the OPERATING POINT N = 13.72 "
+     "noise exceedance rate at true CPR 0.7 at the OPERATING POINT N = 13.72 "
      "(METHODS 7.7) — still an upper bound, for the same reason (7.10)",
      ("upper bound", "upper-bound", "up to", "at most")),
     (r"3\.74\s*%",
-     "false-positive rate at true CPR 0.5 at the operating point (METHODS 7.7) "
+     "noise exceedance rate at true CPR 0.5 at the operating point (METHODS 7.7) "
      "— an upper bound",
      ("upper bound", "upper-bound", "up to", "at most")),
     # A PRE-REGISTRATION SCORE IS A CLAIM ABOUT WHICH MODEL IT WAS SCORED

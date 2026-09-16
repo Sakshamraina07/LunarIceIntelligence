@@ -1046,12 +1046,14 @@ construction.**
 2. **It sharpens why 5b is the fix, beyond "the phase term is missing."** With the
    true Stokes vector, `CPR = (S0 − S3)/(S0 + S3)` and
    `DOP = √(S1² + S2² + S3²)/S0` are built from **different combinations** of the
-   four Stokes parameters and are genuinely independent quantities. The
-   conjunction `high CPR AND low DOP` then selects a real physical population.
-   The amplitude proxy's defect is not that it is small — it is that it
-   **collapses two independent physical observables onto one degree of freedom**,
-   which is why their conjunction is empty. That is the sentence to say in the
-   viva.
+   four Stokes parameters and are **distinct observables**. The conjunction
+   `high CPR AND low DOP` then selects a real physical population. *Corrected
+   2026-09-16:* this read "genuinely independent quantities", and they are not —
+   `DOP ≥ |1 − CPR|/(1 + CPR)` couples them, so `DOP < 0.13` admits only
+   `0.7699 < CPR < 1.2989`. The amplitude proxy's defect is not that it is small
+   — it is that it **collapses two distinct physical observables onto one degree
+   of freedom**, which is why their conjunction is empty. That is the sentence to
+   say in the viva.
 
 #### Phase order revision (v1.9) — 6 now runs BEFORE 3
 
@@ -1297,7 +1299,7 @@ standard deviation is `√((2N−1)/(N(N−2)))`:
 There is also a **positive bias**, `E[R] = CPR·N/(N−1)` — +5.0 % at N = 21 — which
 pushes estimates *toward* exceeding the threshold. Nobody corrects it.
 
-**2. The false-positive rate is large.** Probability an **ice-free** pixel registers
+**2. The noise exceedance rate is large.** Probability an **ice-free** pixel registers
 `CPR > 1` from speckle alone:
 
 | true CPR | N=7 | N=21 | N=38 | N=49 |
@@ -1308,7 +1310,7 @@ pushes estimates *toward* exceeding the threshold. Nobody corrects it.
 | **0.9** | **42.33 %** | **36.72 %** | 32.36 % | 30.15 % |
 
 Published lunar regolith CPR runs 0.3–0.7 typical and up to ~0.9 on blocky terrain.
-So **ordinary rocky ground false-positives at double-digit rates.**
+So **ordinary rocky ground exceeds the threshold at double-digit rates.**
 
 **3. The single-pixel detection floor is far above the threshold.** For a pixel to
 read `>1` with 95 % confidence, its *true* CPR must exceed:

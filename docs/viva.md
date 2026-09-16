@@ -8,10 +8,17 @@ Every number below is checkable in this repository.*
 
 ## 1. "You didn't find any ice."
 
-**Correct. The candidate area is 0.0000 km², with a 95 % confidence interval of
-[0.0000, 0.147] km² on 38 050 effective samples. And I can prove that number
-could not have been anything
-else.**
+**Correct. The candidate area is 0.0000 km² — and I can prove that number could
+not have been anything else, which is why it carries no interval.**
+
+*Corrected 2026-09-16.* This answer used to quote a 95 % score interval on the
+area, taken on 38 050 effective samples. That was the wrong statistic and the
+manuscript has withdrawn it: an interval of that kind answers "a detector fired
+k of n times, what is its rate?", and this screen's rate is zero *algebraically*
+for every admissible input, so there is no sampling uncertainty for an interval
+to express. The effective-sample count stands as a measurement (2 337 086 pixels
+÷ 61.42 px per independent sample); the interval built on it does not. The
+retained values are in `detection_statistics.json::candidate_area.withdrawn_interval`.
 
 Three things, in order.
 
@@ -46,9 +53,11 @@ H–V phase and taking magnitudes discards it.
 **What would change the answer.** The Stokes S3 phase term, from the complex
 `sli` products which are on disk but not ingested. With the true Stokes vector,
 `CPR = (S0 − S3)/(S0 + S3)` and `DOP = √(S1²+S2²+S3²)/S0` are built from
-*different* combinations of four parameters and are genuinely independent, so
+*different* combinations of four parameters and are **distinct observables**, so
 `high CPR AND low DOP` selects a real physical population instead of an empty
-set. That is Phase 5b, and it is scoped.
+set. That is Phase 5b, and it is scoped. (They are distinct, not independent:
+`DOP ≥ |1 − CPR|/(1 + CPR)` couples them, so `DOP < 0.13` admits only
+`0.7699 < CPR < 1.2989`. Corrected 2026-09-16.)
 
 **A measured null on an incomplete product is a result. A fabricated detection
 would not have been.**
@@ -97,7 +106,9 @@ to **13.2 mm**. Not an image stretched onto a bounding box.
 
 **The ENL control.** The delivered product declares 21 looks. I measured 5–6, then
 built 21 looks *myself* from the single-look complex two different ways and got
-**4.5** and **9.9** — so "21 looks" names a method, not a count. Along the way the
+**4.5** and **9.9**. *Corrected 2026-09-16:* that gap is a resolution effect on
+the estimator, not a look-count difference — at matched azimuth resolution the
+two arms agree to −1.00 ± 0.57 looks (METHODS §7.4b). Along the way the
 control validated itself: the measured azimuth bandwidth came out **1071.2 Hz**
 against the label's declared **1071.336 Hz**, in 9 windows out of 9.
 
@@ -122,8 +133,8 @@ non-zero candidate area under an amplitude-only screen. Currently 56 values:
 the native DEM against the LOLA crop at **tolerance 0.0** — bit-identity, not
 "close enough" — and exits non-zero on any difference.
 
-**Thirty gates**, five of them on every rebuild, and `verify_all.py` runs all
-twenty-five and maps each to a statement in PRD section 6.
+**Thirty-one gates**, five of them on every rebuild, and `verify_all.py` runs
+every one of them, mapping each to a statement in PRD section 6.
 
 **Every gate was verified by making it fail on purpose.** That is not decoration:
 **seven times in this project the verification apparatus itself was wrong.** A
@@ -153,21 +164,23 @@ Concretely, four things this literature does not currently do:
 1. **The first ENL measured on a DFSAR product** — 5–6 against a nominal 21 — with
    a controlled experiment on the single-look complex from the same pass that
    isolates the mechanism and rules out scene texture.
-2. **A per-pixel detection floor at a named look count.** A pixel must read above
-   **1.70–1.90** to be significantly above a threshold of 1.00. The swath's
-   maximum is 0.0534 — short by a factor of 35.
-3. **An ice-candidate area reported with a confidence interval** —
-   0.0000 km², 95 % CI [0.0000, 0.147] km² on 38 050 effective samples
-   (2,337,086 pixels ÷ 61.42 px per independent sample). Wilson, not the normal
-   approximation, because at k = 0 the normal interval collapses to [0, 0] and
-   would report a measured zero as carrying no uncertainty at all. **The zero is
-   the case that most needs its interval.**
-4. **A re-analysis of the published detections against their own floors**, with
-   every assumption listed beside it — including, explicitly, that my measured
-   ENL **cannot** be transferred to their full-polarimetric product. *The point is
-   not that their look count is mine. It is that nobody has measured theirs.*
+2. **A per-pixel one-sided 95 % critical value at a named look count.** A pixel
+   must read above **1.70–1.90** for the model to reject a true CPR of 1.00. The
+   swath's maximum is 0.0534 — short by a factor of 35.
+3. **A structural zero, stated as one** — 0.0000 km², with **no interval**, and
+   the reason given: the screen's firing rate is zero algebraically for every
+   admissible input, so there is no sampling uncertainty to quantify (corrected
+   2026-09-16; METHODS §11.2). What the amplitudes decide instead is the split:
+   **40.21 %** of measured pixels excluded from the DOP condition outright,
+   **59.79 %** undecidable.
+4. **A re-analysis of the published detections against their own critical
+   values**, with every assumption listed beside it — including, explicitly,
+   that my measured ENL **cannot** be transferred to their full-polarimetric
+   product. *The point is not that their look count is mine. It is that, in the
+   25 records examined, nobody has measured theirs.*
 
 **What I am not claiming.** Not that any published detection is wrong. Not that
 there is no ice at Faustini. Not that my ENL applies to anyone else's data. The
-claim is narrower and harder to dismiss: **the floor is not reported alongside
-these detections, so a reader cannot tell — and it is cheap to report.**
+claim is narrower and harder to dismiss: **in the records examined, the critical
+value is not reported alongside these detections, so a reader cannot tell — and
+it is cheap to report.**

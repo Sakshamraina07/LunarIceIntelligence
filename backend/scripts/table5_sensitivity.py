@@ -1,5 +1,5 @@
 """
-table5_sensitivity.py -- how the floor and the false-positive rate move with N.
+table5_sensitivity.py -- how the critical value and the exceedance move with N.
 
     python backend/scripts/table5_sensitivity.py
 
@@ -15,13 +15,13 @@ ENL, so the sensitivity is visible rather than asserted:
 
     N     = raw x 13.72 / 5.83          the screened field scales with the raw
     floor = F^-1(0.95; 2N, 2N)          the 95 % speckle floor on the ratio
-    FP    = 1 - F(1/0.7; 2N, 2N)        false positives at true CPR 0.7
+    FP    = 1 - F(1/0.7; 2N, 2N)        noise exceedance at true CPR 0.7
 
 The scaling is the measured boxcar gain: the 5x5 average lifted the raw 5.83 to
 13.72, and that ratio is applied to every raw value rather than re-measuring the
 gain at each one.
 
-ALL FALSE-POSITIVE RATES HERE ARE UPPER BOUNDS. They assume the two circular
+ALL EXCEEDANCE RATES HERE ARE UPPER BOUNDS. They assume the two circular
 channels are independent; METHODS 7.10 shows they are correlated at
 |rho|^2 >= 0.3052, and correlation between numerator and denominator narrows a
 ratio's distribution.

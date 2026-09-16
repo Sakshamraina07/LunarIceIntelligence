@@ -652,8 +652,13 @@ CPR = (S0 − S3)/(S0 + S3)          DOP = √(S1² + S2² + S3²)/S0
 ```
 
 are built from **different combinations** of the four Stokes parameters and are
-genuinely independent. `high CPR AND low DOP` then selects a real physical
-population. Recovering `S3` requires the phase term `2·Im⟨E_H·E_V*⟩`, which
+**distinct observables** — two degrees of freedom where the amplitude pair has
+one. *Corrected 2026-09-16:* this read "genuinely independent", and they are
+not. `DOP ≥ |S₃|/S₀` couples them: `DOP ≥ |1 − CPR|/(1 + CPR)`, so `DOP < 0.13`
+admits only `0.7699 < CPR < 1.2989` (§1.11). Distinct is the load-bearing word
+and it survives — `high CPR AND low DOP` selects a real physical population
+rather than an empty set — but the conjunction is narrower than two free
+conditions would be, and §7.9.4 measures what that costs the test's power. Recovering `S3` requires the phase term `2·Im⟨E_H·E_V*⟩`, which
 exists only in the complex `sli` products — 2 × 2.17 GB, on disk, not yet
 ingested. That is Phase 5b, and this is the reason it is the fix.
 
@@ -848,7 +853,7 @@ lie outside (0.7699, 1.2989): the coupling identity holds on data.
 29.9273 ± 0.1540 % over 88 421 cells; P(CPR > 1 AND DOP < 0.13) =
 0.4498 ± 0.0028 % of all cells (26 462). These are rates on this terrain,
 where the DOP < 0.13 cells already have CPR inside (0.77, 1.30) by the coupling
-identity; they are not the simulated false-positive rate at a 0.7 background
+identity; they are not the simulated noise exceedance rate at a 0.7 background
 (§7.9.4).
 
 **Circular ENLs and the within-window tail.** At the physical sign N_SC =
@@ -1727,7 +1732,7 @@ K = 70.3089 dB, incidence 20.00°, and a median LH DN of 542:
 (NESZ from `nes0_coeff_0`: LH 7.038×10⁻⁴ = −31.5 dB, LV 6.065×10⁻⁴ = −32.2 dB.)
 
 The intensity reading puts the entire scene 16 dB *beneath* the instrument's own
-detection floor, which is not a worse fit but a physical impossibility. The
+**noise** floor, which is not a worse fit but a physical impossibility. The
 amplitude reading puts it 11 dB above the floor, and −20.3 dB is an ordinary
 lunar L-band backscatter at this incidence.
 
@@ -1947,10 +1952,10 @@ independent.
 Both were built, from the same complex data, decimated to the same grid, and
 measured with the same patches:
 
-| how the 21 looks are formed | measured ENL | ceiling |
+| how the 21 looks are formed | measured ENL | reference value for that scheme |
 |---|---|---|
 | single look (control) | 1.04 | 1.00 |
-| **21 by spatial average** | **4.52** | 6.77 = 21 / 3.10 |
+| **21 by spatial average** | **4.52** | 6.77 = 21 / 3.10 (asymptotic; 7.34 exact) |
 | **21 by sub-band split** | **9.95** | 21 |
 | *the delivered `sri` product* | *5.30 / 6.46* | *21 (nominal)* |
 
@@ -1958,10 +1963,18 @@ measured with the same patches:
 It is not scene texture: the single-look control measures 1.04, so there is no
 detectable texture depressing these numbers, and in any case spatial and
 sub-band multilooking were measured on the *same grid, same patches, same
-terrain* — texture cannot explain a 2× gap between them. It is not that the
-archive is corrupt either. **"21 looks" names a method, and the two methods do
-not deliver the same number of looks.** The delivered product's 5–6 sits with
-the spatial-average figure and its 6.8 ceiling, not with the sub-band figure.
+terrain*. It is not that the archive is corrupt either.
+
+**And the first reading of the 2× gap was wrong — corrected 2026-09-16.** This
+paragraph read *"'21 looks' names a method, and the two methods do not deliver
+the same number of looks."* They do. The arms differ in effective azimuth
+**resolution** — intensity autocorrelation half-widths of 0.95 and 2.79 output
+rows — and the patch estimator responds to that through the within-patch
+correlation of §7.5. Smoothed to a common width, the paired difference over the
+nine windows is **−1.00 ± 0.57** against **+4.47 ± 0.43** raw: at matched
+resolution the two methods agree. §7.4b is the measurement, and the 9.95 is a
+resolution effect on the estimator, not a look count. The delivered product's
+5–6 still sits with the spatial-average figure and its 6.77–7.34 reference.
 
 **What this section establishes is a fact about the DELIVERED PRODUCT: it
 measures 5.3–6.5 effective looks against a nominal 21.** That is the whole
@@ -2090,7 +2103,8 @@ commits to it in advance.
 
 ### 7.4b Mechanism control: the two arms do not have the same azimuth resolution
 
-The reading in §7.4 — that "21 looks" names a method — has an alternative the
+The reading §7.4 first gave the 2× gap — that the two arms delivered different
+numbers of looks — has an alternative the
 reviewer (4.9) put plainly: each sub-band look is band-limited to 1/21 of the
 processed spectrum, so its impulse response is ~21 × the full-band one, and on
 the same decimated grid its cells are correlated over several rows; a patch of
@@ -2197,7 +2211,7 @@ written. It was §7.7's *narrative* that read the table at the wrong row, which 
 worse than a wrong computation: the number was right in the artifact and wrong in
 the prose that quoted it.
 
-**EVERY FALSE-POSITIVE RATE IN THIS TABLE IS AN UPPER BOUND**, and the label is
+**EVERY NOISE EXCEEDANCE RATE IN THIS TABLE IS AN UPPER BOUND**, and the label is
 not decoration. The rates assume the two circular channels are independent;
 §7.10 shows from Putrevu et al. 2023's own Byrgius C dispersion that they are
 correlated at |ρ|² ≥ 0.31, and correlation between numerator and denominator
@@ -2252,9 +2266,15 @@ N = 13.72**, which is this screen's operating point (§7.7). The +25 % figure is
 the one that applies to a *raw-product* CPR; quoted against our own screen it
 overstates the bias by a factor of three.
 
-**(d) Three nulls survive the counterexample intact.** Nobody tests per-pixel
-significance, reports a confidence interval on an ice area, or computes a
-false-positive rate for CPR > 1.
+**(d) Three nulls survive the counterexample intact.** Among the 25 records
+examined (§13.1), none tests per-pixel significance, none states an interval on
+a detected area, and none computes a noise exceedance rate for CPR > 1. Scoped
+and dated 2026-09-16: an unscoped "nobody" is a claim about the literature
+rather than about a search, and the one exception found — Spudis et al.'s
+measured effective look count — is named in §13.1. "Noise exceedance rate"
+replaces "false-positive rate" throughout: the quantity is P(R > 1) at a stated
+true CPR, and a false-positive rate for *ice* would need a distribution over
+ice-free terrain that no study supplies.
 
 **(e) The product's own incidence raster fails three geometric tests.** 80.53 %
 of its values sit below the spacecraft look angle, which is impossible on a
@@ -2483,7 +2503,7 @@ simulation, the **measured** rate from the SLC (§1.11): 29.93 ± 0.15 % of the
 *Generated by `backend/scripts/cpr_dispersion.py`; figures in
 `docs/cpr_dispersion.json` and `docs/incidence_mask.json`.*
 
-§7.7 computes false-positive rates from `CPR · F(2N,2N)` — the sampling
+§7.7 computes noise exceedance rates from `CPR · F(2N,2N)` — the sampling
 distribution of a ratio of two **independent** N-look intensities. That
 independence is an assumption about the two circular channels, and it had never
 been checked. A published DFSAR measurement checks it.
@@ -2573,7 +2593,7 @@ independent-channel floor in every one of them. The channels are correlated
 whichever altitude is assumed; only *how* correlated depends on it.
 
 The two circular channels are **correlated**, so **`F(2N,2N)` with independent
-numerator and denominator is conservative**, and every false-positive rate in
+numerator and denominator is conservative**, and every noise exceedance rate in
 §7.7 is an **upper bound on the rate, not the rate** — the operating-point
 figure of **17.79 % at true CPR 0.7 and N = 13.72** included, and equally the
 superseded **29.16 % at N = 5**, which §7.7 records as the value the narrative
@@ -2708,7 +2728,9 @@ about judgement.
 §7.10's K-clutter argument draws one texture value per multilook cell, shared
 by both circular channels, and the ratio tail is then exactly the F model's
 (`docs/kclutter.json`: at 10⁷ trials, max |shared − F| = 0.0041 points against
-a Monte Carlo σ of 0.0120; the independent-texture rows span 27.47–39.34 %
+a Monte Carlo σ of 0.0120 on one tail, and **0.0170 on the difference of two**,
+which is the 0.02 points the manuscript quotes as the simulation's own sampling
+error; the independent-texture rows span 27.47–39.34 %
 over ν = 1.5–10). That cancellation needs the texture to be constant over the
 averaging cell. `backend/scripts/kclutter_within_cell.py` (seed 7, 10⁶ trials
 per row, N = 14, true CPR 0.7) lets each of the 14 looks carry its own texture
@@ -3327,44 +3349,43 @@ of 1.00.** The swath's maximum is **0.0534** — short of the floor by a factor 
 floor a **true** `σ_SC/σ_OC` would have to clear — not a p-value on our own
 quantity. Conflating the two would be the error this section exists to identify.
 
-### 11.2 Candidate area, with a confidence interval
-
-**As far as this project's literature sweep found, the first ice-candidate area
-in this literature reported with one.**
+### 11.2 The candidate area, and why it carries no interval
 
 | | |
 |---|---|
 | candidate pixels | **0** of 2,337,086 measured |
 | candidate area | **0.0000 km²** |
-| 95 % Wilson interval, on **38 050 effective samples** | **[0.0000, 0.147] km²** |
-| the same interval on 2,337,086 **raw pixels** — SUPERSEDED, ~61× too narrow | [0.0000, 0.0024] km² |
+| interval on that area | **none is reported** |
+| effective samples (a measurement, and it stands) | **38 050** = round(2 337 086 / 61.4207) |
 
-The measurement is zero, **and the data would not have distinguished anything up
-**THE INTERVAL IS TAKEN ON INDEPENDENT SAMPLES, NOT ON PIXELS, AND IT WAS NOT.**
-This table carried [0.0000, 0.0024] km² until the manuscript's figure was checked
-against it. That interval treats 2,337,086 correlated pixels as 2,337,086
-independent trials. §7.9.1 measures the correlation area of this very field at
-**61.42 px per independent sample**, so the pixel count overstates the sample
-size by about sixty-one and the interval comes out about sixty-one times too
-narrow. `round(2 337 086 / 61.420749918170166) = 38 050` effective samples, and
-the Wilson upper bound at k = 0 on that count is **0.147 km²**.
+**Withdrawn 2026-09-16: the interval, not the zero.** This section reported a
+95 % score interval of [0.0000, 0.147] km² on 38 050 effective samples, and
+before that [0.0000, 0.0024] km² on the raw pixel count. The second correction
+was right as far as it went — pixels are correlated at 61.42 px per independent
+sample (§7.9.1), so the raw-pixel interval was about sixty-one times too narrow
+— but it fixed the sample size of a statistic that should not have been computed
+at all.
 
-> **A confidence interval that is too narrow is worse than no interval at all.**
-> A bare zero claims nothing about its own precision. A zero wearing a tight
-> error bar claims a great deal, and this one claimed sixty-one times more than
-> the data supports — on the single number this project exists to report
-> honestly. The superseded figure is kept above, labelled, because a wrong number
-> that vanishes cannot be audited and its correction cannot be checked.
+An interval of that kind answers *a detector fired k of n times; what is its
+rate?* This screen is not that detector. §1 proves its firing rate is zero
+**algebraically**, for every admissible input, on any terrain: no pixel with
+DOP_a < 0.13 can carry CPR_a above 0.0042611, and the threshold is 1.00. A zero
+that is forced by the arithmetic has no sampling uncertainty for an interval to
+express, and attaching one invites exactly the misreading it was meant to
+prevent — that this was a measurement which happened to land on zero and might,
+on another pass, land elsewhere.
 
-to 0.147 km² from zero.** That is a stronger statement than a bare zero, and a
-more honest one: it says how large a real signal could have been and still
-produced this observation.
+Both superseded intervals are kept, labelled, in
+`docs/detection_statistics.json::candidate_area.withdrawn_interval`: a wrong
+number that vanishes cannot be audited and its correction cannot be checked.
 
-**Wilson, not the normal approximation, and the reason matters.** At k = 0 the
-normal interval is exactly **[0, 0]** — it would report a measured zero as
-carrying *no uncertainty at all*, which is the single most misleading thing this
-table could say. The zero is the case that most needs its interval, not the case
-that can do without one.
+**What stands in its place** is stronger than either interval. The screen is
+empty by construction (§1); the largest CPR_a anywhere in the swath is 0.0534,
+and among pixels satisfying the DOP condition the threshold would have to fall
+by a factor of **234.68** before the first pixel passed (§1.9); 40.21 % of
+measured pixels are *excluded* from the DOP condition by their amplitudes alone
+and the remaining 59.79 % are undecidable (§1.3, `docs/dop_exclusion.json`).
+Those are measurements, and none of them is a rate with an unknown parameter.
 
 ### 11.3 The published detections against their own floors
 
@@ -3418,7 +3439,7 @@ it passes.
 turns it into something they can check anywhere: click any point on the map and
 it reports the measured CPR and DOP there, each against its own threshold, the
 margin in both directions, and how far the reading falls below the §11.1
-detection floor.
+one-sided 95 % critical value.
 
 It was asked for as a way to "predict where ice spots exactly are", and **that
 tool cannot honestly be built here** — there is nothing to predict, and §1 shows
@@ -3452,7 +3473,7 @@ A representative reading inside the ribbon, at −86.3039°, 83.1289°:
 `CPR 2.684 × 10⁻⁴` against a threshold of 1.00 — **3.7 × 10³ below it** — with
 `DOP 0.0263` passing, and the panel explaining at that point, with that point's
 own numbers, that DOP passing is precisely what caps CPR at 0.0042611. The same
-cell is **7.1 × 10³ below** the 1.8946 detection floor.
+cell is **7.1 × 10³ below** the 1.8946 critical value.
 
 
 
@@ -3640,6 +3661,20 @@ two abstract sentences that were reached, and that the discrepancy check
 **could not be performed** — the attribution stands unverified against its
 primary source until the author reads Section 2 from an institutional copy.
 
+**A correction in the artifact, dated 2026-09-16.** `published_moments.json`
+carried the note *"Fa & Cai used the 14.8 m baseline CDR"*, and that was wrong:
+the Mini-RF baseline mode images at **150 m** (16 looks), so a 14.8 m product
+cannot be a baseline product. The zoom mode is **7.5 m at 8 looks** (Raney et
+al. 2012, para. [4]) and its calibrated data record is the 14.8 m one. The
+earlier note would have compared the inverted N = 8.75–9.17 against the wrong
+nominal count. The artifact now carries a `mode_table` with each figure's
+source, and the superseded note under `mode_table.superseded` rather than
+deleted. The same block records the **6.7** effective looks Spudis et al. (2013,
+para. [13]) report for that mode, attributed there to unpublished analysis —
+which is the one measured look count found anywhere in the 25 records screened
+(§13.1), and the exception every absence claim in this document is scoped
+around.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -3657,7 +3692,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `de3ec52`.
+Stamped at commit `ebed274`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3666,12 +3701,12 @@ Stamped at commit `de3ec52`.
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/bootstrap_enl.json` | `5f4239f07f372c3f…` | §7.3.1 |
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
-| `docs/cpr_dispersion.json` | `66bcd45b9e3c0333…` | §7.10 |
-| `docs/cpr_significance.json` | `5b3eb61eb47047b3…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
+| `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
+| `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
-| `docs/detection_statistics.json` | `b5dfaa2a9520e941…` | §11.1, §11.2, §11.3 |
+| `docs/detection_statistics.json` | `10193bdb0d44d839…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
-| `docs/enl_benchmark.json` | `8d6a9c11d8361f58…` | §7.3.2 |
+| `docs/enl_benchmark.json` | `aad47ad4c52def4c…` | §7.3.2 |
 | `docs/enl_estimator_spec.json` | `8fd6dd6552233401…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
@@ -3680,25 +3715,25 @@ Stamped at commit `de3ec52`.
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/joint_criterion.json` | `c0db2bc0013a9c73…` | §7.9.4 |
-| `docs/kclutter.json` | `14d8a3bdcd2efabe…` | §7.13 |
+| `docs/kclutter.json` | `ae285515e3abdb5d…` | §7.13 |
 | `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
-| `docs/literature_screen.json` | `c25c5a11341611aa…` | §13.1 |
+| `docs/literature_screen.json` | `a2aa42be972c282f…` | §13.1 |
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
 | `docs/propagation_percentiles.json` | `847af0a883190b4b…` | §12.6 |
 | `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
-| `docs/published_moments.json` | `6d83a08d26469dab…` | §13.3 |
+| `docs/published_moments.json` | `5bfe5549f64bc236…` | §13.3 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/stationarity.json` | `4d72eb5cd1877932…` | §7.3.3 |
-| `docs/stokes_from_slc.json` | `43dfd70d3ed40605…` | §1.11 |
+| `docs/stokes_from_slc.json` | `daa33377f9318c0f…` | §1.11 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
-| `frontend/public/analysis/faustini.json` | `2e9ff01ad0dab92d…` | §1.4, §8.2, §8.3 |
+| `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
 | `frontend/public/analysis/sweep_grid.json` | `a6c22dbcf875dad5…` | §1.9 |
 

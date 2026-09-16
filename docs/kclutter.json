@@ -1,9 +1,9 @@
 {
   "schema": "lunar-ice/kclutter/1",
-  "generated_utc": "2026-09-13T11:03:58.759114+00:00",
+  "generated_utc": "2026-09-16T07:12:22.057608+00:00",
   "generator": "backend/scripts/kclutter.py",
   "seed": 7,
-  "trials_per_row": 1000000,
+  "trials_per_row": 10000000,
   "n_looks": 14,
   "true_cpr": 0.7,
   "fp_percent_F_gaussian": 17.544925186078576,
@@ -11,42 +11,49 @@
     {
       "nu": 1.5,
       "nu_label": "1.5",
-      "fp_shared_percent": 17.5135,
-      "fp_independent_percent": 39.31
+      "fp_shared_percent": 17.54087,
+      "fp_independent_percent": 39.344249999999995
     },
     {
       "nu": 2.0,
       "nu_label": "2",
-      "fp_shared_percent": 17.5135,
-      "fp_independent_percent": 37.7539
+      "fp_shared_percent": 17.54087,
+      "fp_independent_percent": 37.73606
     },
     {
       "nu": 5.0,
       "nu_label": "5",
-      "fp_shared_percent": 17.5135,
-      "fp_independent_percent": 31.8213
+      "fp_shared_percent": 17.54087,
+      "fp_independent_percent": 31.90323
     },
     {
       "nu": 10.0,
       "nu_label": "10",
-      "fp_shared_percent": 17.5135,
-      "fp_independent_percent": 27.3609
+      "fp_shared_percent": 17.54087,
+      "fp_independent_percent": 27.47225
     },
     {
       "nu": null,
       "nu_label": "inf",
-      "fp_shared_percent": 17.5135,
-      "fp_independent_percent": 17.5149
+      "fp_shared_percent": 17.54087,
+      "fp_independent_percent": 17.54091
     }
   ],
   "shared_texture_range": [
-    17.5135,
-    17.5135
+    17.54087,
+    17.54087
   ],
   "independent_texture_range": [
-    17.5149,
-    39.31
+    17.54091,
+    39.344249999999995
   ],
-  "reproducibility": "These are what the reference block produces from a FRESH default_rng(7), verified by running it verbatim. The manuscript quotes 17.53 % shared and 27.5-39.5 % independent, which is the same code with the generator already advanced by earlier blocks of the script it lived in. The difference is 0.02 pp on the shared row and 0.1-0.2 pp on the independent ones, and changes no conclusion -- but this artifact reports what THIS committed script produces, because a number that cannot be regenerated from the repository is not sourced by it.",
+  "independent_texture_range_finite_nu": [
+    27.47225,
+    39.344249999999995
+  ],
+  "mc_sigma_points": 0.012027751738470342,
+  "shared_minus_F_max_points": 0.004055186078574025,
+  "claim_gated": "|fp_shared - fp_F| <= 3 sigma_MC at this trial count for every texture order (the manuscript states the identity holds to within the simulation's own sampling error), and the independent-texture rows span 27-40 % across nu = 1.5..10",
+  "reproducibility": "These are what the reference block produces from a FRESH default_rng(7). The reference's own printed digits (17.53 / 27.5-39.5) came from a generator already advanced by earlier blocks of the script it lived in; the manuscript prints none of those digits and makes a qualitative claim, so the gate asserts the claim at the recorded trial count rather than any digit.",
   "why_shared_is_the_right_model": "Both circular channels are formed from one illumination of one footprint, so they share the texture modulation and it cancels in their ratio. The independent-texture row is computed as the alternative it is NOT, not as a correction to apply."
 }

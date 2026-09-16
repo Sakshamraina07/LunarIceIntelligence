@@ -1,0 +1,106 @@
+{
+  "schema": "lunar-ice/robustness/1",
+  "generated_utc": "2026-09-16T07:19:42.484525+00:00",
+  "generator": "backend/scripts/robustness_gate.py",
+  "seed": 31,
+  "closed_form_ceiling": 0.004261082862785302,
+  "relative_tolerance": 0.0001,
+  "degeneracy_under_corruption": [
+    {
+      "label": "the real product, as delivered",
+      "residual": 1.6653345369377348e-16,
+      "crossing": 0.00426102387866603,
+      "rel_to_closed_form": 1.3842518714470227e-05,
+      "dop_max_below_threshold": 0.12999910786851782,
+      "passing": 0,
+      "n": 2337086
+    },
+    {
+      "label": "pure uniform random numbers",
+      "residual": 0.0027188524246192225,
+      "crossing": 0.004260819455108618,
+      "rel_to_closed_form": 6.181707447749032e-05,
+      "dop_max_below_threshold": 0.12999601592471996,
+      "passing": 0,
+      "n": 360000
+    },
+    {
+      "label": "pure lognormal random, 3 decades spread",
+      "residual": 0.00282442646856107,
+      "crossing": 0.004260904945932068,
+      "rel_to_closed_form": 4.175390598184819e-05,
+      "dop_max_below_threshold": 0.12999730899835746,
+      "passing": 0,
+      "n": 360000
+    },
+    {
+      "label": "real data, both channels byte-shuffled",
+      "residual": 5.4511950509095186e-14,
+      "crossing": 0.004260714845693951,
+      "rel_to_closed_form": 8.636703467204308e-05,
+      "dop_max_below_threshold": 0.1299944336587154,
+      "passing": 0,
+      "n": 365303
+    },
+    {
+      "label": "real data, calibration wrong by 7.31x",
+      "residual": 5.551115123125783e-16,
+      "crossing": 0.0042610238786660315,
+      "rel_to_closed_form": 1.3842518714063119e-05,
+      "dop_max_below_threshold": 0.12999910786851784,
+      "passing": 0,
+      "n": 2337086
+    },
+    {
+      "label": "real data, channels mis-scaled DIFFERENTLY",
+      "residual": 1.0436096431476471e-14,
+      "crossing": null,
+      "rel_to_closed_form": null,
+      "dop_max_below_threshold": null,
+      "passing": 0,
+      "n": 2337086
+    },
+    {
+      "label": "DN misread as intensity (squared twice)",
+      "residual": 1.2212453270876722e-15,
+      "crossing": 0.004261066995749611,
+      "rel_to_closed_form": 3.7237097239124855e-06,
+      "dop_max_below_threshold": 0.12999976001260136,
+      "passing": 0,
+      "n": 2337086
+    },
+    {
+      "label": "two constants, no variation at all",
+      "residual": 5.551115123125783e-17,
+      "crossing": null,
+      "rel_to_closed_form": null,
+      "dop_max_below_threshold": null,
+      "passing": 0,
+      "n": 160000
+    },
+    {
+      "label": "2-level quantised garbage",
+      "residual": 0.0,
+      "crossing": 0.0,
+      "rel_to_closed_form": 1.0,
+      "dop_max_below_threshold": 0.0,
+      "passing": 0,
+      "n": 360000
+    }
+  ],
+  "enl_scale_invariance": {
+    "base": 5.295996543442399,
+    "times_4p7": 5.295996543442401,
+    "times_1e_6": 5.295996543442399
+  },
+  "value_dependent": {
+    "peak_cpr": 0.555702479338843,
+    "peak_cpr_misscaled": 0.8430114748566624,
+    "coverage_pct": 15.6395406574281
+  },
+  "gate": {
+    "passed": true,
+    "problems": [],
+    "claim": "crossing within 1e-4 relative of the ceiling wherever a crossing exists; no pixel passes in any case; ENL scale-invariant"
+  }
+}

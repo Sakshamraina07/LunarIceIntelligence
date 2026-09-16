@@ -31,6 +31,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -94,7 +95,16 @@ def main() -> int:
 
     shared = [r["fp_shared_percent"] for r in rows]
     indep = [r["fp_independent_percent"] for r in rows]
+    indep_finite = [r["fp_independent_percent"] for r in rows if r["nu"] is not None]
+    # The Monte Carlo standard error of one tail estimate at this trial count,
+    # in percentage points, at the F-model tail p: the CLAIM is that shared
+    # texture reproduces the F tail to within that error, not to a digit.
+    p = fp_f / 100.0
+    sigma_mc = 100.0 * math.sqrt(p * (1.0 - p) / args.trials)
+    diff_max = max(abs(s - fp_f) for s in shared)
     print()
+    print(f"  MC sigma at {args.trials:,} trials: {sigma_mc:.4f} points; "
+          f"max |shared - F| = {diff_max:.4f} points ({diff_max / sigma_mc:.2f} sigma)")
     print(f"  shared texture spans {min(shared):.2f}-{max(shared):.2f} % "
           f"against the F model's {fp_f:.2f} % -- it cancels")
     print(f"  independent texture spans {min(indep):.1f}-{max(indep):.1f} %, "
@@ -112,16 +122,20 @@ def main() -> int:
         "rows": rows,
         "shared_texture_range": [min(shared), max(shared)],
         "independent_texture_range": [min(indep), max(indep)],
+        "independent_texture_range_finite_nu": [min(indep_finite), max(indep_finite)],
+        "mc_sigma_points": sigma_mc,
+        "shared_minus_F_max_points": diff_max,
+        "claim_gated": ("|fp_shared - fp_F| <= 3 sigma_MC at this trial count for every "
+                        "texture order (the manuscript states the identity holds to "
+                        "within the simulation's own sampling error), and the "
+                        "independent-texture rows span 27-40 % across nu = 1.5..10"),
         "reproducibility": (
             "These are what the reference block produces from a FRESH "
-            "default_rng(7), verified by running it verbatim. The manuscript "
-            "quotes 17.53 % shared and 27.5-39.5 % independent, which is the "
-            "same code with the generator already advanced by earlier blocks of "
-            "the script it lived in. The difference is 0.02 pp on the shared row "
-            "and 0.1-0.2 pp on the independent ones, and changes no conclusion -- "
-            "but this artifact reports what THIS committed script produces, "
-            "because a number that cannot be regenerated from the repository is "
-            "not sourced by it."),
+            "default_rng(7). The reference's own printed digits (17.53 / "
+            "27.5-39.5) came from a generator already advanced by earlier blocks "
+            "of the script it lived in; the manuscript prints none of those "
+            "digits and makes a qualitative claim, so the gate asserts the claim "
+            "at the recorded trial count rather than any digit."),
         "why_shared_is_the_right_model": (
             "Both circular channels are formed from one illumination of one "
             "footprint, so they share the texture modulation and it cancels in "

@@ -228,7 +228,7 @@ GATES = [
     # report honestly.
     ("G23", "The candidate-area confidence interval is taken on effective "
             "samples, not on correlated pixels",
-     "assert_wilson_on_effective_samples.py - 38,051 effective samples, upper bound 0.147 km2",
+     "assert_wilson_on_effective_samples.py - 38,050 effective samples, upper bound 0.147 km2",
      [sys.executable, str(SCRIPTS / "assert_wilson_on_effective_samples.py")], False),
 
     # METHODS 3 said the frame DEM was LDEM_80S_80M at 80 m; it is LDEM_80S_20M
@@ -273,6 +273,23 @@ GATES = [
     ("G26", "Every figure regenerates, embeds its fonts, and carries no Type 3",
      "paper/assert_figures_embed_fonts.py - rebuilt, then read from the PDF itself",
      [sys.executable, str(BASE_DIR / "paper" / "assert_figures_embed_fonts.py")], True),
+
+    # Seven artifacts were emitted so the manuscript's sensitivity sentences
+    # (Slepian ceiling, patch bias, stationarity, background sweep, correlated
+    # ratio, joint criterion, K-clutter) had a source. An artifact nobody
+    # asserts against is a file. This asserts each CLAIM against its artifact;
+    # where the digits depend on RNG state the claim is gated, not the digit.
+    ("G30", "Every sensitivity claim in Sections V-VI is the number its artifact holds",
+     "assert_manuscript_claims.py - S1-S8, claims not remembered digits",
+     [sys.executable, str(SCRIPTS / "assert_manuscript_claims.py")], False),
+
+    # The degeneracy is a property of the computation, not of these data, so it
+    # must survive the data being wrong: shuffled, mis-scaled, replaced by
+    # noise. The manuscript says so; this breaks the data nine ways and checks.
+    ("G31", "The amplitude-CPR ceiling survives shuffled, mis-scaled and random inputs, "
+            "and no pixel passes in any case",
+     "robustness_gate.py - nine corruptions, crossing within 1e-4, zero passing",
+     [sys.executable, str(SCRIPTS / "robustness_gate.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

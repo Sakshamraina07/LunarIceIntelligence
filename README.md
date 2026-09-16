@@ -16,7 +16,7 @@ carries a mark — `MEASURED`, `DERIVED` or `NO DATA` — and the build fails if
 does not.**
 
 **The headline result is a null result with a proof.** The screen returns
-0.0000 km² of candidate ice, 95 % CI [0.0000, 0.147] km² on 38 051 effective
+0.0000 km² of candidate ice, 95 % CI [0.0000, 0.147] km² on 38 050 effective
 samples, and the reason is
 closed-form rather than empirical: with CPR derived from amplitude alone it is a
 strictly increasing function of DOP, so `CPR > 1.00 AND DOP < 0.13` is
@@ -105,7 +105,7 @@ bytes and fails the build on any figure that is not in the artifacts.
 
 ## Verification
 
-`verify_all.py` runs twenty-five gates and maps each to a statement in PRD section 6.
+`verify_all.py` runs twenty-seven gates and maps each to a statement in PRD section 6.
 One of them loads the **production build** in a browser, in all three backend
 states, and fails on a blank page.
 Five of them also run on every rebuild, and any non-zero exit stops the build.

@@ -1,0 +1,50 @@
+{
+  "schema": "lunar-ice/patch-bias/1",
+  "generated_utc": "2026-09-16T07:09:44.954547+00:00",
+  "generator": "backend/scripts/patch_bias.py",
+  "seed": 11,
+  "n_looks": 6,
+  "rho_az": 0.84,
+  "rho_rg": 0.58,
+  "shape": [
+    1024,
+    2048
+  ],
+  "rng_replay": {
+    "C1": "2 + 5x2 gamma draws of 1e6",
+    "B2": "4 rows x (z1, z2) x (re, im) normal draws of (600000, 14)",
+    "why": "the reference's B3 digits depend on this state; replaying it makes the port reproduce them"
+  },
+  "correlated": {
+    "8": {
+      "mode": 7.07522422055912,
+      "median": 7.013867844283345,
+      "n": 32768
+    },
+    "16": {
+      "mode": 6.614794980047865,
+      "median": 6.344515331172522,
+      "n": 8192
+    },
+    "32": {
+      "mode": 6.007469921317313,
+      "median": 6.108162755566399,
+      "n": 2048
+    },
+    "64": {
+      "mode": 5.949355064706067,
+      "median": 6.011652907710021,
+      "n": 512
+    }
+  },
+  "uncorrelated_control": {
+    "16": 5.9982101453446734,
+    "32": 6.055954994694255
+  },
+  "field_intensity_lag1": {
+    "azimuth": 0.7053629097371009,
+    "range": 0.33903721105660073
+  },
+  "claim": "lag correlation inflates the small-patch mode above the true ENL; the 32x32 mode is near 6 and the uncorrelated control is 6 at both",
+  "note": "true per-pixel ENL is exactly 6.00; field rho are the manuscript's rounded 0.84 / 0.58, as in the reference"
+}

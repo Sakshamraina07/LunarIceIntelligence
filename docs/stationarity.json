@@ -1,0 +1,64 @@
+{
+  "schema": "lunar-ice/stationarity/1",
+  "generated_utc": "2026-09-16T07:09:50.403252+00:00",
+  "generator": "backend/scripts/stationarity.py",
+  "patch": 16,
+  "min_valid_px": 5000,
+  "mask": "amplitude mask eroded 5x5 (the ENL measurement mask)",
+  "blocks": [
+    {
+      "az_third": 0,
+      "range_half": 0,
+      "n_valid": 0,
+      "enl": null,
+      "reason": "fewer than 5000 valid px"
+    },
+    {
+      "az_third": 0,
+      "range_half": 1,
+      "n_valid": 462465,
+      "n_patches": 1654,
+      "enl": 3.2874851079945477,
+      "lag1_az": 0.8491339987209922,
+      "lag1_rg": 0.7541784591067937
+    },
+    {
+      "az_third": 1,
+      "range_half": 0,
+      "n_valid": 848783,
+      "n_patches": 3105,
+      "enl": 4.02108829635774,
+      "lag1_az": 0.9507487538721556,
+      "lag1_rg": 0.8603944448948301
+    },
+    {
+      "az_third": 1,
+      "range_half": 1,
+      "n_valid": 599610,
+      "n_patches": 2181,
+      "enl": 7.954856529795322,
+      "lag1_az": 0.9524307834694352,
+      "lag1_rg": 0.896956819873481
+    },
+    {
+      "az_third": 2,
+      "range_half": 0,
+      "n_valid": 383226,
+      "n_patches": 1373,
+      "enl": 7.528808815945171,
+      "lag1_az": 0.9510685192969819,
+      "lag1_rg": 0.8481225396011834
+    },
+    {
+      "az_third": 2,
+      "range_half": 1,
+      "n_valid": 0,
+      "enl": null,
+      "reason": "fewer than 5000 valid px"
+    }
+  ],
+  "n_blocks_used": 4,
+  "enl_min": 3.2874851079945477,
+  "enl_max": 7.954856529795322,
+  "claim": "the frame-wide ENL is a mode over a heterogeneous population"
+}

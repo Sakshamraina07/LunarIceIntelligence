@@ -205,5 +205,138 @@
     "P1_mc_matches_analytic": false,
     "P2_sim_below_observed_max": true,
     "P3_observed_above_noise_floor": true
+  },
+  "joint_criterion": {
+    "schema": "lunar-ice/joint-criterion-spec/1",
+    "generator": "backend/scripts/joint_criterion.py",
+    "seed": 7,
+    "trials": 600000,
+    "n_looks": 14,
+    "sign_convention": "S3 = -2 Im<E_H E_V*>, SC = (S0 - S3)/2, OC = (S0 + S3)/2 -- the physical reading of stokes_from_slc.py",
+    "draw": "E_H = z1; E_V = conj(c) z1 + sqrt(1 - |c|^2) z2; z1, z2 ~ CN(0, 1) i.i.d. per look; N-look averages of |E_H|^2, |E_V|^2, E_H E_V*",
+    "headline_at_cpr_0p7": {
+      "true_cpr": 0.7,
+      "true_m": 0.17647158823529416,
+      "population": {
+        "covariance": {
+          "E|H|^2": 1.0,
+          "E|V|^2": 1.0,
+          "E[H V*]": {
+            "re": 0.0005940893674110323,
+            "im": -0.17647058823529416,
+            "abs": 0.17647158823529416,
+            "arg_deg": -89.80711411937779
+          }
+        },
+        "stokes": {
+          "S0": 2.0,
+          "S1": 0.0,
+          "S2": 0.0011881787348220986,
+          "S3": 0.3529411764705883
+        },
+        "cpr": 0.7,
+        "dop": 0.17647158823529416
+      },
+      "marginal_fp_percent": 17.69033333333333,
+      "marginal_se_percent": 0.049262653871685415,
+      "joint_fp_percent": 1.8145000000000002,
+      "joint_se_percent": 0.017231637073998513,
+      "trials": 600000
+    },
+    "maximising_point_requested": {
+      "true_cpr": 1.2987505747126435,
+      "true_m": 0.1299631533536708,
+      "population": {
+        "covariance": {
+          "E|H|^2": 1.0,
+          "E|V|^2": 1.0,
+          "E[H V*]": {
+            "re": 0.0005098287032967507,
+            "im": 0.1299621533536708,
+            "abs": 0.1299631533536708,
+            "arg_deg": 89.77523546373494
+          }
+        },
+        "stokes": {
+          "S0": 2.0,
+          "S1": 0.0,
+          "S2": 0.0010196574065934867,
+          "S3": -0.2599243067073416
+        },
+        "cpr": 1.2987505747126433,
+        "dop": 0.1299631533536708
+      },
+      "marginal_fp_percent": 75.2475,
+      "marginal_se_percent": 0.05571600224576419,
+      "joint_fp_percent": 3.3666666666666663,
+      "joint_se_percent": 0.023285625831623472,
+      "trials": 600000
+    },
+    "scan": [
+      {
+        "true_cpr": 1.05,
+        "true_m": 0.02439124390243905,
+        "joint_percent": 3.7199999999999998,
+        "joint_se_percent": 0.0598466039136725,
+        "trials": 100000
+      },
+      {
+        "true_cpr": 1.1,
+        "true_m": 0.04762004761904766,
+        "joint_percent": 3.604,
+        "joint_se_percent": 0.058941596856549455,
+        "trials": 100000
+      },
+      {
+        "true_cpr": 1.15,
+        "true_m": 0.06976844186046507,
+        "joint_percent": 3.596,
+        "joint_se_percent": 0.058878585580837445,
+        "trials": 100000
+      },
+      {
+        "true_cpr": 1.2,
+        "true_m": 0.09091009090909088,
+        "joint_percent": 3.5700000000000003,
+        "joint_se_percent": 0.058673256258707854,
+        "trials": 100000
+      },
+      {
+        "true_cpr": 1.25,
+        "true_m": 0.1111121111111111,
+        "joint_percent": 3.5000000000000004,
+        "joint_se_percent": 0.05811626278418116,
+        "trials": 100000
+      },
+      {
+        "true_cpr": 1.2987505747126435,
+        "true_m": 0.1299631533536708,
+        "joint_percent": 3.286,
+        "joint_se_percent": 0.05637394823852593,
+        "trials": 100000
+      }
+    ],
+    "scan_maximiser": {
+      "true_cpr": 1.05,
+      "true_m": 0.02439124390243905,
+      "joint_percent": 3.7199999999999998,
+      "joint_se_percent": 0.0598466039136725,
+      "trials": 100000
+    },
+    "cpr_band_for_m_below_threshold": [
+      0.7699115044247788,
+      1.2988505747126435
+    ],
+    "measured_joint_rate_slc": {
+      "conditional_percent": 29.927279718618884,
+      "conditional_se_percent": 0.15400343190876856,
+      "n_cells_dop_below": 88421,
+      "unconditional_percent": 0.44975910982300954,
+      "unconditional_se_percent": 0.002758606745127678,
+      "of_cells": 5883594,
+      "sign_deg": 180,
+      "source": "docs/stokes_from_slc.json::results.joint_measured",
+      "note": "measured on this pass's terrain, physical sign; not the simulated rate at a 0.7 background"
+    }
   }
 }

@@ -22,11 +22,23 @@ already above the 0.13 threshold. So the DOP condition is not merely an extra
 hurdle; at this background it is one the terrain cannot clear except through
 estimator noise, and the joint rate is an order of magnitude below the marginal.
 
-THIS DOES NOT RESCUE THE AMPLITUDE PROXY. It is a statement about what the
-criterion would do on a correctly formed Stokes vector, which is what a future
-build with the sli products could compute. METHODS 1 shows the amplitude-only
+P7 (review 4.16) asks for the full specification of that 1.8 %: the population
+covariance matrix the channels are drawn from, the population Stokes vector, CPR
+and DOP it realises, the trial count, seed and Monte Carlo SE -- and a second run
+at the population point that maximises the joint rate inside DOP < 0.13, i.e.
+true CPR just below the band edge 1.2989. Both are emitted here, and the block is
+also written into docs/cpr_significance.json::joint_criterion together with the
+MEASURED joint rate from the SLC (P1), so the paper can print the simulated rate
+against the measured one from one artifact.
+
+SIGN CONVENTION. The simulator forms S3 = -2 Im<E_H E_V*> and SC = (S0 - S3)/2.
+That is the reading stokes_from_slc.py identifies as physical (single bounce
+gives CPR < 1); the population point is constructed so that CPR = SC/OC takes
+the requested value under that sign.
+
+THIS DOES NOT RESCUE THE AMPLITUDE PROXY. METHODS 1 shows the amplitude-only
 CPR is a function of DOP alone, so on THIS build the two conditions are one
-condition and the joint rate is not available.
+condition and the joint rate is not available from the delivered rasters.
 """
 from __future__ import annotations
 
@@ -41,6 +53,8 @@ from scipy.stats import f as _F
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 OUT = BASE_DIR / "docs" / "joint_criterion.json"
+SIG = BASE_DIR / "docs" / "cpr_significance.json"
+SLC = BASE_DIR / "docs" / "stokes_from_slc.json"
 
 for _s in (sys.stdout, sys.stderr):
     try:
@@ -55,12 +69,8 @@ DOP_THRESHOLD = 0.13
 CPR_THRESHOLD = 1.0
 
 
-def stokes_draw(rng, cpr, m, n_looks, trials):
-    """N-look Stokes estimates for a population with this CPR and this DOP.
-
-    The covariance is built to realise (cpr, m) exactly, then circular-Gaussian
-    channels are drawn from it. Returns (CPR_hat, m_hat) per trial.
-    """
+def population(cpr: float, m: float) -> dict | None:
+    """The population covariance that realises (cpr, m), and its Stokes vector."""
     s0 = 2.0
     s3 = s0 * (1.0 - cpr) / (1.0 + cpr)
     s2sq = (m * s0) ** 2 - s3 ** 2
@@ -70,7 +80,22 @@ def stokes_draw(rng, cpr, m, n_looks, trials):
     cmag = np.sqrt(s2 ** 2 + s3 ** 2) / 2.0
     phi = np.arctan2(-s3 / 2.0, s2 / 2.0)
     c = cmag * np.exp(1j * phi)
+    return {"c": c,
+            "covariance": {"E|H|^2": 1.0, "E|V|^2": 1.0,
+                           "E[H V*]": {"re": float(c.real), "im": float(c.imag),
+                                       "abs": float(abs(c)), "arg_deg": float(np.degrees(phi))}},
+            "stokes": {"S0": s0, "S1": 0.0, "S2": float(s2), "S3": float(s3)},
+            "cpr": float((s0 - s3) / (s0 + s3)),
+            "dop": float(np.sqrt(s2 ** 2 + s3 ** 2) / s0)}
 
+
+def stokes_draw(rng, cpr, m, n_looks, trials):
+    """N-look Stokes estimates for a population with this CPR and this DOP.
+    Returns (CPR_hat, m_hat) per trial, or None if (cpr, m) is unrealisable."""
+    pop = population(cpr, m)
+    if pop is None:
+        return None
+    c = pop["c"]
     z1 = (rng.normal(size=(trials, n_looks))
           + 1j * rng.normal(size=(trials, n_looks))) / np.sqrt(2)
     z2 = (rng.normal(size=(trials, n_looks))
@@ -87,6 +112,23 @@ def stokes_draw(rng, cpr, m, n_looks, trials):
     s3h = -2.0 * x.imag
     return ((s0h - s3h) / (s0h + s3h),
             np.sqrt(s1h ** 2 + s2h ** 2 + s3h ** 2) / s0h)
+
+
+def rates(rng, cpr, m, trials) -> dict | None:
+    got = stokes_draw(rng, cpr, m, N_LOOKS, trials)
+    if got is None:
+        return None
+    cpr_hat, m_hat = got
+    p_m = float(np.mean(cpr_hat > CPR_THRESHOLD))
+    p_j = float(np.mean((cpr_hat > CPR_THRESHOLD) & (m_hat < DOP_THRESHOLD)))
+    pop = population(cpr, m)
+    pop.pop("c")
+    return {"true_cpr": cpr, "true_m": m, "population": pop,
+            "marginal_fp_percent": 100 * p_m,
+            "marginal_se_percent": 100 * float(np.sqrt(p_m * (1 - p_m) / trials)),
+            "joint_fp_percent": 100 * p_j,
+            "joint_se_percent": 100 * float(np.sqrt(p_j * (1 - p_j) / trials)),
+            "trials": trials}
 
 
 def main() -> int:
@@ -108,29 +150,75 @@ def main() -> int:
     print(f"  so DOP < {DOP_THRESHOLD} requires a true CPR inside "
           f"({band[0]:.3f}, {band[1]:.3f})")
     print()
-    print(f"  {'true m':>9}{'marginal %':>13}{'joint %':>11}")
+    print(f"  {'true m':>9}{'marginal %':>13}{'joint %':>11}{'±SE':>8}")
 
+    # The rows exactly as before, in the same RNG order: the 1.8 % is row 0.
     rows = []
     for m0 in (m_min + 1e-6, 0.2, 0.3, 0.5):
-        got = stokes_draw(rng, TRUE_CPR, m0, N_LOOKS, args.trials)
-        if got is None:
+        r = rates(rng, TRUE_CPR, m0, args.trials)
+        if r is None:
             continue
-        cpr_hat, m_hat = got
-        marginal = float(100.0 * np.mean(cpr_hat > CPR_THRESHOLD))
-        joint = float(100.0 * np.mean((cpr_hat > CPR_THRESHOLD)
-                                      & (m_hat < DOP_THRESHOLD)))
-        print(f"  {m0:>9.4f}{marginal:>13.2f}{joint:>11.3f}")
-        rows.append({"true_m": m0, "marginal_fp_percent": marginal,
-                     "joint_fp_percent": joint})
+        print(f"  {m0:>9.4f}{r['marginal_fp_percent']:>13.2f}{r['joint_fp_percent']:>11.3f}"
+              f"{r['joint_se_percent']:>8.3f}")
+        rows.append({"true_m": m0, "marginal_fp_percent": r["marginal_fp_percent"],
+                     "joint_fp_percent": r["joint_fp_percent"]})
+        if m0 == m_min + 1e-6:
+            headline_spec = r
 
-    print()
-    print("  Requiring both conditions is an order of magnitude stricter than")
-    print("  requiring the CPR one. THIS BUILD CANNOT USE THAT: METHODS 1 shows")
-    print("  an amplitude-only CPR is a function of DOP alone, so here the two")
-    print("  conditions are one condition.")
+    # P7: the point that maximises the joint rate inside DOP < 0.13 -- the
+    # requested "just below 1.2989", and a scan to show it is the maximiser.
+    print("\n  MAXIMISING POINT — true CPR just below the band edge, true m just below 0.13")
+    edge = band[1] - 1e-4
+    m_edge = (edge - 1.0) / (edge + 1.0) + 1e-6
+    at_edge = rates(rng, edge, m_edge, args.trials)
+    print(f"  CPR {edge:.5f}, m {m_edge:.5f}:  joint {at_edge['joint_fp_percent']:.3f} "
+          f"± {at_edge['joint_se_percent']:.3f} %   marginal {at_edge['marginal_fp_percent']:.2f} %")
+    print("\n  scan (true m = m_min + 1e-6 for each CPR):")
+    scan = []
+    for c in (1.05, 1.10, 1.15, 1.20, 1.25, edge):
+        mm = abs(c - 1.0) / (c + 1.0) + 1e-6
+        r = rates(rng, c, mm, 100_000)
+        scan.append({"true_cpr": c, "true_m": mm, "joint_percent": r["joint_fp_percent"],
+                     "joint_se_percent": r["joint_se_percent"], "trials": 100_000})
+        print(f"    CPR {c:.5f}  m {mm:.5f}  joint {r['joint_fp_percent']:6.2f} ± {r['joint_se_percent']:.2f} %")
+    maximiser = max(scan, key=lambda s: s["joint_percent"])
+
+    measured = None
+    if SLC.is_file():
+        j = json.loads(SLC.read_text(encoding="utf-8"))["results"].get("joint_measured")
+        if j:
+            measured = {"conditional_percent": 100 * j["conditional"]["fraction"],
+                        "conditional_se_percent": 100 * j["conditional"]["binomial_se"],
+                        "n_cells_dop_below": j["conditional"]["n"],
+                        "unconditional_percent": 100 * j["unconditional"]["fraction"],
+                        "unconditional_se_percent": 100 * j["unconditional"]["binomial_se"],
+                        "of_cells": j["unconditional"]["of"],
+                        "sign_deg": j["sign_deg"],
+                        "source": "docs/stokes_from_slc.json::results.joint_measured",
+                        "note": "measured on this pass's terrain, physical sign; not the "
+                                "simulated rate at a 0.7 background"}
+            print(f"\n  MEASURED (P1): P(CPR>1 | DOP<0.13) = {measured['conditional_percent']:.2f} "
+                  f"± {measured['conditional_se_percent']:.2f} % over "
+                  f"{measured['n_cells_dop_below']:,} cells; "
+                  f"P(both) = {measured['unconditional_percent']:.4f} % of all cells")
+
+    spec = {
+        "schema": "lunar-ice/joint-criterion-spec/1",
+        "generator": "backend/scripts/joint_criterion.py",
+        "seed": SEED, "trials": args.trials, "n_looks": N_LOOKS,
+        "sign_convention": "S3 = -2 Im<E_H E_V*>, SC = (S0 - S3)/2, OC = (S0 + S3)/2 -- "
+                           "the physical reading of stokes_from_slc.py",
+        "draw": "E_H = z1; E_V = conj(c) z1 + sqrt(1 - |c|^2) z2; z1, z2 ~ CN(0, 1) "
+                "i.i.d. per look; N-look averages of |E_H|^2, |E_V|^2, E_H E_V*",
+        "headline_at_cpr_0p7": headline_spec,
+        "maximising_point_requested": at_edge,
+        "scan": scan, "scan_maximiser": maximiser,
+        "cpr_band_for_m_below_threshold": list(band),
+        "measured_joint_rate_slc": measured,
+    }
 
     OUT.write_text(json.dumps({
-        "schema": "lunar-ice/joint-criterion/1",
+        "schema": "lunar-ice/joint-criterion/2",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "generator": "backend/scripts/joint_criterion.py",
         "seed": SEED,
@@ -141,25 +229,26 @@ def main() -> int:
         "m_min_at_true_cpr": m_min,
         "cpr_band_for_m_below_threshold": list(band),
         "rows": rows,
-        # BOTH MARGINALS, because they are different quantities and the
-        # manuscript quotes the analytic one. The Monte Carlo marginal is what
-        # the Stokes ESTIMATOR does at this m; the analytic marginal is
-        # F(2N,2N) for independent channels. They differ by ~0.15 pp, which is
-        # about 3 standard errors at this trial count -- not noise, but the
-        # estimator's own behaviour. Reporting only one would leave the other
-        # unsourced.
         "marginal_fp_percent_analytic_F": float(
             (1.0 - _F.cdf(1.0 / TRUE_CPR, 2 * N_LOOKS, 2 * N_LOOKS)) * 100.0),
         "headline": {"marginal_fp_percent_monte_carlo": rows[0]["marginal_fp_percent"],
                      "joint_fp_percent": rows[0]["joint_fp_percent"],
                      "at_true_m": rows[0]["true_m"]},
+        "specification": spec,
         "not_available_on_this_build": (
             "The amplitude-only CPR is a function of DOP alone (METHODS 1), so "
             "on this product the two conditions are one condition and the joint "
-            "rate cannot be claimed. It describes what a Stokes-derived build "
-            "from the sli products could do."),
-    }, indent=2), encoding="utf-8")
+            "rate cannot be claimed from the delivered rasters. The SLC-derived "
+            "measured rate is in specification.measured_joint_rate_slc."),
+    }, indent=2, default=float), encoding="utf-8")
     print(f"\n  wrote {OUT.relative_to(BASE_DIR)}")
+
+    # P7: the same block into cpr_significance.json, the artifact the paper cites.
+    if SIG.is_file():
+        doc = json.loads(SIG.read_text(encoding="utf-8"))
+        doc["joint_criterion"] = spec
+        SIG.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  updated {SIG.relative_to(BASE_DIR)}::joint_criterion")
     return 0
 
 

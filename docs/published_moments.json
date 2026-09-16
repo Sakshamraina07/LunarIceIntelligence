@@ -109,5 +109,52 @@
     "fp_at_true_cpr_0p5": 7.840142732871003,
     "note": "Upper bounds. F(2N,2N) assumes the two circular channels are independent; see METHODS 7.10."
   },
-  "gate_failures": []
+  "gate_failures": [],
+  "mode_verification": {
+    "status": "NOT VERIFIED \u2014 full text not accessible from this host",
+    "accessed_utc": "2026-09-16T06:57:44.199354+00:00",
+    "citation": "Fa, W. and Cai, Y. (2013), J. Geophys. Res. Planets, 118(8), 1582-1608, doi:10.1002/jgre.20110",
+    "what_was_needed": "the data section's statements of product level, pixel spacing and imaging mode, verbatim, and the look count if stated",
+    "attempts": [
+      {
+        "url": "https://agupubs.onlinelibrary.wiley.com/doi/full/10.1002/jgre.20110",
+        "result": "HTTP 403 Forbidden (publisher full text)"
+      },
+      {
+        "url": "https://agupubs.onlinelibrary.wiley.com/doi/pdfdirect/10.1002/jgre.20110",
+        "result": "HTTP 403 Forbidden (publisher PDF)"
+      },
+      {
+        "url": "https://ui.adsabs.harvard.edu/abs/2013JGRE..118.1582F/abstract",
+        "result": "HTTP 405 Method Not Allowed (ADS renders client-side)"
+      },
+      {
+        "url": "https://api.semanticscholar.org/graph/v1/paper/DOI:10.1002/jgre.20110",
+        "result": "reachable; abstract field null, openAccessPdf empty (status CLOSED)"
+      },
+      {
+        "url": "https://api.crossref.org/works/10.1002/jgre.20110",
+        "result": "reachable; bibliographic record and abstract only; links are the Wiley TDM API (token required) and the Wiley PDF (403)"
+      }
+    ],
+    "accessible_text": {
+      "kind": "abstract (Crossref)",
+      "quotes_verbatim": [
+        "In an attempt to reduce the ambiguity on radar detection of water ice at the permanently shadowed regions near the lunar poles, radar echo strength and circular polarization ratio (CPR) of impact craters are analyzed using the Miniature Radio Frequency (Mini-RF) radar data from the Lunar Reconnaissance Orbiter mission.",
+        "the enhanced CPR in the interior of anomalous craters is most probably caused by rocks that are perched on lunar surface or buried in regolith, instead of ice deposits as suggested in previous studies."
+      ],
+      "states_product_level": false,
+      "states_pixel_spacing": false,
+      "states_imaging_mode": false,
+      "states_look_count": false
+    },
+    "existing_transcription": {
+      "table": "Table 1, p. 1585, interior region",
+      "transcribed_by_hand": true,
+      "note": "the moments in `craters` were transcribed from the paper's Table 1 in an earlier pass; the data-section text was not captured then and could not be re-read now"
+    },
+    "manuscript_claim_rests_on": "Raney et al. 2012 para. [4] (8 looks, S-band zoom, 7.5 m) and the PDS instrument catalogue; NOT on Fa & Cai's own text",
+    "discrepancy_check": "could not be performed; if Fa & Cai's data section names a different mode or spacing, the manuscript's 14.8 m = zoom attribution is unverified against its primary source",
+    "action_for_author": "read Section 2 of the paper from an institutional copy and replace this block with the verbatim statements"
+  }
 }

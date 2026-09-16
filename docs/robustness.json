@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/robustness/1",
-  "generated_utc": "2026-09-16T07:19:42.484525+00:00",
+  "generated_utc": "2026-09-16T08:11:34.566567+00:00",
   "generator": "backend/scripts/robustness_gate.py",
   "seed": 31,
   "closed_form_ceiling": 0.004261082862785302,

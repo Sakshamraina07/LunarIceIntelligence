@@ -1,6 +1,6 @@
 {
   "schema": "detection_statistics/1",
-  "generated_utc": "2026-09-08T07:00:24.395036+00:00",
+  "generated_utc": "2026-09-16T07:26:53.511961+00:00",
   "generator": "backend/scripts/detection_statistics.py",
   "effective_looks": {
     "screened_field": {
@@ -28,12 +28,25 @@
     "measured_pixels": 2337086,
     "area_km2": 0.0,
     "confidence": 0.95,
-    "ci_km2": [
+    "correlation_area_px": 61.420749918170166,
+    "n_effective": 38050,
+    "ci_km2_raw_pixels": [
       0.0,
       0.002401
     ],
-    "method": "Wilson score interval on the pass proportion",
+    "ci_km2_effective": [
+      0.0,
+      0.147453
+    ],
+    "ci_km2": [
+      0.0,
+      0.147453
+    ],
+    "note": "raw-pixel interval is 61x too narrow; pixels are not independent (61.42 px per independent sample)",
+    "n_effective_rounding": "round. 2337086 / 61.420749918170166 = 38050.43089 -> 38050. An earlier revision used ceil to match a manuscript that printed 38051; the manuscript was corrected. The upper bound is 0.147 km2 either way.",
+    "method": "Wilson score interval on the pass proportion, on EFFECTIVE samples",
     "why_wilson": "The normal approximation gives [0, 0] at k = 0 and would report a measured zero as carrying no uncertainty.",
+    "why_effective": "METHODS 7.9.1 measures 61.42 px per independent sample by integrating the CPR autocorrelation. Treating pixels as trials overstates n by ~61x and narrows the interval by the same factor.",
     "provenance": "MEASURED"
   },
   "published_reanalysis": {

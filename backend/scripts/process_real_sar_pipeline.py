@@ -52,8 +52,9 @@ What is still SYNTHETIC in here
     from Gaussians and sinusoids is deleted, with no fallback: if the LOLA frame
     is absent this pipeline stops rather than substituting a plausible surface.
   * The number that matters for every terrain quantity is the LOLA product's
-    NATIVE post spacing -- 80 m for LDEM_80S_80M -- not the 25 m grid it is
-    resampled onto. Slope, roughness and hazard here are 80 m quantities. They
+    NATIVE post spacing -- read from ldem_frame_25m.provenance.json, 20 m for
+    LDEM_80S_20M -- not the 25 m grid it is resampled onto. Slope, roughness
+    and hazard here are native-post quantities. They
     are labelled with the spacing they were differenced at, and the sidecar
     `data/pradan/lola/ldem_frame_25m.provenance.json` states both numbers.
   * `native/dem_native.tif` keeps its filename for backend

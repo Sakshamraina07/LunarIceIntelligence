@@ -19,7 +19,7 @@ risk; the risk was a zero wearing a tight error bar.
 WHAT IT ASSERTS
   1. ci_km2 is the EFFECTIVE-sample interval, not the raw-pixel one
   2. its upper bound rounds to 0.147 km2 at three decimals
-  3. n_effective == ceil(measured_pixels / correlation_area), and the
+  3. n_effective == round(measured_pixels / correlation_area), and the
      correlation area matches cpr_significance.json rather than a second copy
   4. the raw-pixel interval is retained and labelled, not deleted -- a
      superseded computation that vanishes cannot be audited
@@ -87,7 +87,7 @@ def main() -> int:
     print(f"  correlation area   {area!r}")
     print(f"  cpr_significance   {truth_area!r}")
     print(f"  measured pixels    {n_px:,}")
-    print(f"  n_effective        {n_eff:,}   ceil -> {math.ceil(n_px / truth_area):,}")
+    print(f"  n_effective        {n_eff:,}   round -> {round(n_px / truth_area):,}")
     print(f"  ci_km2             [{ca['ci_km2'][0]}, {hi}]")
     print(f"  ci_km2_raw_pixels  {ca.get('ci_km2_raw_pixels', 'ABSENT')}")
 
@@ -96,9 +96,9 @@ def main() -> int:
         bad.append(f"correlation_area_px {area} is not cpr_significance.json's "
                    f"{truth_area}. 7.9.1 and 7.10 once carried 61.5 and 61.42 for "
                    f"this one quantity; a third copy is how that happens again.")
-    if n_eff != math.ceil(n_px / truth_area):
-        bad.append(f"n_effective {n_eff} != ceil({n_px} / {truth_area}) = "
-                   f"{math.ceil(n_px / truth_area)}")
+    if n_eff != round(n_px / truth_area):
+        bad.append(f"n_effective {n_eff} != round({n_px} / {truth_area}) = "
+                   f"{round(n_px / truth_area)}")
 
     # 1 + 2. the headline is the effective interval and lands on 0.147
     if abs(hi - hi_eff) > 1e-12:

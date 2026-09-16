@@ -39,7 +39,7 @@ The energy proxy is reported **per kilogram** so that no rover mass is invented.
   blend is slope + roughness renormalised, with the boulder weight zeroed rather
   than fed an unmeasured zero.
 - **No ice.** Candidate area is 0.0000 km², 95 % CI **[0.0000, 0.147] km²** on
-  **38 051 effective samples**. The interval is taken on independent samples, not
+  **38 050 effective samples**. The interval is taken on independent samples, not
   on the 2,337,086 raw pixels: METHODS §7.9.1 measures 61.42 px per independent
   sample, so a pixel-count interval — the superseded [0.0000, 0.0024] km² — is
   about 61× too narrow and states a precision the data does not have.

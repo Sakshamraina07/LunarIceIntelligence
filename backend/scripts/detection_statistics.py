@@ -201,14 +201,14 @@ def main() -> int:
     # precision the data does not have, on the one number this project exists
     # to report honestly.
     #
-    # CEIL, NOT FLOOR OR ROUND, AND THE REASON IS RECORDED.
-    # 2,337,086 / 61.420749918170166 = 38050.43089..., so floor and round both
-    # give 38050 and only ceil gives the 38,051 the manuscript prints. The
-    # difference does not move the headline -- the upper bound is 0.147 km2 at
-    # either -- but the artifact and the paper must not disagree about a count
-    # a reader can divide out for themselves.
+    # ROUND, AND THE REASON IS RECORDED. 2,337,086 / 61.420749918170166 =
+    # 38050.43089..., which rounds to 38,050. An earlier revision used ceil to
+    # match a manuscript that printed 38,051 -- bending the code to a typo. An
+    # effective sample count is not something you round up; the manuscript was
+    # corrected instead. The headline does not move: the upper bound is
+    # 0.147 km2 at either count.
     area_px = float(_correlation_area())
-    n_eff = math.ceil(n_px / area_px)
+    n_eff = round(n_px / area_px)
     lo_eff, hi_eff = wilson(k, n_eff, _z)
     lo, hi = lo_eff, hi_eff
     print(f"  candidate pixels      {k:,} of {n_px:,} measured")
@@ -216,7 +216,7 @@ def main() -> int:
     _frame = n_px * cell_km2
     print(f"  correlation area      {area_px:.4f} px per independent sample "
           f"(METHODS 7.9.1)")
-    print(f"  effective samples     {n_eff:,}  = ceil({n_px:,} / {area_px:.4f})")
+    print(f"  effective samples     {n_eff:,}  = round({n_px:,} / {area_px:.4f})")
     print(f"  {args.confidence:.0%} Wilson, RAW PIXELS  "
           f"[{lo_raw * _frame:.4f}, {hi_raw * _frame:.4f}] km²   "
           f"<- SUPERSEDED, ~61x too narrow")
@@ -287,12 +287,11 @@ def main() -> int:
             "ci_km2": [round(lo * n_px * cell_km2, 6), round(hi * n_px * cell_km2, 6)],
             "note": ("raw-pixel interval is 61x too narrow; pixels are not "
                      "independent (61.42 px per independent sample)"),
-            "n_effective_rounding": ("ceil. 2337086 / 61.420749918170166 = "
-                                     "38050.43089, so floor and round give 38050 "
-                                     "and only ceil gives the 38051 the manuscript "
-                                     "prints. The upper bound is 0.147 km2 either "
-                                     "way; the count is matched so artifact and "
-                                     "paper do not disagree."),
+            "n_effective_rounding": ("round. 2337086 / 61.420749918170166 = "
+                                     "38050.43089 -> 38050. An earlier revision used "
+                                     "ceil to match a manuscript that printed 38051; "
+                                     "the manuscript was corrected. The upper bound "
+                                     "is 0.147 km2 either way."),
             "method": "Wilson score interval on the pass proportion, on EFFECTIVE samples",
             "why_wilson": ("The normal approximation gives [0, 0] at k = 0 and would "
                            "report a measured zero as carrying no uncertainty."),

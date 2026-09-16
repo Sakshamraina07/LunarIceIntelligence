@@ -1833,6 +1833,69 @@ block [10.69, 22.52]; LV raw 5.1413, block [4.38, 7.29]; boxcar 19.7677, block
 FP at true CPR 0.7 17.80 %, block [11.76, 20.81]; floor 1.895, block
 [1.641, 2.070].
 
+#### 7.3.2 The estimator benchmarked at known ENL, and two other estimators on the SLC
+
+`backend/scripts/enl_benchmark.py` (`docs/enl_benchmark.json`) runs the
+identical pipeline — `measure_enl.patch_ratios`, `mode_of`,
+`bootstrap_enl.block_boot` / `simple_boot`, imported unmodified, no boxcar — on
+synthetic fields whose ENL is known: N independent complex circular-Gaussian
+looks, each with separable AR(1) correlation chosen so the *intensity* lag-one
+correlation equals the product's measured 0.838 (azimuth) and 0.576 (range),
+1024 × 512 cells, with and without multiplicative K-distributed texture
+(Gamma(ν, 1/ν) per cell), 200 replicates per configuration, B = 2000, seeds
+11/12. Bias, RMSE and the coverage of the 95 % block interval, each with its
+Monte Carlo SE over the replicates:
+
+| N | ν | bias (± SE) | RMSE | coverage, block 95 % (± SE) | coverage, simple | measured lag-1 az / rg |
+|---|---|---|---|---|---|---|
+| 4 | ∞ | +0.685 ± 0.019 | 0.738 | 0.120 ± 0.023 | 0.105 | 0.820 / 0.527 |
+| 6 | ∞ | +0.940 ± 0.028 | 1.021 | 0.260 ± 0.031 | 0.215 | 0.820 / 0.528 |
+| 8 | ∞ | +1.310 ± 0.041 | 1.434 | 0.245 ± 0.030 | 0.265 | 0.820 / 0.528 |
+| 12 | ∞ | +1.864 ± 0.058 | 2.037 | 0.245 ± 0.030 | 0.245 | 0.820 / 0.528 |
+| 4 | 8 | −1.228 ± 0.009 | 1.235 | 0.000 | 0.000 | 0.483 / 0.310 |
+| 6 | 8 | −2.470 ± 0.010 | 2.474 | 0.000 | 0.000 | 0.414 / 0.266 |
+| 8 | 8 | −3.910 ± 0.010 | 3.912 | 0.000 | 0.000 | 0.362 / 0.232 |
+| 12 | 8 | −7.118 ± 0.012 | 7.120 | 0.000 | 0.000 | 0.290 / 0.186 |
+| 4 | 4 | −2.018 ± 0.006 | 2.019 | 0.000 | 0.000 | 0.341 / 0.219 |
+| 6 | 4 | −3.635 ± 0.006 | 3.636 | 0.000 | 0.000 | 0.276 / 0.177 |
+| 8 | 4 | −5.382 ± 0.007 | 5.382 | 0.000 | 0.000 | 0.232 / 0.148 |
+| 12 | 4 | −9.021 ± 0.007 | 9.022 | 0.000 | 0.000 | 0.175 / 0.111 |
+
+Two results, neither flattering, both now on record. **On pure correlated
+speckle the mode estimator reads about 16 % high** at every N tested
+(+0.685 at 4, +1.864 at 12): correlated cells return a low sample variance.
+**The block-bootstrap "95 %" interval covers the true value 12–26 % of the
+time**, because the bootstrap resamples an estimate that is biased, and the
+simple bootstrap does no better; the intervals quoted in §7.3.1 and in the
+manuscript are therefore *precision* statements about the estimator, not
+coverage statements about the ENL. Read through the +16 %, the delivered
+product's raw 5.83 corresponds to a speckle ENL nearer 5.0 — inside the
+manuscript's bracket of 5.0–5.8, at its lower end. With texture on every cell
+the mode cannot find a homogeneous population and reads far low; that
+configuration also destroys the lag correlation (the measured lag-1 column),
+so it is not this product, which keeps its 0.838. The AR(1) field is more
+correlated at lag two (0.702) than the product (0.565), which is recorded as a
+caveat in the artifact.
+
+On the SLC's spatial arm (21-look coherency, no boxcar, 21 489 wholly-inside
+16 × 16 patches, block-bootstrap 95 % intervals over rows of the patch grid),
+three estimators, each reported as the mode over patches with the median
+beside it:
+
+| estimator | mode | block 95 % | median |
+|---|---|---|---|
+| moment, LH intensity | 4.643 | [4.62, 5.51] | 3.65 |
+| moment, LV intensity | 5.407 | [4.85, 5.68] | 3.67 |
+| trace moment, 2 × 2 (Anfinsen et al. 2009) | 6.088 | [5.54, 6.09] | 4.03 |
+| log-cumulant, 2 × 2 (var ln det C = ψ′(L) + ψ′(L − 1)) | 4.826 | [4.27, 5.28] | 4.25 |
+| log-cumulant, LH (var ln I = ψ′(L)) | 5.336 | [5.18, 5.68] | 4.65 |
+| log-cumulant, LV | 5.529 | [5.03, 5.86] | 4.68 |
+
+The moment mode on the full swath (4.64) agrees with the nine-window control's
+4.52. The three families disagree by up to 1.4 looks on the same patches — the
+trace moment, which uses the cross-channel term, reads highest — which is the
+spread a reader should attach to any single "measured ENL".
+
 #### 7.3.3 Patch bias and stationarity
 
 `backend/scripts/patch_bias.py` (block B3 of the reference, ported with its RNG
@@ -3594,7 +3657,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `7acb7e4`.
+Stamped at commit `de3ec52`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3608,6 +3671,7 @@ Stamped at commit `7acb7e4`.
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `b5dfaa2a9520e941…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/enl_benchmark.json` | `8d6a9c11d8361f58…` | §7.3.2 |
 | `docs/enl_estimator_spec.json` | `8fd6dd6552233401…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |

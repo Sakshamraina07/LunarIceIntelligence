@@ -1,14 +1,14 @@
 {
   "schema": "lunar-ice/manuscript-audit/1",
-  "generated_utc": "2026-09-16T07:21:13.264992+00:00",
+  "generated_utc": "2026-09-16T08:05:05.798054+00:00",
   "computed_by": "backend/scripts/audit_manuscript_numbers.py",
   "manuscript": "Claude outputs/dfsar_detection_limits_full.tex",
   "manuscript_is_read_only": true,
   "n_audited": 121,
   "counts": {
-    "PASS": 88,
+    "PASS": 89,
     "MISMATCH": 0,
-    "NO SOURCE": 9,
+    "NO SOURCE": 8,
     "ABSENT": 24
   },
   "rows": [
@@ -2507,7 +2507,7 @@
       "printed": "6.09",
       "artifact": "docs/enl_benchmark.json",
       "key": "slc_spatial_arm.estimators.trace_moment_2x2.mode",
-      "artifact_value": null,
+      "artifact_value": 6.087685151560327,
       "verdict": "ABSENT",
       "section": "V",
       "note": "P2",
@@ -2518,8 +2518,8 @@
       "printed": "4.83",
       "artifact": "docs/enl_benchmark.json",
       "key": "slc_spatial_arm.estimators.log_cumulant_2x2.mode",
-      "artifact_value": null,
-      "verdict": "NO SOURCE",
+      "artifact_value": 4.825780832884927,
+      "verdict": "PASS",
       "section": "V",
       "note": "P2",
       "tex_lines": [
@@ -2532,7 +2532,7 @@
       "printed": "4.64",
       "artifact": "docs/enl_benchmark.json",
       "key": "slc_spatial_arm.estimators.moment_LH.mode",
-      "artifact_value": null,
+      "artifact_value": 4.643111962530458,
       "verdict": "ABSENT",
       "section": "V",
       "note": "P2",

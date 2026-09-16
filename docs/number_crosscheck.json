@@ -1,9 +1,9 @@
 {
   "schema": "lunar-ice/number-crosscheck/1",
-  "generated_utc": "2026-09-16T10:25:47.422044+00:00",
+  "generated_utc": "2026-09-16T11:02:45.652461+00:00",
   "generator": "backend/scripts/number_crosscheck.py",
-  "manuscript": "Claude outputs/dfsar_detection_limits_submission.tex",
-  "artifact_numbers_loaded": 19469,
+  "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
+  "artifact_numbers_loaded": 19064,
   "artifact_trees": [
     "docs",
     "frontend/public/analysis",
@@ -27,8 +27,8 @@
       "literal": "4.261\\times10^{-3}",
       "lines": [
         37,
-        320,
-        1015
+        332,
+        1004
       ],
       "example_key": "degeneracy_replication.json.closed_form_ceiling"
     },
@@ -38,16 +38,16 @@
         38,
         84,
         86,
-        287,
-        287,
-        296,
-        305,
-        328,
-        371,
-        388,
-        401,
-        407,
-        949
+        299,
+        299,
+        308,
+        317,
+        340,
+        380,
+        396,
+        409,
+        415,
+        939
       ],
       "example_key": "composite_contrast.json.layers.cpr_heatmap.correlation[2]"
     },
@@ -56,9 +56,9 @@
       "lines": [
         40,
         50,
-        700,
-        950,
-        1020
+        697,
+        940,
+        1009
       ],
       "example_key": "cpr_significance.json.joint_criterion.maximising_point_requested.true_cpr"
     },
@@ -66,10 +66,10 @@
       "literal": "1.5",
       "lines": [
         41,
-        701,
-        901,
-        951,
-        1021
+        698,
+        892,
+        941,
+        1010
       ],
       "example_key": "composite_contrast.json.layers.dop_heatmap.retention[2]"
     },
@@ -77,12 +77,12 @@
       "literal": "0.50",
       "lines": [
         42,
-        763,
-        827,
-        828,
-        830,
-        951,
-        1022
+        759,
+        821,
+        822,
+        824,
+        941,
+        1011
       ],
       "example_key": "antialias_sigma.json.sigmas[9]"
     },
@@ -90,12 +90,12 @@
       "literal": "5.83",
       "lines": [
         43,
-        445,
-        458,
-        651,
-        659,
-        687,
-        1023
+        452,
+        465,
+        648,
+        656,
+        684,
+        1012
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw"
     },
@@ -103,8 +103,8 @@
       "literal": "5.14",
       "lines": [
         43,
-        446,
-        1024
+        453,
+        1012
       ],
       "example_key": "bootstrap_enl.json.LV.enl_raw"
     },
@@ -112,9 +112,9 @@
       "literal": "3.10",
       "lines": [
         44,
-        493,
         495,
-        1025
+        497,
+        1013
       ],
       "example_key": "cpr_dispersion.json.external_check.paper_only_statement:str"
     },
@@ -122,8 +122,8 @@
       "literal": "1.079",
       "lines": [
         48,
-        631,
-        1029
+        628,
+        1017
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[3].bias"
     },
@@ -131,13 +131,13 @@
       "literal": "1.895",
       "lines": [
         48,
-        631,
-        653,
-        659,
-        692,
-        699,
-        730,
-        1029
+        628,
+        650,
+        656,
+        689,
+        696,
+        727,
+        1017
       ],
       "example_key": "bootstrap_enl.json.LH.floor_point"
     },
@@ -145,23 +145,22 @@
       "literal": "0.7",
       "lines": [
         49,
-        137,
-        618,
-        619,
-        626,
+        150,
+        615,
+        616,
+        623,
+        651,
         654,
+        655,
+        656,
         657,
-        658,
-        659,
-        660,
-        671,
-        693,
-        706,
-        724,
-        728,
-        791,
-        878,
-        1030
+        668,
+        690,
+        703,
+        721,
+        725,
+        786,
+        1018
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[7]"
     },
@@ -169,11 +168,10 @@
       "literal": "8.75",
       "lines": [
         52,
-        630,
-        836,
-        841,
-        875,
-        877
+        627,
+        830,
+        835,
+        869
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[2].N"
     },
@@ -181,1099 +179,1098 @@
       "literal": "9.17",
       "lines": [
         52,
+        830,
         836,
-        842,
-        875
+        869
       ],
       "example_key": "enl.json.patch_sizes.16.LH.on_DN_squared.p95"
     },
     {
       "literal": "4265",
       "lines": [
-        129
+        142
       ],
       "example_key": "faustini.json.elevation.min_m"
     },
     {
       "literal": "54.198",
       "lines": [
-        130
+        143
       ],
       "example_key": "data_provenance.json.observation_start_utc:str"
     },
     {
       "literal": "41.304",
       "lines": [
-        130
+        143
       ],
       "example_key": "data_provenance.json.observation_stop_utc:str"
     },
     {
       "literal": "107.106",
       "lines": [
-        131
+        144
       ],
       "example_key": "data_provenance.json.observation_duration_s"
     },
     {
       "literal": "51.016",
       "lines": [
-        134
+        147
       ],
       "example_key": "data_provenance.json.checks[5].detail:str"
     },
     {
       "literal": "1071.336",
       "lines": [
-        135,
-        151,
-        486
+        148,
+        164,
+        489
       ],
       "example_key": "data_provenance.json.checks[5].detail:str"
     },
     {
       "literal": "3321.64",
       "lines": [
-        135,
-        491
+        148,
+        493
       ],
       "example_key": "enl_predictions.json.predictions[0].declared.pulse_repetition_frequency:str"
     },
     {
       "literal": "70.308868",
       "lines": [
-        136,
-        148
+        149,
+        161
       ],
       "example_key": "enl.json.label.calibration_constant"
     },
     {
       "literal": "1.0",
       "lines": [
-        137
+        150
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[0]"
     },
     {
       "literal": "2258",
       "lines": [
-        138
+        151
       ],
       "example_key": "data_provenance.json.geometry.lines"
     },
     {
       "literal": "89.263",
       "lines": [
-        138
+        151
       ],
       "example_key": "number_crosscheck.json.matched_rows[23].literal:str"
     },
     {
       "literal": "84.833",
       "lines": [
-        138
+        151
       ],
-      "example_key": "manuscript_number_audit.json.rows[264].tex_lines[6]"
+      "example_key": "number_crosscheck.json.matched_rows[24].literal:str"
     },
     {
       "literal": "937\\,296",
       "lines": [
-        141
+        154
       ],
       "example_key": "dop_exclusion.json.excluded_pixels"
     },
     {
       "literal": "0.2846",
       "lines": [
-        142
+        155
       ],
       "example_key": "composite_contrast.json.layers.illumination.retention[2]"
     },
     {
       "literal": "0.4550",
       "lines": [
-        142
+        155
       ],
       "example_key": "enl_generality.json.single_look_control.products.2020-08-08 sli LH.p5"
     },
     {
       "literal": "13.2",
       "lines": [
-        143
+        156
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.16.LH.on_DN_squared.p95"
     },
     {
       "literal": "0.714",
       "lines": [
-        147
+        159
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[8]"
     },
     {
       "literal": "56.11",
       "lines": [
-        159
+        172
       ],
       "example_key": "cpr_dispersion.json.external_check.constraint.h=150000.max_samples"
     },
     {
       "literal": "5.5",
       "lines": [
-        164
+        177
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.16.LV.on_DN.p5"
     },
     {
       "literal": "84.36",
       "lines": [
-        164
+        177
       ],
-      "example_key": "manuscript_number_audit.json.rows[90].tex_lines[1]"
+      "example_key": "number_crosscheck.json.matched_rows[32].literal:str"
     },
     {
       "literal": "64.37",
       "lines": [
-        165
+        178
       ],
       "example_key": "number_crosscheck.json.matched_rows[33].literal:str"
     },
     {
       "literal": "19.99",
       "lines": [
-        165
+        178
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.none (control).p90"
     },
     {
       "literal": "14\\,943\\,444",
       "lines": [
-        176
+        189
       ],
       "example_key": "data_provenance.json.files.ch2_sar_ncxl_20200808t201154198_d_sri_ma_cp_xx_d18.tif.bytes"
     },
     {
       "literal": "9339.65",
       "lines": [
-        176
+        189
       ],
       "example_key": "manuscript_number_audit.json.rows[11].printed:str"
     },
     {
       "literal": "100",
       "lines": [
-        176,
-        188
+        189,
+        201
       ],
       "example_key": "text.after.json.strings[71]:str"
     },
     {
-      "literal": "5\\,324\\,544",
+      "literal": "5\\,324\\,545",
       "lines": [
-        177
+        190
       ],
       "example_key": "manuscript_number_audit.json.rows[12].artifact_value"
     },
     {
       "literal": "3327.84",
       "lines": [
-        177
+        190
       ],
       "example_key": "enl_predictions.json.predictions[0].declared.pulse_repetition_frequency:str"
     },
     {
       "literal": "35.63",
       "lines": [
-        177
+        190
       ],
       "example_key": "detection_statistics.json.per_pixel_significance.shortfall_factor"
     },
     {
       "literal": "2\\,337\\,086",
       "lines": [
-        178,
-        316,
-        326,
+        191,
+        328,
+        338,
         569,
-        886
+        877
       ],
       "example_key": "degeneracy_replication.json.products[0].valid_px"
     },
     {
       "literal": "1460.68",
       "lines": [
-        178
+        191
       ],
       "example_key": "manuscript_number_audit.json.rows[16].printed:str"
     },
     {
       "literal": "15.64",
       "lines": [
-        178
+        191
       ],
       "example_key": "layout.before.json.type.distinct_sizes[3].px"
     },
     {
       "literal": "43.89",
       "lines": [
-        180
+        193
       ],
       "example_key": "capture.before.json.views[0].centre[0]"
     },
     {
       "literal": "1.1",
       "lines": [
-        186
+        199
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[0]"
     },
     {
       "literal": "1.95",
       "lines": [
-        186
+        199
       ],
       "example_key": "detection_statistics.json.published_reanalysis.rows[0].cpr"
     },
     {
       "literal": "1120.3",
       "lines": [
-        187
+        200
       ],
       "example_key": "f2_footprint.json.frame_pixel.line"
     },
     {
       "literal": "3676.9",
       "lines": [
-        187
+        200
       ],
       "example_key": "f2_footprint.json.frame_pixel.sample"
     },
     {
       "literal": "1521",
       "lines": [
-        188,
-        719,
-        725
+        201,
+        716,
+        722
       ],
       "example_key": "cpr_significance.json.effective_samples.f2_pixels"
     },
     {
       "literal": "17.09",
       "lines": [
-        188,
-        726
+        201,
+        722
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.32.LV.on_DN.p75"
     },
     {
       "literal": "31.5",
       "lines": [
-        215
+        227
       ],
       "example_key": "number_crosscheck.json.matched_rows[51].literal:str"
     },
     {
       "literal": "20.3",
       "lines": [
-        216
+        229
       ],
       "example_key": "enl.json.patch_sizes.16.LV.on_DN.mean"
     },
     {
       "literal": "47.6",
       "lines": [
-        217
+        230
       ],
       "example_key": "enl.json.amplitude_vs_intensity.sigma0_if_intensity_db"
     },
     {
       "literal": "5.8",
       "lines": [
-        223,
-        469,
-        537
+        235,
+        476,
+        538
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw"
     },
     {
       "literal": "0.89",
       "lines": [
-        225
+        237
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.120 m[9]"
     },
     {
       "literal": "1.18",
       "lines": [
-        225
+        237
       ],
       "example_key": "composite_contrast.json.layers.dop_heatmap.retention[0]"
     },
     {
       "literal": "0.93",
       "lines": [
-        225,
-        488,
-        828
+        237,
+        491,
+        822
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.200 m[2]"
     },
     {
       "literal": "1.17",
       "lines": [
-        225
+        237
       ],
       "example_key": "cpr_dispersion.json.correlation_correction.sd_inflation_factor"
     },
     {
       "literal": "0.2614797",
       "lines": [
-        287,
-        290
+        299,
+        302
       ],
       "example_key": "manuscript_number_audit.json.rows[28].printed:str"
     },
     {
       "literal": "4.2610829\\times10^{-3}",
       "lines": [
-        290
+        302
       ],
       "example_key": "degeneracy_replication.json.closed_form_ceiling"
     },
     {
       "literal": "235",
       "lines": [
-        293
+        305
       ],
       "example_key": "detection_statistics.json.candidate_area.withdrawn_interval.what_stands_instead:str"
     },
     {
       "literal": "1.00",
       "lines": [
-        293,
-        348,
-        488,
-        529,
-        617,
-        670,
-        692,
-        693,
-        703,
-        729,
-        833
+        305,
+        358,
+        491,
+        530,
+        614,
+        667,
+        689,
+        690,
+        700,
+        726,
+        827
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[0]"
     },
     {
       "literal": "40.21",
       "lines": [
-        306,
-        899
+        318,
+        890
       ],
       "example_key": "detection_statistics.json.candidate_area.withdrawn_interval.what_stands_instead:str"
     },
     {
       "literal": "59.79",
       "lines": [
-        307
+        319
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.scan 0.40.max"
     },
     {
       "literal": "1.241\\times10^{-6}",
       "lines": [
-        326
+        338
       ],
       "example_key": "manuscript_number_audit.json.rows[35].printed:str"
     },
     {
       "literal": "8.025\\times10^{-9}",
       "lines": [
-        327
+        339
       ],
       "example_key": "manuscript_number_audit.json.rows[36].printed:str"
     },
     {
       "literal": "4.2610574\\times10^{-3}",
       "lines": [
-        328
+        340
       ],
       "example_key": "manuscript_number_audit.json.rows[37].printed:str"
     },
     {
       "literal": "5.99\\times10^{-6}",
       "lines": [
-        329
+        341
       ],
       "example_key": "manuscript_number_audit.json.rows[38].printed:str"
     },
     {
       "literal": "8.6\\times10^{-5}",
       "lines": [
-        333
+        345
       ],
       "example_key": "degeneracy_replication.json.products[1].relative_agreement"
     },
     {
       "literal": "120\\,000",
       "lines": [
-        343
+        355
       ],
       "example_key": "cpr_significance.json.monte_carlo_run.trials_per_row"
     },
     {
       "literal": "0.9822",
       "lines": [
-        344
+        356
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[2]"
     },
     {
       "literal": "0.9647",
       "lines": [
-        345
+        357
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[8]"
     },
     {
       "literal": "0.30",
       "lines": [
-        348
+        358
       ],
       "example_key": "antialias_sigma.json.sigmas[6]"
     },
     {
       "literal": "0.70",
       "lines": [
-        348,
-        350
+        358,
+        361
       ],
       "example_key": "background_cpr_sweep.json.rows[4].true_cpr"
     },
     {
       "literal": "1.50",
       "lines": [
-        348,
-        408
+        358,
+        416
       ],
       "example_key": "cpr_significance.json.monte_carlo[3].cpr_true"
     },
     {
       "literal": "0.00043",
       "lines": [
-        349
+        359
       ],
       "example_key": "cpr_significance.json.monte_carlo[0].amplitude_proxy.median"
     },
     {
       "literal": "0.300",
       "lines": [
-        350
+        360
       ],
       "example_key": "antialias_sigma.json.sigmas[6]"
     },
     {
       "literal": "0.700",
       "lines": [
-        350
+        360
       ],
       "example_key": "background_cpr_sweep.json.rows[4].true_cpr"
     },
     {
       "literal": "1.000",
       "lines": [
-        350
+        360
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[0]"
     },
     {
       "literal": "1.500",
       "lines": [
-        350
+        360
       ],
       "example_key": "cpr_significance.json.monte_carlo[3].cpr_true"
     },
     {
       "literal": "0.00331",
       "lines": [
-        351
+        361
       ],
       "example_key": "cpr_significance.json.monte_carlo[4].amplitude_proxy.true"
     },
     {
       "literal": "0.02922",
       "lines": [
-        352
+        362
       ],
       "example_key": "cpr_significance.json.monte_carlo[5].amplitude_proxy.true"
     },
     {
       "literal": "0.053411",
       "lines": [
-        367
+        376
       ],
       "example_key": "composite_contrast.json.layers.cpr_heatmap.correlation[4]"
     },
     {
       "literal": "0.053852",
       "lines": [
-        367
+        376
       ],
       "example_key": "incidence_audit.json.screening_blast_radius.cpr_max_without"
     },
     {
       "literal": "1.310\\times10^{-2}",
       "lines": [
-        368
+        377
       ],
       "example_key": "incidence_audit.json.screening_blast_radius.cpr_max_abs_difference"
     },
     {
       "literal": "1.393\\times10^{-1}",
       "lines": [
-        368
+        377
       ],
       "example_key": "incidence_audit.json.screening_blast_radius.dop_max_abs_difference"
     },
     {
       "literal": "2.3\\times10^{-5}",
       "lines": [
-        369
+        378
       ],
       "example_key": "manuscript_number_audit.json.rows[55].printed:str"
     },
     {
       "literal": "1.1\\times10^{-3}",
       "lines": [
-        369
+        378
       ],
       "example_key": "cpr_dispersion.json.per_window[3].cpr_mean"
     },
     {
       "literal": "1.07",
       "lines": [
-        371,
-        742
+        380,
+        739
       ],
       "example_key": "composite_contrast.json.layers.hazard_map.retention[3]"
     },
     {
       "literal": "0.7699",
       "lines": [
-        388
+        396
       ],
       "example_key": "cpr_significance.json.joint_criterion.cpr_band_for_m_below_threshold[0]"
     },
     {
       "literal": "1.2989",
       "lines": [
-        388,
-        389
+        396,
+        397
       ],
       "example_key": "cpr_significance.json.joint_criterion.maximising_point_requested.true_cpr"
     },
     {
       "literal": "5\\,883\\,594",
       "lines": [
-        398
+        406
       ],
       "example_key": "cpr_significance.json.joint_criterion.measured_joint_rate_slc.of_cells"
     },
     {
       "literal": "0.658",
       "lines": [
-        404
+        412
       ],
       "example_key": "manuscript_number_audit.json.rows[60].printed:str"
     },
     {
       "literal": "0.464",
       "lines": [
-        404
+        412
       ],
       "example_key": "manuscript_number_audit.json.rows[61].printed:str"
     },
     {
       "literal": "0.786",
       "lines": [
-        404
+        412
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.80 m[9]"
     },
     {
       "literal": "0.174",
       "lines": [
-        404
+        412
       ],
       "example_key": "landing_sites.json.sites[4].score_decomposition.access.contribution"
     },
     {
       "literal": "0.09",
       "lines": [
-        405
+        413
       ],
       "example_key": "composite_contrast.json.layers.cpr_heatmap.correlation[3]"
     },
     {
       "literal": "0.64",
       "lines": [
-        405
+        413
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[9]"
     },
     {
       "literal": "88.3",
       "lines": [
-        410
+        418
       ],
       "example_key": "detection_statistics.json.sampling_statistics.power_at_operating_point.rows[4].power_percent"
     },
     {
       "literal": "0.946",
       "lines": [
-        411
+        419
       ],
       "example_key": "bootstrap_enl.json.propagation:str"
     },
     {
       "literal": "1.7",
       "lines": [
-        411
+        419
       ],
       "example_key": "bootstrap_enl.json.LV.floor_point"
     },
     {
       "literal": "0.04",
       "lines": [
-        413
+        421
       ],
       "example_key": "antialias_sigma.json.reason:str"
     },
     {
       "literal": "0.21",
       "lines": [
-        416
+        424
       ],
       "example_key": "antialias_sigma.json.scan.scan 0.30.alias_excess"
     },
     {
       "literal": "4.73",
       "lines": [
-        416
+        424
       ],
       "example_key": "enl_benchmark.json.slc_spatial_arm.estimators.log_cumulant_LH.median_ci_block_95[1]"
     },
     {
       "literal": "29.9",
       "lines": [
-        418
+        426
       ],
       "example_key": "cpr_significance.json.joint_criterion.measured_joint_rate_slc.conditional_percent"
     },
     {
       "literal": "0.45",
       "lines": [
-        419,
-        951,
-        1022
+        427,
+        941,
+        1011
       ],
       "example_key": "cpr_significance.json.joint_criterion.measured_joint_rate_slc.unconditional_percent"
     },
     {
       "literal": "0.77",
       "lines": [
-        420
+        428
       ],
       "example_key": "cpr_dispersion.json.theory.5.0"
     },
     {
       "literal": "1.30",
       "lines": [
-        420
+        428
       ],
       "example_key": "cpr_significance.json.joint_criterion.maximising_point_requested.true_cpr"
     },
     {
       "literal": "5.30",
       "lines": [
-        445,
-        459,
-        658
+        452,
+        466,
+        655
       ],
       "example_key": "enl.json.patch_sizes.16.LH.on_DN_squared.mode"
     },
     {
       "literal": "6.46",
       "lines": [
-        445
+        452
       ],
       "example_key": "enl.json.patch_sizes.16.LV.on_DN_squared.mode"
     },
     {
       "literal": "8\\,337",
       "lines": [
-        451,
-        642
+        458,
+        639
       ],
       "example_key": "bootstrap_enl.json.LH.n_patches"
     },
     {
       "literal": "4.03",
       "lines": [
-        452,
-        651
+        459,
+        648
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_simple[0]"
     },
     {
       "literal": "6.19",
       "lines": [
-        452,
-        651
+        459,
+        648
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_block[1]"
     },
     {
       "literal": "4.38",
       "lines": [
-        452
+        459
       ],
       "example_key": "bootstrap_enl.json.LV.enl_raw_ci_simple[0]"
     },
     {
       "literal": "7.29",
       "lines": [
-        452
+        459
       ],
       "example_key": "antialias_sigma.json.rms_vs_ideal_m.none (control)"
     },
     {
       "literal": "10.7",
       "lines": [
-        453,
-        652
+        460,
+        649
       ],
       "example_key": "bootstrap_enl.json.LH.enl_box_ci_simple[0]"
     },
     {
       "literal": "22.5",
       "lines": [
-        453,
-        652
+        460,
+        649
       ],
       "example_key": "bootstrap_enl.json.LH.enl_box_ci_block[1]"
     },
     {
       "literal": "12.1",
       "lines": [
-        453
+        460
       ],
       "example_key": "bootstrap_enl.json.LV.enl_box_ci_block[0]"
     },
     {
       "literal": "24.8",
       "lines": [
-        453
+        460
       ],
       "example_key": "bootstrap_enl.json.LV.enl_box_ci_simple[1]"
     },
     {
-      "literal": "0.69",
+      "literal": "0.68",
       "lines": [
-        457
+        464
       ],
-      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[9]"
+      "example_key": "cpr_significance.json.effective_samples.rho_lag2_axis0"
     },
     {
       "literal": "1.86",
       "lines": [
-        458,
-        660
+        465,
+        657
       ],
       "example_key": "cpr_significance.json.monte_carlo[3].stokes_cpr.p95"
     },
     {
       "literal": "5.0",
       "lines": [
-        459,
-        469,
-        537
+        466,
+        476,
+        538
       ],
       "example_key": "cpr_significance.json.monte_carlo[0].n_looks"
     },
     {
       "literal": "2.64",
       "lines": [
-        460,
-        657,
-        657
+        467,
+        654,
+        654
       ],
       "example_key": "enl.json.patch_sizes.32.LH.on_DN_squared.mode"
     },
     {
       "literal": "0.84",
       "lines": [
-        465,
-        466
+        472,
+        473
       ],
       "example_key": "composite_contrast.json.layers.illumination.correlation[4]"
     },
     {
       "literal": "0.58",
       "lines": [
-        465,
-        466
+        472,
+        473
       ],
       "example_key": "enl.json.lag_correlation.LH.range_samples[0]"
     },
     {
       "literal": "0.71",
       "lines": [
-        465
+        472
       ],
       "example_key": "cpr_significance.json.monte_carlo[1].stokes_cpr.mean"
     },
     {
       "literal": "0.34",
       "lines": [
-        465
+        472
       ],
       "example_key": "composite_contrast.json.layers.hazard_map.correlation[1]"
     },
     {
       "literal": "6.61",
       "lines": [
-        466
+        473
       ],
       "example_key": "manuscript_number_audit.json.rows[101].printed:str"
     },
     {
       "literal": "6.01",
       "lines": [
-        467
+        474
       ],
       "example_key": "cpr_significance.json.monte_carlo_run.rows"
     },
     {
       "literal": "6.00",
       "lines": [
-        467
+        474
       ],
       "example_key": "cpr_significance.json.monte_carlo_run.rows"
     },
     {
       "literal": "3.3",
       "lines": [
-        471
+        478
       ],
       "example_key": "cpr_significance.json.joint_criterion.scan[5].joint_percent"
     },
     {
       "literal": "8.0",
       "lines": [
-        471
+        478
       ],
       "example_key": "antialias_sigma.json.chosen_index"
     },
     {
       "literal": "1071.2",
       "lines": [
-        486
+        488
       ],
       "example_key": "data_provenance.json.checks[5].detail:str"
     },
     {
       "literal": "1.04",
       "lines": [
-        488,
-        834
+        491,
+        828
       ],
       "example_key": "manuscript_number_audit.json.rows[107].printed:str"
     },
     {
       "literal": "1.12",
       "lines": [
-        488,
-        707,
-        832
+        491,
+        704,
+        826
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[6]"
     },
     {
       "literal": "1071.34",
       "lines": [
-        491
+        493
       ],
       "example_key": "data_provenance.json.checks[5].detail:str"
     },
     {
       "literal": "6.77",
       "lines": [
-        495,
-        513,
-        522,
-        629
+        497,
+        514,
+        523,
+        626
       ],
       "example_key": "bootstrap_enl.json.LV.enl_raw_ci_simple[1]"
     },
     {
       "literal": "7.34",
       "lines": [
-        498,
-        513,
-        522
+        500,
+        514,
+        523
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.16.LH.on_DN_squared.mode"
     },
     {
       "literal": "0.1",
       "lines": [
-        500,
-        879
+        502
       ],
       "example_key": "antialias_sigma.json.sigmas[1]"
     },
     {
       "literal": "7.38",
       "lines": [
-        500,
-        725
+        502,
+        722
       ],
       "example_key": "cpr_significance.json.f2_peak_cpr.5.raw"
     },
     {
       "literal": "4.07",
       "lines": [
-        500
+        502
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.32.LV.on_DN_squared.p95"
     },
     {
       "literal": "4.52",
       "lines": [
-        522
+        523
       ],
       "example_key": "capture.before.json.views[1].zoom"
     },
     {
       "literal": "9.95",
       "lines": [
-        523,
-        531
+        524,
+        532
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.32.LH.on_DN.mode"
     },
     {
       "literal": "0.95",
       "lines": [
-        526
+        527
       ],
       "example_key": "bootstrap_enl.json.propagation:str"
     },
     {
       "literal": "2.79",
       "lines": [
-        526
+        527
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.32.LV.on_DN.p5"
     },
     {
       "literal": "4.47",
       "lines": [
-        528
+        529
       ],
       "example_key": "enl.json.patch_sizes.16.LH.on_DN_squared.mean"
     },
     {
       "literal": "0.43",
       "lines": [
-        528
+        529
       ],
       "example_key": "cpr_dispersion.json.correlation_correction.sd_relative_sampling_error"
     },
     {
       "literal": "0.57",
       "lines": [
-        529
+        530
       ],
       "example_key": "composite_contrast.json.layers.dem_elevation.retention[4]"
     },
     {
       "literal": "6.09",
       "lines": [
-        532
+        533
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[6].p_exceed_true_cpr_0p7_percent"
     },
     {
       "literal": "4.83",
       "lines": [
-        533
+        534
       ],
       "example_key": "enl_benchmark.json.slc_spatial_arm.estimators.moment_LV.mode_ci_block_95[0]"
     },
     {
       "literal": "4.64",
       "lines": [
-        533
+        534
       ],
       "example_key": "enl_S_20200808.json.patch_sizes.32.LH.on_DN_squared.mode"
     },
     {
       "literal": "4.5",
       "lines": [
-        536
+        537
       ],
       "example_key": "enl.json.patch_sizes.16.LH.on_DN_squared.mean"
     },
     {
       "literal": "2.905",
       "lines": [
-        549
+        550
       ],
       "example_key": "enl_predictions.json.predictions[2].oversampling"
     },
     {
       "literal": "13.42",
       "lines": [
-        549
+        550
       ],
-      "example_key": "degeneracy_replication.json.generated_utc:str"
+      "example_key": "enl_generality.json.measurements[4].predicted_ceiling"
     },
     {
       "literal": "14.04",
       "lines": [
-        551
+        552
       ],
       "example_key": "correlated_ratio.json.n_looks"
     },
     {
       "literal": "2.28",
       "lines": [
-        551
+        552
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.16.LH.on_DN_squared.mode"
     },
     {
       "literal": "2.21",
       "lines": [
-        551
+        552
       ],
       "example_key": "composite_contrast.json.layers.cpr_heatmap.retention[1]"
     },
     {
       "literal": "0.17",
       "lines": [
-        552,
-        742
+        553,
+        739
       ],
       "example_key": "cpr_dispersion.json.external_check.cpr_sd"
     },
     {
       "literal": "0.86",
       "lines": [
-        552,
-        766
+        553,
+        762
       ],
       "example_key": "cpr_dispersion.json.per_window[2].cpr_rel_sd"
     },
@@ -1306,7 +1303,7 @@
       "example_key": "enl.json.boxcar_gain.LH.gain"
     },
     {
-      "literal": "3.85",
+      "literal": "3.84",
       "lines": [
         569
       ],
@@ -1316,16 +1313,16 @@
       "literal": "13.72",
       "lines": [
         570,
-        611,
-        631,
-        652,
-        659,
-        671,
+        608,
+        628,
+        649,
+        656,
+        668,
+        682,
         685,
-        688,
-        709,
-        728,
-        1028
+        706,
+        725,
+        1016
       ],
       "example_key": "background_cpr_sweep.json.N"
     },
@@ -1333,1068 +1330,1066 @@
       "literal": "19.77",
       "lines": [
         570,
-        633,
-        688
+        630,
+        685
       ],
       "example_key": "bootstrap_enl.json.LV.enl_box"
     },
     {
       "literal": "12.7",
       "lines": [
-        589
+        587
       ],
       "example_key": "manuscript_number_audit.json.rows[141].printed:str"
     },
     {
-      "literal": "18.2",
+      "literal": "18.1",
       "lines": [
-        589
+        587
       ],
-      "example_key": "kclutter_within_cell.json.rows[3].exceed_percent"
+      "example_key": "text.after.json.strings[81]:str"
     },
     {
       "literal": "1.44",
       "lines": [
-        606,
-        917
+        603,
+        908
       ],
       "example_key": "cpr_dispersion.json.measured_over_theory"
     },
     {
       "literal": "1.66",
       "lines": [
-        607
+        604
       ],
       "example_key": "manuscript_number_audit.json.rows[144].printed:str"
     },
     {
       "literal": "7.9",
       "lines": [
-        611
+        608
       ],
       "example_key": "detection_statistics.json.per_pixel_significance.caveat:str"
     },
     {
       "literal": "0.5",
       "lines": [
-        618,
-        619,
-        626,
-        671,
-        709,
-        759
+        615,
+        616,
+        623,
+        668,
+        706,
+        755
       ],
       "example_key": "antialias_sigma.json.sigmas[9]"
     },
     {
       "literal": "5.00",
       "lines": [
-        628
+        625
       ],
       "example_key": "cpr_significance.json.monte_carlo[0].n_looks"
     },
     {
       "literal": "0.775",
       "lines": [
-        628
+        625
       ],
       "example_key": "cpr_dispersion.json.theory.5.0"
     },
     {
       "literal": "1.250",
       "lines": [
-        628
+        625
       ],
       "example_key": "antialias_sigma.json.downsample_factor"
     },
     {
       "literal": "2.978",
       "lines": [
-        628
+        625
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[0].crit_95"
     },
     {
       "literal": "29.16",
       "lines": [
-        628
+        625
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[0].p_exceed_true_cpr_0p7_percent"
     },
     {
       "literal": "14.48",
       "lines": [
-        628
+        625
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[0].p_exceed_true_cpr_0p5_percent"
     },
     {
       "literal": "0.623",
       "lines": [
-        629
+        626
       ],
       "example_key": "antialias_sigma.json.sigmas[2]"
     },
     {
       "literal": "1.173",
       "lines": [
-        629
+        626
       ],
       "example_key": "composite_contrast.json.layers.dop_heatmap.retention[0]"
     },
     {
       "literal": "2.525",
       "lines": [
-        629
+        626
       ],
       "example_key": "cpr_significance.json.f2_peak_cpr.5.effective"
     },
     {
       "literal": "26.03",
       "lines": [
-        629
+        626
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.f/2 = 0.625.p99"
     },
     {
       "literal": "10.75",
       "lines": [
-        629
+        626
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[1].p_exceed_true_cpr_0p5_percent"
     },
     {
       "literal": "0.529",
       "lines": [
-        630
+        627
       ],
       "example_key": "composite_contrast.json.layers.dem_elevation.retention[2]"
     },
     {
       "literal": "1.129",
       "lines": [
-        630
+        627
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[0]"
     },
     {
-      "literal": "2.243",
+      "literal": "2.244",
       "lines": [
-        630
+        627
       ],
-      "example_key": "cpr_significance.json.f2_peak_cpr.6.effective"
+      "example_key": "detection_statistics.json.sampling_statistics.rows[2].crit_95"
     },
     {
       "literal": "23.16",
       "lines": [
-        630,
-        877
+        627
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[2].p_exceed_true_cpr_0p7_percent"
     },
     {
-      "literal": "7.84",
+      "literal": "7.85",
       "lines": [
-        630
+        627
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[2].p_exceed_true_cpr_0p5_percent"
     },
     {
-      "literal": "0.406",
+      "literal": "0.405",
       "lines": [
-        631
+        628
       ],
       "example_key": "cpr_dispersion.json.theory.13.72"
     },
     {
       "literal": "17.79",
       "lines": [
-        632
+        629
       ],
       "example_key": "background_cpr_sweep.json.rows[4].fp_percent"
     },
     {
       "literal": "3.74",
       "lines": [
-        632
+        629
       ],
       "example_key": "background_cpr_sweep.json.rows[2].fp_percent"
     },
     {
       "literal": "0.331",
       "lines": [
-        633
+        630
       ],
       "example_key": "cpr_dispersion.json.theory.19.77"
     },
     {
       "literal": "1.053",
       "lines": [
-        633
+        630
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[6]"
     },
     {
       "literal": "1.698",
       "lines": [
-        633
+        630
       ],
       "example_key": "bootstrap_enl.json.LV.floor_point"
     },
     {
       "literal": "13.32",
       "lines": [
-        633
+        630
       ],
       "example_key": "bootstrap_enl.json.LV.fp_point"
     },
     {
       "literal": "1.60",
       "lines": [
-        633
+        630
       ],
       "example_key": "bootstrap_enl.json.LV.floor_ci_simple[0]"
     },
     {
       "literal": "21.00",
       "lines": [
-        634
+        631
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[5].N"
     },
     {
       "literal": "0.321",
       "lines": [
-        634
+        631
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[5].rel_sd"
     },
     {
       "literal": "1.050",
       "lines": [
-        634
+        631
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[6]"
     },
     {
       "literal": "1.671",
       "lines": [
-        634
+        631
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[5].crit_95"
     },
     {
       "literal": "12.59",
       "lines": [
-        634
+        631
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[5].p_exceed_true_cpr_0p7_percent"
     },
     {
       "literal": "1.35",
       "lines": [
-        634
+        631
       ],
       "example_key": "composite_contrast.json.layers.hazard_map.retention[5]"
     },
     {
       "literal": "38.00",
       "lines": [
-        635
+        632
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[6].N"
     },
     {
       "literal": "0.234",
       "lines": [
-        635
+        632
       ],
       "example_key": "antialias_sigma.json.reason:str"
     },
     {
       "literal": "1.027",
       "lines": [
-        635
+        632
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[8]"
     },
     {
       "literal": "1.462",
       "lines": [
-        635
+        632
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[6].crit_95"
     },
     {
       "literal": "6.11",
       "lines": [
-        635
+        632
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[6].p_exceed_true_cpr_0p7_percent"
     },
     {
       "literal": "0.14",
       "lines": [
-        635
+        632
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[6].p_exceed_true_cpr_0p5_percent"
     },
     {
       "literal": "1.64",
       "lines": [
-        653
+        650
       ],
       "example_key": "bootstrap_enl.json.LH.floor_ci_block[0]"
     },
     {
       "literal": "2.07",
       "lines": [
-        653
+        650
       ],
       "example_key": "bootstrap_enl.json.LH.floor_ci_simple[1]"
     },
     {
       "literal": "17.8",
       "lines": [
-        654,
-        659,
-        781
+        651,
+        656
       ],
       "example_key": "background_cpr_sweep.json.rows[4].fp_percent"
     },
     {
       "literal": "11.8",
       "lines": [
-        654,
-        694
+        651,
+        691
       ],
       "example_key": "bootstrap_enl.json.LH.fp_ci_block[0]"
     },
     {
       "literal": "20.8",
       "lines": [
-        654,
-        694
+        651,
+        691
       ],
       "example_key": "bootstrap_enl.json.LH.fp_ci_simple[1]"
     },
     {
-      "literal": "6.2",
+      "literal": "6.21",
       "lines": [
-        657
+        654
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_block[1]"
     },
     {
       "literal": "26.9",
       "lines": [
-        657
+        654
       ],
       "example_key": "enl.json.patch_sizes.16.LV.on_DN.p75"
     },
     {
-      "literal": "12.5",
+      "literal": "12.47",
       "lines": [
-        658
+        655
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.32.LV.on_DN.mean"
     },
     {
       "literal": "1.96",
       "lines": [
-        658
+        655
       ],
       "example_key": "manuscript_number_audit.json.rows[184].printed:str"
     },
     {
       "literal": "19.0",
       "lines": [
-        658
+        655
       ],
       "example_key": "layout.before.json.type.distinct_sizes[17].elements"
     },
     {
       "literal": "6.22",
       "lines": [
-        660
+        657
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_block[1]"
     },
     {
-      "literal": "14.6",
+      "literal": "14.64",
       "lines": [
-        660
+        657
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.32.LH.on_DN.p75"
     },
     {
       "literal": "17.0",
       "lines": [
-        660
+        657
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.32.LV.on_DN.p75"
     },
     {
       "literal": "16.4",
       "lines": [
-        699,
-        702
+        696,
+        699
       ],
       "example_key": "detection_statistics.json.sampling_statistics.power_at_operating_point.rows[1].power_percent"
     },
     {
       "literal": "0.4",
       "lines": [
-        706
+        703
       ],
       "example_key": "antialias_sigma.json.sigmas[8]"
     },
     {
       "literal": "0.6",
       "lines": [
-        706
+        703
       ],
       "example_key": "antialias_sigma.json.sigmas[2]"
     },
     {
       "literal": "0.83",
       "lines": [
-        707,
-        831
+        704,
+        825
       ],
       "example_key": "text.after.json.strings[32]:str"
     },
     {
       "literal": "3.7",
       "lines": [
-        709
+        706
       ],
       "example_key": "background_cpr_sweep.json.rows[2].fp_percent"
     },
     {
       "literal": "0.8",
       "lines": [
-        710,
-        759
+        707,
+        755
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.120 m[2]"
     },
     {
       "literal": "0.9",
       "lines": [
-        710,
-        759
+        707,
+        755
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.200 m[2]"
     },
     {
       "literal": "61.42",
       "lines": [
-        718
+        715
       ],
       "example_key": "cpr_dispersion.json.correlation_correction.correlation_area_px"
     },
     {
       "literal": "2.52",
       "lines": [
-        724
+        721
       ],
       "example_key": "cpr_significance.json.f2_peak_cpr.5.effective"
     },
     {
       "literal": "260",
       "lines": [
-        726,
-        726
+        723,
+        723
       ],
       "example_key": "f2_footprint.json.measured_over_covered_part.pixels"
     },
     {
       "literal": "1.91",
       "lines": [
-        728
+        725
       ],
       "example_key": "correlated_ratio.json.rows[3].fp_percent"
     },
     {
       "literal": "2.73",
       "lines": [
-        729
+        726
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.32.LH.on_DN.p5"
     },
     {
       "literal": "46.5",
       "lines": [
-        729
+        726
       ],
       "example_key": "f2_maximum.json.results.N13p72.exceedance_count_over_amplitude_pixels.mean"
     },
     {
       "literal": "0.2",
       "lines": [
-        729,
-        879
+        726
       ],
       "example_key": "antialias_sigma.json.sigmas[4]"
     },
     {
       "literal": "0.159",
       "lines": [
-        742
+        739
       ],
       "example_key": "cpr_dispersion.json.external_check.cpr_rel_sd"
     },
     {
       "literal": "0.55",
       "lines": [
-        743
+        740
       ],
       "example_key": "composite_contrast.json.layers.dem_elevation.retention[1]"
     },
     {
       "literal": "9.6",
       "lines": [
-        743
+        740
       ],
       "example_key": "cpr_dispersion.json.external_check.slc_spacing_m.slant_range"
     },
     {
       "literal": "54.88",
       "lines": [
-        745
+        741
       ],
       "example_key": "cpr_dispersion.json.external_check.max_samples_per_output_pixel"
     },
     {
       "literal": "0.194",
       "lines": [
-        746
+        743
       ],
       "example_key": "cpr_dispersion.json.external_check.constraint.h=100000.independent_floor"
     },
     {
       "literal": "0.31",
       "lines": [
-        747
+        744
       ],
       "example_key": "background_cpr_sweep.json.all_values_are_upper_bounds:str"
     },
     {
       "literal": "0.29",
       "lines": [
-        747
+        744
       ],
       "example_key": "composite_contrast.json.layers.cpr_heatmap.correlation[0]"
     },
     {
       "literal": "0.35",
       "lines": [
-        747
+        744
       ],
       "example_key": "antialias_sigma.json.sigmas[7]"
     },
     {
       "literal": "17.6",
       "lines": [
-        758
+        754
       ],
       "example_key": "correlated_ratio.json.fp_percent_F_independent"
     },
     {
       "literal": "14.1",
       "lines": [
-        758
+        754
       ],
       "example_key": "correlated_ratio.json.rows[1].fp_percent"
     },
     {
       "literal": "6.3",
       "lines": [
-        758
+        754
       ],
       "example_key": "correlated_ratio.json.rows[2].fp_percent"
     },
     {
       "literal": "1.9",
       "lines": [
-        759
+        755
       ],
       "example_key": "bootstrap_enl.json.LH.floor_point"
     },
     {
       "literal": "109",
       "lines": [
-        764
+        760
       ],
       "example_key": "manuscript_number_audit.json.rows[226].artifact_value"
     },
     {
       "literal": "0.81",
       "lines": [
-        766
+        762
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.120 m[2]"
     },
     {
       "literal": "0.02",
       "lines": [
-        777
+        773
       ],
       "example_key": "antialias_sigma.json.scan.scan 0.35.passband_loss"
     },
     {
       "literal": "18.8",
       "lines": [
-        780
+        776
       ],
       "example_key": "kclutter_within_cell.json.rows[1].exceed_percent"
     },
     {
       "literal": "19.7",
       "lines": [
-        781
+        777
       ],
       "example_key": "bootstrap_enl.json.LV.enl_box"
     },
     {
-      "literal": "11.2",
-      "lines": [
-        782
-      ],
-      "example_key": "enl_L_20200305.json.boxcar_gain.LV.enl_boxcar5"
-    },
-    {
-      "literal": "5.1",
-      "lines": [
-        782
-      ],
-      "example_key": "bootstrap_enl.json.LV.enl_raw"
-    },
-    {
-      "literal": "1.8",
-      "lines": [
-        791
-      ],
-      "example_key": "cpr_significance.json.f2_peak_cpr.9.effective"
-    },
-    {
       "literal": "17.5",
       "lines": [
-        791
+        777,
+        786
       ],
       "example_key": "correlated_ratio.json.fp_percent_F_independent"
     },
     {
+      "literal": "11.2",
+      "lines": [
+        778
+      ],
+      "example_key": "enl_L_20200305.json.boxcar_gain.LV.enl_boxcar5"
+    },
+    {
+      "literal": "9.3",
+      "lines": [
+        778
+      ],
+      "example_key": "enl.json.patch_sizes.32.LV.on_DN.p25"
+    },
+    {
+      "literal": "1.8",
+      "lines": [
+        786
+      ],
+      "example_key": "cpr_significance.json.f2_peak_cpr.9.effective"
+    },
+    {
       "literal": "0.97",
       "lines": [
-        827
+        821
       ],
       "example_key": "background_cpr_sweep.json.rows[1].fp_percent"
     },
     {
       "literal": "1.75",
       "lines": [
-        827
+        821
       ],
       "example_key": "enl.json.skewness.measured.LH.median_skew_of_DN_squared"
     },
     {
       "literal": "6.12",
       "lines": [
-        827
+        821
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_simple[1]"
     },
     {
       "literal": "9.11",
       "lines": [
-        827
+        821
       ],
       "example_key": "enl.json.patch_sizes.16.LH.on_DN_squared.p95"
     },
     {
       "literal": "9.65",
       "lines": [
-        827
+        821
       ],
       "example_key": "manuscript_number_audit.json.rows[246].printed:str"
     },
     {
       "literal": "9.94",
       "lines": [
-        827
+        821
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.32.LH.on_DN.mode"
     },
     {
       "literal": "1.83",
       "lines": [
-        828
+        822
       ],
       "example_key": "mechanism_controls.json.per_window[7].width_rg_subband"
     },
     {
       "literal": "7.66",
       "lines": [
-        828
+        822
       ],
       "example_key": "enl_L_20200305.json.boxcar_gain.LH.gain"
     },
     {
       "literal": "8.51",
       "lines": [
-        828
+        822
       ],
       "example_key": "number_crosscheck.json.matched_rows[265].literal:str"
     },
     {
       "literal": "9.14",
       "lines": [
-        828
+        822
       ],
       "example_key": "enl.json.patch_sizes.16.LH.on_DN_squared.p95"
     },
     {
       "literal": "8.84",
       "lines": [
-        828
+        822
       ],
       "example_key": "number_crosscheck.json.matched_rows[267].literal:str"
     },
     {
       "literal": "0.92",
       "lines": [
-        829
+        823
       ],
       "example_key": "text.after.json.strings[36]:str"
     },
     {
       "literal": "0.48",
       "lines": [
-        829
+        823
       ],
       "example_key": "enl.json.lag_correlation.LH.range_samples[1]"
     },
     {
       "literal": "1.82",
       "lines": [
-        829
+        823
       ],
       "example_key": "cpr_significance.json.joint_criterion.headline_at_cpr_0p7.joint_fp_percent"
     },
     {
       "literal": "7.06",
       "lines": [
-        829
+        823
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.16.LH.on_DN_squared.p75"
     },
     {
       "literal": "8.94",
       "lines": [
-        829
+        823
       ],
       "example_key": "number_crosscheck.json.matched_rows[272].literal:str"
     },
     {
       "literal": "9.20",
       "lines": [
-        829
+        823
       ],
       "example_key": "enl.json.patch_sizes.32.LH.on_DN.p25"
     },
     {
       "literal": "9.21",
       "lines": [
-        829
+        823
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.32.LH.on_DN.median"
     },
     {
       "literal": "0.99",
       "lines": [
-        830
+        824
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[9]"
     },
     {
       "literal": "1.77",
       "lines": [
-        830
+        824
       ],
       "example_key": "cpr_significance.json.f2_peak_cpr.9.effective"
     },
     {
       "literal": "6.51",
       "lines": [
-        830
+        824
       ],
       "example_key": "text.after.json.strings[127]:str"
     },
     {
       "literal": "9.42",
       "lines": [
-        830
+        824
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.16.LV.on_DN_squared.p95"
     },
     {
       "literal": "9.51",
       "lines": [
-        830
+        824
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.16.LH.on_DN_squared.p95"
     },
     {
       "literal": "9.61",
       "lines": [
-        830
+        824
       ],
       "example_key": "cpr_dispersion.json.external_check.slc_spacing_m.slant_range"
     },
     {
       "literal": "0.46",
       "lines": [
-        831,
-        945,
-        945
+        825,
+        935,
+        935
       ],
       "example_key": "composite_contrast.json.layers.dop_heatmap.correlation[0]"
     },
     {
       "literal": "2.19",
       "lines": [
-        831
+        825
       ],
       "example_key": "enl_benchmark.json.slc_spatial_arm.estimators.moment_LH.p25"
     },
     {
       "literal": "7.19",
       "lines": [
-        831
+        825
       ],
       "example_key": "enl_S_20200305.json.patch_sizes.16.LV.on_DN_squared.p75"
     },
     {
       "literal": "8.11",
       "lines": [
-        831
+        825
       ],
       "example_key": "f2_maximum.json.results.N5.correlated_max_over_amplitude_pixels.p95"
     },
     {
       "literal": "7.49",
       "lines": [
-        831,
-        854
+        825,
+        848
       ],
       "example_key": "enl_S_20200808.json.patch_sizes.32.LH.on_DN_squared.p95"
     },
     {
       "literal": "9.12",
       "lines": [
-        831,
-        854
+        825,
+        848
       ],
       "example_key": "enl.json.patch_sizes.16.LH.on_DN_squared.p95"
     },
     {
       "literal": "0.59",
       "lines": [
-        832
+        826
       ],
       "example_key": "composite_contrast.json.layers.dem_elevation.retention[0]"
     },
     {
       "literal": "1.88",
       "lines": [
-        832
+        826
       ],
       "example_key": "composite_contrast.json.layers.cpr_heatmap.retention[0]"
     },
     {
       "literal": "7.33",
       "lines": [
-        832
+        826
       ],
       "example_key": "detection_statistics.json.effective_looks.provenance:str"
     },
     {
       "literal": "8.80",
       "lines": [
-        832
+        826
       ],
       "example_key": "mechanism_controls.json.per_window[6].enl_subband"
     },
     {
       "literal": "8.85",
       "lines": [
-        832
+        826
       ],
       "example_key": "number_crosscheck.json.matched_rows[267].literal:str"
     },
     {
       "literal": "9.03",
       "lines": [
-        832
+        826
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
     },
     {
       "literal": "0.53",
       "lines": [
-        833
+        827
       ],
       "example_key": "composite_contrast.json.layers.dem_elevation.retention[2]"
     },
     {
       "literal": "1.85",
       "lines": [
-        833
+        827
       ],
       "example_key": "enl_S_20200808.json.patch_sizes.32.LH.on_DN_squared.p25"
     },
     {
       "literal": "7.00",
       "lines": [
-        833
+        827
       ],
       "example_key": "correlated_ratio.json.seed"
     },
     {
       "literal": "8.71",
       "lines": [
-        833
+        827
       ],
       "example_key": "detection_statistics.json.sampling_statistics.rows[2].N"
     },
     {
       "literal": "9.02",
       "lines": [
-        833
+        827
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
     },
     {
       "literal": "9.25",
       "lines": [
-        833
+        827
       ],
       "example_key": "enl.json.patch_sizes.32.LV.on_DN.p25"
     },
     {
       "literal": "0.56",
       "lines": [
-        834
+        828
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[2]"
     },
     {
       "literal": "1.93",
       "lines": [
-        834
+        828
       ],
       "example_key": "enl_L_20200305.json.patch_sizes.32.LH.on_DN_squared.mean"
     },
     {
       "literal": "7.95",
       "lines": [
-        834
+        828
       ],
       "example_key": "manuscript_number_audit.json.rows[105].artifact_value"
     },
     {
       "literal": "8.49",
       "lines": [
-        834
+        828
       ],
       "example_key": "number_crosscheck.json.matched_rows[265].literal:str"
     },
     {
       "literal": "8.59",
       "lines": [
-        834
+        828
       ],
       "example_key": "layout.before.json.type.distinct_sizes[16].px"
     },
     {
       "literal": "8.67",
       "lines": [
-        834
+        828
       ],
       "example_key": "number_crosscheck.json.matched_rows[296].literal:str"
     },
     {
       "literal": "9.08",
       "lines": [
-        836,
-        842
+        830,
+        836
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
     },
     {
       "literal": "3.8",
       "lines": [
-        850
+        844
       ],
       "example_key": "enl.json.boxcar_gain.LV.gain"
     },
     {
       "literal": "0.15",
       "lines": [
-        851,
-        922
+        845,
+        913
       ],
       "example_key": "antialias_sigma.json.sigmas[3]"
     },
     {
       "literal": "14.8",
       "lines": [
-        870
+        864
       ],
       "example_key": "enl.json.patch_sizes.32.LH.on_DN.mean"
     },
     {
       "literal": "150",
       "lines": [
-        872
+        866
       ],
-      "example_key": "manuscript_number_audit.json.rows[7].tex_lines[0]"
+      "example_key": "manuscript_number_audit.json.rows[40].tex_lines[13]"
     },
     {
       "literal": "6.7",
       "lines": [
-        873,
-        920
+        867,
+        911
       ],
       "example_key": "enl_S_20200808.json.patch_sizes.16.LH.implied_looks.if_DN_are_amplitude__from_DN_as_amplitude"
     },
     {
       "literal": "5.341\\times10^{-2}",
       "lines": [
-        887
+        878
       ],
       "example_key": "detection_statistics.json.per_pixel_significance.swath_max"
     },
     {
       "literal": "234.68",
       "lines": [
-        889
+        880
       ],
       "example_key": "detection_statistics.json.candidate_area.withdrawn_interval.what_stands_instead:str"
     },
     {
       "literal": "1\\,460",
       "lines": [
-        898
+        889
       ],
       "example_key": "manuscript_number_audit.json.rows[16].printed:str"
     },
     {
       "literal": "0.16",
       "lines": [
-        909
+        900
       ],
       "example_key": "composite_contrast.json.layers.hazard_map.correlation[2]"
     }

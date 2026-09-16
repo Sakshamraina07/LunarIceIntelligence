@@ -39,7 +39,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-DEFAULT_TEX = "Claude outputs/dfsar_detection_limits_submission.tex"
+DEFAULT_TEX = "Claude outputs/grsl/dfsar_detection_limits_submission.tex"
 OUT = BASE_DIR / "docs" / "table_recompute.json"
 
 for _s in (sys.stdout, sys.stderr):

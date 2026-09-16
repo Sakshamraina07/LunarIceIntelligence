@@ -51,7 +51,7 @@ AUDIT = [
      "search.pixels_evaluated", "II", "2258 x 6618, the full frame"),
     ("frame_km2", "9339.65", "frontend/public/analysis/faustini.json",
      "grid.frame_area_km2", "II", None),
-    ("foot_px", "5,324,544", "frontend/public/analysis/faustini.json",
+    ("foot_px", "5,324,545", "frontend/public/analysis/faustini.json",
      "masks.footprint.pixels", "II", "ISRO sri_ma > 0"),
     ("foot_km2", "3327.84", "frontend/public/analysis/faustini.json",
      "masks.footprint.area_km2", "II", None),
@@ -237,7 +237,7 @@ AUDIT = [
     ("mode_bias", "16", "docs/enl_benchmark.json",
      "synthetic.speckle_only_summary.relative_bias_percent_median", "IV",
      "the mode estimator's relative bias on correlated speckle"),
-    ("bias_n4", "0.69", "docs/enl_benchmark.json",
+    ("bias_n4", "0.68", "docs/enl_benchmark.json",
      "synthetic.speckle_only_summary.bias_at_lowest_N.bias", "IV", "at N = 4"),
     ("bias_n12", "1.86", "docs/enl_benchmark.json",
      "synthetic.speckle_only_summary.bias_at_highest_N.bias", "IV", "at N = 12"),
@@ -328,7 +328,8 @@ AUDIT = [
     ("eroded_px", "2,294,084", "docs/enl_estimator_spec.json",
      "masks.enl_measurement_mask.n_px", "IV", "amplitude mask eroded by 5x5"),
     ("gain_lh", "2.35", "docs/enl.json", "boxcar_gain.LH.gain", "IV", None),
-    ("gain_lv", "3.85", "docs/enl.json", "boxcar_gain.LV.gain", "IV", None),
+    ("gain_lv", "3.84", "docs/enl.json", "boxcar_gain.LV.gain", "IV",
+     "the manuscript says \"on the unrounded estimates\": 3.8449 -> 3.84"),
     ("enl5_lh", "13.72", "docs/detection_statistics.json",
      "effective_looks.screened_field.lh", "IV", None),
     ("enl5_lv", "19.77", "docs/detection_statistics.json",
@@ -339,7 +340,7 @@ AUDIT = [
     # =================================================================
     ("n_sc", "12.7", "docs/stokes_from_slc.json",
      "results.t3d_180.enl_sc.enl", "V", "same-sense circular ENL, physical sign"),
-    ("n_oc", "18.2", "docs/stokes_from_slc.json",
+    ("n_oc", "18.1", "docs/stokes_from_slc.json",
      "results.t3d_180.enl_oc.enl", "V", "opposite-sense"),
     ("floor38", "1.44", None, None, "V",
      "sqrt((2N-1)/(N-2)) at N = 38, ratio of relSD(R) to 1/sqrt(N); DERIVED"),
@@ -369,17 +370,19 @@ AUDIT = [
      "sampling_statistics.rows[2].rel_sd", "V", None),
     ("t2_n875_bias", "1.129", "docs/detection_statistics.json",
      "sampling_statistics.rows[2].bias", "V", None),
-    ("t2_n875_crit", "2.243", "docs/detection_statistics.json",
-     "sampling_statistics.rows[2].at_measured_N.crit_95", "V",
-     "at the unrounded median 8.7544; the printed N gives 2.244"),
+    ("t2_n875_crit", "2.244", "docs/detection_statistics.json",
+     "sampling_statistics.rows[2].crit_95", "V",
+     "at the N the row prints (8.75); at_measured_N gives 2.243 from the "
+     "unrounded median 8.7544, and both are in the artifact"),
     ("t2_n875_p07", "23.16", "docs/detection_statistics.json",
      "sampling_statistics.rows[2].p_exceed_true_cpr_0p7_percent", "V", None),
-    ("t2_n875_p05", "7.84", "docs/detection_statistics.json",
-     "sampling_statistics.rows[2].at_measured_N.p_exceed_true_cpr_0p5_percent", "V",
-     "at the unrounded median; the printed N gives 7.85"),
-    ("t2_n1372_sd", "0.406", "docs/detection_statistics.json",
-     "sampling_statistics.rows[3].at_measured_N.rel_sd", "V",
-     "at the unrounded ENL 13.7166; the printed N gives 0.405"),
+    ("t2_n875_p05", "7.85", "docs/detection_statistics.json",
+     "sampling_statistics.rows[2].p_exceed_true_cpr_0p5_percent", "V",
+     "at the N the row prints; at_measured_N gives 7.84"),
+    ("t2_n1372_sd", "0.405", "docs/detection_statistics.json",
+     "sampling_statistics.rows[3].rel_sd", "V",
+     "at the N the row prints (13.72); at_measured_N gives 0.406 from the "
+     "unrounded ENL 13.7166"),
     ("t2_n1372_bias", "1.079", "docs/detection_statistics.json",
      "sampling_statistics.rows[3].bias", "V", None),
     ("t2_n1372_crit", "1.895", "docs/detection_statistics.json",
@@ -419,12 +422,12 @@ AUDIT = [
     ("t2_n38_p05", "0.14", "docs/detection_statistics.json",
      "sampling_statistics.rows[6].p_exceed_true_cpr_0p5_percent", "V", None),
     # Table III, the sensitivity rows
-    ("t3_264_n", "6.2", "docs/table5_sensitivity.json", "rows[0].N", "V", None),
+    ("t3_264_n", "6.21", "docs/table5_sensitivity.json", "rows[0].N", "V", None),
     ("t3_264_crit", "2.64", "docs/table5_sensitivity.json",
      "rows[0].floor_95", "V", None),
     ("t3_264_p07", "26.9", "docs/table5_sensitivity.json",
      "rows[0].fp_percent_at_cpr_0p7", "V", None),
-    ("t3_530_n", "12.5", "docs/table5_sensitivity.json", "rows[1].N", "V", None),
+    ("t3_530_n", "12.47", "docs/table5_sensitivity.json", "rows[1].N", "V", None),
     ("t3_530_crit", "1.96", "docs/table5_sensitivity.json",
      "rows[1].floor_95", "V", None),
     ("t3_530_p07", "19.0", "docs/table5_sensitivity.json",
@@ -433,7 +436,7 @@ AUDIT = [
      "rows[2].fp_percent_at_cpr_0p7", "V", None),
     ("t3_622_raw", "6.22", "docs/table5_sensitivity.json",
      "rows[3].raw_enl", "V", "amplitude-domain ENL"),
-    ("t3_622_n", "14.6", "docs/table5_sensitivity.json", "rows[3].N", "V", None),
+    ("t3_622_n", "14.64", "docs/table5_sensitivity.json", "rows[3].N", "V", None),
     ("t3_622_crit", "1.86", "docs/table5_sensitivity.json",
      "rows[3].floor_95", "V", None),
     ("t3_622_p07", "17.0", "docs/table5_sensitivity.json",
@@ -521,12 +524,17 @@ AUDIT = [
      "rows[1].exceed_percent", "V", "within-cell texture, order 8"),
     ("wc_nu4", "19.7", "docs/kclutter_within_cell.json",
      "rows[4].exceed_percent", "V", "order 4"),
-    ("wc_base", "17.8", "docs/kclutter_within_cell.json",
-     "rows[0].exceed_percent", "V", "no texture, same draw"),
+    ("wc_base", "17.5", "docs/kclutter_within_cell.json",
+     "rows[0].exceed_percent", "V",
+     "no texture at N = 14, the same draw the textured rows use; the 17.8 of "
+     "Table II is N = 13.72 and is a different row"),
     ("wc_enl8", "11.2", "docs/kclutter_within_cell.json",
      "rows[1].enl_of_textured_intensity", "V", None),
-    ("wc_enl4", "5.1", "docs/kclutter_within_cell.json",
-     "rows[6].enl_of_textured_intensity", "V", "order 4, lag-one 0.8"),
+    ("wc_enl4", "9.3", "docs/kclutter_within_cell.json",
+     "rows[4].enl_of_textured_intensity", "V",
+     "order 4, INDEPENDENT per look -- the row whose exceedance is the 19.7 "
+     "quoted beside it. rows[6] (lag-one 0.8) gives 5.05 and belongs to a "
+     "different correlation setting"),
     ("joint_sim", "1.8", "docs/joint_criterion.json",
      "headline.joint_fp_percent", "V", "simulated on the Stokes vector, N = 14"),
     ("joint_marginal", "17.5", "docs/joint_criterion.json",
@@ -570,8 +578,11 @@ AUDIT = [
     ("pm_spread", "3.8", "docs/published_moments.json",
      "agreement_sd_vs_skew_percent_from_printed_medians", "VI",
      "from the printed medians; from the unrounded ones it is 3.7"),
-    ("pm_exceed", "23.16", "docs/published_moments.json",
-     "consequence_at_median_dispersion_N.fp_at_true_cpr_0p7", "VI", None),
+    # pm_exceed was here. Section VI no longer prints "at N = 8.75 the model
+    # gives an exceedance of 23.16 %"; the only remaining occurrence of the
+    # literal is Table II's 8.75 row, audited as t2_n875_p07 against
+    # detection_statistics. published_moments.json still computes the same
+    # figure under consequence_at_median_dispersion_N, unprinted.
     ("minirf_zoom_looks", "8", "docs/published_moments.json",
      "mode_table.zoom.nominal_looks", "VI", "presence check only; small integer"),
     ("minirf_zoom_cdr", "14.8", "docs/published_moments.json",
@@ -617,16 +628,17 @@ DERIVED = [
     ("crossing_rel", 5.99e-6,
      lambda: abs(0.004261057358235121 - 0.004261082862785302)
              / 0.004261082862785302, 5e-8),
-    # "one cell in 66" is the FLOOR of 1 / 0.015028, which is 66.54: the paper
-    # rounds the rate down to a whole number of cells, and the exact figure is
-    # in the artifact.
-    ("one_in_66", 66.0, lambda: math.floor(1.0 / 0.015028399308313931), 0.5),
+    # "one cell in 66" was deleted from III-E as redundant with the 1.50 %;
+    # the reciprocal is still in the artifact
+    # (stokes_from_slc.json::...dop_below_threshold.one_cell_in = 66.54).
     # "a calibration field alone can move a pixel's DOP by 1.07x the width of
     # the 0.13 criterion"
     ("dop_ratio", 1.07, lambda: 0.1392841339111328 / 0.13, 5e-3),
-    # the tail is narrower than F by 14-20 %
+    # the tail is narrower than F by 14 % and 19 % at those percentiles.
+    # 19, not 20: 100 * (1 - 0.80520) = 19.48. The manuscript now states the
+    # two percentiles separately instead of rounding them into a range.
     ("tail_gap_lo", 14.0, lambda: 100 * (1 - 0.859035173822312), 0.5),
-    ("tail_gap_hi", 20.0, lambda: 100 * (1 - 0.8052039479277788), 0.5),
+    ("tail_gap_hi", 19.0, lambda: 100 * (1 - 0.8052039479277788), 0.5),
     # the ratio bias at the two look counts
     ("bias_n5_pct", 25.0, lambda: 100 * (5 / 4 - 1), 0.05),
     ("bias_n1372_pct", 7.9, lambda: 100 * (13.72 / 12.72 - 1), 0.05),

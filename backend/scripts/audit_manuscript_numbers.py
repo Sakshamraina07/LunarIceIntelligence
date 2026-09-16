@@ -41,7 +41,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[2]
 #: The comment-stripped build is what a reviewer receives, so it is what is
 #: audited; `..._full.tex` is the master and is checked with --tex.
-DEFAULT_TEX = "Claude outputs/dfsar_detection_limits_submission.tex"
+DEFAULT_TEX = "Claude outputs/grsl/dfsar_detection_limits_submission.tex"
 
 for _s in (sys.stdout, sys.stderr):
     try:
@@ -147,10 +147,17 @@ def appears(tex: str, lit: str) -> list:
         mant, exp = bare.split("e-")
         pats.append(re.escape(mant) + r"\s*\\times\s*10\^\{?-\s*" + exp.lstrip("0"))
         pats.append(re.escape(mant) + r"[^0-9]{0,20}10\^\{?-" + exp.lstrip("0"))
+    # A literal must appear as a WHOLE number, not as the prefix of a longer
+    # one. Without these boundaries "6.2" was found inside "6.21" and the row
+    # passed while the manuscript printed something else -- the specimen test
+    # for the Table III look counts caught exactly that. The guard rejects a
+    # match glued to a digit on either side, or one preceded by a decimal
+    # point, which would make it the fractional tail of a larger number.
+    lead, trail = r"(?<![0-9.])", r"(?![0-9])"
     hits = []
     for variant in (tex, normalise(tex), compact(tex)):
         for p in pats:
-            for m in re.finditer(p, variant):
+            for m in re.finditer(lead + "(?:" + p + ")" + trail, variant):
                 hits.append(variant.count("\n", 0, m.start()) + 1)
     return sorted(set(hits))
 

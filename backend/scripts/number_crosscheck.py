@@ -35,7 +35,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[2]
-DEFAULT_TEX = "Claude outputs/dfsar_detection_limits_submission.tex"
+DEFAULT_TEX = "Claude outputs/grsl/dfsar_detection_limits_submission.tex"
 OUT = BASE_DIR / "docs" / "number_crosscheck.json"
 JSON_DIRS = ["docs", "frontend/public/analysis", "data/pradan/dfsar"]
 

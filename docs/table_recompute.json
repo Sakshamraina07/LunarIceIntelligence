@@ -1,8 +1,8 @@
 {
   "schema": "lunar-ice/table-recompute/1",
-  "generated_utc": "2026-09-16T10:25:49.547927+00:00",
+  "generated_utc": "2026-09-16T11:02:47.568902+00:00",
   "generator": "backend/scripts/recompute_manuscript_tables.py",
-  "manuscript": "Claude outputs/dfsar_detection_limits_submission.tex",
+  "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "recomputed_from": [
     "backend/scripts/detection_statistics.py",
     "backend/scripts/published_moments.py"
@@ -122,10 +122,10 @@
           "N": 8.75,
           "N_measured": 8.754410943745066,
           "cell": "crit_95",
-          "printed": 2.243,
+          "printed": 2.244,
           "at_printed_N": 2.24376,
           "at_measured_N": 2.24328,
-          "verdict": "MATCH (measured N only)"
+          "verdict": "MATCH (printed N)"
         },
         {
           "N": 8.75,
@@ -140,19 +140,19 @@
           "N": 8.75,
           "N_measured": 8.754410943745066,
           "cell": "p_0.5",
-          "printed": 7.84,
+          "printed": 7.85,
           "at_printed_N": 7.8455,
           "at_measured_N": 7.8401,
-          "verdict": "MATCH (measured N only)"
+          "verdict": "MATCH (printed N)"
         },
         {
           "N": 13.72,
           "N_measured": 13.716639679503347,
           "cell": "rel_sd",
-          "printed": 0.406,
+          "printed": 0.405,
           "at_printed_N": 0.4055,
           "at_measured_N": 0.40556,
-          "verdict": "MATCH (measured N only)"
+          "verdict": "MATCH (printed N)"
         },
         {
           "N": 13.72,
@@ -333,8 +333,8 @@
         {
           "raw_enl": 2.64,
           "cell": "N",
-          "printed": 6.2,
-          "computed": 6.213,
+          "printed": 6.21,
+          "computed": 6.2128,
           "verdict": "MATCH"
         },
         {
@@ -354,8 +354,8 @@
         {
           "raw_enl": 5.3,
           "cell": "N",
-          "printed": 12.5,
-          "computed": 12.473,
+          "printed": 12.47,
+          "computed": 12.4727,
           "verdict": "MATCH"
         },
         {
@@ -396,8 +396,8 @@
         {
           "raw_enl": 6.22,
           "cell": "N",
-          "printed": 14.6,
-          "computed": 14.638,
+          "printed": 14.64,
+          "computed": 14.6378,
           "verdict": "MATCH"
         },
         {

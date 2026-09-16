@@ -1,6 +1,6 @@
 {
  "schema": "lunar-ice/data-provenance/1",
- "generated_utc": "2026-09-16T10:26:27.380802+00:00",
+ "generated_utc": "2026-09-16T11:01:39.592341+00:00",
  "generator": "backend/scripts/verify_data_provenance.py",
  "product_stem": "ch2_sar_ncxl_20200808t201154198",
  "archive_identifier": "urn:isro:isda:ch2_cho:sar_calibrated:ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",

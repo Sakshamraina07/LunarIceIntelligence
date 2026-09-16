@@ -263,6 +263,20 @@ diffed against the printed table by
 `python backend/scripts/recompute_manuscript_tables.py`
 (`docs/table_recompute.json`), which is wired as a gate.
 
+Table II is computed at the *N* each row prints, and the caption says so. The
+artifact carries both conventions side by side: `rows[i]` holds the cells at the
+printed *N*, `rows[i].at_measured_N` the same cells at the unrounded measurement
+behind it (8.7544 rather than 8.75, 13.7166 rather than 13.72). They answer
+different questions and differ in the third digit — critical value 2.244 against
+2.243, exceedance 7.85 % against 7.84 %, relative SD 0.405 against 0.406 — so
+neither replaces the other. The number audit reads the printed-*N* keys, because
+those are the cells the table shows; the recompute checks a cell against both and
+reports which convention it reproduces under.
+
+The three manuscript-facing tools default to the build the paper is assembled
+from, `Claude outputs/grsl/dfsar_detection_limits_submission.tex`; pass `--tex`
+to point any of them at the master `..._full.tex` instead.
+
 Number-level verification of the manuscript, both nets:
 `python backend/scripts/audit_manuscript_numbers.py` maps each printed figure to
 a named artifact key (`backend/scripts/manuscript_audit_table.py` is the map);

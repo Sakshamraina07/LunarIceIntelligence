@@ -1,0 +1,110 @@
+{
+  "schema": "lunar-ice/kclutter-within-cell/1",
+  "generated_utc": "2026-09-16T06:44:57.272610+00:00",
+  "generator": "backend/scripts/kclutter_within_cell.py",
+  "seed": 7,
+  "trials_per_row": 1000000,
+  "n_looks": 14,
+  "true_cpr": 0.7,
+  "fp_percent_F_model": 17.544925186078576,
+  "texture_orders": [
+    null,
+    8.0,
+    4.0
+  ],
+  "texture_lag1_values": [
+    0.0,
+    0.5,
+    0.8
+  ],
+  "model": "I_c = mean_k t_k g_ck, g_ck ~ Exp(1) independent per channel and look, t_k ~ Gamma(nu, 1/nu) shared between channels; R = I_1 / I_2; exceedance = P(0.7 R > 1)",
+  "copula_note": "rank correlation is set by the Gaussian AR(1); the Pearson lag-one correlation of t_k is measured and reported",
+  "enl_note": "population mean^2 / var of the textured cell intensity over the trials, 10-block jackknife SE",
+  "rows": [
+    {
+      "nu": null,
+      "nu_label": "inf",
+      "texture_lag1_nominal": 0.0,
+      "texture_lag1_measured": 0.0,
+      "exceed_percent": 17.518700000000003,
+      "exceed_se_percent": 0.03801269722487474,
+      "minus_F_model_points": -0.02622518607857316,
+      "enl_of_textured_intensity": 13.980642370162565,
+      "enl_se_jackknife": 0.01802046061593481,
+      "texture_model": "none"
+    },
+    {
+      "nu": 8.0,
+      "nu_label": "8",
+      "texture_lag1_nominal": 0.0,
+      "texture_lag1_measured": 0.0001195324187777445,
+      "exceed_percent": 18.8115,
+      "exceed_se_percent": 0.03908039748710343,
+      "minus_F_model_points": 1.266574813921423,
+      "enl_of_textured_intensity": 11.200177054653416,
+      "enl_se_jackknife": 0.01875392094759689,
+      "texture_model": "independent per look"
+    },
+    {
+      "nu": 8.0,
+      "nu_label": "8",
+      "texture_lag1_nominal": 0.5,
+      "texture_lag1_measured": 0.49272451162767517,
+      "exceed_percent": 18.5582,
+      "exceed_se_percent": 0.03887689818851293,
+      "minus_F_model_points": 1.0132748139214236,
+      "enl_of_textured_intensity": 9.555495825166615,
+      "enl_se_jackknife": 0.011947291890060602,
+      "texture_model": "AR(1) Gaussian copula, lag-one 0.5"
+    },
+    {
+      "nu": 8.0,
+      "nu_label": "8",
+      "texture_lag1_nominal": 0.8,
+      "texture_lag1_measured": 0.7956636591575637,
+      "exceed_percent": 18.2725,
+      "exceed_se_percent": 0.038644090670502264,
+      "minus_F_model_points": 0.7275748139214251,
+      "enl_of_textured_intensity": 7.343727181328488,
+      "enl_se_jackknife": 0.008641913535294974,
+      "texture_model": "AR(1) Gaussian copula, lag-one 0.8"
+    },
+    {
+      "nu": 4.0,
+      "nu_label": "4",
+      "texture_lag1_nominal": 0.0,
+      "texture_lag1_measured": -0.00031720907974035965,
+      "exceed_percent": 19.6878,
+      "exceed_se_percent": 0.03976393505627932,
+      "minus_F_model_points": 2.1428748139214235,
+      "enl_of_textured_intensity": 9.336560189570907,
+      "enl_se_jackknife": 0.01456149926669327,
+      "texture_model": "independent per look"
+    },
+    {
+      "nu": 4.0,
+      "nu_label": "4",
+      "texture_lag1_nominal": 0.5,
+      "texture_lag1_measured": 0.48673829202382657,
+      "exceed_percent": 19.4319,
+      "exceed_se_percent": 0.03956755315141435,
+      "minus_F_model_points": 1.886974813921423,
+      "enl_of_textured_intensity": 7.307628402138967,
+      "enl_se_jackknife": 0.009610382731699991,
+      "texture_model": "AR(1) Gaussian copula, lag-one 0.5"
+    },
+    {
+      "nu": 4.0,
+      "nu_label": "4",
+      "texture_lag1_nominal": 0.8,
+      "texture_lag1_measured": 0.7913061756949155,
+      "exceed_percent": 18.9844,
+      "exceed_se_percent": 0.039217758179681816,
+      "minus_F_model_points": 1.439474813921425,
+      "enl_of_textured_intensity": 5.046114738584557,
+      "enl_se_jackknife": 0.007479018498516754,
+      "texture_model": "AR(1) Gaussian copula, lag-one 0.8"
+    }
+  ],
+  "whole_cell_reference": "docs/kclutter.json (one texture value per cell: cancels)"
+}

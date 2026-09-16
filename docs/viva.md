@@ -122,7 +122,7 @@ non-zero candidate area under an amplitude-only screen. Currently 56 values:
 the native DEM against the LOLA crop at **tolerance 0.0** — bit-identity, not
 "close enough" — and exits non-zero on any difference.
 
-**Twenty-seven gates**, five of them on every rebuild, and `verify_all.py` runs all
+**Thirty gates**, five of them on every rebuild, and `verify_all.py` runs all
 twenty-five and maps each to a statement in PRD section 6.
 
 **Every gate was verified by making it fail on purpose.** That is not decoration:

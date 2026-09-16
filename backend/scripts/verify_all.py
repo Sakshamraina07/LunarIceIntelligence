@@ -290,6 +290,22 @@ GATES = [
             "and no pixel passes in any case",
      "robustness_gate.py - nine corruptions, crossing within 1e-4, zero passing",
      [sys.executable, str(SCRIPTS / "robustness_gate.py")], False),
+
+    # Three gates were written with numbers and docstrings and never added to
+    # this list -- G21, G22 and G29 passed on the days they were written and
+    # were never run again by anything. A gate nobody runs is a file. They are
+    # wired here under the numbers their scripts already carry.
+    ("G21", "Every artifact with a stated reproduction command holds the number "
+            "of runs that command produces",
+     "assert_artifact_matches_repro_command.py - the artifact is the run METHODS names",
+     [sys.executable, str(SCRIPTS / "assert_artifact_matches_repro_command.py")], False),
+    ("G22", "Every ENL ceiling is predicted from its own product's own label",
+     "assert_ceilings_have_own_label.py - no ceiling borrowed from another product",
+     [sys.executable, str(SCRIPTS / "assert_ceilings_have_own_label.py")], False),
+    ("G29", "The literature-search record holds the counts the manuscript claims, "
+            "and no relevant paper reports any of the three criteria",
+     "literature_search_gate.py - counts read from the screening CSV",
+     [sys.executable, str(SCRIPTS / "literature_search_gate.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

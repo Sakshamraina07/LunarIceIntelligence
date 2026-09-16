@@ -1,0 +1,193 @@
+{
+  "schema": "lunar-ice/stokes-from-slc/1",
+  "generated_utc": "2026-09-16T05:58:47.655677+00:00",
+  "generator": "backend/scripts/stokes_from_slc.py",
+  "seed": 7,
+  "slc": {
+    "lines": 355768,
+    "samples": 759,
+    "offset": 5725302,
+    "dtype": "complex64",
+    "lines_used": 355768,
+    "azimuth_looks": 21,
+    "boxcar": 5,
+    "output_cells": [
+      16941,
+      759
+    ]
+  },
+  "calibration": {
+    "equation": "sigma0_X = |E_X|^2 * sin(theta) / (K_lin * G_X^2)",
+    "order": [
+      "|E|^2",
+      "x sin(theta)",
+      "/ K_lin",
+      "/ G_X^2"
+    ],
+    "K_db": 80.0,
+    "K_lin": 100000000.0,
+    "G_LH": 1.018442,
+    "G_LV": 1.000923,
+    "sin_theta": 0.34198601318056165,
+    "incidence_deg_label": 19.997919,
+    "common_factors_cancel": "sin(theta) and K_lin are common to both channels and cancel in CPR and DOP",
+    "per_channel_factor": "G_LH/G_LV does NOT cancel and is the one calibration term that can move these results",
+    "K_differs_from_sri_label": "sli says 80.000000, sri says 70.308868"
+  },
+  "sign_convention": "S3 = 2 Im<E_H E_V*>; SC = (S0-S3)/2, OC = (S0+S3)/2",
+  "cross_channel_phase": {
+    "applied": false,
+    "label_fields": {
+      "LH": 1.074722,
+      "LV": 0.467679
+    },
+    "reason": "the label carries phase_orthogonality per channel with no stated unit and documents no relative H-V phase correction procedure",
+    "tests_independent_of_convention": [
+      "3b",
+      "3c",
+      "3f"
+    ],
+    "tests_dependent_on_convention": [
+      "3d",
+      "3e"
+    ]
+  },
+  "matched_mask_cells": 5883594,
+  "results": {
+    "t3c": {
+      "fraction_dop_a_ge_threshold": 0.13560487008450958,
+      "of_those_stokes_dop_ge_threshold": 1.0,
+      "n_excluded": 797844,
+      "why_must_be_100": "DOP_a = |S1|/S0 is one component of the full DOP = sqrt(S1^2+S2^2+S3^2)/S0, so the full DOP is >= the amplitude one cell by cell, identically."
+    },
+    "t3f": {
+      "band": [
+        0.7699115044247788,
+        1.2988505747126435
+      ],
+      "n_cells_dop_below": 88421,
+      "fraction_outside_band": 0.0,
+      "fraction_cpr_gt_1_within_selection": 0.7007272028138112,
+      "joint_fraction_all_cells": 0.010530808210083837
+    },
+    "t3b": {
+      "n_tested": 5883594,
+      "violation_fraction": 0.9660545918022215,
+      "band_definition": "[(1-DOP_a)/(1+DOP_a), (1+DOP_a)/(1-DOP_a)]",
+      "verdict": "NOT A DEFECT - the test as specified uses the wrong DOP",
+      "why": "CPR = (1-u)/(1+u) with u = S3/S0 and |u| <= m, the FULL DOP. The bounding band is built from m, not from DOP_a = |S1|/S0. m >= DOP_a identically, so the DOP_a band is strictly narrower than the true constraint and the Stokes CPR may legitimately fall outside it. Test 3f applies the same check with m and returns exactly zero violations."
+    },
+    "t3d": {
+      "enl_sc": {
+        "n_patches": 21617,
+        "enl": 18.14911986093986,
+        "enl_se": 0.1713951060701071,
+        "enl_mean": 23.622068632964478,
+        "p5": 2.056386458770178,
+        "p95": 62.462439940344986,
+        "patch": 16
+      },
+      "enl_oc": {
+        "n_patches": 21617,
+        "enl": 12.694168055964193,
+        "enl_se": 0.15151461190251123,
+        "enl_mean": 18.17049792988136,
+        "p5": 1.7517893916633316,
+        "p95": 52.368707816560935,
+        "patch": 16
+      },
+      "intensity_correlation_sc_oc": 0.4990735996741713,
+      "phase_caveat": "The complex field coherence requires a cross-channel phase convention the label does not document. What is reported is the INTENSITY correlation, which is convention-independent."
+    },
+    "t3e": {
+      "n_cells": 5883594,
+      "median": 4.7272773833765065,
+      "p95": 18.87750260345524,
+      "p99": 35.16821153547645,
+      "p_cpr_gt_1": 0.9848939270792648,
+      "p_cpr_gt_1_se": 5.0286240717389346e-05,
+      "f_model": {
+        "d1": 36.29823972187972,
+        "d2": 25.388336111928385,
+        "p95": 8.883630724689235,
+        "p99": 11.653571492844494,
+        "p_gt_1": 0.9999878518233871
+      },
+      "phase_caveat": "depends on the phase convention via N_SC, N_OC"
+    },
+    "phase_determination": {
+      "circular_mean_deg": -88.32752899836606,
+      "resultant_length": 0.946283829123395,
+      "hv_coherence_median": 0.6580423728429938,
+      "hv_coherence_p5": 0.1783569904179008,
+      "hv_coherence_p95": 0.9025159127490769,
+      "rotation_sweep": [
+        {
+          "rotation_deg": 0,
+          "median_stokes_cpr": 4.7272773833765065
+        },
+        {
+          "rotation_deg": 45,
+          "median_stokes_cpr": 2.6508378557105727
+        },
+        {
+          "rotation_deg": 90,
+          "median_stokes_cpr": 0.9835283505752406
+        },
+        {
+          "rotation_deg": 135,
+          "median_stokes_cpr": 0.3633624035194497
+        },
+        {
+          "rotation_deg": 180,
+          "median_stokes_cpr": 0.21153825318506417
+        },
+        {
+          "rotation_deg": 225,
+          "median_stokes_cpr": 0.37723921810070277
+        },
+        {
+          "rotation_deg": 270,
+          "median_stokes_cpr": 1.0167475085137354
+        },
+        {
+          "rotation_deg": 315,
+          "median_stokes_cpr": 2.7520733854527126
+        }
+      ],
+      "median_cpr_range": [
+        0.21153825318506417,
+        4.7272773833765065
+      ],
+      "verdict": "The cross-channel phase carries a strong systematic offset (R = 0.53, circular mean about -91 deg) but the label documents no convention for it. The median Stokes CPR moves by a factor of ~4 across the rotation sweep, so the Stokes CPR is NOT DETERMINED by this product alone. Any value between the sweep endpoints can be produced by a choice nobody has written down.",
+      "what_survives": "The COHERENCE MAGNITUDE is rotation-invariant and is a genuine measurement: median |<E_H E_V*>|/sqrt(<|E_H|^2><|E_V|^2>) = 0.6580. So is every test built on m rather than on S3 individually: 3c and 3f."
+    },
+    "t3a": {
+      "status": "partial - distributional only",
+      "blocker": "the SLC is slant-range/azimuth-time and the delivered sri is selenoreferenced on a 25 m UPS grid; per-cell registration requires geocoding",
+      "quantiles": [
+        5,
+        25,
+        50,
+        75,
+        95
+      ],
+      "lh_over_lv_delivered": [
+        0.7924528301886793,
+        0.940677966101695,
+        1.0424886191198786,
+        1.1546961325966851,
+        1.3711111111111112
+      ],
+      "lh_over_lv_slc_formed": [
+        0.8869963756278364,
+        0.9650207249184564,
+        1.0193883225818956,
+        1.077931298249121,
+        1.177595118752786
+      ],
+      "n_delivered": 2337086,
+      "n_slc": 5883594
+    }
+  }
+}

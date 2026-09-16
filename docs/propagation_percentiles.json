@@ -1,0 +1,83 @@
+{
+  "schema": "lunar-ice/propagation-percentiles/1",
+  "generated_utc": "2026-09-16T06:45:13.932099+00:00",
+  "generator": "backend/scripts/propagation_percentiles.py",
+  "pipelines": "incidence_audit.screen(True) vs screen(False), verbatim: float32 DN, per-channel calibration, 5x5 uniform_filter mode='nearest', ratios on the boxcar output",
+  "mask": {
+    "amplitude_px": 2337086,
+    "interior_px": 2294084,
+    "edge_band_px": 43002,
+    "edge_definition": "amplitude mask minus its 5x5 binary erosion"
+  },
+  "pixels_passing": {
+    "with_sin": 0,
+    "without_sin": 0
+  },
+  "map_png": "docs\\propagation_ddop_map.png",
+  "cpr": {
+    "over_amplitude_mask": {
+      "p50": 2.3256994609255344e-05,
+      "p90": 0.0002720550837693736,
+      "p99": 0.0014068485586903982,
+      "max": 0.013095542788505554,
+      "mean": 0.00011259845790288635,
+      "n": 2337086
+    },
+    "interior_5x5_eroded": {
+      "p50": 2.316012978553772e-05,
+      "p90": 0.000270450033713132,
+      "p99": 0.0013953788322396544,
+      "max": 0.013095542788505554,
+      "mean": 0.00011185056485494152,
+      "n": 2294084
+    },
+    "edge_band_within_2px_of_mask_boundary": {
+      "p50": 2.9270711820572615e-05,
+      "p90": 0.00036403904668986815,
+      "p99": 0.0019982913741841903,
+      "max": 0.00876786932349205,
+      "mean": 0.00015249728760851323,
+      "n": 43002
+    },
+    "argmax": {
+      "line": 1522,
+      "sample": 1136,
+      "on_mask_edge": false,
+      "value_with_sin": 0.023765621706843376,
+      "value_without": 0.010670078918337822
+    }
+  },
+  "dop": {
+    "over_amplitude_mask": {
+      "p50": 0.0011439844965934753,
+      "p90": 0.009530682116746902,
+      "p99": 0.033758168667554815,
+      "max": 0.1392841339111328,
+      "mean": 0.003581310656088293,
+      "n": 2337086
+    },
+    "interior_5x5_eroded": {
+      "p50": 0.0011445889249444008,
+      "p90": 0.009516920708119868,
+      "p99": 0.03366442896425696,
+      "max": 0.1392841339111328,
+      "mean": 0.0035757999786925816,
+      "n": 2294084
+    },
+    "edge_band_within_2px_of_mask_boundary": {
+      "p50": 0.0011106226593255997,
+      "p90": 0.01038773935288191,
+      "p99": 0.03906674083322286,
+      "max": 0.11871440708637238,
+      "mean": 0.003875295978693339,
+      "n": 43002
+    },
+    "argmax": {
+      "line": 1285,
+      "sample": 2573,
+      "on_mask_edge": false,
+      "value_with_sin": 0.19453370571136475,
+      "value_without": 0.055249568074941635
+    }
+  }
+}

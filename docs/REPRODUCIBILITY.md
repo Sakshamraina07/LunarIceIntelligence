@@ -214,11 +214,13 @@ quadrature, bounding residual phase error to 0.043 % on |S₃|.
 
 | quantity | hypothesis | statistic | sidedness |
 |---|---|---|---|
-| per-pixel floor | H₀: true CPR = 1 | floor₉₅ = 1 / F⁻¹(0.05; 2N, 2N) = F⁻¹(0.95; 2N, 2N) | one-sided, 95 % |
-| false-positive rate at background c | true CPR = c | P(ĈPR > 1) = 1 − F(1/c; 2N, 2N) | one-sided |
-| candidate area | k = 0 of n_eff | Wilson score interval, z = 1.959964, on n_eff = measured pixels / 61.4207 px per independent sample | two-sided 95 % |
-| pre-registered ENL ceiling (2020-03-05) | measured ENL ≤ ceiling 13.4247 | point comparison; **prediction failed** (METHODS §7.4a) | one-sided |
+| one-sided critical value | H₀: true CPR = 1 | crit₉₅ = F⁻¹(0.95; 2N, 2N) = 1 / F⁻¹(0.05; 2N, 2N) | one-sided, 95 % |
+| noise exceedance at background c | true CPR = c | P(R > 1) = 1 − F(1/c; 2N, 2N) | one-sided |
+| power of the test | true CPR = c | P(R > crit₉₅) — 16.4 % at c = 1.299, the largest the DOP condition admits | one-sided |
+| candidate area | — | **no interval is reported.** The screen's firing rate is zero algebraically for every admissible input, so there is no sampling uncertainty to express; the score interval an earlier draft attached is retained, labelled, in `detection_statistics.json::candidate_area.withdrawn_interval` | — |
+| pre-registered ENL reference value (2020-03-05) | measured ENL ≤ 13.4247 | point comparison; **prediction failed** (METHODS §7.4a). The value is a reference, not a bound: the exact participation ratio for the same band is 14.04 | one-sided |
 | arm difference (P3) | sub-band − spatial = 0 | paired mean over 9 windows, SE = sd/√9 | two-sided SE reported, no p-value |
+| ENL block-bootstrap range | — | percentile 2.5/97.5 over rows of the patch grid. **A precision statement, not a confidence statement:** the nominally 95 % procedure covers the true ENL 12–26 % of the time on synthetic correlated speckle (METHODS §7.3.2) | — |
 | Eq. (1) band, Eq. (6) band | violation fraction = 0 | exact count over 5 883 594 / 88 421 cells | — |
 
 ## 16 · Literature queries
@@ -230,21 +232,43 @@ summarised in `docs/literature_screen.md`; the screen G29 asserts is
 
 ## 17 · Regeneration commands
 
-Figures (`paper/fig1_degeneracy.pdf` … `fig4_external.pdf`):
-`python paper/make_figures.py`; font embedding checked by
+The 10-page manuscript carries **five tables and three figures**. (An earlier
+six-table, four-figure layout is superseded; `fig4_external.pdf` is still
+built by the script and is no longer used by the paper.) Order below is the
+order they appear.
+
+Figures — `cd paper && python make_figures.py`, which reads
+`paper/fig1_density.npz` from the working directory and writes all four PDFs
+there. The script is byte-identical to `Claude outputs/grsl/make_figures.py`.
+Font embedding and the absence of Type 3 fonts are checked by
 `python paper/assert_figures_embed_fonts.py` (G26).
 
-Manuscript tables, by caption order in `Claude outputs/dfsar_detection_limits_full.tex`:
+| # | figure | artifact behind it | command |
+|---|---|---|---|
+| 1 | every measured pixel on the analytic curve | `paper/fig1_density.npz`, cross-checked by `docs/dop_exclusion.json` | `python backend/scripts/dop_exclusion.py` |
+| 2 | measured ENL for four products from one pass | `docs/slc_multilook_control.json`, `docs/slepian_ceiling.json`, `docs/bootstrap_enl.json` | `python backend/scripts/slc_multilook_control.py --windows 9`; `python backend/scripts/slepian_ceiling.py` |
+| 3 | the look count decides the significance | `docs/detection_statistics.json::sampling_statistics` | `python backend/scripts/detection_statistics.py` |
+| (4) | external check — **not used by the manuscript** | `docs/cpr_dispersion.json` | `python backend/scripts/cpr_dispersion.py --window 15 --top 20` |
 
-| caption | artifact | command |
-|---|---|---|
-| declared product parameters (label) | `docs/enl.json::label` | `python backend/scripts/measure_enl.py` |
-| coverage budget | `data/pradan/dfsar/metadata_real.json::masks`, `frontend/public/analysis/faustini.json` | `python backend/scripts/process_real_sar_pipeline.py` |
-| Monte Carlo response of the proxy vs Stokes CPR | `docs/cpr_significance.json::monte_carlo` | `python backend/scripts/cpr_significance.py` |
-| measured ENL for four products from one pass | `docs/slc_multilook_control.json` | `python backend/scripts/slc_multilook_control.py --windows 9` |
-| sampling statistics of a Stokes-derived CPR | `docs/cpr_significance.json`, `docs/table5_sensitivity.json` | `python backend/scripts/table5_sensitivity.py` |
-| provenance and sensitivity of the detection statistics | `docs/detection_statistics.json` | `python backend/scripts/detection_statistics.py` |
-| look count from published moments | `docs/published_moments.json` | (transcribed; mode check `python backend/scripts/published_moments_mode_check.py`) |
+| # | table | artifact behind it | command |
+|---|---|---|---|
+| I | coverage budget for one DFSAR pass | `frontend/public/analysis/faustini.json::masks`, `data/pradan/dfsar/metadata_real.json` | `python backend/scripts/process_real_sar_pipeline.py` |
+| II | sampling statistics of a Stokes-derived CPR | `docs/detection_statistics.json::sampling_statistics.rows` | `python backend/scripts/detection_statistics.py` |
+| III | provenance and sensitivity of the sampling statistics | `docs/table5_sensitivity.json`, `docs/bootstrap_enl.json` | `python backend/scripts/table5_sensitivity.py`; `python backend/scripts/bootstrap_enl.py` |
+| IV | look count inferred from the published CPR moments | `docs/published_moments.json` | `python backend/scripts/published_moments.py` |
+| V | scope of inference | prose; no artifact | — |
+
+Every cell of II, III and IV is recomputed from the pipeline's own functions and
+diffed against the printed table by
+`python backend/scripts/recompute_manuscript_tables.py`
+(`docs/table_recompute.json`), which is wired as a gate.
+
+Number-level verification of the manuscript, both nets:
+`python backend/scripts/audit_manuscript_numbers.py` maps each printed figure to
+a named artifact key (`backend/scripts/manuscript_audit_table.py` is the map);
+`python backend/scripts/number_crosscheck.py` takes every numeric literal in the
+body text and asks whether ANY artifact value matches, which catches literals
+the table has not been told about.
 
 Full verification: `python backend/scripts/verify_all.py` (every gate),
 `python backend/scripts/check_repo_complete.py`,

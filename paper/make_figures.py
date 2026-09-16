@@ -72,31 +72,49 @@ def solve(f, target, lo, hi):
 # Fig. 1  The amplitude-only degeneracy: one curve, one ceiling.
 # ----------------------------------------------------------------------
 def fig_degeneracy(path):
+    """
+    The analytic curve of (3) with the measured pixels on it.
+
+    The density is read from fig1_density.npz, a 240x240 histogram of
+    (DOP_a, log10 CPR_a) over every pixel with non-zero amplitude in both
+    channels (2 337 086), written by the block at the end of this file from
+    the two sri rasters. Shipping the histogram rather than the rasters keeps
+    the figure reproducible without 60 MB of ISRO data in the repository.
+    """
     fig, ax = plt.subplots(figsize=(COL1, 2.35))
     dop = np.linspace(1e-4, 0.999, 4000)
     cpr = np.tanh(np.arctanh(dop) / 2) ** 2
-
-    ax.plot(dop, cpr, color=INK, lw=1.3, zorder=3,
-            label=r"$\mathrm{CPR}_a=\tanh^2(\mathrm{artanh}\,\mathrm{DOP}_a/2)$")
-
     d_th, c_th = 0.13, 1.00
     ceiling = np.tanh(np.arctanh(d_th) / 2) ** 2
 
-    # the region the published criterion asks for
-    ax.axvspan(0, d_th, color=MUTED, alpha=0.10, zorder=0)
+    # measured density, if present; drawn first so the curve sits on top
+    try:
+        z = np.load("fig1_density.npz")
+        H, xe, ye = z["H"].astype(float), z["xe"], z["ye"]
+        Hm = np.ma.masked_where(H <= 0, H)
+        # the density IS the curve, so it is drawn as the visible trace (blue,
+        # log-scaled) and the analytic line is laid over it thin and dashed
+        pm = ax.pcolormesh(xe, 10 ** ye, Hm.T, cmap="Blues",
+                           norm=mpl.colors.LogNorm(vmin=1, vmax=H.max()),
+                           rasterized=True, zorder=2, shading="flat")
+        n, nb = int(z["n"]), int(z["n_band"])
+        ax.plot([], [], color=ACC1, lw=3, alpha=0.85,
+                label=f"{n:,} measured pixels (density)")
+        ax.text(0.98, 2.2e-4, f"{100*nb/n:.0f}% of pixels lie inside DOP < 0.13",
+                fontsize=6.2, color=MUTED, ha="right", va="bottom")
+    except FileNotFoundError:
+        pass
+
+    ax.plot(dop, cpr, color=INK, lw=0.7, ls="--", zorder=3,
+            label=r"analytic curve $\tanh^2(\mathrm{artanh}\,\mathrm{DOP}_a/2)$")
+    ax.axvspan(0, d_th, color=ACC2, alpha=0.07, zorder=0)
     ax.axvline(d_th, color=ACC2, lw=0.9, ls="--", zorder=2)
     ax.axhline(c_th, color=ACC1, lw=0.9, ls=":", zorder=2)
-    ax.plot([d_th], [ceiling], marker="o", ms=4, mfc="white",
-            mec=INK, mew=1.0, zorder=4)
-
-    ax.annotate(r"ceiling $4.261\times10^{-3}$",
-                xy=(d_th, ceiling), xytext=(0.22, 6e-3),
-                fontsize=7, color=INK,
-                arrowprops=dict(arrowstyle="-", lw=0.5, color=INK))
-    ax.text(0.135, 1.35, r"threshold $\mathrm{CPR}>1$",
-            fontsize=7, color=ACC1)
-    ax.text(0.04, 1.2e-3, "DOP < 0.13", fontsize=7, color=ACC2,
-            rotation=90, va="bottom", ha="center")
+    ax.plot([d_th], [ceiling], marker="o", ms=4, mfc="white", mec=INK, mew=1.0, zorder=4)
+    ax.annotate(r"ceiling $4.261\times10^{-3}$", xy=(d_th, ceiling), xytext=(0.22, 6e-3),
+                fontsize=7, color=INK, arrowprops=dict(arrowstyle="-", lw=0.5, color=INK))
+    ax.text(0.135, 1.35, r"threshold $\mathrm{CPR}>1$", fontsize=7, color=ACC1)
+    ax.text(0.04, 1.2e-3, "DOP < 0.13", fontsize=7, color=ACC2, rotation=90, va="bottom", ha="center")
 
     ax.set_yscale("log")
     ax.set_xlim(0, 1.0)
@@ -104,10 +122,10 @@ def fig_degeneracy(path):
     ax.set_xlabel(r"$\mathrm{DOP}_a$")
     ax.set_ylabel(r"$\mathrm{CPR}_a$")
     ax.grid(True, which="major", ls="-", color=MUTED)
-    ax.legend(loc="lower right", frameon=False, fontsize=6.4)
+    ax.legend(loc="lower right", frameon=False, fontsize=6.2, bbox_to_anchor=(1.0, 0.13))
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
-    fig.savefig(path)
+    fig.savefig(path, dpi=600)
     plt.close(fig)
 
 
@@ -121,15 +139,22 @@ def fig_enl(path):
               "delivered\nproduct"]
     measured = [1.04, 4.52, 9.95, 5.83]
     ceiling  = [1.00, 6.77, 21.00, 21.00]
+    # spread: min-max over the nine SLC windows for the three SLC-derived
+    # products (docs/slc_multilook_control.json); 95 % block-bootstrap
+    # interval over 8 337 patches for the delivered product.
+    lo = [0.93, 1.50, 4.03, 4.03]
+    hi = [1.12, 5.75, 11.08, 6.19]
 
     fig, ax = plt.subplots(figsize=(COL1, 2.2))
     x = np.arange(len(labels))
 
     ax.vlines(x, 0, measured, color=MUTED, lw=0.7, zorder=1)
+    ax.errorbar(x, measured, yerr=[np.subtract(measured, lo), np.subtract(hi, measured)],
+                fmt="none", ecolor=ACC1, elinewidth=0.9, capsize=2.5, zorder=2)
     ax.plot(x, measured, ls="none", marker="o", ms=6, color=ACC1,
             mec="white", mew=0.8, zorder=3, label="measured ENL")
     ax.plot(x, ceiling, ls="none", marker="_", ms=13, mew=1.6,
-            color=INK, zorder=3, label="ceiling for that scheme")
+            color=INK, zorder=3, label="reference value for that scheme")
 
     for xi, m in zip(x, measured):
         ax.annotate(f"{m:.2f}", (xi, m), textcoords="offset points",
@@ -170,7 +195,7 @@ def fig_detection(path):
                 mfc="white", mec=c, mew=1.1, zorder=4)
     a1.annotate("1.895", (13.72, 1.895), textcoords="offset points",
                 xytext=(6, 5), fontsize=6.8, color=ACC1)
-    a1.set_ylabel("95% single-pixel floor")
+    a1.set_ylabel("one-sided 95% critical value")
     a1.set_ylim(1.0, 3.6)
     a1.grid(True, ls="-", color=MUTED)
     a1.set_axisbelow(True)
@@ -186,7 +211,7 @@ def fig_detection(path):
     a2.annotate("17.79%", (13.72, 17.79), textcoords="offset points",
                 xytext=(6, 4), fontsize=6.8, color=ACC1)
     a2.set_xlabel("equivalent number of looks $N$")
-    a2.set_ylabel("false-positive rate (%)")
+    a2.set_ylabel("noise exceedance $P(R>1)$ (%)")
     a2.set_xlim(3.2, 60)
     a2.set_ylim(0, 45)
     a2.grid(True, ls="-", color=MUTED)
@@ -257,3 +282,24 @@ if __name__ == "__main__":
     fig_detection("fig3_detection.pdf")
     fig_external("fig4_external.pdf")
     print("wrote fig1..fig4")
+
+
+# ----------------------------------------------------------------------
+# Build fig1_density.npz from the two sri rasters. Needs the ISRO data on
+# disk; run once, commit the (small) .npz, never the rasters.
+# ----------------------------------------------------------------------
+def build_fig1_density(lh_tif, lv_tif, out="fig1_density.npz",
+                       g_lh=1.018442, g_lv=1.000923):
+    import tifffile
+    lh = tifffile.imread(lh_tif).astype(np.float64)
+    lv = tifffile.imread(lv_tif).astype(np.float64)
+    m = (lh > 0) & (lv > 0)
+    ih, iv = (lh[m] / g_lh) ** 2, (lv[m] / g_lv) ** 2   # K and sin(theta) cancel in every ratio
+    sh, sv = np.sqrt(ih), np.sqrt(iv)
+    cpr = ((sh - sv) / (sh + sv)) ** 2
+    dop = np.abs(ih - iv) / (ih + iv)
+    xe, ye = np.linspace(0, 1, 241), np.linspace(-6, 0.7, 241)
+    lc = np.clip(np.log10(np.clip(cpr, 1e-12, None)), -6 + 1e-9, 0.7 - 1e-9)  # floor bin keeps CPR < 1e-6
+    H, _, _ = np.histogram2d(np.clip(dop, 0, 1 - 1e-9), lc, bins=[xe, ye])
+    np.savez_compressed(out, H=H.astype(np.int32), xe=xe, ye=ye, n=int(m.sum()),
+                        n_band=int((dop < 0.13).sum()), max_cpr_in_band=float(cpr[dop < 0.13].max()))

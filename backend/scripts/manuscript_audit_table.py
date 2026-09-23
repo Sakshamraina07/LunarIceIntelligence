@@ -23,12 +23,29 @@ from __future__ import annotations
 
 import math
 
+#: Rows retired by the third revision (2026-09-23), with the reason. Kept as
+#: a record so a literal that comes back is noticed rather than silently
+#: re-audited against a key nobody re-checked.
+RETIRED = {
+    "obs_duration": "107.106 s (II-A now prints the UTC start/stop only)",
+    "f2_line": "the F2 frame pixel 1120.3 / 3676.9",
+    "f2_sample": "the F2 frame pixel 1120.3 / 3676.9",
+    "rms_resid": "the float32 rms residual (III-B prints the maximum only)",
+    "putrevu_az": "Putrevu SLC spacing 0.55 m (C12: geometry compressed to one sentence)",
+    "putrevu_rg": "Putrevu SLC spacing 9.6 m (C12)",
+    "putrevu_rho_lo": "the 0.29-0.35 altitude range of the bound (C12)",
+    "putrevu_rho_hi": "the 0.29-0.35 altitude range of the bound (C12)",
+    "kc_sigma": "the 0.02-point sampling error of the shared-texture check (C13)",
+    "t3_264_crit": "2.64 -- now printed to three decimals, keyed as sens_crit_264",
+    "t3_530_crit": "1.96 -- now printed to three decimals, keyed as sens_crit_530",
+    "t3_622_crit": "1.86 -- now printed to three decimals, keyed as sens_crit_622",
+    "cr_0": "17.6, the rho = 0 Monte Carlo row -- V-C now prints the analytic F value 17.5",
+}
+
 AUDIT = [
     # =================================================================
     # II. THE PRODUCT, AND THE TWO MASKS
     # =================================================================
-    ("obs_duration", "107.106", "docs/data_provenance.json",
-     "observation_duration_s", "II", "label start/stop, verified per line by G27"),
     ("looks21", "21", "docs/enl_predictions.json",
      "predictions[0].declared.azimuth_looks", "II", "label field"),
     ("look_bw", "51.016", "docs/enl_predictions.json",
@@ -39,6 +56,14 @@ AUDIT = [
      "predictions[0].declared.pulse_repetition_frequency", "II", "label field"),
     ("kcal", "70.308868", "docs/enl.json",
      "label.calibration_constant", "II", "label field, sri product"),
+    # III-A: the constant with its unit, and the per-channel gains
+    ("kcal_db_ortho", "70.308868", "docs/dop_exclusion.json", "calibration.K_db", "III",
+     "unit dB, ortho (sri) label; K = 10^(K_dB/10) is calibration.K_lin. The SLC "
+     "label's 80.0 dB is a different product's constant"),
+    ("gain_g_lh", "1.018", "docs/dop_exclusion.json", "gain_imbalance.LH", "III",
+     "label gain imbalance, LH"),
+    ("gain_g_lv", "1.001", "docs/dop_exclusion.json", "gain_imbalance.LV", "III",
+     "label gain imbalance, LV"),
     ("geo_nodes", "937,296", "data/pradan/dfsar/metadata_real.json",
      "geodetic_frame.isro_geolocation_grid_agreement.nodes_compared", "II", None),
     ("geo_rms_sample", "0.2846", "data/pradan/dfsar/metadata_real.json",
@@ -65,10 +90,6 @@ AUDIT = [
      "masks.amplitude.fraction", "II", "fraction stored; printed as a percentage"),
     ("amp_over_pointed", "43.89", "frontend/public/analysis/faustini.json",
      "masks.returned_over_pointed", "II", "fraction stored; printed as a percentage"),
-    ("f2_line", "1120.3", "docs/f2_footprint.json",
-     "frame_pixel.line", "II", "validated forward projection"),
-    ("f2_sample", "3676.9", "docs/f2_footprint.json",
-     "frame_pixel.sample", "II", None),
     ("f2_disc", "1521", "docs/f2_footprint.json",
      "disc_pixels", "II", "44 px diameter at 25 m"),
     ("cov_f2", "17.09", "docs/f2_footprint.json",
@@ -105,8 +126,6 @@ AUDIT = [
      "measured_pixels", "III", "the same count, recomputed in Fig. 1's own path"),
     ("max_resid_stored", "1.241e-6", "frontend/public/analysis/faustini.json",
      "cpr_dop_identity.max_abs_residual", "III", "stored float32 field"),
-    ("rms_resid", "8.025e-9", "frontend/public/analysis/faustini.json",
-     "cpr_dop_identity.rms_residual", "III", "stored float32 field"),
     ("crossing", "4.2610574e-3", "frontend/public/analysis/sweep_grid.json",
      "crossing.cpr_value", "III", "max CPR where DOP < 0.13, screened field"),
     ("crossing_rel", "5.99e-6", None, None, "III",
@@ -154,6 +173,23 @@ AUDIT = [
     ("ddop_med", "1.1e-3", "docs/propagation_percentiles.json",
      "dop.over_amplitude_mask.p50", "III", None),
     # ---- III-E, the Stokes vector from the SLC ------------------------
+    # III-E: the published aggregation and the per-pixel bound
+    ("sinha_dop_lo", "0.10", "docs/literature_screen.json",
+     "records[?id=4].aggregation_record.average_dop_range[0]", "III",
+     "literature value; the quotation is recorded with it"),
+    ("sinha_dop_hi", "0.13", "docs/literature_screen.json",
+     "records[?id=4].aggregation_record.average_dop_range[1]", "III", None),
+    ("band_hi_2dp", "1.30", "docs/stokes_from_slc.json",
+     "results.invariant.t3f_coupling_band.band[1]", "III",
+     "'every one with a measured CPR below 1.30'"),
+    ("win_rank_corr", "0.98", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.coherence_predicts_cpr.spearman", "III",
+     "Spearman, (1-rho)/(1+rho) of each window's median H-V coherence against its "
+     "median CPR, 20 windows"),
+    ("dop_bias_n14", "7", "docs/dop_sampling_bias.json",
+     "manuscript_figure.closed_form_percent", "III",
+     "P(m_hat < 0.13 | DOP 0, N 14) = Beta(3/2, 13) cdf at 0.13^2; simulated 7.05 "
+     "+/- 0.04 % in rows[1]"),
     ("band_lo", "0.7699", "docs/stokes_from_slc.json",
      "results.invariant.t3f_coupling_band.band[0]", "III", "(1-0.13)/(1+0.13)"),
     ("band_hi", "1.2989", "docs/stokes_from_slc.json",
@@ -263,6 +299,10 @@ AUDIT = [
     # ---- IV-B, the control --------------------------------------------
     ("bw_measured", "1071.2", "docs/slc_multilook_control.json",
      "medians.measured_bandwidth_hz", "IV", "median across the nine windows"),
+    ("bw_min", "1071.2", "docs/slc_multilook_control.json",
+     "windows[*].measured_bandwidth_hz|min", "IV", "'1071.2--1071.6 Hz across the nine windows'"),
+    ("bw_max", "1071.6", "docs/slc_multilook_control.json",
+     "windows[*].measured_bandwidth_hz|max", "IV", None),
     ("sl_median", "1.04", "docs/slc_multilook_control.json",
      "medians.enl_single_look", "IV", "single-look intensity, answer known"),
     ("sl_min", "0.93", "docs/slc_multilook_control.json",
@@ -383,6 +423,9 @@ AUDIT = [
      "sampling_statistics.rows[3].rel_sd", "V",
      "at the N the row prints (13.72); at_measured_N gives 0.406 from the "
      "unrounded ENL 13.7166"),
+    ("n_edge", "80", "docs/detection_statistics.json",
+     "derived.n_at_which_crit_equals_band_edge.N", "V",
+     "'the critical value falls to 1.2989 only at N ~ 80'; 79.62"),
     ("t2_n1372_bias", "1.079", "docs/detection_statistics.json",
      "sampling_statistics.rows[3].bias", "V", None),
     ("t2_n1372_crit", "1.895", "docs/detection_statistics.json",
@@ -423,13 +466,9 @@ AUDIT = [
      "sampling_statistics.rows[6].p_exceed_true_cpr_0p5_percent", "V", None),
     # Table III, the sensitivity rows
     ("t3_264_n", "6.21", "docs/table5_sensitivity.json", "rows[0].N", "V", None),
-    ("t3_264_crit", "2.64", "docs/table5_sensitivity.json",
-     "rows[0].floor_95", "V", None),
     ("t3_264_p07", "26.9", "docs/table5_sensitivity.json",
      "rows[0].fp_percent_at_cpr_0p7", "V", None),
     ("t3_530_n", "12.47", "docs/table5_sensitivity.json", "rows[1].N", "V", None),
-    ("t3_530_crit", "1.96", "docs/table5_sensitivity.json",
-     "rows[1].floor_95", "V", None),
     ("t3_530_p07", "19.0", "docs/table5_sensitivity.json",
      "rows[1].fp_percent_at_cpr_0p7", "V", None),
     ("t3_583_p07", "17.8", "docs/table5_sensitivity.json",
@@ -437,8 +476,6 @@ AUDIT = [
     ("t3_622_raw", "6.22", "docs/table5_sensitivity.json",
      "rows[3].raw_enl", "V", "amplitude-domain ENL"),
     ("t3_622_n", "14.64", "docs/table5_sensitivity.json", "rows[3].N", "V", None),
-    ("t3_622_crit", "1.86", "docs/table5_sensitivity.json",
-     "rows[3].floor_95", "V", None),
     ("t3_622_p07", "17.0", "docs/table5_sensitivity.json",
      "rows[3].fp_percent_at_cpr_0p7", "V", None),
     ("crit_lo", "1.64", "docs/bootstrap_enl.json",
@@ -460,6 +497,21 @@ AUDIT = [
     ("power_30", "88", "docs/detection_statistics.json",
      "sampling_statistics.power_at_operating_point.rows[4].power_percent", "V", None),
     # background range
+    ("sens_crit_264", "2.638", "docs/detection_statistics.json",
+     "derived.sensitivity_crit_three_decimals.rows[0].crit_95_at_printed_N", "V",
+     "at N = 6.21; 2.6376 at the unrounded 6.2128 rounds alike"),
+    ("sens_crit_530", "1.957", "docs/detection_statistics.json",
+     "derived.sensitivity_crit_three_decimals.rows[1].crit_95_at_printed_N", "V",
+     "at N = 12.47"),
+    ("sens_crit_622", "1.855", "docs/detection_statistics.json",
+     "derived.sensitivity_crit_three_decimals.rows[3].crit_95_at_printed_N", "V",
+     "at N = 14.64"),
+    ("bg_04", "1.0", "docs/detection_statistics.json",
+     "derived.p_exceed_at_operating_point.rows[0].p_exceed_percent", "V",
+     "P(R > 1) at N = 13.72, true CPR 0.4"),
+    ("bg_112", "62", "docs/detection_statistics.json",
+     "derived.p_exceed_at_operating_point.rows[6].p_exceed_percent", "V",
+     "true CPR 1.12"),
     ("bg_05", "3.7", "docs/background_cpr_sweep.json", "rows[2].fp_percent", "V", None),
     ("bg_08", "28", "docs/background_cpr_sweep.json", "rows[5].fp_percent", "V", None),
     ("bg_09", "39", "docs/background_cpr_sweep.json", "rows[6].fp_percent", "V", None),
@@ -487,29 +539,27 @@ AUDIT = [
      "external_check.cpr_mean", "V", "Byrgius C, transcribed from print"),
     ("putrevu_relsd", "0.159", "docs/cpr_dispersion.json",
      "external_check.cpr_rel_sd", "V", None),
-    ("putrevu_az", "0.55", "docs/cpr_dispersion.json",
-     "external_check.slc_spacing_m.azimuth", "V", None),
-    ("putrevu_rg", "9.6", "docs/cpr_dispersion.json",
-     "external_check.slc_spacing_m.slant_range", "V", None),
     ("putrevu_n", "54.88", "docs/cpr_dispersion.json",
      "external_check.led_with_triple.N", "V", None),
     ("putrevu_floor", "0.194", "docs/cpr_dispersion.json",
      "external_check.led_with_triple.independent_floor", "V", None),
     ("putrevu_rho", "0.31", "docs/cpr_dispersion.json",
      "external_check.led_with_triple.rho_I_min", "V", None),
-    ("putrevu_rho_lo", "0.29", "docs/cpr_dispersion.json",
-     "external_check.bound_range_over_altitudes[0]", "V", None),
-    ("putrevu_rho_hi", "0.35", "docs/cpr_dispersion.json",
-     "external_check.bound_range_over_altitudes[1]", "V", None),
     ("putrevu_alt_n", "81", "docs/cpr_dispersion.json",
      "external_check.N_from_dispersion_independent_channels", "V",
      "the same dispersion with no correlation at all"),
-    ("cr_0", "17.6", "docs/correlated_ratio.json", "rows[0].fp_percent", "V", None),
+    ("f_n14_07", "17.5", "docs/detection_statistics.json",
+     "derived.f_exceedance_N14_cpr0p7_percent", "V",
+     "the analytic F(28, 28) value at CPR 0.7, 17.545; the rho = 0 Monte Carlo row "
+     "of correlated_ratio.json reads 17.58 and is no longer printed"),
     ("cr_05", "14.1", "docs/correlated_ratio.json", "rows[1].fp_percent", "V", None),
     ("cr_08", "6.3", "docs/correlated_ratio.json", "rows[2].fp_percent", "V", None),
     ("cr_09", "1.9", "docs/correlated_ratio.json", "rows[3].fp_percent", "V", None),
     ("circ_corr", "0.50", "docs/stokes_from_slc.json",
-     "results.t3d_180.corr_sc_oc", "V", "|corr(SC, OC)| over the frame"),
+     "results.t3d_180.corr_sc_oc", "V",
+     "circular-channel INTENSITY correlation |corr(SC, OC)| over the frame -- not "
+     "the field coherence gamma_c (third review M7; gamma_c is in "
+     "stokes_from_slc.json::coherence_by_gate)"),
     ("blocks", "109", "docs/stokes_from_slc.json",
      "results.t3e.blocks_64x64.n_selected", "V", "64x64 blocks below the 10th CV pct"),
     ("tail_p95", "0.86", "docs/stokes_from_slc.json",
@@ -517,11 +567,19 @@ AUDIT = [
      "empirical / F, within blocks"),
     ("tail_p99", "0.81", "docs/stokes_from_slc.json",
      "results.t3e.180_deg.blocks_64x64_summary.ratio_p99_median", "V", None),
-    ("kc_sigma", "0.02", "docs/kclutter.json",
-     "mc_sigma_of_difference_points", "V",
-     "sampling error of the difference of two tails at 10^7 trials"),
     ("wc_nu8", "18.8", "docs/kclutter_within_cell.json",
      "rows[1].exceed_percent", "V", "within-cell texture, order 8"),
+    ("win_corr", "0.14", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.windows_15x15_summary.corr_median", "V",
+     "circular-channel INTENSITY correlation in the 20 windows"),
+    ("win_r95", "1.02", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.windows_15x15_summary.ratio_p95_median", "V", None),
+    ("win_r99", "0.98", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.windows_15x15_summary.ratio_p99_median", "V", None),
+    ("m_min_07", "0.176", "docs/joint_criterion.json", "m_min_at_true_cpr", "V",
+     "|0.7 - 1|/(0.7 + 1)"),
+    ("f2_eff", "24.8", "docs/detection_statistics.json",
+     "derived.effective_samples_f2_disc.effective_samples", "V", "1521 / 61.42"),
     ("wc_nu4", "19.7", "docs/kclutter_within_cell.json",
      "rows[4].exceed_percent", "V", "order 4"),
     ("wc_base", "17.5", "docs/kclutter_within_cell.json",
@@ -647,4 +705,179 @@ DERIVED = [
     # the simulated coherence is the square root of the measured intensity
     # correlation under the circular-Gaussian relation
     ("rho_from_corr", 0.9822, lambda: 0.9647125999763775 ** 0.5, 5e-4),
+    # III-E: a pixel at the F2 peak of 1.95 has DOP >= |1-1.95|/(1+1.95)
+    ("f2_dop_min", 0.32, lambda: (1.95 - 1) / (1.95 + 1), 5e-3),
+    # III-E: 0.658 gives 0.21, (1 - 0.658)/(1 + 0.658)
+    ("coh_to_cpr", 0.21, lambda: (1 - 0.658042) / (1 + 0.658042), 5e-3),
+    # V-B: 1521 / 61.42
+    ("f2_eff_arith", 24.8, lambda: 1521 / 61.42, 0.05),
+    # V-C: the analytic F(28, 28) exceedance at a true CPR of 0.7
+    ("f28_07", 17.5, lambda: 17.544925186078576, 0.05),
+]
+
+#: "about X": compared at a stated RELATIVE tolerance, because the manuscript
+#: says it is approximate. (id, printed, artifact, key, rel_tol, section, note)
+APPROX = [
+    ("win_pred_cpr", "0.7", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.coherence_predicts_cpr.predicted_median", 0.05, "III",
+     "'(about 0.7, more depolarized terrain)'; predicted 0.704"),
+    ("win_obs_cpr", "0.7", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.coherence_predicts_cpr.observed_median", 0.05, "III",
+     "observed 0.718"),
+    ("win_n_lo", "100", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.windows_15x15_summary.n_sc_median", 0.05, "V",
+     "'about 100 to 120': median N_SC 97.0"),
+    ("win_n_hi", "120", "docs/stokes_from_slc.json",
+     "results.t3e.180_deg.windows_15x15_summary.n_oc_median", 0.05, "V",
+     "median N_OC 122.1"),
+]
+
+#: Identifiers printed verbatim. The artifact string must START WITH the
+#: printed one (the manuscript drops the label's _xx_d18.xml suffix).
+#: (id, printed, artifact, key, section, note)
+STRINGS = [
+    ("gen_product", "ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp",
+     "docs/enl_L_20200305.json", "label.source", "IV", "second acquisition"),
+    ("main_product", "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp",
+     "docs/dop_exclusion.json", "calibration.product", "II",
+     "contained in the artifact's product field"),
+]
+
+#: QUANTIFIED CLAIMS -- "all", "every", "each", "identical", "in every one of".
+#: The audit once passed "1071.2 Hz in all nine windows" and "3.10, identical
+#: in all nine windows" because it compared the printed number with a MEDIAN
+#: key: a claim about every element was checked against one summary of them.
+#: Each row here tests the claim against EVERY element of the array behind it.
+#:
+#: (id, anchor, checks, section, note)
+#:   anchor  -- regex that must match within 120 characters of the quantifier
+#:              in the manuscript; it ties the row to the sentence. A LaTeX
+#:              backslash is written \\ (in a raw string): \ref would be read
+#:              as a carriage return and \, as a bare comma
+#:   checks  -- list of (artifact, key-with-[*]-or-filter, test)
+#:   test    -- ("rounds_to", "3.10")      every element rounds to it
+#:              ("within", lo, hi)         every element in [lo, hi]
+#:              ("below", x) / ("above", x) every element strictly below/above
+#:              ("equals", v)              every element == v
+#:              ("count", n)               the array has n elements
+#:              ("all_are", "no")          every element is that string
+#:              ("none_are", "yes")        no element is that string
+#:              ("yes_only_for_id", 2)     "yes" appears, and only on record 2
+QUANTIFIED = [
+    ("q_proxy_every_case", r"0\.00043 in every case",
+     [("docs/cpr_significance.json", "monte_carlo[0:4].amplitude_proxy.median",
+       ("rounds_to", "0.00043"))],
+     "III", "the four equal-power rows, CPR 0.30 / 0.70 / 1.00 / 1.50"),
+    ("q_eq1_every_cell", r"interval\}\) at every cell",
+     [("docs/stokes_from_slc.json", "results.t3b_180.violation_fraction", ("equals", 0.0)),
+      ("docs/stokes_from_slc.json", "results.t3b_0.violation_fraction", ("equals", 0.0))],
+     "III", "fraction of cells outside Eq. (1)'s band, both signs"),
+    ("q_band_every_cell", r"at every cell with",
+     [("docs/stokes_from_slc.json", "results.invariant.t3f_coupling_band.fraction_outside",
+       ("equals", 0.0))],
+     "III", "every DOP < 0.13 cell inside the coupling band"),
+    ("q_selected_below_130", r"every one with a measured CPR below 1\.30",
+     [("docs/stokes_from_slc.json", "results.invariant.t3f_coupling_band.fraction_outside",
+       ("equals", 0.0)),
+      ("docs/stokes_from_slc.json", "results.invariant.t3f_coupling_band.band[1]",
+       ("below", 1.30))],
+     "III", "no low-DOP cell outside (0.7699, 1.2989), and 1.2989 < 1.30"),
+    ("q_bias_every_N", r"at every look count tes",
+     [("docs/enl_benchmark.json", "synthetic.rows[?texture_label=inf].relative_bias",
+       ("within", 0.14, 0.18))],
+     "IV", "'about 16 % high at every look count tested': speckle-only rows, "
+           "N = 4, 6, 8, 12, each within 14-18 %"),
+    ("q_oversampling_nine", r"in every one of the nine windows",
+     [("docs/slc_multilook_control.json", "windows[*].oversampling_factor",
+       ("rounds_to", "3.10")),
+      ("docs/slc_multilook_control.json", "windows[*].oversampling_factor", ("count", 9))],
+     "IV", "the claim the median key once passed; now per window"),
+    ("q_all_pixels_fig1", r"over all \$2\\,337\\,086\$",
+     [("docs/dop_exclusion.json", "measured_pixels", ("equals", 2337086.0)),
+      ("docs/dop_exclusion.json", "figure_cache_cross_check.n", ("equals", 2337086.0))],
+     "III", "Fig. 1 is drawn over every measured pixel"),
+    ("q_all_pixels_resid", r"across all\s+\$2\\,337\\,086\$",
+     [("frontend/public/analysis/faustini.json", "cpr_dop_identity.verified_over_pixels",
+       ("equals", 2337086.0))],
+     "III", "the residual is taken over every measured pixel"),
+    ("q_half_all_cells", r"half of all cells",
+     [("docs/detection_statistics.json",
+       "derived.p_exceed_at_operating_point.rows[?true_cpr=1.0].p_exceed_percent",
+       ("within", 49.5, 50.5))],
+     "V", "at a true CPR of 1.00, P(R > 1) = 0.5 exactly under F(2N, 2N)"),
+    ("q_half_realizations", r"about half of all\s+realizations",
+     [("docs/f2_maximum.json", "results.N13p72.correlated_max_over_amplitude_pixels.p_exceeds_crit",
+       ("within", 0.40, 0.60))],
+     "V", "P(max over the 260 pixels > 1.895), correlated-F rows"),
+    ("q_table_every_N", r"critical value at every look count in",
+     [("docs/detection_statistics.json", "sampling_statistics.rows[*].crit_95",
+       ("above", 1.299))],
+     "VIII", "every Table II critical value exceeds the band edge"),
+    ("q_bias_every_study", r"uncorrected in\s+every lunar CPR study we examined",
+     [("docs/literature_screen.json",
+       "records[?relevant_lunar_cpr_ice_study=true].ratio_bias_corrected",
+       ("all_are", "no"))],
+     "VIII", "the screening record's per-study field for the N/(N-1) correction"),
+    ("q_criterion_every_study", r"the criterion of\s+every study in",
+     [], "V", "no per-record field records each study's criterion; UNBACKED"),
+    # "none reports X" is a universal claim about the 25 screened records. It
+    # holds if NO record says yes; an abstract-only record's "not found in the
+    # accessible material" is the weaker sense VIII-C states for those eleven.
+    ("q_lit_intro_none", r"none\s+gives a sampling distribution",
+     [("docs/literature_screen.json", "records[?relevant_lunar_cpr_ice_study=true].critical_value_reported", ("none_are", "yes")),
+      ("docs/literature_screen.json", "records[?relevant_lunar_cpr_ice_study=true].exceedance_rate_reported", ("none_are", "yes"))],
+     "I", "no screened record reports a critical value or an exceedance rate"),
+    ("q_lit_iv_none", r"none tests per-pixel\s+significance",
+     [("docs/literature_screen.json", "records[?relevant_lunar_cpr_ice_study=true].critical_value_reported", ("none_are", "yes")),
+      ("docs/literature_screen.json", "records[?relevant_lunar_cpr_ice_study=true].exceedance_rate_reported", ("none_are", "yes"))],
+     "VIII", "per-pixel significance and exceedance rate are recorded per study; "
+             "'an interval on a detected area' has no field of its own"),
+    ("q_lit_one_of_25", r"none reports one for a DFSAR product",
+     [("docs/literature_screen.json", "counts.claims_yes.measured_ENL_reported",
+       ("count", 1)),
+      ("docs/literature_screen.json",
+       "records[?relevant_lunar_cpr_ice_study=true].measured_ENL_reported", ("yes_only_for_id", 2))],
+     "VIII", "exactly one record reports a measured ENL, and it is Spudis et al. "
+             "(Mini-RF, id 2), not a DFSAR study"),
+    ("q_lit_none_crit", r"none reports a per-pixel critical value",
+     [("docs/literature_screen.json", "records[?relevant_lunar_cpr_ice_study=true].critical_value_reported", ("none_are", "yes")),
+      ("docs/literature_screen.json", "records[?relevant_lunar_cpr_ice_study=true].exceedance_rate_reported", ("none_are", "yes"))],
+     "VIII", None),
+    ("q_cardanus_uniformly", r"do not\s+agree uniformly",
+     [("docs/published_moments.json", "craters[?name=Cardanus E].N_from_skewness",
+       ("rounds_to", "7.49")),
+      ("docs/published_moments.json", "craters[?name=Cardanus E].N_from_kurtosis",
+       ("rounds_to", "9.12"))],
+     "VI", "'Cardanus E spans 7.49--9.12'"),
+]
+
+#: Quantifier sentences that are not claims about an array: algebraic
+#: identities, definitions of method, scope statements, conditionals. Each is
+#: listed with the reason, so a NEW quantified sentence is flagged until
+#: somebody decides which kind it is. (anchor, reason)
+QUANTIFIER_EXEMPT = [
+    (r"every absence claim is scoped", "editorial: the contributions list"),
+    (r"Every statistic on the delivered product", "method: which mask a statistic uses"),
+    (r"Each is stored as an unsigned 16-bit", "label field (UnsignedLSB2), not a number claim"),
+    (r"contains unity for every\s+pixel", "algebraic: c <= 1 <= 1/c for every amplitude pair"),
+    (r"identically, \$\\mathrm\{CPR\}_a>1\$ is empty", "algebraic: CPR_a = c <= 1"),
+    (r"every pixel the screen rejects", "algebraic: the complement argument"),
+    (r"Each\s+pixel is bound individually", "algebraic: Eq. (6) per Stokes vector"),
+    (r"every downstream statistic is a frame-wide summary", "editorial scope"),
+    (r"identical estimator", "method: the same estimator on both arms"),
+    (r"identical pipeline", "method: the benchmark uses the production pipeline"),
+    (r"moments of each intensity", "model statement about an ENL"),
+    (r"would each explain", "conditional: either explanation suffices"),
+    (r"would each have failed it", "conditional: falsification criteria"),
+    (r"zero algebraically for every\s+admissible input", "algebraic; G31 checks it on corrupted inputs"),
+    (r"all languages and document types", "search protocol, literature_search.json"),
+    (r"Every result from", "scope: conditional on the amplitude reading"),
+    (r"in all sections", "disclosure statement"),
+    (r"none an ISRO statement", "editorial: the provenance of the three facts"),
+    (r"every power of a low-variance variable", "mathematical: moment ENL of x^k"),
+    (r"none recovers the per-pixel sign", "algebraic: the sign of S3 is not in the powers"),
+    (r"moments are each invertible", "mathematical: F(2N,2N) moments are monotone in N"),
+    (r"0\.45\\,\\% of all cells", "'of all cells' is the denominator of a measured fraction"),
+    (r"every\s+selected cell holding a measured CPR below the\s+critical value",
+     "restates q_selected_below_130 in the conclusion; checked there"),
 ]

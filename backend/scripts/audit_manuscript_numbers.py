@@ -63,25 +63,124 @@ def load(rel: str):
 _CACHE: dict = {}
 
 
-def artifact_value(rel: str, path: str):
-    """Resolve a dotted/indexed path inside an artifact. None if absent."""
+_SEG = re.compile(r"([^\[]*)((?:\[[^\]]*\])*)$")
+
+
+def _split_path(path: str) -> list:
+    """Dotted path, but a filter's value may itself contain dots or spaces
+    ("records[?name=Cardanus E]"), so dots inside brackets do not split."""
+    parts, depth, cur = [], 0, ""
+    for ch in path.strip("."):
+        if ch == "[":
+            depth += 1
+        elif ch == "]":
+            depth -= 1
+        if ch == "." and depth == 0:
+            parts.append(cur)
+            cur = ""
+        else:
+            cur += ch
+    parts.append(cur)
+    return parts
+
+
+def _match(elem, key: str, want: str) -> bool:
+    if not isinstance(elem, dict) or key not in elem:
+        return False
+    v = elem[key]
+    if isinstance(v, bool):
+        return str(v).lower() == want.lower()
+    if isinstance(v, (int, float)):
+        try:
+            return abs(float(v) - float(want)) < 1e-12
+        except ValueError:
+            return False
+    return str(v) == want
+
+
+def resolve(rel: str, path: str):
+    """Every value a path names. `[*]` fans out over a list, `[a:b]` slices it,
+    `[?field=value]` keeps the elements whose field equals value. Returns
+    (values, fanned_out) -- a list, and whether the path named more than one
+    element. None if any step is absent."""
     if rel not in _CACHE:
         _CACHE[rel] = load(rel)
     doc = _CACHE[rel]
     if doc is None:
+        return None, False
+    curs, fanned = [doc], False
+    for part in _split_path(path):
+        m = _SEG.fullmatch(part)
+        name, brackets = m.group(1), m.group(2)
+        nxt = []
+        for c in curs:
+            try:
+                x = c[name] if name else c
+            except (KeyError, TypeError):
+                return None, fanned
+            nxt.append(x)
+        curs = nxt
+        for b in re.findall(r"\[([^\]]*)\]", brackets):
+            nxt = []
+            for c in curs:
+                if not isinstance(c, list):
+                    return None, fanned
+                if b == "*":
+                    nxt.extend(c)
+                    fanned = True
+                elif ":" in b and not b.startswith("?"):
+                    lo, hi = b.split(":")
+                    nxt.extend(c[int(lo) if lo else None:int(hi) if hi else None])
+                    fanned = True
+                elif b.startswith("?"):
+                    k, v = b[1:].split("=", 1)
+                    nxt.extend(e for e in c if _match(e, k, v))
+                    fanned = True
+                else:
+                    try:
+                        nxt.append(c[int(b)])
+                    except (IndexError, ValueError):
+                        return None, fanned
+            curs = nxt
+    return curs, fanned
+
+
+def _num(cur):
+    if isinstance(cur, bool):
         return None
-    cur = doc
-    for part in path.strip(".").split("."):
-        m = re.fullmatch(r"([^\[]*)\[(\d+)\]", part)
+    if isinstance(cur, (int, float)):
+        return float(cur)
+    if isinstance(cur, str):
         try:
-            if m:
-                if m.group(1):
-                    cur = cur[m.group(1)]
-                cur = cur[int(m.group(2))]
-            else:
-                cur = cur[part]
-        except (KeyError, IndexError, TypeError):
+            return float(cur.strip())
+        except ValueError:
             return None
+    return None
+
+
+def artifact_value(rel: str, path: str):
+    """Resolve a path to ONE number. A path that fans out must end in an
+    aggregate -- `|min`, `|max`, `|median`, `|count` -- and a filter that
+    selects exactly one element is that element. None if absent."""
+    agg = None
+    if "|" in path:
+        path, agg = path.split("|", 1)
+    vals, fanned = resolve(rel, path)
+    if vals is None:
+        return None
+    if agg == "count":
+        return float(len(vals))
+    nums = [_num(v) for v in vals]
+    if agg:
+        nums = [x for x in nums if x is not None]
+        if not nums:
+            return None
+        return {"min": min, "max": max,
+                "median": lambda a: float(sorted(a)[len(a) // 2]) if len(a) % 2
+                else 0.5 * (sorted(a)[len(a) // 2 - 1] + sorted(a)[len(a) // 2])}[agg](nums)
+    if len(vals) != 1:
+        return None
+    cur = vals[0]
     if isinstance(cur, bool):
         return None
     if isinstance(cur, (int, float)):
@@ -100,7 +199,106 @@ def artifact_value(rel: str, path: str):
 # figure, naming the artifact and the key it must come from. It is the part a
 # reviewer argues with, so it is a file they can read without reading this one.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from manuscript_audit_table import AUDIT, DERIVED  # noqa: E402
+from manuscript_audit_table import (AUDIT, APPROX, DERIVED, QUANTIFIED,  # noqa: E402
+                                    QUANTIFIER_EXEMPT, STRINGS)
+
+#: The words that make a sentence a claim about every element of something.
+QUANTIFIER = re.compile(r"\b(?:all|every|each|identical(?:ly)?|uniformly|none)\b", re.I)
+#: A quantified sentence is audited only if it also carries a number -- a
+#: digit or a spelled-out count ("all nine windows").
+NUMBERISH = re.compile(r"(?<![\w.])\d+(?:\.\d+)?|\b(?:one|two|three|four|five|six|"
+                       r"seven|eight|nine|ten|eleven|twelve|twenty|thirty|hundred)\b", re.I)
+
+
+def flat_body(tex: str):
+    """The manuscript body as one line (comments stripped, bibliography
+    dropped), with an index back to source line numbers."""
+    out, line_of = [], []
+    for i, ln in enumerate(tex.split("\n"), 1):
+        if r"\begin{thebibliography}" in ln:
+            break
+        t = re.sub(r"(?<!\\)%.*", "", ln) + " "
+        out.append(t)
+        line_of.extend([i] * len(t))
+    return "".join(out), line_of
+
+
+def sentence_at(flat: str, pos: int):
+    """Naive sentence bounds: the nearest '. ' / '; ' / table row end."""
+    lo = max(flat.rfind(". ", 0, pos), flat.rfind("\\\\", 0, pos), flat.rfind("? ", 0, pos))
+    hi_c = [x for x in (flat.find(". ", pos), flat.find("\\\\", pos)) if x != -1]
+    hi = min(hi_c) if hi_c else len(flat)
+    return lo + 1, hi + 1
+
+
+def quantified_scan(tex: str):
+    """Every quantifier in a sentence that carries a number, and whether a
+    QUANTIFIED row or a QUANTIFIER_EXEMPT entry claims it. Unclaimed ones are
+    the finding: a new 'all'/'every' claim nobody has checked element-wise."""
+    flat, line_of = flat_body(tex)
+    start = flat.find(r"\begin{abstract}")
+    hits = []
+    for m in QUANTIFIER.finditer(flat, max(start, 0)):
+        a, b = sentence_at(flat, m.start())
+        sent = flat[a:b]
+        clean = re.sub(r"\\(?:ref|cite|label)\{[^}]*\}", "", sent)
+        if not NUMBERISH.search(clean):
+            continue
+        claimed_by = None
+        for rid, anchor, *_ in QUANTIFIED:
+            for am in re.finditer(anchor, sent):
+                if abs((a + am.start()) - m.start()) <= 120 or a + am.start() <= m.start() <= a + am.end():
+                    claimed_by = ("QUANTIFIED", rid)
+        if claimed_by is None:
+            for anchor, why in QUANTIFIER_EXEMPT:
+                for am in re.finditer(anchor, sent):
+                    if abs((a + am.start()) - m.start()) <= 120 or a + am.start() <= m.start() <= a + am.end():
+                        claimed_by = ("EXEMPT", why)
+        hits.append({"line": line_of[m.start()], "word": m.group(0),
+                     "sentence": re.sub(r"\s+", " ", sent).strip()[:240],
+                     "claimed_by": claimed_by})
+    return hits
+
+
+def check_quantified(values, test):
+    """(ok, detail) for one test against every element."""
+    kind = test[0]
+    if kind == "count":
+        return len(values) == test[1], f"{len(values)} elements, claim {test[1]}"
+    if kind == "all_are":
+        off = [v for v in values if v != test[1]]
+        return (len(values) > 0 and not off), (
+            f"{len(values)} elements; {len(off)} not '{test[1]}'"
+            + (f": {sorted(set(map(str, off)))}" if off else ""))
+    if kind == "none_are":
+        off = [v for v in values if v == test[1]]
+        return (len(values) > 0 and not off), f"{len(values)} elements; {len(off)} are '{test[1]}'"
+    if kind == "yes_only_for_id":
+        return (values.count("yes") == 1), (
+            f"{values.count('yes')} 'yes' among {len(values)} (the id is checked "
+            f"through counts.claims_yes)")
+    nums = [_num(v) for v in values]
+    if not nums or any(x is None for x in nums):
+        return False, "absent or non-numeric element"
+    if kind == "rounds_to":
+        d = decimals(test[1])
+        off = [x for x in nums if round(x, d) != round(float(test[1]), d)]
+        return not off, f"{len(nums)} elements, {len(off)} do not round to {test[1]}" + (
+            f": {[round(x, d + 3) for x in off]}" if off else "")
+    if kind == "within":
+        off = [x for x in nums if not (test[1] <= x <= test[2])]
+        return not off, f"{len(nums)} elements in [{min(nums):.6g}, {max(nums):.6g}]; " \
+                        f"{len(off)} outside [{test[1]}, {test[2]}]"
+    if kind == "below":
+        off = [x for x in nums if not x < test[1]]
+        return not off, f"max {max(nums):.6g} vs < {test[1]}"
+    if kind == "above":
+        off = [x for x in nums if not x > test[1]]
+        return not off, f"min {min(nums):.6g} vs > {test[1]}"
+    if kind == "equals":
+        off = [x for x in nums if x != test[1]]
+        return not off, f"{len(nums)} elements, {len(off)} != {test[1]}"
+    return False, f"unknown test {kind}"
 
 def decimals(lit: str) -> int:
     lit = re.sub(r"[,\s]", "", lit)
@@ -165,7 +363,17 @@ def appears(tex: str, lit: str) -> list:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--tex", default=DEFAULT_TEX)
+    ap.add_argument("--inject-quantified", action="store_true",
+                    help=("prove the element-wise check catches what a median key "
+                          "cannot: set ONE window's oversampling factor to 3.25 in "
+                          "memory -- the median stays 3.10 -- and require the "
+                          "quantified row to fail. Nothing is written."))
     args = ap.parse_args()
+    if args.inject_quantified:
+        rel = "docs/slc_multilook_control.json"
+        _CACHE[rel] = load(rel)
+        _CACHE[rel]["windows"][4]["oversampling_factor"] = 3.25
+        _CACHE[rel]["windows"][4]["measured_bandwidth_hz"] = 1022.0
 
     tex_path = BASE_DIR / args.tex
     if not tex_path.is_file():
@@ -240,6 +448,92 @@ def main() -> int:
         if not ok:
             derived_bad.append((cid, printed, got))
 
+    # ---- "about X" rows ----------------------------------------------------
+    print("\n  APPROXIMATE ('about X'), at the stated relative tolerance:")
+    for cid, lit, rel, key, tol, section, note in APPROX:
+        lines = appears(tex, lit)
+        val = artifact_value(rel, key)
+        if not lines:
+            verdict = "ABSENT"
+            absent.append((cid, lit, section))
+        elif val is None:
+            verdict = "NO SOURCE"
+            nosource.append((cid, lit, section, f"{rel} has no key {key}"))
+        else:
+            ok = abs(val - float(lit)) <= tol * abs(float(lit))
+            verdict = "PASS" if ok else "MISMATCH"
+            if not ok:
+                mismatch.append((cid, lit, val, rel, key, section))
+        print(f"    {cid:<16} about {lit:<8} artifact {val if val is None else round(val, 4)!s:<10}"
+              f" tol {tol:.0%}  {verdict}")
+        rows.append({"id": cid, "printed": lit, "artifact": rel, "key": key,
+                     "artifact_value": val, "verdict": verdict, "section": section,
+                     "note": note, "tolerance_relative": tol, "tex_lines": lines})
+
+    # ---- identifiers printed verbatim ---------------------------------------
+    print("\n  STRINGS, printed verbatim:")
+    tex_plain = tex.replace("\\_", "_")
+    for cid, lit, rel, key, section, note in STRINGS:
+        lines = [i for i, ln in enumerate(tex_plain.split("\n"), 1) if lit in ln]
+        vals, _ = resolve(rel, key)
+        val = vals[0] if vals and len(vals) == 1 and isinstance(vals[0], str) else None
+        if not lines:
+            verdict = "ABSENT"
+            absent.append((cid, lit, section))
+        elif val is None:
+            verdict = "NO SOURCE"
+            nosource.append((cid, lit, section, f"{rel} has no string key {key}"))
+        else:
+            ok = lit in val
+            verdict = "PASS" if ok else "MISMATCH"
+            if not ok:
+                mismatch.append((cid, lit, val, rel, key, section))
+        print(f"    {cid:<16} {verdict:<9} {lit}  <-  {rel}::{key} = {val}")
+        rows.append({"id": cid, "printed": lit, "artifact": rel, "key": key,
+                     "artifact_value": val, "verdict": verdict, "section": section,
+                     "note": note, "tex_lines": lines})
+
+    # ---- quantified claims, against every element ---------------------------
+    print("\n  QUANTIFIED CLAIMS -- 'all', 'every', 'each', tested against EVERY element:")
+    qrows, qfail = [], []
+    flat_, _ = flat_body(tex)
+    flat_one = re.sub(r"\s+", " ", flat_)
+    for cid, anchor, checks, section, note in QUANTIFIED:
+        present = re.search(anchor, flat_one) is not None
+        details, ok_all = [], True
+        if not present:
+            verdict = "ABSENT"
+        elif not checks:
+            verdict, ok_all = "UNBACKED", False
+            details.append("no artifact field records the elements this claim is about")
+        else:
+            for rel, key, test in checks:
+                vals, _ = resolve(rel, key)
+                if vals is None or (test[0] != "count" and not vals):
+                    ok, det = False, f"{rel}::{key} absent"
+                else:
+                    ok, det = check_quantified(vals, test)
+                details.append(f"{rel}::{key} {test[0]}: {det} -> {'ok' if ok else 'FAIL'}")
+                ok_all &= ok
+            verdict = "PASS" if ok_all else "FAIL"
+        if verdict != "PASS":
+            qfail.append((cid, verdict))
+        print(f"    {cid:<24} {verdict:<9} ({section}) {note or ''}")
+        for d in details:
+            print(f"        {d}")
+        qrows.append({"id": cid, "anchor": anchor, "verdict": verdict, "section": section,
+                      "note": note, "details": details})
+
+    scan = quantified_scan(tex)
+    unchecked = [h for h in scan if h["claimed_by"] is None]
+    print(f"\n  QUANTIFIER SCAN: {len(scan)} quantifier(s) in sentences that carry a number; "
+          f"{sum(1 for h in scan if h['claimed_by'] and h['claimed_by'][0] == 'QUANTIFIED')} "
+          f"checked element-wise, "
+          f"{sum(1 for h in scan if h['claimed_by'] and h['claimed_by'][0] == 'EXEMPT')} exempt "
+          f"with a reason, {len(unchecked)} UNCHECKED")
+    for h in unchecked:
+        print(f"    UNCHECKED L{h['line']} [{h['word']}] {h['sentence'][:200]}")
+
     out = {
         "schema": "lunar-ice/manuscript-audit/1",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
@@ -252,7 +546,23 @@ def main() -> int:
                    "ABSENT": len(absent)},
         "rows": rows,
         "derived_checks_failed": derived_bad,
+        "quantified": {"rows": qrows,
+                       "counts": {v: sum(1 for r in qrows if r["verdict"] == v)
+                                  for v in ("PASS", "FAIL", "UNBACKED", "ABSENT")},
+                       "scan": scan, "unchecked": len(unchecked),
+                       "rule": ("a claim about every element is tested against every "
+                                "element; a median or a single row cannot pass it")},
     }
+    if args.inject_quantified:
+        med = artifact_value("docs/slc_multilook_control.json", "medians.oversampling_factor")
+        q = next(r for r in qrows if r["id"] == "q_oversampling_nine")
+        bw = next(r for r in rows if r["id"] == "bw_max")
+        print("\n  INJECTION: window 4's oversampling factor set to 3.25 in memory")
+        print(f"    the median key still reads {med:.4f} -> the old check would PASS")
+        print(f"    q_oversampling_nine: {q['verdict']}   bw_min/bw_max row: {bw['verdict']}")
+        caught = q["verdict"] == "FAIL"
+        print(f"  {'INJECTION CAUGHT' if caught else 'INJECTION MISSED'} -- nothing written")
+        return 0 if caught else 1
     (BASE_DIR / "docs" / "manuscript_number_audit.json").write_text(
         json.dumps(out, indent=2), encoding="utf-8")
 
@@ -269,9 +579,18 @@ def main() -> int:
         print("\n  ABSENT from the .tex:")
         for cid, lit, sec in absent:
             print(f"    {cid} (§{sec}): {lit}")
+    if qfail or unchecked:
+        print("\n  QUANTIFIED:")
+        for cid, v in qfail:
+            print(f"    {cid}: {v}")
+        if unchecked:
+            print(f"    {len(unchecked)} quantified sentence(s) claimed by no row")
     print("\n  wrote docs/manuscript_number_audit.json")
     print("  This is a REPORT. The manuscript is not edited here.")
-    return 0
+    # A non-zero exit on anything a reader would have to be told: a printed
+    # figure its artifact contradicts or cannot find, and a quantified claim
+    # that fails on some element or that nobody has checked element by element.
+    return 1 if (mismatch or absent or derived_bad or qfail or unchecked) else 0
 
 
 if __name__ == "__main__":

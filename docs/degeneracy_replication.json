@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/degeneracy-replication/1",
-  "generated_utc": "2026-09-16T11:00:46.213113+00:00",
+  "generated_utc": "2026-09-23T09:30:27.653005+00:00",
   "computed_by": "backend/scripts/assert_degeneracy_replicates.py",
   "closed_form_ceiling": 0.004261082862785302,
   "dop_threshold": 0.13,

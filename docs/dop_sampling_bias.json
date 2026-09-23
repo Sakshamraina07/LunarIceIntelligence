@@ -1,0 +1,74 @@
+{
+  "schema": "lunar-ice/dop-sampling-bias/1",
+  "generated_utc": "2026-09-23T09:12:15.039821+00:00",
+  "generator": "backend/scripts/dop_sampling_bias.py",
+  "model": "N independent equal-weight circular complex Gaussian looks of a 2x2 circular-basis covariance; sample covariance = mean over looks; R = a_hat/b_hat, m_hat = sqrt((a_hat-b_hat)^2 + 4|c_hat|^2)/(a_hat+b_hat). Speckle only.",
+  "dop_threshold": 0.13,
+  "cpr_threshold": 1.0,
+  "reference": "Santalla del Rio et al., IEEE TAP 54(7), 2006 (santalla2006)",
+  "seed": 20260923,
+  "trials_per_N": 400000,
+  "question": "P(m_hat < 0.13 | population DOP = 0) -- how often an unpolarized population reads as passing the DOP gate",
+  "closed_form": "m_hat^2 ~ Beta(3/2, N - 1)",
+  "manuscript_figure": {
+    "N": 14,
+    "closed_form_percent": 7.059685232270535,
+    "simulated_percent": 7.051749999999999,
+    "printed": "7 %"
+  },
+  "rows": [
+    {
+      "N": 5,
+      "simulated": {
+        "percent": 1.41025,
+        "mc_se_percent": 0.01864377878392012
+      },
+      "beta_closed_form_percent": 1.3984493852529498,
+      "z_simulated_vs_closed": 0.6329518754657171,
+      "ks_distance_m2_vs_beta": 0.0006676865188691705,
+      "median_sample_dop": 0.49397121787213494
+    },
+    {
+      "N": 14,
+      "simulated": {
+        "percent": 7.051749999999999,
+        "mc_se_percent": 0.040479866042808864
+      },
+      "beta_closed_form_percent": 7.059685232270535,
+      "z_simulated_vs_closed": -0.1960291138845212,
+      "ks_distance_m2_vs_beta": 0.000910266710723806,
+      "median_sample_dop": 0.29234864107643493
+    },
+    {
+      "N": 21,
+      "simulated": {
+        "percent": 12.4805,
+        "mc_se_percent": 0.05225627043116452
+      },
+      "beta_closed_form_percent": 12.449340817672539,
+      "z_simulated_vs_closed": 0.5962764290364995,
+      "ks_distance_m2_vs_beta": 0.0026329262337945747,
+      "median_sample_dop": 0.23784837674584874
+    },
+    {
+      "N": 38,
+      "simulated": {
+        "percent": 26.384,
+        "mc_se_percent": 0.0696829344961878
+      },
+      "beta_closed_form_percent": 26.36716850453099,
+      "z_simulated_vs_closed": 0.24154401060607533,
+      "ks_distance_m2_vs_beta": 0.0011170382821080738,
+      "median_sample_dop": 0.17675420313034865
+    }
+  ],
+  "run_info": {
+    "wall_s": 6.5,
+    "peak_rss_mb": 209,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

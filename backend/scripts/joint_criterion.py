@@ -63,6 +63,7 @@ for _s in (sys.stdout, sys.stderr):
         pass
 
 SEED = 7
+SEED_CHECK_SEEDS = tuple(range(100, 130))
 N_LOOKS = 14
 TRUE_CPR = 0.7
 DOP_THRESHOLD = 0.13
@@ -183,6 +184,38 @@ def main() -> int:
         print(f"    CPR {c:.5f}  m {mm:.5f}  joint {r['joint_fp_percent']:6.2f} ± {r['joint_se_percent']:.2f} %")
     maximiser = max(scan, key=lambda s: s["joint_percent"])
 
+    # CONSISTENCY CHECK (2026-09-23). The headline marginal reads 17.69 % at
+    # seed 7 against the analytic F(28, 28) value 17.545 % for its own
+    # population (gamma_c ~ 0.0006, where the ratio is F to within 1e-6), about
+    # three Monte Carlo standard errors high. Generator or seed? The same draw
+    # at 30 further seeds, each with its own generator so the headline's RNG
+    # stream above is untouched, answers it: an unbiased generator gives z-
+    # scores with mean ~0 and SD ~1. The manuscript prints the F value.
+    an = float((1.0 - _F.cdf(1.0 / TRUE_CPR, 2 * N_LOOKS, 2 * N_LOOKS)) * 100.0)
+    zs = []
+    for sd in SEED_CHECK_SEEDS:
+        r_ = rates(np.random.default_rng(sd), TRUE_CPR, m_min + 1e-6, args.trials)
+        zs.append((r_["marginal_fp_percent"] - an) / r_["marginal_se_percent"])
+    zs = np.array(zs)
+    z7 = (headline_spec["marginal_fp_percent"] - an) / headline_spec["marginal_se_percent"]
+    seed_check = {
+        "analytic_F_percent": an, "headline_seed": SEED,
+        "headline_marginal_percent": headline_spec["marginal_fp_percent"],
+        "headline_z": float(z7),
+        "other_seeds": list(SEED_CHECK_SEEDS), "trials_each": args.trials,
+        "z_mean": float(zs.mean()), "z_sd": float(zs.std(ddof=1)),
+        "z_mean_se": float(zs.std(ddof=1) / np.sqrt(zs.size)),
+        "verdict": ("generator unbiased: the other seeds' z-scores have mean "
+                    f"{zs.mean():+.2f} and SD {zs.std(ddof=1):.2f}; seed {SEED}'s "
+                    f"{z7:+.2f} is one draw's fluctuation. The manuscript prints "
+                    "the F value, not the Monte Carlo marginal."),
+        "gamma_c_of_headline_population": float(
+            headline_spec["population"]["stokes"]["S2"]
+            / np.sqrt(headline_spec["population"]["stokes"]["S0"] ** 2
+                      - headline_spec["population"]["stokes"]["S3"] ** 2))}
+    print(f"\n  SEED CHECK: analytic {an:.3f} %, seed {SEED} z {z7:+.2f}; "
+          f"{zs.size} other seeds z mean {zs.mean():+.2f}, SD {zs.std(ddof=1):.2f}")
+
     measured = None
     if SLC.is_file():
         j = json.loads(SLC.read_text(encoding="utf-8"))["results"].get("joint_measured")
@@ -231,6 +264,7 @@ def main() -> int:
         "rows": rows,
         "marginal_fp_percent_analytic_F": float(
             (1.0 - _F.cdf(1.0 / TRUE_CPR, 2 * N_LOOKS, 2 * N_LOOKS)) * 100.0),
+        "marginal_seed_check": seed_check,
         "headline": {"marginal_fp_percent_monte_carlo": rows[0]["marginal_fp_percent"],
                      "joint_fp_percent": rows[0]["joint_fp_percent"],
                      "at_true_m": rows[0]["true_m"]},

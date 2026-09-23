@@ -1,30 +1,17 @@
 {
   "schema": "lunar-ice/manuscript-audit/1",
-  "generated_utc": "2026-09-16T11:06:06.872972+00:00",
+  "generated_utc": "2026-09-23T09:24:31.697500+00:00",
   "computed_by": "backend/scripts/audit_manuscript_numbers.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "manuscript_is_read_only": true,
-  "n_audited": 268,
+  "n_audited": 283,
   "counts": {
-    "PASS": 264,
+    "PASS": 279,
     "MISMATCH": 0,
     "NO SOURCE": 4,
     "ABSENT": 0
   },
   "rows": [
-    {
-      "id": "obs_duration",
-      "printed": "107.106",
-      "artifact": "docs/data_provenance.json",
-      "key": "observation_duration_s",
-      "artifact_value": 107.106,
-      "verdict": "PASS",
-      "section": "II",
-      "note": "label start/stop, verified per line by G27",
-      "tex_lines": [
-        144
-      ]
-    },
     {
       "id": "looks21",
       "printed": "21",
@@ -35,29 +22,27 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        43,
-        146,
-        164,
-        232,
-        405,
-        454,
-        457,
-        486,
-        495,
-        497,
-        499,
-        503,
-        505,
-        507,
-        517,
-        535,
+        44,
+        147,
+        165,
+        238,
+        435,
+        498,
+        500,
+        529,
+        538,
+        540,
         542,
-        565,
-        631,
-        669,
-        1012,
-        1018,
-        1186
+        547,
+        549,
+        564,
+        566,
+        572,
+        601,
+        667,
+        679,
+        1025,
+        1202
       ]
     },
     {
@@ -70,8 +55,9 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        147,
-        164
+        148,
+        165,
+        572
       ]
     },
     {
@@ -84,9 +70,9 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        148,
-        164,
-        489
+        149,
+        165,
+        532
       ]
     },
     {
@@ -99,8 +85,8 @@
       "section": "II",
       "note": "label field",
       "tex_lines": [
-        148,
-        493
+        149,
+        536
       ]
     },
     {
@@ -113,8 +99,48 @@
       "section": "II",
       "note": "label field, sri product",
       "tex_lines": [
-        149,
-        161
+        150,
+        217
+      ]
+    },
+    {
+      "id": "kcal_db_ortho",
+      "printed": "70.308868",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "calibration.K_db",
+      "artifact_value": 70.308868,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "unit dB, ortho (sri) label; K = 10^(K_dB/10) is calibration.K_lin. The SLC label's 80.0 dB is a different product's constant",
+      "tex_lines": [
+        150,
+        217
+      ]
+    },
+    {
+      "id": "gain_g_lh",
+      "printed": "1.018",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "gain_imbalance.LH",
+      "artifact_value": 1.018442,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "label gain imbalance, LH",
+      "tex_lines": [
+        217
+      ]
+    },
+    {
+      "id": "gain_g_lv",
+      "printed": "1.001",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "gain_imbalance.LV",
+      "artifact_value": 1.000923,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "label gain imbalance, LV",
+      "tex_lines": [
+        218
       ]
     },
     {
@@ -127,7 +153,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        154
+        155
       ]
     },
     {
@@ -140,7 +166,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        155
+        156
       ]
     },
     {
@@ -153,7 +179,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        155
+        156
       ]
     },
     {
@@ -166,7 +192,7 @@
       "section": "II",
       "note": "against the LOLA team's published PSR mask",
       "tex_lines": [
-        159
+        160
       ]
     },
     {
@@ -179,7 +205,7 @@
       "section": "II",
       "note": "2258 x 6618, the full frame",
       "tex_lines": [
-        189
+        192
       ]
     },
     {
@@ -192,7 +218,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        189
+        192
       ]
     },
     {
@@ -205,7 +231,7 @@
       "section": "II",
       "note": "ISRO sri_ma > 0",
       "tex_lines": [
-        190
+        193
       ]
     },
     {
@@ -218,7 +244,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        190
+        193
       ]
     },
     {
@@ -231,7 +257,7 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        190
+        193
       ]
     },
     {
@@ -244,11 +270,11 @@
       "section": "II",
       "note": "(LH > 0) & (LV > 0)",
       "tex_lines": [
-        191,
-        328,
-        338,
-        569,
-        877
+        194,
+        341,
+        351,
+        606,
+        901
       ]
     },
     {
@@ -261,8 +287,7 @@
       "section": "II",
       "note": null,
       "tex_lines": [
-        191,
-        889
+        194
       ]
     },
     {
@@ -275,7 +300,7 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        191
+        194
       ]
     },
     {
@@ -288,33 +313,7 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        193
-      ]
-    },
-    {
-      "id": "f2_line",
-      "printed": "1120.3",
-      "artifact": "docs/f2_footprint.json",
-      "key": "frame_pixel.line",
-      "artifact_value": 1120.2592294833287,
-      "verdict": "PASS",
-      "section": "II",
-      "note": "validated forward projection",
-      "tex_lines": [
-        200
-      ]
-    },
-    {
-      "id": "f2_sample",
-      "printed": "3676.9",
-      "artifact": "docs/f2_footprint.json",
-      "key": "frame_pixel.sample",
-      "artifact_value": 3676.880851229477,
-      "verdict": "PASS",
-      "section": "II",
-      "note": null,
-      "tex_lines": [
-        200
+        196
       ]
     },
     {
@@ -327,9 +326,9 @@
       "section": "II",
       "note": "44 px diameter at 25 m",
       "tex_lines": [
-        201,
-        716,
-        722
+        204,
+        734,
+        740
       ]
     },
     {
@@ -342,8 +341,8 @@
       "section": "II",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        201,
-        722
+        204,
+        740
       ]
     },
     {
@@ -356,7 +355,8 @@
       "section": "II",
       "note": "Sinha et al. 2026, transcribed",
       "tex_lines": [
-        199
+        202,
+        427
       ]
     },
     {
@@ -369,7 +369,7 @@
       "section": "III",
       "note": "5th percentile, SLC 21-look + boxcar5 sqrt(l_H/l_V)",
       "tex_lines": [
-        237
+        244
       ]
     },
     {
@@ -382,7 +382,7 @@
       "section": "III",
       "note": "95th percentile",
       "tex_lines": [
-        237
+        244
       ]
     },
     {
@@ -395,9 +395,9 @@
       "section": "III",
       "note": "5th percentile, sqrt(boxcar5(DN^2)) ratio at matched ENL",
       "tex_lines": [
-        237,
-        491,
-        822
+        244,
+        534,
+        846
       ]
     },
     {
@@ -410,7 +410,7 @@
       "section": "III",
       "note": "95th percentile",
       "tex_lines": [
-        237
+        244
       ]
     },
     {
@@ -423,8 +423,8 @@
       "section": "III",
       "note": "2*artanh(0.13); closed form, checked as DERIVED below",
       "tex_lines": [
-        299,
-        302
+        314,
+        317
       ]
     },
     {
@@ -438,8 +438,8 @@
       "note": "tanh^2(artanh(0.13)/2)",
       "tex_lines": [
         37,
-        332,
-        1004
+        345,
+        1017
       ]
     },
     {
@@ -452,7 +452,7 @@
       "section": "III",
       "note": "the same constant to eight figures",
       "tex_lines": [
-        302
+        317
       ]
     },
     {
@@ -465,7 +465,7 @@
       "section": "III",
       "note": "1.00 / measured crossing",
       "tex_lines": [
-        305
+        320
       ]
     },
     {
@@ -478,8 +478,7 @@
       "section": "III",
       "note": "DOP_a >= 0.13, excluded whatever the phase",
       "tex_lines": [
-        318,
-        890
+        333
       ]
     },
     {
@@ -492,7 +491,7 @@
       "section": "III",
       "note": "the remainder; undecidable from amplitudes",
       "tex_lines": [
-        319
+        334
       ]
     },
     {
@@ -505,11 +504,11 @@
       "section": "III",
       "note": "the same count, recomputed in Fig. 1's own path",
       "tex_lines": [
-        191,
-        328,
-        338,
-        569,
-        877
+        194,
+        341,
+        351,
+        606,
+        901
       ]
     },
     {
@@ -522,20 +521,7 @@
       "section": "III",
       "note": "stored float32 field",
       "tex_lines": [
-        338
-      ]
-    },
-    {
-      "id": "rms_resid",
-      "printed": "8.025e-9",
-      "artifact": "frontend/public/analysis/faustini.json",
-      "key": "cpr_dop_identity.rms_residual",
-      "artifact_value": 8.025280870672378e-09,
-      "verdict": "PASS",
-      "section": "III",
-      "note": "stored float32 field",
-      "tex_lines": [
-        339
+        351
       ]
     },
     {
@@ -548,7 +534,7 @@
       "section": "III",
       "note": "max CPR where DOP < 0.13, screened field",
       "tex_lines": [
-        340
+        353
       ]
     },
     {
@@ -561,7 +547,7 @@
       "section": "III",
       "note": "relative agreement, crossing vs closed form; DERIVED",
       "tex_lines": [
-        341
+        354
       ]
     },
     {
@@ -574,7 +560,7 @@
       "section": "III",
       "note": "the 2020-03-05 acquisition's crossing, relative to the closed form",
       "tex_lines": [
-        345
+        359
       ]
     },
     {
@@ -588,45 +574,41 @@
       "note": "look count the simulator ran at",
       "tex_lines": [
         43,
-        128,
-        177,
-        190,
-        235,
-        237,
-        263,
-        341,
-        344,
-        345,
-        353,
-        371,
-        378,
-        406,
-        452,
-        453,
-        459,
-        465,
-        466,
-        476,
-        537,
-        538,
-        549,
-        566,
-        608,
-        625,
-        648,
-        649,
-        655,
-        656,
-        684,
-        700,
-        722,
-        837,
-        878,
-        1012,
-        1042,
-        1181,
-        1207,
-        1212
+        131,
+        180,
+        193,
+        242,
+        244,
+        354,
+        357,
+        359,
+        367,
+        384,
+        392,
+        436,
+        497,
+        498,
+        502,
+        508,
+        509,
+        519,
+        568,
+        570,
+        603,
+        644,
+        661,
+        691,
+        706,
+        709,
+        713,
+        737,
+        861,
+        902,
+        1025,
+        1053,
+        1188,
+        1228,
+        1233
       ]
     },
     {
@@ -639,7 +621,7 @@
       "section": "III",
       "note": "the run parameter, now recorded: the committed artifact reproduces bit-for-bit at --trials 120000 --coherence 0.9822",
       "tex_lines": [
-        355
+        369
       ]
     },
     {
@@ -652,7 +634,7 @@
       "section": "III",
       "note": "the coherence the run used; equal to sqrt(0.9647), checked as DERIVED",
       "tex_lines": [
-        356
+        369
       ]
     },
     {
@@ -665,7 +647,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        357
+        370
       ]
     },
     {
@@ -678,7 +660,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        360
+        373
       ]
     },
     {
@@ -691,7 +673,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        360
+        373
       ]
     },
     {
@@ -704,7 +686,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        360
+        373
       ]
     },
     {
@@ -717,7 +699,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        360
+        374
       ]
     },
     {
@@ -730,7 +712,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        359
+        372
       ]
     },
     {
@@ -743,7 +725,7 @@
       "section": "III",
       "note": "1 dB imbalance",
       "tex_lines": [
-        361
+        375
       ]
     },
     {
@@ -756,7 +738,7 @@
       "section": "III",
       "note": "3 dB imbalance",
       "tex_lines": [
-        362
+        375
       ]
     },
     {
@@ -769,7 +751,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        376
+        390
       ]
     },
     {
@@ -782,7 +764,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        376
+        390
       ]
     },
     {
@@ -795,7 +777,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        377
+        391
       ]
     },
     {
@@ -808,7 +790,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        377
+        391
       ]
     },
     {
@@ -821,7 +803,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        378
+        392
       ]
     },
     {
@@ -834,7 +816,109 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        378
+        392
+      ]
+    },
+    {
+      "id": "sinha_dop_lo",
+      "printed": "0.10",
+      "artifact": "docs/literature_screen.json",
+      "key": "records[?id=4].aggregation_record.average_dop_range[0]",
+      "artifact_value": 0.1,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "literature value; the quotation is recorded with it",
+      "tex_lines": [
+        423
+      ]
+    },
+    {
+      "id": "sinha_dop_hi",
+      "printed": "0.13",
+      "artifact": "docs/literature_screen.json",
+      "key": "records[?id=4].aggregation_record.average_dop_range[1]",
+      "artifact_value": 0.13,
+      "verdict": "PASS",
+      "section": "III",
+      "note": null,
+      "tex_lines": [
+        38,
+        85,
+        87,
+        314,
+        323,
+        332,
+        343,
+        353,
+        394,
+        413,
+        420,
+        423,
+        425,
+        439,
+        449,
+        457,
+        704,
+        785,
+        790,
+        956,
+        958
+      ]
+    },
+    {
+      "id": "band_hi_2dp",
+      "printed": "1.30",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.invariant.t3f_coupling_band.band[1]",
+      "artifact_value": 1.2988505747126435,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "'every one with a measured CPR below 1.30'",
+      "tex_lines": [
+        476
+      ]
+    },
+    {
+      "id": "win_rank_corr",
+      "printed": "0.98",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.coherence_predicts_cpr.spearman",
+      "artifact_value": 0.9789473684210527,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "Spearman, (1-rho)/(1+rho) of each window's median H-V coherence against its median CPR, 20 windows",
+      "tex_lines": [
+        448,
+        780
+      ]
+    },
+    {
+      "id": "dop_bias_n14",
+      "printed": "7",
+      "artifact": "docs/dop_sampling_bias.json",
+      "key": "manuscript_figure.closed_form_percent",
+      "artifact_value": 7.059685232270535,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "P(m_hat < 0.13 | DOP 0, N 14) = Beta(3/2, 13) cdf at 0.13^2; simulated 7.05 +/- 0.04 % in rows[1]",
+      "tex_lines": [
+        456,
+        502,
+        543,
+        545,
+        553,
+        568,
+        644,
+        663,
+        740,
+        846,
+        847,
+        849,
+        850,
+        851,
+        852,
+        874,
+        1210
       ]
     },
     {
@@ -847,7 +931,7 @@
       "section": "III",
       "note": "(1-0.13)/(1+0.13)",
       "tex_lines": [
-        396
+        413
       ]
     },
     {
@@ -860,8 +944,11 @@
       "section": "III",
       "note": "(1+0.13)/(1-0.13)",
       "tex_lines": [
-        396,
-        397
+        413,
+        416,
+        420,
+        704,
+        707
       ]
     },
     {
@@ -874,7 +961,7 @@
       "section": "III",
       "note": "21-look x 5x5 cells with both channels positive",
       "tex_lines": [
-        406
+        436
       ]
     },
     {
@@ -887,7 +974,8 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        412
+        442,
+        446
       ]
     },
     {
@@ -900,7 +988,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        412
+        442
       ]
     },
     {
@@ -913,7 +1001,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        412
+        442
       ]
     },
     {
@@ -926,7 +1014,7 @@
       "section": "III",
       "note": "over the 20 most homogeneous 15x15 windows",
       "tex_lines": [
-        412
+        442
       ]
     },
     {
@@ -939,7 +1027,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        413
+        443
       ]
     },
     {
@@ -952,7 +1040,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        413
+        443
       ]
     },
     {
@@ -965,8 +1053,8 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        358,
-        416
+        371,
+        450
       ]
     },
     {
@@ -979,17 +1067,16 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        143,
-        229,
-        416,
-        651,
-        691,
-        778,
-        961,
-        965,
-        1147,
-        1161,
-        1195
+        145,
+        233,
+        451,
+        699,
+        802,
+        978,
+        982,
+        1149,
+        1163,
+        1216
       ]
     },
     {
@@ -1002,12 +1089,12 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        339,
-        417,
-        467,
-        474,
-        654,
-        1212
+        352,
+        451,
+        510,
+        517,
+        713,
+        1233
       ]
     },
     {
@@ -1020,7 +1107,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        418
+        459
       ]
     },
     {
@@ -1033,7 +1120,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        419
+        459
       ]
     },
     {
@@ -1046,7 +1133,7 @@
       "section": "III",
       "note": null,
       "tex_lines": [
-        419
+        461
       ]
     },
     {
@@ -1059,7 +1146,7 @@
       "section": "III",
       "note": "100(1 - cos 1.67 deg)",
       "tex_lines": [
-        421
+        463
       ]
     },
     {
@@ -1072,7 +1159,8 @@
       "section": "III",
       "note": "the physical sign",
       "tex_lines": [
-        424
+        446,
+        469
       ]
     },
     {
@@ -1085,7 +1173,7 @@
       "section": "III",
       "note": "its reciprocal",
       "tex_lines": [
-        424
+        469
       ]
     },
     {
@@ -1098,7 +1186,7 @@
       "section": "III",
       "note": "P(CPR>1 | DOP<0.13); fraction stored, printed as a percentage",
       "tex_lines": [
-        426
+        474
       ]
     },
     {
@@ -1111,9 +1199,9 @@
       "section": "III",
       "note": "fraction stored; printed as a percentage",
       "tex_lines": [
-        427,
-        941,
-        1011
+        475,
+        958,
+        1022
       ]
     },
     {
@@ -1126,9 +1214,9 @@
       "section": "IV",
       "note": "16x16 patches, delivered",
       "tex_lines": [
-        452,
-        466,
-        655
+        497,
+        509,
+        713
       ]
     },
     {
@@ -1141,7 +1229,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        452
+        497
       ]
     },
     {
@@ -1155,12 +1243,11 @@
       "note": "over the screening mask",
       "tex_lines": [
         43,
-        452,
-        465,
-        648,
-        656,
-        684,
-        1012
+        497,
+        508,
+        691,
+        713,
+        1025
       ]
     },
     {
@@ -1174,8 +1261,8 @@
       "note": null,
       "tex_lines": [
         43,
-        453,
-        1012
+        498,
+        1025
       ]
     },
     {
@@ -1188,8 +1275,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        458,
-        639
+        501
       ]
     },
     {
@@ -1202,8 +1288,7 @@
       "section": "IV",
       "note": "block bootstrap, B = 2000",
       "tex_lines": [
-        459,
-        648
+        502
       ]
     },
     {
@@ -1216,8 +1301,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        459,
-        648
+        502
       ]
     },
     {
@@ -1230,7 +1314,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        459
+        502
       ]
     },
     {
@@ -1243,7 +1327,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        459
+        502
       ]
     },
     {
@@ -1256,8 +1340,8 @@
       "section": "IV",
       "note": "after the 5x5 boxcar",
       "tex_lines": [
-        460,
-        649
+        503,
+        717
       ]
     },
     {
@@ -1270,8 +1354,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        460,
-        649
+        503,
+        717
       ]
     },
     {
@@ -1284,7 +1368,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        460
+        503
       ]
     },
     {
@@ -1297,7 +1381,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        460
+        503,
+        739
       ]
     },
     {
@@ -1310,16 +1395,15 @@
       "section": "IV",
       "note": "coverage of the nominally 95 % block bootstrap, synthetic speckle",
       "tex_lines": [
-        460,
-        463,
-        465,
-        587,
-        631,
-        640,
-        655,
-        691,
-        1018,
-        1186
+        503,
+        506,
+        508,
+        624,
+        667,
+        695,
+        699,
+        715,
+        1202
       ]
     },
     {
@@ -1332,11 +1416,9 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        463,
-        626,
-        640,
-        654,
-        741
+        506,
+        662,
+        716
       ]
     },
     {
@@ -1349,20 +1431,21 @@
       "section": "IV",
       "note": "the mode estimator's relative bias on correlated speckle",
       "tex_lines": [
-        211,
-        230,
-        451,
-        464,
-        467,
-        473,
-        478,
-        655,
-        690,
-        691,
-        696,
+        213,
+        234,
+        496,
+        507,
+        510,
+        516,
+        522,
+        698,
         699,
-        866,
-        1219
+        709,
+        713,
+        715,
+        890,
+        1196,
+        1236
       ]
     },
     {
@@ -1375,7 +1458,7 @@
       "section": "IV",
       "note": "at N = 4",
       "tex_lines": [
-        464
+        507
       ]
     },
     {
@@ -1388,8 +1471,7 @@
       "section": "IV",
       "note": "at N = 12",
       "tex_lines": [
-        465,
-        657
+        508
       ]
     },
     {
@@ -1402,9 +1484,9 @@
       "section": "IV",
       "note": "5.83 read through the measured bias",
       "tex_lines": [
-        466,
-        476,
-        538
+        509,
+        519,
+        570
       ]
     },
     {
@@ -1417,8 +1499,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        467,
-        654
+        510,
+        713
       ]
     },
     {
@@ -1431,8 +1513,8 @@
       "section": "IV",
       "note": "FIELD correlation used in the patch-bias run",
       "tex_lines": [
-        472,
-        473
+        515,
+        516
       ]
     },
     {
@@ -1445,8 +1527,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        472,
-        473
+        515,
+        516
       ]
     },
     {
@@ -1459,7 +1541,7 @@
       "section": "IV",
       "note": "the INTENSITY lag-one it produces",
       "tex_lines": [
-        472
+        515
       ]
     },
     {
@@ -1472,7 +1554,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        472
+        515
       ]
     },
     {
@@ -1485,7 +1567,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        473
+        516
       ]
     },
     {
@@ -1498,7 +1580,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        474
+        517
       ]
     },
     {
@@ -1511,7 +1593,7 @@
       "section": "IV",
       "note": "uncorrelated control at both sizes",
       "tex_lines": [
-        474
+        517
       ]
     },
     {
@@ -1524,7 +1606,7 @@
       "section": "IV",
       "note": "over the four blocks with coverage",
       "tex_lines": [
-        478
+        522
       ]
     },
     {
@@ -1537,7 +1619,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        478
+        522
       ]
     },
     {
@@ -1550,7 +1632,33 @@
       "section": "IV",
       "note": "median across the nine windows",
       "tex_lines": [
-        488
+        531
+      ]
+    },
+    {
+      "id": "bw_min",
+      "printed": "1071.2",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "windows[*].measured_bandwidth_hz|min",
+      "artifact_value": 1071.22927281,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "'1071.2--1071.6 Hz across the nine windows'",
+      "tex_lines": [
+        531
+      ]
+    },
+    {
+      "id": "bw_max",
+      "printed": "1071.6",
+      "artifact": "docs/slc_multilook_control.json",
+      "key": "windows[*].measured_bandwidth_hz|max",
+      "artifact_value": 1071.6247062809525,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": null,
+      "tex_lines": [
+        531
       ]
     },
     {
@@ -1563,8 +1671,8 @@
       "section": "IV",
       "note": "single-look intensity, answer known",
       "tex_lines": [
-        491,
-        828
+        534,
+        852
       ]
     },
     {
@@ -1577,9 +1685,9 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        237,
-        491,
-        822
+        244,
+        534,
+        846
       ]
     },
     {
@@ -1592,9 +1700,10 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        491,
-        704,
-        826
+        534,
+        719,
+        723,
+        850
       ]
     },
     {
@@ -1607,10 +1716,10 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        44,
-        495,
-        497,
-        1013
+        45,
+        538,
+        540,
+        1026
       ]
     },
     {
@@ -1623,10 +1732,10 @@
       "section": "IV",
       "note": "21 / 3.10, asymptotic",
       "tex_lines": [
-        497,
-        514,
-        523,
-        626
+        540,
+        553,
+        568,
+        662
       ]
     },
     {
@@ -1639,9 +1748,9 @@
       "section": "IV",
       "note": "exact, rectangular spectrum",
       "tex_lines": [
-        500,
-        514,
-        523
+        543,
+        553,
+        568
       ]
     },
     {
@@ -1654,8 +1763,9 @@
       "section": "IV",
       "note": "1 - 0.1 cos(2 pi f / B)",
       "tex_lines": [
-        502,
-        722
+        545,
+        568,
+        740
       ]
     },
     {
@@ -1668,7 +1778,8 @@
       "section": "IV",
       "note": "the shape the label declares",
       "tex_lines": [
-        502
+        545,
+        568
       ]
     },
     {
@@ -1681,7 +1792,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        523
+        551
       ]
     },
     {
@@ -1694,8 +1805,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        524,
-        532
+        554,
+        562
       ]
     },
     {
@@ -1708,7 +1819,7 @@
       "section": "IV",
       "note": "azimuth ACF half-width, output rows",
       "tex_lines": [
-        527
+        556
       ]
     },
     {
@@ -1721,7 +1832,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        527
+        556
       ]
     },
     {
@@ -1734,7 +1845,7 @@
       "section": "IV",
       "note": "nine windows, paired",
       "tex_lines": [
-        529
+        559
       ]
     },
     {
@@ -1747,7 +1858,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        529
+        559
       ]
     },
     {
@@ -1760,7 +1871,7 @@
       "section": "IV",
       "note": "sub-band minus spatial once the finer arm is smoothed to the coarser width",
       "tex_lines": [
-        530
+        560
       ]
     },
     {
@@ -1773,7 +1884,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        530
+        560
       ]
     },
     {
@@ -1786,7 +1897,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        533
+        563
       ]
     },
     {
@@ -1799,7 +1910,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        534
+        564
       ]
     },
     {
@@ -1812,7 +1923,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        534
+        564
       ]
     },
     {
@@ -1825,9 +1936,9 @@
       "section": "IV",
       "note": "2020-03-05 L-band",
       "tex_lines": [
-        549,
-        707,
-        1112
+        585,
+        722,
+        1122
       ]
     },
     {
@@ -1840,7 +1951,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        550
+        587
       ]
     },
     {
@@ -1853,7 +1964,7 @@
       "section": "IV",
       "note": "registered before the product was opened",
       "tex_lines": [
-        550
+        587
       ]
     },
     {
@@ -1866,7 +1977,7 @@
       "section": "IV",
       "note": "39 samples at oversampling 2.905",
       "tex_lines": [
-        552
+        589
       ]
     },
     {
@@ -1879,7 +1990,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        552
+        589
       ]
     },
     {
@@ -1892,7 +2003,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        552
+        589
       ]
     },
     {
@@ -1905,8 +2016,8 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        553,
-        739
+        590,
+        757
       ]
     },
     {
@@ -1919,8 +2030,8 @@
       "section": "IV",
       "note": "this pass, for comparison",
       "tex_lines": [
-        553,
-        762
+        590,
+        777
       ]
     },
     {
@@ -1933,7 +2044,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        563
+        600
       ]
     },
     {
@@ -1946,7 +2057,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        564
+        601
       ]
     },
     {
@@ -1959,7 +2070,8 @@
       "section": "IV",
       "note": "amplitude mask eroded by 5x5",
       "tex_lines": [
-        569
+        606,
+        907
       ]
     },
     {
@@ -1972,7 +2084,7 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        569
+        606
       ]
     },
     {
@@ -1985,7 +2097,7 @@
       "section": "IV",
       "note": "the manuscript says \"on the unrounded estimates\": 3.8449 -> 3.84",
       "tex_lines": [
-        569
+        606
       ]
     },
     {
@@ -1998,17 +2110,17 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        570,
-        608,
-        628,
-        649,
-        656,
-        668,
-        682,
-        685,
-        706,
-        725,
-        1016
+        48,
+        607,
+        644,
+        664,
+        679,
+        689,
+        692,
+        715,
+        721,
+        743,
+        1029
       ]
     },
     {
@@ -2021,9 +2133,9 @@
       "section": "IV",
       "note": null,
       "tex_lines": [
-        570,
-        630,
-        685
+        607,
+        666,
+        692
       ]
     },
     {
@@ -2036,7 +2148,8 @@
       "section": "V",
       "note": "same-sense circular ENL, physical sign",
       "tex_lines": [
-        587
+        624,
+        695
       ]
     },
     {
@@ -2049,7 +2162,8 @@
       "section": "V",
       "note": "opposite-sense",
       "tex_lines": [
-        587
+        624,
+        695
       ]
     },
     {
@@ -2062,8 +2176,8 @@
       "section": "V",
       "note": "sqrt((2N-1)/(N-2)) at N = 38, ratio of relSD(R) to 1/sqrt(N); DERIVED",
       "tex_lines": [
-        603,
-        908
+        639,
+        929
       ]
     },
     {
@@ -2076,7 +2190,7 @@
       "section": "V",
       "note": "the same at N = 6; DERIVED",
       "tex_lines": [
-        604
+        640
       ]
     },
     {
@@ -2089,7 +2203,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        625
+        661
       ]
     },
     {
@@ -2102,7 +2216,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        625
+        661
       ]
     },
     {
@@ -2115,7 +2229,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        625
+        661
       ]
     },
     {
@@ -2128,7 +2242,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        625
+        661
       ]
     },
     {
@@ -2141,7 +2255,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        625
+        661
       ]
     },
     {
@@ -2154,7 +2268,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        626
+        662
       ]
     },
     {
@@ -2167,7 +2281,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        626
+        662
       ]
     },
     {
@@ -2180,7 +2294,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        626
+        662
       ]
     },
     {
@@ -2193,7 +2307,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        626
+        662
       ]
     },
     {
@@ -2206,7 +2320,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        626
+        662
       ]
     },
     {
@@ -2219,7 +2333,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        627
+        663
       ]
     },
     {
@@ -2232,7 +2346,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        627
+        663
       ]
     },
     {
@@ -2245,7 +2359,7 @@
       "section": "V",
       "note": "at the N the row prints (8.75); at_measured_N gives 2.243 from the unrounded median 8.7544, and both are in the artifact",
       "tex_lines": [
-        627
+        663
       ]
     },
     {
@@ -2258,7 +2372,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        627
+        663
       ]
     },
     {
@@ -2271,7 +2385,7 @@
       "section": "V",
       "note": "at the N the row prints; at_measured_N gives 7.84",
       "tex_lines": [
-        627
+        663
       ]
     },
     {
@@ -2284,7 +2398,21 @@
       "section": "V",
       "note": "at the N the row prints (13.72); at_measured_N gives 0.406 from the unrounded ENL 13.7166",
       "tex_lines": [
-        628
+        664
+      ]
+    },
+    {
+      "id": "n_edge",
+      "printed": "80",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.n_at_which_crit_equals_band_edge.N",
+      "artifact_value": 79.61660821559424,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "'the critical value falls to 1.2989 only at N ~ 80'; 79.62",
+      "tex_lines": [
+        707,
+        1067
       ]
     },
     {
@@ -2297,9 +2425,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        48,
-        628,
-        1017
+        49,
+        664,
+        1029
       ]
     },
     {
@@ -2312,14 +2440,14 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        48,
-        628,
-        650,
-        656,
-        689,
-        696,
-        727,
-        1017
+        49,
+        664,
+        697,
+        705,
+        709,
+        716,
+        745,
+        1030
       ]
     },
     {
@@ -2332,7 +2460,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        629
+        665
       ]
     },
     {
@@ -2345,7 +2473,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        629
+        665
       ]
     },
     {
@@ -2358,7 +2486,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630
+        666
       ]
     },
     {
@@ -2371,7 +2499,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630
+        666
       ]
     },
     {
@@ -2384,7 +2512,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630
+        666
       ]
     },
     {
@@ -2397,7 +2525,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630
+        666
       ]
     },
     {
@@ -2410,7 +2538,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        630
+        666
       ]
     },
     {
@@ -2423,7 +2551,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        631
+        667
       ]
     },
     {
@@ -2436,7 +2564,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        631
+        667
       ]
     },
     {
@@ -2449,7 +2577,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        631
+        667
       ]
     },
     {
@@ -2462,7 +2590,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        631
+        667
       ]
     },
     {
@@ -2475,7 +2603,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        631
+        667
       ]
     },
     {
@@ -2488,7 +2616,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        632
+        668
       ]
     },
     {
@@ -2501,7 +2629,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        632
+        668
       ]
     },
     {
@@ -2514,7 +2642,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        632
+        668
       ]
     },
     {
@@ -2527,7 +2655,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        632
+        668
       ]
     },
     {
@@ -2540,7 +2668,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        632
+        668,
+        780
       ]
     },
     {
@@ -2553,21 +2682,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        654
-      ]
-    },
-    {
-      "id": "t3_264_crit",
-      "printed": "2.64",
-      "artifact": "docs/table5_sensitivity.json",
-      "key": "rows[0].floor_95",
-      "artifact_value": 2.6376363951273847,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        467,
-        654
+        715
       ]
     },
     {
@@ -2580,7 +2695,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        654
+        716
       ]
     },
     {
@@ -2593,20 +2708,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        655
-      ]
-    },
-    {
-      "id": "t3_530_crit",
-      "printed": "1.96",
-      "artifact": "docs/table5_sensitivity.json",
-      "key": "rows[1].floor_95",
-      "artifact_value": 1.9569356492870122,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        655
+        715
       ]
     },
     {
@@ -2619,7 +2721,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        655
+        716
       ]
     },
     {
@@ -2632,8 +2734,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        651,
-        656
+        716
       ]
     },
     {
@@ -2646,7 +2747,7 @@
       "section": "V",
       "note": "amplitude-domain ENL",
       "tex_lines": [
-        657
+        714
       ]
     },
     {
@@ -2659,21 +2760,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        657
-      ]
-    },
-    {
-      "id": "t3_622_crit",
-      "printed": "1.86",
-      "artifact": "docs/table5_sensitivity.json",
-      "key": "rows[3].floor_95",
-      "artifact_value": 1.8551890270095572,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        465,
-        657
+        715
       ]
     },
     {
@@ -2686,7 +2773,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        657
+        716
       ]
     },
     {
@@ -2699,7 +2786,7 @@
       "section": "V",
       "note": "block-bootstrap range of the critical value",
       "tex_lines": [
-        650
+        718
       ]
     },
     {
@@ -2712,7 +2799,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        650
+        718
       ]
     },
     {
@@ -2725,8 +2812,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        651,
-        691
+        699
       ]
     },
     {
@@ -2739,8 +2825,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        651,
-        691
+        699
       ]
     },
     {
@@ -2753,8 +2838,7 @@
       "section": "V",
       "note": "at the largest true CPR the DOP condition admits",
       "tex_lines": [
-        696,
-        699
+        709
       ]
     },
     {
@@ -2767,7 +2851,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        698
+        710
       ]
     },
     {
@@ -2780,8 +2864,8 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        172,
-        698
+        173,
+        711
       ]
     },
     {
@@ -2794,9 +2878,75 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        418,
-        698,
-        1076
+        459,
+        711,
+        1086
+      ]
+    },
+    {
+      "id": "sens_crit_264",
+      "printed": "2.638",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.sensitivity_crit_three_decimals.rows[0].crit_95_at_printed_N",
+      "artifact_value": 2.638264458667972,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "at N = 6.21; 2.6376 at the unrounded 6.2128 rounds alike",
+      "tex_lines": [
+        716
+      ]
+    },
+    {
+      "id": "sens_crit_530",
+      "printed": "1.957",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.sensitivity_crit_three_decimals.rows[1].crit_95_at_printed_N",
+      "artifact_value": 1.9570848344866019,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "at N = 12.47",
+      "tex_lines": [
+        716
+      ]
+    },
+    {
+      "id": "sens_crit_622",
+      "printed": "1.855",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.sensitivity_crit_three_decimals.rows[3].crit_95_at_printed_N",
+      "artifact_value": 1.8551002493935829,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "at N = 14.64",
+      "tex_lines": [
+        716
+      ]
+    },
+    {
+      "id": "bg_04",
+      "printed": "1.0",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.p_exceed_at_operating_point.rows[0].p_exceed_percent",
+      "artifact_value": 0.9673471892699625,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "P(R > 1) at N = 13.72, true CPR 0.4",
+      "tex_lines": [
+        151,
+        721
+      ]
+    },
+    {
+      "id": "bg_112",
+      "printed": "62",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.p_exceed_at_operating_point.rows[6].p_exceed_percent",
+      "artifact_value": 61.56426803710111,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "true CPR 1.12",
+      "tex_lines": [
+        724
       ]
     },
     {
@@ -2809,7 +2959,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        706
+        721
       ]
     },
     {
@@ -2822,7 +2972,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        706
+        722
       ]
     },
     {
@@ -2835,9 +2985,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        549,
-        707,
-        1112
+        585,
+        722,
+        1122
       ]
     },
     {
@@ -2850,7 +3000,7 @@
       "section": "V",
       "note": "px per independent sample",
       "tex_lines": [
-        715
+        733
       ]
     },
     {
@@ -2863,16 +3013,15 @@
       "section": "V",
       "note": "1521 px / 61.42",
       "tex_lines": [
-        129,
-        150,
-        570,
-        608,
-        716,
-        721,
-        741,
-        960,
-        961,
-        968
+        131,
+        151,
+        607,
+        644,
+        734,
+        760,
+        977,
+        978,
+        984
       ]
     },
     {
@@ -2885,7 +3034,7 @@
       "section": "V",
       "note": "median peak, 25 effective samples, N = 5",
       "tex_lines": [
-        721
+        739
       ]
     },
     {
@@ -2898,8 +3047,9 @@
       "section": "V",
       "note": "the same over 1521 raw pixels",
       "tex_lines": [
-        502,
-        722
+        545,
+        568,
+        740
       ]
     },
     {
@@ -2912,7 +3062,7 @@
       "section": "V",
       "note": "of the 1521-pixel disc",
       "tex_lines": [
-        723
+        741
       ]
     },
     {
@@ -2925,7 +3075,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        725
+        743
       ]
     },
     {
@@ -2938,7 +3088,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        726
+        744
       ]
     },
     {
@@ -2951,7 +3101,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        726
+        744
       ]
     },
     {
@@ -2964,7 +3114,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        726
+        744
       ]
     },
     {
@@ -2977,8 +3127,8 @@
       "section": "V",
       "note": "Byrgius C, transcribed from print",
       "tex_lines": [
-        380,
-        739
+        394,
+        757
       ]
     },
     {
@@ -2991,33 +3141,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        739
-      ]
-    },
-    {
-      "id": "putrevu_az",
-      "printed": "0.55",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.slc_spacing_m.azimuth",
-      "artifact_value": 0.55,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        740
-      ]
-    },
-    {
-      "id": "putrevu_rg",
-      "printed": "9.6",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.slc_spacing_m.slant_range",
-      "artifact_value": 9.6,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        740
+        758
       ]
     },
     {
@@ -3030,7 +3154,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        741
+        759
       ]
     },
     {
@@ -3043,7 +3167,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        743
+        759
       ]
     },
     {
@@ -3056,33 +3180,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        744
-      ]
-    },
-    {
-      "id": "putrevu_rho_lo",
-      "printed": "0.29",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.bound_range_over_altitudes[0]",
-      "artifact_value": 0.28853673412370373,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        744
-      ]
-    },
-    {
-      "id": "putrevu_rho_hi",
-      "printed": "0.35",
-      "artifact": "docs/cpr_dispersion.json",
-      "key": "external_check.bound_range_over_altitudes[1]",
-      "artifact_value": 0.34507985687534326,
-      "verdict": "PASS",
-      "section": "V",
-      "note": null,
-      "tex_lines": [
-        744
+        760
       ]
     },
     {
@@ -3095,20 +3193,22 @@
       "section": "V",
       "note": "the same dispersion with no correlation at all",
       "tex_lines": [
-        745
+        761
       ]
     },
     {
-      "id": "cr_0",
-      "printed": "17.6",
-      "artifact": "docs/correlated_ratio.json",
-      "key": "rows[0].fp_percent",
-      "artifact_value": 17.5806,
+      "id": "f_n14_07",
+      "printed": "17.5",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.f_exceedance_N14_cpr0p7_percent",
+      "artifact_value": 17.544925186078576,
       "verdict": "PASS",
       "section": "V",
-      "note": null,
+      "note": "the analytic F(28, 28) value at CPR 0.7, 17.545; the rho = 0 Monte Carlo row of correlated_ratio.json reads 17.58 and is no longer printed",
       "tex_lines": [
-        754
+        767,
+        801,
+        810
       ]
     },
     {
@@ -3121,7 +3221,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        754
+        767
       ]
     },
     {
@@ -3134,7 +3234,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        754
+        767
       ]
     },
     {
@@ -3147,7 +3247,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        755
+        768
       ]
     },
     {
@@ -3160,13 +3260,12 @@
       "section": "V",
       "note": "|corr(SC, OC)| over the frame",
       "tex_lines": [
-        42,
-        759,
-        821,
-        822,
-        824,
-        941,
-        1011
+        774,
+        786,
+        845,
+        846,
+        848,
+        958
       ]
     },
     {
@@ -3179,7 +3278,7 @@
       "section": "V",
       "note": "64x64 blocks below the 10th CV pct",
       "tex_lines": [
-        760
+        775
       ]
     },
     {
@@ -3192,8 +3291,8 @@
       "section": "V",
       "note": "empirical / F, within blocks",
       "tex_lines": [
-        553,
-        762
+        590,
+        777
       ]
     },
     {
@@ -3206,20 +3305,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        762
-      ]
-    },
-    {
-      "id": "kc_sigma",
-      "printed": "0.02",
-      "artifact": "docs/kclutter.json",
-      "key": "mc_sigma_of_difference_points",
-      "artifact_value": 0.017009809633401332,
-      "verdict": "PASS",
-      "section": "V",
-      "note": "sampling error of the difference of two tails at 10^7 trials",
-      "tex_lines": [
-        773
+        777
       ]
     },
     {
@@ -3232,7 +3318,75 @@
       "section": "V",
       "note": "within-cell texture, order 8",
       "tex_lines": [
-        776
+        800
+      ]
+    },
+    {
+      "id": "win_corr",
+      "printed": "0.14",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.windows_15x15_summary.corr_median",
+      "artifact_value": 0.1361754995101365,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "circular-channel INTENSITY correlation in the 20 windows",
+      "tex_lines": [
+        668,
+        780
+      ]
+    },
+    {
+      "id": "win_r95",
+      "printed": "1.02",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.windows_15x15_summary.ratio_p95_median",
+      "artifact_value": 1.017741913138961,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        780
+      ]
+    },
+    {
+      "id": "win_r99",
+      "printed": "0.98",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.windows_15x15_summary.ratio_p99_median",
+      "artifact_value": 0.9784967772897379,
+      "verdict": "PASS",
+      "section": "V",
+      "note": null,
+      "tex_lines": [
+        448,
+        780
+      ]
+    },
+    {
+      "id": "m_min_07",
+      "printed": "0.176",
+      "artifact": "docs/joint_criterion.json",
+      "key": "m_min_at_true_cpr",
+      "artifact_value": 0.17647058823529416,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "|0.7 - 1|/(0.7 + 1)",
+      "tex_lines": [
+        788
+      ]
+    },
+    {
+      "id": "f2_eff",
+      "printed": "24.8",
+      "artifact": "docs/detection_statistics.json",
+      "key": "derived.effective_samples_f2_disc.effective_samples",
+      "artifact_value": 24.763618191350687,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "1521 / 61.42",
+      "tex_lines": [
+        503,
+        739
       ]
     },
     {
@@ -3245,7 +3399,7 @@
       "section": "V",
       "note": "order 4",
       "tex_lines": [
-        777
+        801
       ]
     },
     {
@@ -3258,8 +3412,9 @@
       "section": "V",
       "note": "no texture at N = 14, the same draw the textured rows use; the 17.8 of Table II is N = 13.72 and is a different row",
       "tex_lines": [
-        777,
-        786
+        767,
+        801,
+        810
       ]
     },
     {
@@ -3272,7 +3427,7 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        778
+        802
       ]
     },
     {
@@ -3285,7 +3440,7 @@
       "section": "V",
       "note": "order 4, INDEPENDENT per look -- the row whose exceedance is the 19.7 quoted beside it. rows[6] (lag-one 0.8) gives 5.05 and belongs to a different correlation setting",
       "tex_lines": [
-        778
+        802
       ]
     },
     {
@@ -3298,7 +3453,7 @@
       "section": "V",
       "note": "simulated on the Stokes vector, N = 14",
       "tex_lines": [
-        786
+        810
       ]
     },
     {
@@ -3311,8 +3466,9 @@
       "section": "V",
       "note": null,
       "tex_lines": [
-        777,
-        786
+        767,
+        801,
+        810
       ]
     },
     {
@@ -3325,7 +3481,7 @@
       "section": "VI",
       "note": "transcribed from Fa & Cai Table 1",
       "tex_lines": [
-        821
+        845
       ]
     },
     {
@@ -3338,7 +3494,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        822
+        846
       ]
     },
     {
@@ -3351,7 +3507,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        823
+        847
       ]
     },
     {
@@ -3364,7 +3520,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        824
+        848
       ]
     },
     {
@@ -3377,7 +3533,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        825
+        849
       ]
     },
     {
@@ -3390,7 +3546,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        826
+        850
       ]
     },
     {
@@ -3403,7 +3559,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        827
+        851
       ]
     },
     {
@@ -3416,7 +3572,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        828
+        852
       ]
     },
     {
@@ -3429,7 +3585,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        821
+        845
       ]
     },
     {
@@ -3442,7 +3598,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        821
+        845
       ]
     },
     {
@@ -3455,7 +3611,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        821
+        845
       ]
     },
     {
@@ -3468,8 +3624,8 @@
       "section": "VI",
       "note": "the widest per-crater spread",
       "tex_lines": [
-        825,
-        848
+        849,
+        874
       ]
     },
     {
@@ -3482,8 +3638,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        825,
-        848
+        849,
+        874
       ]
     },
     {
@@ -3497,10 +3653,10 @@
       "note": null,
       "tex_lines": [
         52,
-        627,
-        830,
-        835,
-        869
+        663,
+        854,
+        860,
+        893
       ]
     },
     {
@@ -3513,8 +3669,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        830,
-        836
+        854,
+        860
       ]
     },
     {
@@ -3528,9 +3684,9 @@
       "note": null,
       "tex_lines": [
         52,
-        830,
-        836,
-        869
+        854,
+        860,
+        893
       ]
     },
     {
@@ -3543,7 +3699,7 @@
       "section": "VI",
       "note": "from the printed medians; from the unrounded ones it is 3.7",
       "tex_lines": [
-        844
+        870
       ]
     },
     {
@@ -3558,32 +3714,30 @@
       "tex_lines": [
         52,
         53,
-        339,
-        345,
-        458,
-        478,
-        627,
-        639,
-        777,
-        803,
-        812,
-        822,
-        823,
-        825,
-        826,
+        359,
+        501,
+        522,
+        663,
+        801,
         827,
-        828,
-        830,
-        835,
-        837,
-        853,
-        862,
-        866,
-        868,
-        869,
-        911,
-        1094,
-        1108
+        836,
+        846,
+        847,
+        849,
+        850,
+        851,
+        852,
+        854,
+        860,
+        861,
+        879,
+        888,
+        890,
+        892,
+        893,
+        932,
+        1104,
+        1118
       ]
     },
     {
@@ -3596,7 +3750,7 @@
       "section": "VI",
       "note": "the product Fa & Cai analysed",
       "tex_lines": [
-        864
+        888
       ]
     },
     {
@@ -3609,20 +3763,21 @@
       "section": "VI",
       "note": "presence check only; small integer",
       "tex_lines": [
-        211,
-        230,
-        451,
-        464,
-        467,
-        473,
-        478,
-        655,
-        690,
-        691,
-        696,
+        213,
+        234,
+        496,
+        507,
+        510,
+        516,
+        522,
+        698,
         699,
-        866,
-        1219
+        709,
+        713,
+        715,
+        890,
+        1196,
+        1236
       ]
     },
     {
@@ -3635,7 +3790,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        866
+        890
       ]
     },
     {
@@ -3648,8 +3803,8 @@
       "section": "VI",
       "note": "Spudis et al. 2013, attributed to unpublished analysis",
       "tex_lines": [
-        867,
-        911
+        891,
+        932
       ]
     },
     {
@@ -3662,7 +3817,7 @@
       "section": "VIII",
       "note": "peak CPR_a in the swath",
       "tex_lines": [
-        878
+        902
       ]
     },
     {
@@ -3675,7 +3830,7 @@
       "section": "VIII",
       "note": null,
       "tex_lines": [
-        880
+        904
       ]
     },
     {
@@ -3688,11 +3843,9 @@
       "section": "VIII",
       "note": "rounded in the scope table",
       "tex_lines": [
-        264,
-        318,
-        890,
-        939,
-        1005
+        333,
+        956,
+        1018
       ]
     },
     {
@@ -3705,7 +3858,7 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        959
+        976
       ]
     },
     {
@@ -3719,23 +3872,21 @@
       "note": "presence check only; small integer",
       "tex_lines": [
         52,
-        339,
-        524,
-        532,
-        740,
-        778,
-        821,
-        822,
-        823,
-        824,
-        825,
-        826,
-        827,
-        830,
-        836,
+        554,
+        562,
+        802,
+        845,
+        846,
+        847,
         848,
-        869,
-        959
+        849,
+        850,
+        851,
+        854,
+        860,
+        874,
+        893,
+        976
       ]
     },
     {
@@ -3748,16 +3899,15 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        129,
-        150,
-        570,
-        608,
-        716,
-        721,
-        741,
-        960,
-        961,
-        968
+        131,
+        151,
+        607,
+        644,
+        734,
+        760,
+        977,
+        978,
+        984
       ]
     },
     {
@@ -3770,17 +3920,18 @@
       "section": "VIII",
       "note": "after the 2026-09-16 re-screen",
       "tex_lines": [
-        189,
-        552,
-        625,
-        657,
-        754,
-        763,
-        776,
-        785,
-        864,
-        960,
-        1112
+        192,
+        456,
+        589,
+        661,
+        715,
+        767,
+        778,
+        800,
+        809,
+        888,
+        977,
+        1122
       ]
     },
     {
@@ -3793,17 +3944,16 @@
       "section": "VIII",
       "note": null,
       "tex_lines": [
-        143,
-        229,
-        416,
-        651,
-        691,
-        778,
-        961,
-        965,
-        1147,
-        1161,
-        1195
+        145,
+        233,
+        451,
+        699,
+        802,
+        978,
+        982,
+        1149,
+        1163,
+        1216
       ]
     },
     {
@@ -3816,9 +3966,704 @@
       "section": "VIII",
       "note": "from the search-flow record",
       "tex_lines": [
-        958
+        975
+      ]
+    },
+    {
+      "id": "win_pred_cpr",
+      "printed": "0.7",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.coherence_predicts_cpr.predicted_median",
+      "artifact_value": 0.703812321978718,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "'(about 0.7, more depolarized terrain)'; predicted 0.704",
+      "tolerance_relative": 0.05,
+      "tex_lines": [
+        50,
+        151,
+        448,
+        651,
+        652,
+        659,
+        678,
+        698,
+        716,
+        718,
+        739,
+        743,
+        788,
+        810,
+        1031
+      ]
+    },
+    {
+      "id": "win_obs_cpr",
+      "printed": "0.7",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.coherence_predicts_cpr.observed_median",
+      "artifact_value": 0.7177172784943838,
+      "verdict": "PASS",
+      "section": "III",
+      "note": "observed 0.718",
+      "tolerance_relative": 0.05,
+      "tex_lines": [
+        50,
+        151,
+        448,
+        651,
+        652,
+        659,
+        678,
+        698,
+        716,
+        718,
+        739,
+        743,
+        788,
+        810,
+        1031
+      ]
+    },
+    {
+      "id": "win_n_lo",
+      "printed": "100",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.windows_15x15_summary.n_sc_median",
+      "artifact_value": 96.98964057040294,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "'about 100 to 120': median N_SC 97.0",
+      "tolerance_relative": 0.05,
+      "tex_lines": [
+        192,
+        203,
+        781
+      ]
+    },
+    {
+      "id": "win_n_hi",
+      "printed": "120",
+      "artifact": "docs/stokes_from_slc.json",
+      "key": "results.t3e.180_deg.windows_15x15_summary.n_oc_median",
+      "artifact_value": 122.08707795877487,
+      "verdict": "PASS",
+      "section": "V",
+      "note": "median N_OC 122.1",
+      "tolerance_relative": 0.05,
+      "tex_lines": [
+        369,
+        781
+      ]
+    },
+    {
+      "id": "gen_product",
+      "printed": "ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp",
+      "artifact": "docs/enl_L_20200305.json",
+      "key": "label.source",
+      "artifact_value": "ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "second acquisition",
+      "tex_lines": [
+        585
+      ]
+    },
+    {
+      "id": "main_product",
+      "printed": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp",
+      "artifact": "docs/dop_exclusion.json",
+      "key": "calibration.product",
+      "artifact_value": "sri (ortho-rectified, Level-2) -- ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+      "verdict": "PASS",
+      "section": "II",
+      "note": "contained in the artifact's product field",
+      "tex_lines": [
+        144,
+        1063
       ]
     }
   ],
-  "derived_checks_failed": []
+  "derived_checks_failed": [],
+  "quantified": {
+    "rows": [
+      {
+        "id": "q_proxy_every_case",
+        "anchor": "0\\.00043 in every case",
+        "verdict": "PASS",
+        "section": "III",
+        "note": "the four equal-power rows, CPR 0.30 / 0.70 / 1.00 / 1.50",
+        "details": [
+          "docs/cpr_significance.json::monte_carlo[0:4].amplitude_proxy.median rounds_to: 4 elements, 0 do not round to 0.00043 -> ok"
+        ]
+      },
+      {
+        "id": "q_eq1_every_cell",
+        "anchor": "interval\\}\\) at every cell",
+        "verdict": "PASS",
+        "section": "III",
+        "note": "fraction of cells outside Eq. (1)'s band, both signs",
+        "details": [
+          "docs/stokes_from_slc.json::results.t3b_180.violation_fraction equals: 1 elements, 0 != 0.0 -> ok",
+          "docs/stokes_from_slc.json::results.t3b_0.violation_fraction equals: 1 elements, 0 != 0.0 -> ok"
+        ]
+      },
+      {
+        "id": "q_band_every_cell",
+        "anchor": "at every cell with",
+        "verdict": "PASS",
+        "section": "III",
+        "note": "every DOP < 0.13 cell inside the coupling band",
+        "details": [
+          "docs/stokes_from_slc.json::results.invariant.t3f_coupling_band.fraction_outside equals: 1 elements, 0 != 0.0 -> ok"
+        ]
+      },
+      {
+        "id": "q_selected_below_130",
+        "anchor": "every one with a measured CPR below 1\\.30",
+        "verdict": "PASS",
+        "section": "III",
+        "note": "no low-DOP cell outside (0.7699, 1.2989), and 1.2989 < 1.30",
+        "details": [
+          "docs/stokes_from_slc.json::results.invariant.t3f_coupling_band.fraction_outside equals: 1 elements, 0 != 0.0 -> ok",
+          "docs/stokes_from_slc.json::results.invariant.t3f_coupling_band.band[1] below: max 1.29885 vs < 1.3 -> ok"
+        ]
+      },
+      {
+        "id": "q_bias_every_N",
+        "anchor": "at every look count tes",
+        "verdict": "PASS",
+        "section": "IV",
+        "note": "'about 16 % high at every look count tested': speckle-only rows, N = 4, 6, 8, 12, each within 14-18 %",
+        "details": [
+          "docs/enl_benchmark.json::synthetic.rows[?texture_label=inf].relative_bias within: 4 elements in [0.15532, 0.171167]; 0 outside [0.14, 0.18] -> ok"
+        ]
+      },
+      {
+        "id": "q_oversampling_nine",
+        "anchor": "in every one of the nine windows",
+        "verdict": "PASS",
+        "section": "IV",
+        "note": "the claim the median key once passed; now per window",
+        "details": [
+          "docs/slc_multilook_control.json::windows[*].oversampling_factor rounds_to: 9 elements, 0 do not round to 3.10 -> ok",
+          "docs/slc_multilook_control.json::windows[*].oversampling_factor count: 9 elements, claim 9 -> ok"
+        ]
+      },
+      {
+        "id": "q_all_pixels_fig1",
+        "anchor": "over all \\$2\\\\,337\\\\,086\\$",
+        "verdict": "PASS",
+        "section": "III",
+        "note": "Fig. 1 is drawn over every measured pixel",
+        "details": [
+          "docs/dop_exclusion.json::measured_pixels equals: 1 elements, 0 != 2337086.0 -> ok",
+          "docs/dop_exclusion.json::figure_cache_cross_check.n equals: 1 elements, 0 != 2337086.0 -> ok"
+        ]
+      },
+      {
+        "id": "q_all_pixels_resid",
+        "anchor": "across all\\s+\\$2\\\\,337\\\\,086\\$",
+        "verdict": "PASS",
+        "section": "III",
+        "note": "the residual is taken over every measured pixel",
+        "details": [
+          "frontend/public/analysis/faustini.json::cpr_dop_identity.verified_over_pixels equals: 1 elements, 0 != 2337086.0 -> ok"
+        ]
+      },
+      {
+        "id": "q_half_all_cells",
+        "anchor": "half of all cells",
+        "verdict": "PASS",
+        "section": "V",
+        "note": "at a true CPR of 1.00, P(R > 1) = 0.5 exactly under F(2N, 2N)",
+        "details": [
+          "docs/detection_statistics.json::derived.p_exceed_at_operating_point.rows[?true_cpr=1.0].p_exceed_percent within: 1 elements in [50, 50]; 0 outside [49.5, 50.5] -> ok"
+        ]
+      },
+      {
+        "id": "q_half_realizations",
+        "anchor": "about half of all\\s+realizations",
+        "verdict": "FAIL",
+        "section": "V",
+        "note": "P(max over the 260 pixels > 1.895), correlated-F rows",
+        "details": [
+          "docs/f2_maximum.json::results.N13p72.correlated_max_over_amplitude_pixels.p_exceeds_crit within: docs/f2_maximum.json::results.N13p72.correlated_max_over_amplitude_pixels.p_exceeds_crit absent -> FAIL"
+        ]
+      },
+      {
+        "id": "q_table_every_N",
+        "anchor": "critical value at every look count in",
+        "verdict": "PASS",
+        "section": "VIII",
+        "note": "every Table II critical value exceeds the band edge",
+        "details": [
+          "docs/detection_statistics.json::sampling_statistics.rows[*].crit_95 above: min 1.462 vs > 1.299 -> ok"
+        ]
+      },
+      {
+        "id": "q_bias_every_study",
+        "anchor": "uncorrected in\\s+every lunar CPR study we examined",
+        "verdict": "FAIL",
+        "section": "VIII",
+        "note": "the screening record's per-study field for the N/(N-1) correction",
+        "details": [
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].ratio_bias_corrected all_are: 25 elements; 23 not 'no': ['not_assessed', 'not_found_in_accessible_material'] -> FAIL"
+        ]
+      },
+      {
+        "id": "q_criterion_every_study",
+        "anchor": "the criterion of\\s+every study in",
+        "verdict": "UNBACKED",
+        "section": "V",
+        "note": "no per-record field records each study's criterion; UNBACKED",
+        "details": [
+          "no artifact field records the elements this claim is about"
+        ]
+      },
+      {
+        "id": "q_lit_intro_none",
+        "anchor": "none\\s+gives a sampling distribution",
+        "verdict": "PASS",
+        "section": "I",
+        "note": "no screened record reports a critical value or an exceedance rate",
+        "details": [
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].critical_value_reported none_are: 25 elements; 0 are 'yes' -> ok",
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].exceedance_rate_reported none_are: 25 elements; 0 are 'yes' -> ok"
+        ]
+      },
+      {
+        "id": "q_lit_iv_none",
+        "anchor": "none tests per-pixel\\s+significance",
+        "verdict": "PASS",
+        "section": "VIII",
+        "note": "per-pixel significance and exceedance rate are recorded per study; 'an interval on a detected area' has no field of its own",
+        "details": [
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].critical_value_reported none_are: 25 elements; 0 are 'yes' -> ok",
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].exceedance_rate_reported none_are: 25 elements; 0 are 'yes' -> ok"
+        ]
+      },
+      {
+        "id": "q_lit_one_of_25",
+        "anchor": "none reports one for a DFSAR product",
+        "verdict": "PASS",
+        "section": "VIII",
+        "note": "exactly one record reports a measured ENL, and it is Spudis et al. (Mini-RF, id 2), not a DFSAR study",
+        "details": [
+          "docs/literature_screen.json::counts.claims_yes.measured_ENL_reported count: 1 elements, claim 1 -> ok",
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].measured_ENL_reported yes_only_for_id: 1 'yes' among 25 (the id is checked through counts.claims_yes) -> ok"
+        ]
+      },
+      {
+        "id": "q_lit_none_crit",
+        "anchor": "none reports a per-pixel critical value",
+        "verdict": "PASS",
+        "section": "VIII",
+        "note": null,
+        "details": [
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].critical_value_reported none_are: 25 elements; 0 are 'yes' -> ok",
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].exceedance_rate_reported none_are: 25 elements; 0 are 'yes' -> ok"
+        ]
+      },
+      {
+        "id": "q_cardanus_uniformly",
+        "anchor": "do not\\s+agree uniformly",
+        "verdict": "PASS",
+        "section": "VI",
+        "note": "'Cardanus E spans 7.49--9.12'",
+        "details": [
+          "docs/published_moments.json::craters[?name=Cardanus E].N_from_skewness rounds_to: 1 elements, 0 do not round to 7.49 -> ok",
+          "docs/published_moments.json::craters[?name=Cardanus E].N_from_kurtosis rounds_to: 1 elements, 0 do not round to 9.12 -> ok"
+        ]
+      }
+    ],
+    "counts": {
+      "PASS": 15,
+      "FAIL": 2,
+      "UNBACKED": 1,
+      "ABSENT": 0
+    },
+    "scan": [
+      {
+        "line": 100,
+        "word": "none",
+        "sentence": "With one exception, the nominal count of \\cite{bhiravarasu2021} (Sec.~\\ref{sec:discussion}), no look count is given, and among the lunar CPR studies identified by the search of Sec.~\\ref{sec:litsearch}, none gives a sampling distribution, a",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_lit_intro_none"
+        ]
+      },
+      {
+        "line": 131,
+        "word": "every",
+        "sentence": "The contributions are: (1) a proof that the sign of $\\mathrm{CPR}-1$ is undecidable from channel amplitudes, and that the published joint criterion confines the CPR of any Stokes vector satisfying it to a band the amplitudes cannot resolve ",
+        "claimed_by": [
+          "EXEMPT",
+          "editorial: the contributions list"
+        ]
+      },
+      {
+        "line": 176,
+        "word": "Every",
+        "sentence": "Every statistic on the delivered product is taken over the amplitude mask alone (the boxcar statistics use it eroded, Sec.~\\ref{sec:spatialavg}; the complex product of Sec.~\\ref{sec:fix} has its own mask on the slant-range grid): averaging ",
+        "claimed_by": [
+          "EXEMPT",
+          "method: which mask a statistic uses"
+        ]
+      },
+      {
+        "line": 213,
+        "word": "Each",
+        "sentence": "Each is stored as an unsigned 16-bit number, which we treat as an amplitude and calibrate to intensity as $l=\\mathrm{DN}^2\\sin\\theta_{\\mathrm{inc}}/(KG^2)$, with $K=10^{K_{\\mathrm{dB}}/10}$ from the label's calibration constant $K_{\\mathrm{",
+        "claimed_by": [
+          "EXEMPT",
+          "label field (UnsignedLSB2), not a number claim"
+        ]
+      },
+      {
+        "line": 227,
+        "word": "none",
+        "sentence": "Three facts support the amplitude reading, none an ISRO statement; the moment estimator alone cannot decide it, since every power of a low-variance variable yields a self-consistent look count.",
+        "claimed_by": [
+          "EXEMPT",
+          "mathematical: moment ENL of x^k"
+        ]
+      },
+      {
+        "line": 228,
+        "word": "every",
+        "sentence": "Three facts support the amplitude reading, none an ISRO statement; the moment estimator alone cannot decide it, since every power of a low-variance variable yields a self-consistent look count.",
+        "claimed_by": [
+          "EXEMPT",
+          "mathematical: moment ENL of x^k"
+        ]
+      },
+      {
+        "line": 254,
+        "word": "none",
+        "sentence": "The construction analyzed below is not a product layer and is not taken from any documentation or published pipeline; it is the lower endpoint of the interval the two powers leave, the most an amplitude-only screen can extract without a mod",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: the sign of S3 is not in the powers"
+        ]
+      },
+      {
+        "line": 265,
+        "word": "every",
+        "sentence": "The interval contains unity for every pixel, so the sign of $\\mathrm{CPR}-1$ is undecidable from the product's contents by any estimator that does not import an external model for $S_3$: it is the sign of the $H$--$V$ phase quadrature, whic",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: c <= 1 <= 1/c for every amplitude pair"
+        ]
+      },
+      {
+        "line": 310,
+        "word": "identically",
+        "sentence": "Because $\\mathrm{CPR}_a=c\\le1$ identically, $\\mathrm{CPR}_a>1$ is empty before any DOP condition is imposed; the ceiling below states how far below unity the DOP condition holds it, not whether.",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: CPR_a = c <= 1"
+        ]
+      },
+      {
+        "line": 325,
+        "word": "every",
+        "sentence": "The complement makes this an identifiability failure rather than a negative finding: wherever $\\mathrm{DOP}_a<0.13$, the admissible vector with $S_2=0$ and $S_3$ negative and arbitrarily small satisfies both conditions, so every pixel the s",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: the complement argument"
+        ]
+      },
+      {
+        "line": 340,
+        "word": "Every",
+        "sentence": "\\begin{figure}[t] \\centering \\includegraphics[width=\\columnwidth]{fig1_degeneracy.pdf} \\caption{Every measured pixel on the analytic curve: the density of $(\\mathrm{DOP}_a,\\mathrm{CPR}_a)$ over all $2\\,337\\,086$ pixels with non-zero amplitu",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_all_pixels_fig1"
+        ]
+      },
+      {
+        "line": 341,
+        "word": "all",
+        "sentence": "\\begin{figure}[t] \\centering \\includegraphics[width=\\columnwidth]{fig1_degeneracy.pdf} \\caption{Every measured pixel on the analytic curve: the density of $(\\mathrm{DOP}_a,\\mathrm{CPR}_a)$ over all $2\\,337\\,086$ pixels with non-zero amplitu",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_all_pixels_fig1"
+        ]
+      },
+      {
+        "line": 350,
+        "word": "all",
+        "sentence": "The shaded band is $\\mathrm{DOP}_a<0.13$, the pixels the amplitudes do not exclude (60\\,\\%, before the boxcar); within it $\\mathrm{CPR}_a$ cannot exceed $4.261\\times10^{-3}$ (marked), while the criterion asks for CPR above unity (dotted).} ",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_all_pixels_resid"
+        ]
+      },
+      {
+        "line": 372,
+        "word": "every",
+        "sentence": "Across true CPR of 0.30, 0.70, 1.00 and 1.50 at equal powers the proxy's median is 0.00043 in every case while the Stokes estimator from the same draws recovers 0.300, 0.700, 1.000 and 1.500; at CPR 0.70, 1\\,dB and 3\\,dB of imbalance move t",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_proxy_every_case"
+        ]
+      },
+      {
+        "line": 426,
+        "word": "Each",
+        "sentence": "Each pixel is bound individually (a pixel at the F2 peak of 1.95 has $\\mathrm{DOP}\\ge0.32$), so the band constrains the criterion as evaluated per Stokes vector, and constrains the averaged statistics they report only through per-pixel valu",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: Eq. (6) per Stokes vector"
+        ]
+      },
+      {
+        "line": 438,
+        "word": "every",
+        "sentence": "The Stokes CPR lies inside (\\ref{eq:interval}) at every cell, and inside the band of (\\ref{eq:coupling}) at every cell with $\\mathrm{DOP}<0.13$.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_band_every_cell"
+        ]
+      },
+      {
+        "line": 439,
+        "word": "every",
+        "sentence": "The Stokes CPR lies inside (\\ref{eq:interval}) at every cell, and inside the band of (\\ref{eq:coupling}) at every cell with $\\mathrm{DOP}<0.13$.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_band_every_cell"
+        ]
+      },
+      {
+        "line": 475,
+        "word": "all",
+        "sentence": "Under it, 29.9\\,\\% of the low-DOP cells read $\\mathrm{CPR}>1$, so the joint criterion selects 0.45\\,\\% of all cells, every one with a measured CPR below 1.30 by the identity above and hence below the critical value of Sec.~\\ref{sec:stats}: ",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_selected_below_130"
+        ]
+      },
+      {
+        "line": 475,
+        "word": "every",
+        "sentence": "Under it, 29.9\\,\\% of the low-DOP cells read $\\mathrm{CPR}>1$, so the joint criterion selects 0.45\\,\\% of all cells, every one with a measured CPR below 1.30 by the identity above and hence below the critical value of Sec.~\\ref{sec:stats}: ",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_selected_below_130"
+        ]
+      },
+      {
+        "line": 505,
+        "word": "identical",
+        "sentence": "These ranges state precision, not confidence: on synthetic correlated speckle with this product's lag correlations passed through the identical pipeline, the nominally 95\\,\\% procedure covers the true ENL 12--26\\,\\% of the time, and the mod",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the benchmark uses the production pipeline"
+        ]
+      },
+      {
+        "line": 507,
+        "word": "every",
+        "sentence": "These ranges state precision, not confidence: on synthetic correlated speckle with this product's lag correlations passed through the identical pipeline, the nominally 95\\,\\% procedure covers the true ENL 12--26\\,\\% of the time, and the mod",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_bias_every_N"
+        ]
+      },
+      {
+        "line": 523,
+        "word": "every",
+        "sentence": "Nor is the estimate stationary: over the four spatial blocks with sufficient coverage the $16\\times16$ mode ranges from 3.3 to 8.0, so every downstream statistic is a frame-wide summary of a heterogeneous population.",
+        "claimed_by": [
+          "EXEMPT",
+          "editorial scope"
+        ]
+      },
+      {
+        "line": 530,
+        "word": "identical",
+        "sentence": "\\subsection{A control that isolates the mechanism} \\label{sec:control} The single-look complex product from the same pass permits a controlled experiment: we form our own 21-look products from it by two methods and measure both with the ide",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the same estimator on both arms"
+        ]
+      },
+      {
+        "line": 538,
+        "word": "every",
+        "sentence": "Azimuth is sampled at the PRF, 3321.64\\,Hz, while only 1071.34\\,Hz of azimuth bandwidth is processed: a measured oversampling factor of $3.10$ in every one of the nine windows.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_oversampling_nine"
+        ]
+      },
+      {
+        "line": 633,
+        "word": "each",
+        "sentence": "An ENL fixes only the first two moments of each intensity, not its law; intensities with the same ENL but different look-weight spectra have different tails, so the quantiles below are those of the gamma model, with their empirical calibrat",
+        "claimed_by": [
+          "EXEMPT",
+          "model statement about an ENL"
+        ]
+      },
+      {
+        "line": 723,
+        "word": "all",
+        "sentence": "Below unity the exceedance $P(R>1)$ at $N=13.72$ runs from 1.0\\,\\% at 0.4 and 3.7\\,\\% at 0.5 to 28\\,\\% at 0.8 and 39\\,\\% at 0.9, smallest where no detection is claimed; at 1.00 half of all cells exceed the threshold and at 1.12, 62\\,\\%, cro",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_half_all_cells"
+        ]
+      },
+      {
+        "line": 746,
+        "word": "all",
+        "sentence": "On those 260 pixels, with the CPR field simulated as correlated $F$ draws under a correlogram fitted to the measured lags, at $N=13.72$ and true CPR 0.7, the median maximum is 1.91 (95th percentile 2.73) and $46.5\\pm0.2$ pixels per trial re",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_half_realizations"
+        ]
+      },
+      {
+        "line": 761,
+        "word": "each",
+        "sentence": "Published DFSAR dispersion is suggestive but not decisive: Putrevu \\emph{et al.} \\cite{putrevu2023} report $1.07\\pm0.17$ for Byrgius C (relative SD 0.159, no look count stated), below the independent-channel floor of 0.194 for the 54.88 sin",
+        "claimed_by": [
+          "EXEMPT",
+          "conditional: either explanation suffices"
+        ]
+      },
+      {
+        "line": 807,
+        "word": "every",
+        "sentence": "Second, these rates are for the CPR threshold alone, the criterion of every study in Sec.~\\ref{sec:litsearch} except \\cite{sinha2026}; for the joint criterion they are an upper bound, since $P(A\\wedge B)\\le P(A)$, and in simulation on the S",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_criterion_every_study"
+        ]
+      },
+      {
+        "line": 823,
+        "word": "each",
+        "sentence": "If those distributions are speckle-dominated, the second, third and fourth moments are each invertible for $N$, although their sample estimates from the same pixels are statistically dependent: the dispersion through (\\ref{eq:relsd}), the s",
+        "claimed_by": [
+          "EXEMPT",
+          "mathematical: F(2N,2N) moments are monotone in N"
+        ]
+      },
+      {
+        "line": 874,
+        "word": "uniformly",
+        "sentence": "The per-crater estimates do not agree uniformly (Cardanus E spans 7.49--9.12), and no uncertainty is propagated from finite samples, spatial dependence, rounded published moments or the covariance among the estimators, so the agreement carr",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_cardanus_uniformly"
+        ]
+      },
+      {
+        "line": 881,
+        "word": "each",
+        "sentence": "This is a model-consistency check, not a validation of the ENL procedure or evidence about any detection; an inferred $N$ far from 8, moments disagreeing by more than the terrain model allows, or a reversed ordering of the medians would eac",
+        "claimed_by": [
+          "EXEMPT",
+          "conditional: falsification criteria"
+        ]
+      },
+      {
+        "line": 911,
+        "word": "every",
+        "sentence": "A detector with unknown success probability that returns $k=0$ of $n$ trials would call for an interval on its effective sample count \\cite{brown2001}, itself uncalibrated under spatial dependence; the amplitude screen is not such a detecto",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic; G31 checks it on corrupted inputs"
+        ]
+      },
+      {
+        "line": 935,
+        "word": "every",
+        "sentence": "(iii) The $N/(N-1)$ bias is uncorrected in every lunar CPR study we examined.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_bias_every_study"
+        ]
+      },
+      {
+        "line": 935,
+        "word": "none",
+        "sentence": "(iv) Among them, none tests per-pixel significance, reports an interval on a detected area, or computes a noise exceedance rate for $\\mathrm{CPR}>1$.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_lit_iv_none"
+        ]
+      },
+      {
+        "line": 957,
+        "word": "every",
+        "sentence": "\\ For one Stokes vector, sample or population, the joint criterion confines CPR to $1<\\mathrm{CPR}<1.299$, below the one-sided 95\\,\\% critical value at every look count in Table~\\ref{tab:stats}.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_table_every_N"
+        ]
+      },
+      {
+        "line": 975,
+        "word": "all",
+        "sentence": "\\ \\bottomrule \\end{tabular} \\end{table} \\subsection{Literature search} \\label{sec:litsearch} Claims of absence refer to a documented search: eight query strings combining (``circular polarization ratio'' or CPR) with (lunar, Moon, ``permane",
+        "claimed_by": [
+          "EXEMPT",
+          "search protocol, literature_search.json"
+        ]
+      },
+      {
+        "line": 979,
+        "word": "none",
+        "sentence": "One of the 25, \\cite{spudis2013}, reports a measured effective look count for the product it analyzes; none reports one for a DFSAR product, and none reports a per-pixel critical value at a stated look count or a noise exceedance rate for t",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_lit_none_crit"
+        ]
+      },
+      {
+        "line": 980,
+        "word": "none",
+        "sentence": "One of the 25, \\cite{spudis2013}, reports a measured effective look count for the product it analyzes; none reports one for a DFSAR product, and none reports a per-pixel critical value at a stated look count or a noise exceedance rate for t",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_lit_none_crit"
+        ]
+      },
+      {
+        "line": 992,
+        "word": "Every",
+        "sentence": "Every result from Sec.~\\ref{sec:enl} onward is conditional on the amplitude reading argued in Sec.~\\ref{sec:interval}; under the intensity reading the measured ENL would be near 24 and that part of the paper would not stand.",
+        "claimed_by": [
+          "EXEMPT",
+          "scope: conditional on the amplitude reading"
+        ]
+      },
+      {
+        "line": 1023,
+        "word": "every",
+        "sentence": "The Stokes coupling confines the joint criterion, on one Stokes vector, to $1<\\mathrm{CPR}<1.299$; on the complex product the DOP condition admits 1.5\\,\\% of cells and the joint criterion 0.45\\,\\%, screen frequencies at that look count, eve",
+        "claimed_by": [
+          "EXEMPT",
+          "restates q_selected_below_130 in the conclusion; checked there"
+        ]
+      },
+      {
+        "line": 1054,
+        "word": "all",
+        "sentence": "Claude Opus 5 (Anthropic) assisted with manuscript composition in all sections and rendered Figs.~1 and 2 from the author's measurements; in Section~\\ref{sec:external} it suggested inverting the published moments of \\cite{facai2013} through",
+        "claimed_by": [
+          "EXEMPT",
+          "disclosure statement"
+        ]
+      }
+    ],
+    "unchecked": 0,
+    "rule": "a claim about every element is tested against every element; a median or a single row cannot pass it"
+  }
 }

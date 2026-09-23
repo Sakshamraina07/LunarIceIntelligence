@@ -328,9 +328,10 @@ def main() -> int:
               f"{rel:>+7.1f} dB")
         if rel > 0 and verdict is None:
             verdict = name
-    print("\n  A scene cannot sit BELOW the noise floor of the instrument that")
-    print("  recorded it. That is not a preference between two fits; it is a")
-    print("  physical impossibility, and it rules one exponent out outright.")
+    print("\n  A measured intensity that contains the receiver's own noise cannot")
+    print("  sit BELOW that noise floor, and the label declares no noise")
+    print("  subtraction or offset. That supports one exponent over the other;")
+    print("  it is not a proof, since the label declares no unit or convention.")
     print(f"\n  VERDICT: {verdict}. sigma0 = DN^2 * sin(theta) / 10^(K/10),")
     print("  which is what backend/scripts/process_real_sar_pipeline.py already")
     print("  computes. The CPR proxy's sqrt() therefore acts on sigma0 (an")

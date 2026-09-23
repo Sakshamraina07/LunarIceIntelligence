@@ -41,11 +41,15 @@ WHAT THE PHASE MEASUREMENT ACTUALLY SAYS
 ----------------------------------------
 For circular transmit and linear receive, single-bounce puts E_H and E_V in
 quadrature: arg<E_H E_V*> = +/-90 deg exactly, in a calibrated system. A
-circular mean of -88.33 deg with resultant 0.946 over 5.88 M cells says the
-terrain is overwhelmingly single-bounce AND the inter-channel phase is within
-1.67 deg of quadrature. Whatever fraction of that is instrument residual, its
-effect on |S3| is cos(1.67 deg) = 0.99958 -- 0.04 %. The data BOUND the phase
-calibration error; they do not reveal a failure of it.
+circular mean of -88.33 deg with resultant 0.946 over 5.88 M cells is
+CONSISTENT with overwhelmingly single-bounce terrain and a 1.67 deg
+instrumental offset -- IF the scene-mean phase is that quadrature. Scene and
+instrument phase are confounded without a calibration target, so this is a
+consistency check on the scene mean, not a bound on the calibration. (An
+earlier version said the data BOUND the phase error at < 2 deg; review item
+M12 withdrew that, 2026-09-23.) A relative-phase rotation delta changes S3 by
+S3(cos delta - 1) +/- S2 sin delta: 0.04 % in S3 at 1.67 deg, but first order
+in S2 -- phase_gain_perturbation.json measures what that does to the screen.
 
 WHAT IS COMPUTED ON WHICH GRID
 ------------------------------
@@ -70,12 +74,25 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 import numpy as np
+from scipy.special import gammaln
 from scipy.stats import f as Fdist
+from scipy.stats import pearsonr, spearmanr
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from runinfo import run_info  # noqa: E402
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 RAW = BASE_DIR / "data/pradan/raw/data/calibrated/20200808"
 STEM = "ch2_sar_ncxl_20200808t201154198"
 OUT = BASE_DIR / "docs" / "stokes_from_slc.json"
+OUT_PERTURB = BASE_DIR / "docs" / "phase_gain_perturbation.json"
+#: M12 -- relative-phase rotations and relative-gain errors applied to the
+#: coherency matrix before the screen is re-evaluated
+PHASE_DELTAS_DEG = (-5.0, -2.0, -1.0, 1.0, 2.0, 5.0)
+GAIN_ERRORS_DB = (-1.0, -0.5, 0.5, 1.0)
+#: M11 -- nominal rejection levels for the held-out tail calibration
+NOMINAL_ALPHAS = (0.01, 0.05, 0.10)
+PIT_BINS = 10
 
 LINES, SAMPLES, OFFSET = 355768, 759, 5725302
 AZIMUTH_LOOKS = 21
@@ -202,10 +219,17 @@ def low_cv_tiles(s0, mask, k, *, top=None, percentile=None):
     return [(int(idx[p] // nbw) * k, int(idx[p] % nbw) * k, float(cv[p])) for p in pick]
 
 
-def window_stats(r0, c0, k, sc, oc, cpr, dop, coh, mask):
+def window_stats(r0, c0, k, sc, oc, cpr, dop, coh, mask, s1=None, s2=None,
+                 held_out=False):
     """3e, inside one homogeneous window -- speckle-only by construction:
     the empirical Stokes-CPR tail about the window's own median, against
-    F(2 N_SC, 2 N_OC) at the window's own moment ENLs."""
+    F(2 N_SC, 2 N_OC) at the window's own moment ENLs.
+
+    HOW THE NORMALIZATION IS ESTIMATED (M11): the window's median CPR is the
+    sample median of its Stokes CPR over every masked cell; N_SC and N_OC are
+    the moment ENLs (mean^2 / var, ddof = 1) of the SC and OC intensities over
+    the SAME cells, and the tail is read on those same cells. `held_out` adds
+    the two-fold split in which normalization and tail use disjoint halves."""
     sl = (slice(r0, r0 + k), slice(c0, c0 + k))
     m = mask[sl]
     x, y = sc[sl][m], oc[sl][m]
@@ -233,7 +257,181 @@ def window_stats(r0, c0, k, sc, oc, cpr, dop, coh, mask):
         out["f_p_gt1"] = float(1.0 - Fdist.cdf(fmed / med, d1, d2)) if med > 0 else None
         out["ratio_p95"] = out["emp_p95_over_median"] / out["f_p95_over_median"]
         out["ratio_p99"] = out["emp_p99_over_median"] / out["f_p99_over_median"]
+        if s1 is not None:
+            # pooled circular FIELD coherence: |<E_R E_L*>| = |S1 - i S2| / 2
+            gam = float(0.5 * abs(s1[sl][m].mean() - 1j * s2[sl][m].mean())
+                        / np.sqrt(x.mean() * y.mean()))
+            out["gamma_c_pooled"] = gam
+            out["models"] = two_channel_models(out, gam)
+        if held_out:
+            out["held_out"] = held_out_tail(cpr[sl], sc[sl], oc[sl], m)
     return out
+
+
+def lee_ratio_quantiles(L: float, rho: float, qs, n: int = 20000) -> np.ndarray:
+    """Quantiles of X/Y for unit-mean L-look intensities whose FIELDS have
+    complex correlation |rho| -- the intensity-ratio pdf of Lee, Hoppel, Mango
+    and Miller (1994) at tau = 1. The channel mean ratio is a pure scale, so a
+    tail normalized by its median does not depend on it. Checked against a
+    400 000-draw Monte Carlo at (L, rho) = (5, 0), (5, 0.5), (14, 0.8), (3, 0.9):
+    95th and 99th percentiles agree to the Monte Carlo's own error, and at
+    rho = 0 it is F(2L, 2L) to four decimals."""
+    w = np.exp(np.linspace(np.log(1e-4), np.log(1e4), n))
+    r2 = min(rho * rho, 1 - 1e-12)
+    logp = (gammaln(2 * L) - 2 * gammaln(L) + L * np.log1p(-r2) + np.log1p(w)
+            + (L - 1) * np.log(w) - (L + 0.5) * np.log((1 + w) ** 2 - 4 * r2 * w))
+    dens = np.exp(logp) * w
+    cdf = np.concatenate([[0.0], np.cumsum(0.5 * (dens[1:] + dens[:-1])
+                                           * np.diff(np.log(w)))])
+    return np.interp(qs, cdf / cdf[-1], w)
+
+
+def dist(x) -> dict:
+    x = np.asarray(x, dtype=np.float64)
+    x = x[np.isfinite(x)]
+    if x.size == 0:
+        return {"n": 0}
+    return {"n": int(x.size), "median": float(np.median(x)),
+            "iqr": [float(np.percentile(x, 25)), float(np.percentile(x, 75))],
+            "p95": float(np.percentile(x, 95)), "max": float(x.max())}
+
+
+def two_channel_models(g: dict, gamma: float) -> dict:
+    """M10 -- the three models of the within-window tail: equal-look F at the
+    SMALLER circular count (the manuscript's model), unequal-look
+    F(2N_SC, 2N_OC), and Lee (1994) correlated equal-look at N_min with the
+    window's pooled circular coherence."""
+    n_sc, n_oc = g["n_sc"], g["n_oc"]
+    nmin = min(n_sc, n_oc)
+    out = {}
+    q = [0.5, 0.95, 0.99]
+    fe = Fdist.ppf(q, 2 * nmin, 2 * nmin)
+    fu = Fdist.ppf(q, 2 * n_sc, 2 * n_oc)
+    lee = lee_ratio_quantiles(nmin, gamma, q)
+    for name, v in (("equal_low_N", fe), ("unequal", fu), ("lee_correlated", lee)):
+        out[name] = {"p95_over_median": float(v[1] / v[0]),
+                     "p99_over_median": float(v[2] / v[0])}
+    for p in ("p95", "p99"):
+        e = g[f"emp_{p}_over_median"]
+        lo, hi = out["unequal"][f"{p}_over_median"], out["equal_low_N"][f"{p}_over_median"]
+        # the unequal-look tail is always the narrower of the two F models
+        out[f"ordering_{p}"] = ("empirical <= unequal <= equal_low_N" if e <= lo else
+                                "unequal < empirical <= equal_low_N" if e <= hi else
+                                "empirical > equal_low_N")
+        dists = {k: abs(np.log(e / out[k][f"{p}_over_median"])) for k in
+                 ("equal_low_N", "unequal", "lee_correlated")}
+        out[f"closest_{p}"] = min(dists, key=dists.get)
+    out["gamma_c_pooled"] = gamma
+    out["n_min"] = nmin
+    return out
+
+
+def held_out_tail(block_cpr: np.ndarray, block_sc: np.ndarray, block_oc: np.ndarray,
+                  block_m: np.ndarray) -> dict:
+    """M11 -- normalize on one half of the block, test the tail on the other.
+    The block's median CPR and its N_SC, N_OC (moment ENL, ddof = 1) are
+    estimated on the TRAINING half; rejection frequencies and the PIT are read
+    on the HELD-OUT half against F(2N_SC, 2N_OC) scaled to the training median.
+    Two folds (top->bottom, bottom->top), pooled. Adjacent cells are correlated
+    through the 5x5 boxcar, so a held-out frequency is over dependent cells."""
+    k = block_cpr.shape[0]
+    halves = ((slice(0, k // 2), slice(k // 2, k)), (slice(k // 2, k), slice(0, k // 2)))
+    rej = {a: [] for a in NOMINAL_ALPHAS}
+    pit = np.zeros(PIT_BINS, dtype=np.int64)
+    n_test = 0
+    for tr, te in halves:
+        mt, me = block_m[tr], block_m[te]
+        c_tr = block_cpr[tr][mt]
+        c_tr = c_tr[np.isfinite(c_tr)]
+        x, y = block_sc[tr][mt], block_oc[tr][mt]
+        if c_tr.size < 30 or x.size < 30:
+            continue
+        n_sc = float(x.mean() ** 2 / x.var(ddof=1))
+        n_oc = float(y.mean() ** 2 / y.var(ddof=1))
+        med = float(np.median(c_tr))
+        d1, d2 = 2 * n_sc, 2 * n_oc
+        fmed = Fdist.ppf(0.5, d1, d2)
+        c_te = block_cpr[te][me]
+        c_te = c_te[np.isfinite(c_te)]
+        z = c_te / med * fmed
+        for a in NOMINAL_ALPHAS:
+            rej[a].append(int((z > Fdist.ppf(1 - a, d1, d2)).sum()))
+        u = Fdist.cdf(z, d1, d2)
+        pit += np.histogram(u, bins=PIT_BINS, range=(0, 1))[0]
+        n_test += int(c_te.size)
+    if n_test == 0:
+        return {"n_test": 0}
+    return {"n_test": n_test,
+            "rejection": {f"{int(100 * a)}pct": sum(rej[a]) / n_test for a in NOMINAL_ALPHAS},
+            "pit_counts": pit.tolist()}
+
+
+def coherence_predicts(ws: list) -> dict:
+    """III-E: at quadrature phase and equal channel powers |S3|/S0 equals the
+    H-V coherence, so CPR = (1 - |rho|)/(1 + |rho|). Each window's median H-V
+    coherence gives a predicted CPR; the rank correlation with the window's
+    observed median CPR is the figure the manuscript prints."""
+    c = np.array([w["coherence_median"] for w in ws])
+    o = np.array([w["cpr_median"] for w in ws])
+    p = (1 - c) / (1 + c)
+    return {"n_windows": int(c.size),
+            "predicted": "(1 - rho)/(1 + rho), rho = the window's median H-V coherence",
+            "observed": "the window's median Stokes CPR (physical sign)",
+            "spearman": float(spearmanr(p, o).statistic),
+            "pearson": float(pearsonr(p, o).statistic),
+            "predicted_median": float(np.median(p)),
+            "observed_median": float(np.median(o)),
+            "per_window": [{"predicted": float(a), "observed": float(b)} for a, b in zip(p, o)]}
+
+
+def model_summary(group: list) -> dict:
+    """M10 -- which tail ordering holds across windows, per percentile."""
+    g = [x for x in group if "models" in x]
+    if not g:
+        return {"n": 0}
+    out = {"n": len(g),
+           "gamma_c_pooled_median": float(np.median([x["gamma_c_pooled"] for x in g]))}
+    for p in ("p95", "p99"):
+        orders = [x["models"][f"ordering_{p}"] for x in g]
+        closest = [x["models"][f"closest_{p}"] for x in g]
+        out[p] = {
+            "ordering_counts": {o: orders.count(o) for o in sorted(set(orders))},
+            "closest_model_counts": {c: closest.count(c) for c in sorted(set(closest))},
+            "median_empirical_over_model": {
+                k: float(np.median([x[f"emp_{p}_over_median"]
+                                    / x["models"][k][f"{p}_over_median"] for x in g]))
+                for k in ("equal_low_N", "unequal", "lee_correlated")}}
+    return out
+
+
+def tail_calibration(blocks: list) -> dict:
+    """M11 -- held-out rejection frequencies and PIT, per block and pooled."""
+    per = []
+    for b in blocks:
+        h = b.get("held_out", {})
+        if not h.get("n_test"):
+            continue
+        per.append({"row": b["row"], "col": b["col"], **h})
+    if not per:
+        return {"n_blocks": 0}
+    pooled = {}
+    for a in NOMINAL_ALPHAS:
+        key = f"{int(100 * a)}pct"
+        v = np.array([p["rejection"][key] for p in per])
+        pooled[key] = {"nominal": a, "median_over_blocks": float(np.median(v)),
+                       "iqr": [float(np.percentile(v, 25)), float(np.percentile(v, 75))]}
+    pit = np.sum([p["pit_counts"] for p in per], axis=0)
+    return {"n_blocks": len(per),
+            "estimation": ("median CPR and N_SC, N_OC (moment ENL, ddof = 1) are "
+                           "estimated on one half of each 64x64 block and the tail "
+                           "is read on the other half, two folds pooled; the "
+                           "in-sample ratios of blocks_64x64 use the same cells "
+                           "for both"),
+            "same_cells_in_sample": True,
+            "held_out_rejection": pooled,
+            "pit_pooled_counts": pit.tolist(),
+            "pit_pooled_fractions": (pit / pit.sum()).tolist(),
+            "per_block": per}
 
 
 def summarise(group, label):
@@ -396,11 +594,18 @@ def main() -> int:
             "residual_from_quadrature_deg": resid_deg,
             "cos_residual": cos_resid,
             "effect_on_S3_percent": float(100 * (1 - cos_resid)),
-            "reading": ("single bounce under circular transmit / linear receive puts "
-                        "E_H and E_V in quadrature; the phase clusters there, so the "
-                        "terrain is overwhelmingly single-bounce and the residual "
-                        "phase-calibration error is BOUNDED by the data at < 2 deg. "
-                        "This is calibration evidence, not an ambiguity.")},
+            "reading": ("consistency check on the scene-mean phase under the "
+                        "single-bounce quadrature assumption; scene and instrument "
+                        "phase are confounded without a calibration target"),
+            "withdrawn_reading": {
+                "text": ("the residual phase-calibration error is BOUNDED by the "
+                         "data at < 2 deg; this is calibration evidence, not an "
+                         "ambiguity"),
+                "withdrawn": "2026-09-23",
+                "why": ("review item M12: the scene-mean phase equals the "
+                        "instrumental offset only if the scene is exactly "
+                        "single-bounce quadrature; without a calibration target "
+                        "the two cannot be separated")}},
         "label_phase_orthogonality": lab["phase_orthogonality"],
         "diagnostic_rotations_not_admissible": {
             "why": "90/270 mistake S2 for S3; 45/135/315 mix them. Not readings.",
@@ -463,6 +668,108 @@ def main() -> int:
                              "-- the criterion of cpr_dispersion.py, Sec. V-C"),
     }
 
+    # ---- M7: the circular-channel coherence inside and outside the gate -----
+    hr("M7 — circular-channel coherence and H-V coherence, inside / outside DOP < 0.13")
+    S0m, S1m, S2m, S3m = s0[m], s1[m], s2[m], s3_p[m]
+    gam_c = np.sqrt(S1m ** 2 + S2m ** 2) / np.sqrt(np.maximum(S0m ** 2 - S3m ** 2, eps))
+    q_m = -S3m / S0m                      # q = (CPR-1)/(CPR+1) = -S3/S0
+    dop_m = dop_s[m]
+    ident = dop_m ** 2 - (q_m ** 2 + gam_c ** 2 * (1 - q_m ** 2))
+    gate = dop_m < DOP_THRESHOLD
+    coh_1d = coh[m]
+    viol = int((gam_c[gate] >= DOP_THRESHOLD).sum())
+    print(f"  identity DOP^2 = q^2 + gamma_c^2 (1 - q^2): max |residual| "
+          f"{np.abs(ident).max():.3e} over {ident.size:,} cells")
+    print(f"  inside the gate ({int(gate.sum()):,} cells): gamma_c median "
+          f"{np.median(gam_c[gate]):.4f}, max {gam_c[gate].max():.4f}; cells with "
+          f"gamma_c >= {DOP_THRESHOLD}: {viol}")
+    print(f"  outside: gamma_c median {np.median(gam_c[~gate]):.4f}")
+    print(f"  H-V coherence inside {np.median(coh_1d[gate]):.4f}, outside "
+          f"{np.median(coh_1d[~gate]):.4f}")
+    res["coherence_by_gate"] = {
+        "definitions": {
+            "gamma_c": ("circular-channel FIELD coherence |<E_SC E_OC*>| / "
+                        "sqrt(<|E_SC|^2><|E_OC|^2>) = sqrt(S1^2 + S2^2) / "
+                        "sqrt(S0^2 - S3^2), per cell, from the same boxcar'd "
+                        "coherency matrix as the DOP"),
+            "hv_coherence": "|<E_H E_V*>| / sqrt(l_H l_V), per cell",
+            "gate": f"sample Stokes DOP < {DOP_THRESHOLD}",
+            "sign": f"{physical_deg} deg (physical)"},
+        "identity": {"statement": "DOP^2 = q^2 + gamma_c^2 (1 - q^2), q = (CPR-1)/(CPR+1)",
+                     "max_abs_residual": float(np.abs(ident).max()),
+                     "n_cells": int(ident.size),
+                     "consequence": "gamma_c <= DOP, so the gate forces gamma_c < 0.13"},
+        "inside_gate": {"gamma_c": dist(gam_c[gate]), "hv_coherence": dist(coh_1d[gate])},
+        "outside_gate": {"gamma_c": dist(gam_c[~gate]), "hv_coherence": dist(coh_1d[~gate])},
+        "gamma_c_ge_threshold_inside_gate": viol,
+        "check": "PASS" if viol == 0 else "FAIL"}
+    del ident, q_m, gam_c
+
+    # ---- M12: S2 against S3, and the screen under phase and gain errors ------
+    hr("M12 — |S2| relative to |S3| and S0, and the screen under phase/gain errors")
+    r23 = np.abs(S2m) / np.maximum(np.abs(S3m), eps)
+    r20 = np.abs(S2m) / S0m
+    s2_rows = {"frame": {"abs_S2_over_abs_S3": dist(r23), "abs_S2_over_S0": dist(r20)},
+               "inside_gate": {"abs_S2_over_abs_S3": dist(r23[gate]),
+                               "abs_S2_over_S0": dist(r20[gate])}}
+    print(f"  |S2|/|S3| median {np.median(r23):.4f} p95 {np.percentile(r23, 95):.4f}; "
+          f"inside gate median {np.median(r23[gate]):.4f}")
+    print(f"  |S2|/S0   median {np.median(r20):.4f} p95 {np.percentile(r20, 95):.4f}; "
+          f"inside gate median {np.median(r20[gate]):.4f}")
+    del r23, r20, S0m, S1m, S2m, S3m, dop_m, coh_1d, gate
+    H1, V1, X1 = hh[m], vv[m], hv[m]
+    sgn = 1.0 if physical_deg == 0 else -1.0
+
+    def screen(Hx, Vx, Xx):
+        a0, a1 = Hx + Vx, Hx - Vx
+        a2, a3 = 2.0 * Xx.real, sgn * 2.0 * Xx.imag
+        d = np.sqrt(a1 * a1 + a2 * a2 + a3 * a3) / a0
+        low = d < DOP_THRESHOLD
+        joint = low & ((a0 - a3) > (a0 + a3))       # CPR > 1  <=>  S3 < 0
+        return float(low.mean()), float(joint.mean())
+
+    base_dop, base_joint = screen(H1, V1, X1)
+    print(f"  baseline: DOP < {DOP_THRESHOLD} {100 * base_dop:.4f} %, joint "
+          f"{100 * base_joint:.4f} %")
+    prow = []
+    for dlt in PHASE_DELTAS_DEG:
+        fd, fj = screen(H1, V1, X1 * np.exp(1j * np.deg2rad(dlt)))
+        prow.append({"delta_deg": dlt, "dop_below_percent": 100 * fd,
+                     "joint_percent": 100 * fj,
+                     "dop_change_pp": 100 * (fd - base_dop),
+                     "joint_change_pp": 100 * (fj - base_joint),
+                     "joint_relative_change": (fj - base_joint) / base_joint})
+        print(f"  phase {dlt:+.0f} deg: DOP<0.13 {100 * fd:.4f} %  joint {100 * fj:.4f} %")
+    grow = []
+    for gdb in GAIN_ERRORS_DB:
+        gp = 10.0 ** (gdb / 10.0)
+        fd, fj = screen(H1, V1 * gp, X1 * np.sqrt(gp))
+        grow.append({"gain_error_db": gdb, "dop_below_percent": 100 * fd,
+                     "joint_percent": 100 * fj,
+                     "dop_change_pp": 100 * (fd - base_dop),
+                     "joint_change_pp": 100 * (fj - base_joint),
+                     "joint_relative_change": (fj - base_joint) / base_joint})
+        print(f"  gain {gdb:+.1f} dB: DOP<0.13 {100 * fd:.4f} %  joint {100 * fj:.4f} %")
+    del H1, V1, X1
+    OUT_PERTURB.write_text(json.dumps({
+        "schema": "lunar-ice/phase-gain-perturbation/1",
+        "generated_utc": datetime.now(timezone.utc).isoformat(),
+        "generator": "backend/scripts/stokes_from_slc.py",
+        "review_item": "M12",
+        "grid": "SLC slant-range grid, 21 azimuth looks + 5x5 boxcar, "
+                f"{n_m:,} matched cells",
+        "sign": f"S3 = {'+' if sgn > 0 else '-'}2 Im<E_H E_V*> (physical)",
+        "perturbations": {
+            "phase": ("relative-phase rotation delta applied to <E_H E_V*>: "
+                      "hv -> hv exp(i delta); moves magnitude between S2 and S3"),
+            "gain": ("relative-gain error g dB applied to the V channel: "
+                     "l_V -> l_V 10^(g/10), <E_H E_V*> -> <E_H E_V*> 10^(g/20)")},
+        "s2_magnitude": s2_rows,
+        "baseline": {"dop_below_percent": 100 * base_dop, "joint_percent": 100 * base_joint},
+        "phase_rows": prow, "gain_rows": grow,
+        "run_info": run_info()}, indent=2), encoding="utf-8")
+    beat(f"wrote {OUT_PERTURB.relative_to(BASE_DIR)}")
+
     # ---- the measured joint rate, at the physical sign -----------------------
     hr("MEASURED JOINT RATE — CPR > 1 among Stokes DOP < 0.13, physical sign")
     j = float((v_b > CPR_THRESHOLD).mean())
@@ -519,13 +826,23 @@ def main() -> int:
         cprv = cpr_0 if deg == 0 else cpr_180
         tag = "   <- physical" if deg == physical_deg else ""
         print(f"  --- {deg} deg{tag}")
-        ws = [window_stats(r, c_, WINDOW, sc_, oc_, cprv, dop_s, coh, m) for r, c_, _ in wins]
-        bs = [window_stats(r, c_, BLOCK, sc_, oc_, cprv, dop_s, coh, m) for r, c_, _ in blocks]
+        phys = deg == physical_deg
+        ws = [window_stats(r, c_, WINDOW, sc_, oc_, cprv, dop_s, coh, m,
+                           s1 if phys else None, s2 if phys else None)
+              for r, c_, _ in wins]
+        bs = [window_stats(r, c_, BLOCK, sc_, oc_, cprv, dop_s, coh, m,
+                           s1 if phys else None, s2 if phys else None, held_out=phys)
+              for r, c_, _ in blocks]
         res["t3e"][f"{deg}_deg"] = {
             "windows_15x15_summary": summarise(ws, f"{WINDOW}x{WINDOW} homogeneous"),
             "blocks_64x64_summary": summarise(bs, f"{BLOCK}x{BLOCK} low-CV"),
             "windows_15x15": ws, "blocks_64x64": bs,
-            "physical": deg == physical_deg}
+            "physical": phys}
+        if phys:
+            res["t3e"][f"{deg}_deg"]["coherence_predicts_cpr"] = coherence_predicts(ws)
+            res["t3e"][f"{deg}_deg"]["two_channel_models"] = {
+                "windows_15x15": model_summary(ws), "blocks_64x64": model_summary(bs)}
+            res["t3e"][f"{deg}_deg"]["tail_calibration"] = tail_calibration(bs)
         del sc_, oc_
 
     # ---- 3a at matched ENL, units stated ------------------------------------
@@ -584,6 +901,7 @@ def main() -> int:
                             "(physical reading); SC = (S0-S3)/2, OC = (S0+S3)/2; "
                             "the other sign gives CPR -> 1/CPR"),
         "results": res,
+        "run_info": run_info(),
     }, indent=2, default=float), encoding="utf-8")
     beat(f"wrote {OUT.relative_to(BASE_DIR)}")
     return 0

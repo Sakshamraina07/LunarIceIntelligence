@@ -18,10 +18,12 @@ functions the pipeline itself uses -- `detection_statistics.ratio_sd`,
 Mini-RF moments. Nothing is read from an artifact, so an artifact cannot
 launder an error into agreement.
 
-Three tables:
+Three blocks, numbered as the third revision prints them (2026-09-23):
   Table II   sampling statistics, 7 rows x 5 columns
-  Table III  the sensitivity block, 4 rows x 3 columns
-  Table IV   24 Mini-RF inversions and their three medians
+  V-A text   the sensitivity block, 4 estimates x 3 figures. It was Table III
+             until the third revision folded it into one sentence of V-A;
+             the parser follows the cells, not the float
+  Table III  24 Mini-RF inversions and their three medians (was Table IV)
 
 Each cell is compared at the precision the manuscript prints it. Where a cell
 matches only at the unrounded N (the table prints 8.75 for a median of
@@ -174,45 +176,61 @@ def main() -> int:
     report["tables"]["II_sampling_statistics"] = {"cells": rows2, "differ": bad2}
     total_bad += bad2
 
-    # ---------------- Table III (sensitivity block) ----------------------
-    print("\n  TABLE III — sensitivity to the raw ENL estimate")
+    # ---------------- the sensitivity block, now in V-A's text -------------
+    # "across the LH estimates (2.64 and 5.30 at ..., i.e. N=6.21, 12.47, 13.72
+    # and 14.64 after the boxcar) the critical value runs 2.638, 1.957, 1.895
+    # and 1.855 and P_{0.7} 26.9, 19.0, 17.8 and 17.0 %". Parsed from the
+    # comment-stripped text joined into one line, because the sentence wraps.
+    print("\n  V-A TEXT — sensitivity to the raw ENL estimate (was Table III)")
     rows3, bad3 = [], 0
     scale = 13.72 / 5.83
-    for ln in lines:
-        m = re.search(r"mode, (\d+\.\d+)|amplitude-domain, (\d+\.\d+)|"
-                      r"screening mask, (\d+\.\d+)", ln)
-        if not m:
-            continue
-        raw = float(next(g for g in m.groups() if g))
-        # `crit.\ 2.64` -- the LaTeX inter-word space is a BACKSLASH followed by
-        # a space, and leaving it in made the critical-value column invisible to
-        # the parser: four cells of a four-row table, silently unchecked.
-        flat = re.sub(r"\\,|\\!|\\%|\\ |\$|\{|\}|\\textbf", " ", ln)
-        mn = re.search(r"N\s*=\s*(\d+\.?\d*)", flat)
-        mc = re.search(r"crit\.?\s*(\d+\.\d+)", flat)
-        mp = re.search(r"P_?\s*0\.7\s*(\d+\.\d+)", flat)
-        n = raw * scale
-        for label, mm, val in (("N", mn, n), ("crit", mc, DS.floor_95(n)),
-                               ("P_0.7", mp, DS.exceedance(n, 0.7))):
-            if not mm:
-                continue
-            printed = mm.group(1)
-            d = dec(printed)
-            ok = round(val, d) == round(float(printed), d)
-            if not ok:
-                bad3 += 1
-                print(f"    raw {raw}: {label} printed {printed}, computed "
-                      f"{round(val, d + 2)}  DIFFERS")
-            rows3.append({"raw_enl": raw, "cell": label, "printed": float(printed),
-                          "computed": round(val, d + 2),
-                          "verdict": "MATCH" if ok else "DIFFERS"})
+    flat_all = re.sub(r"\s+", " ", " ".join(raw_lines))
+    ms = re.search(r"across the LH estimates \((.*?)\) the critical value runs (.*?) "
+                   r"and \$P_\{0\.7\}\$ (.*?)\\,\\%", flat_all)
+    if ms:
+        paren, crit_s, p_s = ms.groups()
+        raws = [float(x) for x in re.findall(r"(\d+\.\d+)", paren.split("i.e.")[0])]
+        n_s = re.findall(r"(\d+\.\d+)", paren.split("i.e.")[1]) if "i.e." in paren else []
+        crits = re.findall(r"(\d+\.\d+)", crit_s)
+        ps = re.findall(r"(\d+\.\d+)", p_s)
+        # the raw estimates are printed in the order 32x32, 16x16, screening
+        # mask, amplitude-domain; the N, crit and P lists follow that order
+        for i, raw in enumerate(raws):
+            n = raw * scale
+            for label, lst, fn in (("N", n_s, lambda n: n),
+                                   ("crit", crits, DS.floor_95),
+                                   ("P_0.7", ps, lambda n: DS.exceedance(n, 0.7))):
+                if i >= len(lst):
+                    continue
+                printed = lst[i]
+                d = dec(printed)
+                val = fn(n)
+                # N is printed rounded; the figures derived from it are
+                # checked at the unrounded N AND at the printed one, as in
+                # Table II, and the row says which reproduces the digit
+                val_p = fn(round(n, 2)) if label != "N" else val
+                ok_u = round(val, d) == round(float(printed), d)
+                ok_p = round(val_p, d) == round(float(printed), d)
+                ok = ok_u or ok_p
+                if not ok:
+                    bad3 += 1
+                    print(f"    raw {raw}: {label} printed {printed}, computed "
+                          f"{round(val, d + 2)} / {round(val_p, d + 2)}  DIFFERS")
+                rows3.append({"raw_enl": raw, "cell": label, "printed": float(printed),
+                              "computed_at_unrounded_N": round(val, d + 2),
+                              "computed_at_printed_N": round(val_p, d + 2),
+                              "reproduces_at": ("both" if ok_u and ok_p else
+                                                "unrounded N" if ok_u else
+                                                "printed N" if ok_p else "neither"),
+                              "verdict": "MATCH" if ok else "DIFFERS"})
     print(f"    {len(rows3)} cells; {len(rows3) - bad3} match, {bad3} differ")
-    report["tables"]["III_sensitivity"] = {"cells": rows3, "differ": bad3,
-                                           "scaling": "N = raw x 13.72 / 5.83"}
+    report["tables"]["V-A_sensitivity_in_text"] = {
+        "cells": rows3, "differ": bad3, "scaling": "N = raw x 13.72 / 5.83",
+        "was": "Table III until the third revision (2026-09-23)"}
     total_bad += bad3
 
-    # ---------------- Table IV (Mini-RF inversions) ----------------------
-    print("\n  TABLE IV — 24 Mini-RF inversions and three medians")
+    # ---------------- Table III (Mini-RF inversions; was Table IV) --------
+    print("\n  TABLE III — 24 Mini-RF inversions and three medians (was Table IV)")
     rows4, bad4 = [], 0
     n_sd, n_sk, n_ku = [], [], []
     for ln in lines:
@@ -256,7 +274,7 @@ def main() -> int:
                       "verdict": "MATCH" if ok else "DIFFERS"})
     print(f"    {len(rows4)} cells ({len(n_sd)} craters x 3 + 3 medians); "
           f"{len(rows4) - bad4} match, {bad4} differ")
-    report["tables"]["IV_published_moments"] = {"cells": rows4, "differ": bad4,
+    report["tables"]["III_published_moments"] = {"cells": rows4, "differ": bad4,
                                                 "craters": len(n_sd)}
     total_bad += bad4
 
@@ -266,8 +284,8 @@ def main() -> int:
     # check is most exposed to: a wrapped row or a LaTeX spacing macro silently
     # removes cells from the comparison and the summary still reads "0 differ".
     # Both have happened here. So the expected counts are asserted too.
-    EXPECT = {"II_sampling_statistics": 35, "III_sensitivity": 12,
-              "IV_published_moments": 27}
+    EXPECT = {"II_sampling_statistics": 35, "V-A_sensitivity_in_text": 12,
+              "III_published_moments": 27}
     short = {k: (len(report["tables"][k]["cells"]), v) for k, v in EXPECT.items()
              if len(report["tables"][k]["cells"]) != v}
     if args.inject == "cell":
@@ -290,8 +308,9 @@ def main() -> int:
             print("\n  GATE FAIL — a printed cell does not follow from the "
                   "pipeline's own arithmetic, or a table was parsed short.")
             return 1
-        print("\n  GATE PASS — every cell of Tables II, III and IV recomputes "
-              "from the pipeline's functions at the precision printed.")
+        print("\n  GATE PASS — every cell of Tables II and III and of the V-A "
+              "sensitivity sentence recomputes from the pipeline's functions at "
+              "the precision printed.")
     return 0
 
 

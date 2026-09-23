@@ -829,9 +829,15 @@ that single-bounce reflection, which reverses handedness, gives CPR < 1; the
 reading with median 0.2115 is physical, and the artifact records that
 reasoning. Rotations other than 0°/180° mistake S₂ for S₃ and are kept only
 as non-admissible diagnostics. The inter-channel phase clusters at −88.33°
-with resultant 0.9463 — 1.67° from the quadrature single bounce requires, so
-the residual phase-calibration error is bounded by the data at cos 1.67° =
-0.99957, 0.043 % on |S₃|. That is calibration *evidence*, not a failure.
+with resultant 0.9463 — 1.67° from the quadrature single bounce requires. If
+the scene-mean phase IS that quadrature, the instrumental offset is 1.67° and
+its effect on |S₃| is cos 1.67° = 0.99957, 0.043 %; but a relative-phase
+rotation δ also moves S₂ at first order (S₃ → S₃ cos δ ± S₂ sin δ), and scene
+and instrument phase are confounded without a calibration target. It is a
+consistency check on the scene mean under the single-bounce assumption, not a
+bound on the calibration. (Corrected 2026-09-23, third review M12: the earlier
+text said the data bound the phase error. `phase_gain_perturbation.json`
+measures the screen under ±1–5° rotations and ±0.5–1 dB gain errors.)
 
 **Eq. (1)'s band holds exactly.** With c = ((√l_H − √l_V)/(√l_H + √l_V))² —
 which is CPR_a itself — the Stokes CPR lies in [c, 1/c] on every cell, at both
@@ -865,8 +871,9 @@ own ENLs. Over the 109 64 × 64 blocks below the 10th CV percentile (N_SC
 median 14.78, near the operating point) the p95 ratio is 0.859 (range
 [0.679, 1.091]) and the p99 ratio 0.805 ([0.535, 1.139]) with per-block
 |corr(SC, OC)| median 0.500: the measured tail is **narrower** than F by
-14–20 %, which is what channel correlation does and is the reviewer's 4.5
-answered on data. The 20 15 × 15 windows selected by lowest CV have within-window
+14 % at the 95th and 19 % at the 99th percentile (the two are stated
+separately since 2026-09-16; "14–20 %" rounded 19.48 up), which is what
+channel correlation does and is the reviewer's 4.5 answered on data. The 20 15 × 15 windows selected by lowest CV have within-window
 ENLs near 100 (the selection favours flat smoothed fields) and ratios of 1.018
 / 0.978 — consistent with F at their own ENL, but not a test at the operating
 look count. The whole-frame quantiles of the first run were a test of terrain,
@@ -880,6 +887,62 @@ the delivered DN read as amplitude: LH/LV amplitude-ratio quantiles [5, 25, 50,
 against [0.887, 0.965, 1.0194, 1.0779, 1.1776] for the SLC's 21-look +
 boxcar₅ field. A per-cell slope and r² need a geocoding step whose own error
 would dominate the residual, and are not claimed.
+
+**Third review (2026-09-23): coherence by gate, two-channel models, held-out
+tails, phase and gain.** Four additions, all at the physical sign, all in
+`stokes_from_slc.json` unless named.
+
+*The gate forces the circular coherence down (M7).* The circular-channel
+FIELD coherence γ_c = √(S₁² + S₂²)/√(S₀² − S₃²), per cell from the same
+boxcar'd coherency matrix as the DOP, has median 0.0724 (IQR 0.0487–0.0951,
+max 0.1300) on the 88 421 cells with sample DOP < 0.13 and 0.1324 (IQR
+0.0851–0.1879) on the rest; the H–V coherence is 0.0781 inside and 0.6623
+outside. The identity DOP² = q² + γ_c²(1 − q²) holds to 5.6 × 10⁻¹⁶ on every
+cell, and no gated cell has γ_c ≥ 0.13 — a check on the code path, since the
+identity is exact. The frame-wide 0.50 is the circular-channel INTENSITY
+correlation (`corr_sc_oc`), a different quantity: γ_c² under Gaussian speckle,
+larger with shared texture. (`coherence_by_gate`)
+
+*Which tail model the blocks follow (M10).* For each 64 × 64 block and 15 × 15
+window, the empirical p95 and p99 of CPR over its median are set against
+three models: equal-look F at the smaller circular count, unequal-look
+F(2N_SC, 2N_OC), and Lee et al. (1994) correlated equal-look at N_min with the
+block's pooled γ_c (median 0.0995 in the blocks, 0.0672 in the windows). In
+104 of the 109 blocks the ordering is empirical ≤ unequal ≤ equal-low-N at
+both percentiles, and the unequal model is closest in 107 (p95) and 109 (p99);
+median empirical/model ratios 0.859 / 0.789 / 0.789 at p95 and 0.805 / 0.704 /
+0.704 at p99 (unequal / equal-low-N / Lee). At the blocks' small γ_c the Lee
+model is indistinguishable from equal-look F, so correlation of the FIELDS
+does not explain the narrowing; the unequal counts and shared texture (the
+intensity correlation 0.50) are what remain. In the 20 windows the ordering
+is mixed (9 / 5 / 6 at p95) and the empirical tail sits within 2–5 % of every
+model. (`t3e.180_deg.two_channel_models`)
+
+*Held-out tail calibration (M11).* Each block's median CPR and N_SC, N_OC were
+estimated on the same cells whose tail they normalize (`same_cells_in_sample`).
+Estimated instead on one half of the block and tested on the other (two folds,
+pooled), the rejection frequencies at nominal 1 / 5 / 10 % are 0.10 / 1.39 /
+4.42 % (medians over 109 blocks); the pooled PIT is hump-shaped (0.046 and
+0.055 in the outer deciles, 0.134 at the centre): the model's tails are too
+wide for these blocks, which is the direction that makes Section V's rates
+upper bounds. Adjacent held-out cells are correlated through the boxcar.
+(`t3e.180_deg.tail_calibration`)
+
+*S₂ and the screen under phase and gain errors (M12).* |S₂|/|S₃| has median
+0.084 (p95 0.70) over the frame and 0.81 (p95 10.3) inside the DOP gate;
+|S₂|/S₀ is 0.051 (p95 0.171) and 0.039 (p95 0.099). A relative-phase rotation
+leaves the DOP < 0.13 fraction unchanged (DOP depends on |⟨E_H E_V*⟩| only)
+and moves the joint fraction by at most 0.0019 pp at ±5°. A relative-gain
+error does not: −1 / −0.5 / +0.5 / +1 dB move the DOP < 0.13 fraction from
+1.5028 % to 0.571 / 1.030 / 1.742 / 1.593 % and the joint fraction from 0.4498 %
+to 0.162 / 0.304 / 0.530 / 0.489 %. The screen frequencies are therefore
+sensitive to the per-channel gain at the half-decibel level and insensitive
+to phase. (`docs/phase_gain_perturbation.json`)
+
+*The coherence predicts the windows' CPR.* Each window's (1 − ρ)/(1 + ρ), ρ
+its median H–V coherence, against its median CPR: Spearman 0.979 over 20
+windows, medians 0.704 predicted and 0.718 observed.
+(`t3e.180_deg.coherence_predicts_cpr`)
 
 What this does to the paper: Section V remains a sensitivity calculation and
 is labelled so; the measured coherence, the 1.50 %, the exact band, the sign
@@ -1732,9 +1795,13 @@ K = 70.3089 dB, incidence 20.00°, and a median LH DN of 542:
 (NESZ from `nes0_coeff_0`: LH 7.038×10⁻⁴ = −31.5 dB, LV 6.065×10⁻⁴ = −32.2 dB.)
 
 The intensity reading puts the entire scene 16 dB *beneath* the instrument's own
-**noise** floor, which is not a worse fit but a physical impossibility. The
+**noise** floor — a value no measured intensity containing the receiver's own
+noise can take, and the label declares no noise subtraction or offset. The
 amplitude reading puts it 11 dB above the floor, and −20.3 dB is an ordinary
-lunar L-band backscatter at this incidence.
+lunar L-band backscatter at this incidence. This is support for the amplitude
+reading, not a proof of it: the label declares no unit or radiometric
+convention. (Reworded 2026-09-23, third review M4; "impossibility" withdrawn.)
+`calibration_example.json` carries the worked example with the exact inputs.
 
 **The 20.00° above is the label's nominal figure, which §12 proves the product
 cannot carry — and the verdict does not depend on it.** §12.1 shows
@@ -1874,8 +1941,11 @@ time**, because the bootstrap resamples an estimate that is biased, and the
 simple bootstrap does no better; the intervals quoted in §7.3.1 and in the
 manuscript are therefore *precision* statements about the estimator, not
 coverage statements about the ENL. Read through the +16 %, the delivered
-product's raw 5.83 corresponds to a speckle ENL nearer 5.0 — inside the
-manuscript's bracket of 5.0–5.8, at its lower end. With texture on every cell
+product's raw 5.83 corresponds to a speckle ENL nearer 5.0 — at the lower end
+of the manuscript's indicative range 5.0–5.8, which is not a bound: the two
+biases act in opposite directions and neither is bounded (third review M8,
+2026-09-23; `enl_interval_validation.json` measures what a validated interval
+would cover). With texture on every cell
 the mode cannot find a homogeneous population and reads far low; that
 configuration also destroys the lag correlation (the measured lag-1 column),
 so it is not this product, which keeps its 0.838. The AR(1) field is more
@@ -2143,11 +2213,12 @@ Correlation of DN with itself at small lags, after removing each patch's mean:
 | azimuth (lines) | **+0.838** | +0.565 | +0.363 |
 | range (samples) | **+0.576** | +0.476 | +0.396 |
 
-The anisotropy is itself evidence about its own cause: azimuth is far more
+The anisotropy is consistent with its processing cause: azimuth is far more
 correlated than range, and the product has 21 azimuth looks against 1 range
-look. This is the processing, not the terrain, which has no reason to prefer the
-azimuth axis of one particular pass. (These are an upper bound on the speckle
-correlation, since sub-patch terrain structure survives the mean removal.)
+look. Incidence geometry and interpolation can also align with the radar axes,
+so this is consistency, not attribution (third review C10, 2026-09-23). (These
+are an upper bound on the speckle correlation, since sub-patch terrain
+structure survives the mean removal.)
 
 ### 7.6 The boxcar trap
 
@@ -2422,8 +2493,8 @@ the falsifiable one, and **it failed.**
 | observed p95, native grid | *above the floor* | **0.00508** |
 
 The observed swath came out **five times quieter than its own speckle floor** —
-the same impossibility, in the same direction, as the intensity reading of §7.2
-putting the scene below the instrument's noise floor.
+the same kind of inconsistency, in the same direction, as the intensity reading
+of §7.2 putting the scene below the instrument's noise floor.
 
 **Two candidate explanations, one wrong and one right.**
 
@@ -3692,7 +3763,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `ebed274`.
+Stamped at commit `b568667`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3704,7 +3775,7 @@ Stamped at commit `ebed274`.
 | `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
 | `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
-| `docs/detection_statistics.json` | `10193bdb0d44d839…` | §11.1, §11.2, §11.3 |
+| `docs/detection_statistics.json` | `5973a71e51d0bd1f…` | §11.1, §11.2, §11.3 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
 | `docs/enl_benchmark.json` | `aad47ad4c52def4c…` | §7.3.2 |
 | `docs/enl_estimator_spec.json` | `8fd6dd6552233401…` | §7.3.1 |
@@ -3714,11 +3785,11 @@ Stamped at commit `ebed274`.
 | `docs/f2_maximum.json` | `849cd7f9c88ea47a…` | §6.2a |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
-| `docs/joint_criterion.json` | `c0db2bc0013a9c73…` | §7.9.4 |
+| `docs/joint_criterion.json` | `984eb95dc9497a0d…` | §7.9.4 |
 | `docs/kclutter.json` | `ae285515e3abdb5d…` | §7.13 |
 | `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
-| `docs/literature_screen.json` | `a2aa42be972c282f…` | §13.1 |
+| `docs/literature_screen.json` | `d5ff73f7ec44aea2…` | §13.1 |
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
 | `docs/propagation_percentiles.json` | `847af0a883190b4b…` | §12.6 |
@@ -3731,7 +3802,7 @@ Stamped at commit `ebed274`.
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/stationarity.json` | `4d72eb5cd1877932…` | §7.3.3 |
-| `docs/stokes_from_slc.json` | `daa33377f9318c0f…` | §1.11 |
+| `docs/stokes_from_slc.json` | `4c191394768589d6…` | §1.11 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |

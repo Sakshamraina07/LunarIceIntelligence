@@ -117,6 +117,18 @@ def main() -> int:
         "generator": "backend/scripts/dop_exclusion.py",
         "dop_threshold": dop_th,
         "gain_imbalance": {"LH": g_lh, "LV": g_lv},
+        # III-A prints the ortho label's constant with its unit and the linear
+        # factor built from it. The SLC label declares 80.0 dB, a different
+        # product's constant (stokes_from_slc.json::calibration.K_db); this is
+        # the sri one, read from the same label as the gains above.
+        "calibration": {
+            "product": "sri (ortho-rectified, Level-2) -- " + LABEL.name,
+            "K_db": float(cal["calibration_constant_db"]),
+            "K_db_unit": "dB",
+            "K_lin": 10.0 ** (float(cal["calibration_constant_db"]) / 10.0),
+            "K_lin_definition": "K = 10^(K_dB / 10)",
+            "equation": "l_X = DN_X^2 sin(theta_inc) / (K G_X^2)",
+            "cancels_here": "K and sin(theta_inc) are common to both channels"},
         "formula": "l_X = (DN_X / G_X)^2; DOP_a = |l_H - l_V| / (l_H + l_V); "
                    "CPR_a = ((sqrt l_H - sqrt l_V)/(sqrt l_H + sqrt l_V))^2; "
                    "K and sin(theta) are common to both channels and cancel",

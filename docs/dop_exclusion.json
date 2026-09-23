@@ -1,11 +1,20 @@
 {
   "schema": "lunar-ice/dop-exclusion/1",
-  "generated_utc": "2026-09-16T09:07:27.166218+00:00",
+  "generated_utc": "2026-09-23T09:15:09.852207+00:00",
   "generator": "backend/scripts/dop_exclusion.py",
   "dop_threshold": 0.13,
   "gain_imbalance": {
     "LH": 1.018442,
     "LV": 1.000923
+  },
+  "calibration": {
+    "product": "sri (ortho-rectified, Level-2) -- ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+    "K_db": 70.308868,
+    "K_db_unit": "dB",
+    "K_lin": 10737095.10653753,
+    "K_lin_definition": "K = 10^(K_dB / 10)",
+    "equation": "l_X = DN_X^2 sin(theta_inc) / (K G_X^2)",
+    "cancels_here": "K and sin(theta_inc) are common to both channels"
   },
   "formula": "l_X = (DN_X / G_X)^2; DOP_a = |l_H - l_V| / (l_H + l_V); CPR_a = ((sqrt l_H - sqrt l_V)/(sqrt l_H + sqrt l_V))^2; K and sin(theta) are common to both channels and cancel",
   "smoothing": "none \u2014 the delivered pixels, before the 5x5 boxcar, as in Fig. 1",

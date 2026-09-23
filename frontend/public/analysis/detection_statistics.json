@@ -1,6 +1,6 @@
 {
   "schema": "detection_statistics/1",
-  "generated_utc": "2026-09-16T10:56:57.533414+00:00",
+  "generated_utc": "2026-09-23T09:27:14.195503+00:00",
   "generator": "backend/scripts/detection_statistics.py",
   "effective_looks": {
     "screened_field": {
@@ -346,6 +346,96 @@
       "21": 1.671,
       "38": 1.4619,
       "100": 1.2626
+    }
+  },
+  "derived": {
+    "note": "closed forms printed in Section V's running text; each is a function of F(2N, 2N) or of inputs read from other artifacts",
+    "n_at_which_crit_equals_band_edge": {
+      "band_edge": 1.2988505747126435,
+      "N": 79.61660821559424,
+      "printed": "N ~ 80",
+      "statement": "one-sided 95 % point of F(2N, 2N) equals (1 + 0.13)/(1 - 0.13)"
+    },
+    "p_exceed_at_operating_point": {
+      "N": 13.72,
+      "threshold": 1.0,
+      "rows": [
+        {
+          "true_cpr": 0.4,
+          "p_exceed_percent": 0.9673471892699625
+        },
+        {
+          "true_cpr": 0.5,
+          "p_exceed_percent": 3.7404952843565153
+        },
+        {
+          "true_cpr": 0.7,
+          "p_exceed_percent": 17.7924239915343
+        },
+        {
+          "true_cpr": 0.8,
+          "p_exceed_percent": 28.144449828672236
+        },
+        {
+          "true_cpr": 0.9,
+          "p_exceed_percent": 39.22762419193012
+        },
+        {
+          "true_cpr": 1.0,
+          "p_exceed_percent": 49.99999999999992
+        },
+        {
+          "true_cpr": 1.12,
+          "p_exceed_percent": 61.56426803710111
+        }
+      ]
+    },
+    "sensitivity_crit_three_decimals": {
+      "note": "V-A prints the Table-III-era sensitivity rows in text, the critical value to three decimals; at printed and unrounded N they round alike",
+      "rows": [
+        {
+          "raw_enl": 2.64,
+          "N_unrounded": 6.212830188679246,
+          "N_printed": 6.21,
+          "crit_95_at_printed_N": 2.638264458667972,
+          "crit_95_at_unrounded_N": 2.6376363951273865,
+          "p_exceed_true_cpr_0p7_percent_at_printed_N": 26.947585812849383
+        },
+        {
+          "raw_enl": 5.3,
+          "N_unrounded": 12.472727272727273,
+          "N_printed": 12.47,
+          "crit_95_at_printed_N": 1.9570848344866019,
+          "crit_95_at_unrounded_N": 1.9569356492870127,
+          "p_exceed_true_cpr_0p7_percent_at_printed_N": 18.95815345137788
+        },
+        {
+          "raw_enl": 5.83,
+          "N_unrounded": 13.72,
+          "N_printed": 13.72,
+          "crit_95_at_printed_N": 1.8946236969971035,
+          "crit_95_at_unrounded_N": 1.8946236969971035,
+          "p_exceed_true_cpr_0p7_percent_at_printed_N": 17.7924239915343
+        },
+        {
+          "raw_enl": 6.22,
+          "N_unrounded": 14.637804459691253,
+          "N_printed": 14.64,
+          "crit_95_at_printed_N": 1.8551002493935829,
+          "crit_95_at_unrounded_N": 1.855189027009558,
+          "p_exceed_true_cpr_0p7_percent_at_printed_N": 16.996513378083655
+        }
+      ]
+    },
+    "f_exceedance_N14_cpr0p7_percent": 17.544925186078576,
+    "effective_samples_f2_disc": {
+      "disc_pixels": 1521,
+      "pixels_per_independent_sample": 61.420749918170166,
+      "effective_samples": 24.763618191350687,
+      "sources": [
+        "docs/f2_footprint.json::disc_pixels",
+        "docs/cpr_significance.json::effective_samples.area_all_lags"
+      ]
     }
   }
 }

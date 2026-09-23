@@ -143,6 +143,24 @@ RESCREEN = {
 
 SPUDIS_2013_QUOTE = ("effective number of looks of about 6.7 … as opposed to the planned 8 looks")
 
+#: III-E prints "mean DOP 0.10-0.13 in F2, F3, H3 and S1" and says the values
+#: are region means of the pixels with CPR >= 1. Both quotations were supplied
+#: with the third-review instructions (2026-09-23) and verified at the
+#: publisher by the author (response letter, M2); they are recorded here as
+#: supplied, not re-fetched by this script.
+SINHA_2026_AGGREGATION = {
+    "quote_average_dop": ("low average DOP values, ranging from 0.1 to 0.13 in "
+                          "craters F2, F3, H3, and S1"),
+    "quote_fig4_caption": "average CPR and DOP of pixels having CPR ≥ 1",
+    "average_dop_range": [0.10, 0.13],
+    "craters": ["F2", "F3", "H3", "S1"],
+    "aggregation": ("region means over the pixels with CPR >= 1; per-pixel CPR "
+                    "and DOP are not published"),
+    "source_of_quotation": ("supplied with the third-review instructions, "
+                            "2026-09-23; verified at the publisher per the "
+                            "response letter (M2); not re-fetched here"),
+}
+
 
 def main() -> int:
     rows = list(csv.DictReader(CSV.read_text(encoding="utf-8-sig").splitlines()))
@@ -194,6 +212,8 @@ def main() -> int:
                             ("measured_ENL_reported", "critical_value_reported",
                              "exceedance_rate_reported", "ratio_bias_corrected")})
                 rec["data_statement"] = rs["extract"]["data_statement"]
+        if rid == "4":   # Sinha et al. 2026, npj Space Exploration
+            rec["aggregation_record"] = SINHA_2026_AGGREGATION
         if rid == "2":   # Spudis et al. 2013, JGR Planets
             rec["measured_ENL_reported"] = "yes"
             rec["measured_ENL_quote"] = SPUDIS_2013_QUOTE

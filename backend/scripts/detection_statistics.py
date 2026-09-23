@@ -176,6 +176,54 @@ def wilson(k: int, n: int, z: float = 1.959964):
     return max(0.0, c - h), min(1.0, c + h)
 
 
+def derived_closed_forms(area_px: float) -> dict:
+    """Closed forms Section V prints in running text, computed here so each
+    literal resolves to a key rather than to arithmetic done in the prose.
+    Every figure is a function of the F(2N, 2N) model or of measured inputs
+    read from their own artifacts; none is a new measurement."""
+    from scipy.optimize import brentq
+
+    base = Path(__file__).resolve().parents[2]
+    edge = (1.0 + 0.13) / (1.0 - 0.13)          # the coupling band's upper edge
+    n_edge = float(brentq(lambda n: floor_95(n) - edge, 10.0, 1000.0))
+    n_op = 13.72
+    f2 = json.loads((base / "docs" / "f2_footprint.json").read_text(encoding="utf-8"))
+    disc = int(f2["disc_pixels"])
+    t3 = json.loads((base / "docs" / "table5_sensitivity.json").read_text(encoding="utf-8"))
+    sens = []
+    for r in t3["rows"]:
+        n_print = round(float(r["N"]), 2)
+        sens.append({"raw_enl": r["raw_enl"], "N_unrounded": float(r["N"]),
+                     "N_printed": n_print,
+                     "crit_95_at_printed_N": floor_95(n_print),
+                     "crit_95_at_unrounded_N": floor_95(float(r["N"])),
+                     "p_exceed_true_cpr_0p7_percent_at_printed_N":
+                         exceedance(n_print, 0.7, 1.0)})
+    return {
+        "note": ("closed forms printed in Section V's running text; each is a "
+                 "function of F(2N, 2N) or of inputs read from other artifacts"),
+        "n_at_which_crit_equals_band_edge": {
+            "band_edge": edge, "N": n_edge,
+            "printed": "N ~ 80",
+            "statement": "one-sided 95 % point of F(2N, 2N) equals (1 + 0.13)/(1 - 0.13)"},
+        "p_exceed_at_operating_point": {
+            "N": n_op, "threshold": 1.0,
+            "rows": [{"true_cpr": c, "p_exceed_percent": exceedance(n_op, c, 1.0)}
+                     for c in (0.4, 0.5, 0.7, 0.8, 0.9, 1.0, 1.12)]},
+        "sensitivity_crit_three_decimals": {
+            "note": ("V-A prints the Table-III-era sensitivity rows in text, the "
+                     "critical value to three decimals; at printed and unrounded N "
+                     "they round alike"),
+            "rows": sens},
+        "f_exceedance_N14_cpr0p7_percent": exceedance(14.0, 0.7, 1.0),
+        "effective_samples_f2_disc": {
+            "disc_pixels": disc, "pixels_per_independent_sample": area_px,
+            "effective_samples": disc / area_px,
+            "sources": ["docs/f2_footprint.json::disc_pixels",
+                        "docs/cpr_significance.json::effective_samples.area_all_lags"]},
+    }
+
+
 def main() -> int:
     from app.core.config import settings as cfg
     ap = argparse.ArgumentParser()
@@ -438,6 +486,7 @@ def main() -> int:
                                  "floors_by_N": {str(n): round(floor_95(n), 4)
                                                  for n in ns}},
     }
+    doc["derived"] = derived_closed_forms(area_px)
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
     Path(args.out).write_text(json.dumps(doc, indent=2), encoding="utf-8")
     OUT_UI.parent.mkdir(parents=True, exist_ok=True)

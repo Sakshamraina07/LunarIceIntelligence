@@ -176,6 +176,97 @@ WITHDRAWN = [
      "It is P(R > 1) at a STATED true CPR under a sampling model. A "
      "false-positive rate for ice would need a distribution over ice-free "
      "terrain, which no study supplies. Manuscript Sec. V-A."),
+    # ---- withdrawn 2026-09-23, by the third review (M1-M16, C1-C16) ------
+    # Ten sentences the revised manuscript no longer makes. Each term is
+    # anchored on the claim's wording; the figures it mentions (16.4, 0.50,
+    # 5.0-5.8, 1.67) stay correct in their revised sentences.
+    ("dop-gate-exceeds-crit-at-most-16pct",
+     r"(?is)exceeds? the critical value at most 16\.4"
+     r"|at most 16\.4\s*(?:\\?\s*%|percent)\s*of the time",
+     '"a pixel satisfying the published DOP condition therefore exceeds the '
+     'critical value at most 16.4 % of the time"',
+     "M1: 16.4 % is the POPULATION power P(R > 1.895) at a true CPR of 1.299. A "
+     "cell whose MEASURED DOP is below 0.13 has a measured CPR below 1.2989 and "
+     "never exceeds 1.895 -- the sample identity, not a probability. Sec. V-A."),
+
+    ("coupling-confines-true-cpr",
+     r"(?is)confines?\s+(?:those|the selected)\s+cells'?\s+true\s+CPR",
+     '"the coupling confines those cells\' true CPR"',
+     "M1: the coupling confines the selected cells' MEASURED CPR; a population "
+     "statement needs the power calculation, not the identity. Sec. III-E."),
+
+    ("linear-N-conservative-choice",
+     r"(?is)(?:the|a)\s+conservative\s+choice[^.\n]{0,120}(?:13\.72|smaller|linear|look)"
+     r"|(?:13\.72|smaller of the two)[^.\n]{0,120}conservative\s+choice",
+     '"using the smaller linear-channel count, 13.72, is the conservative choice"',
+     "M10: the linear-channel ENL is not the circular-ratio parameter; the "
+     "equal-look value at the smaller count is USED, and the measured circular "
+     "counts 12.7 and 18.1 bracket it. Sec. V-A."),
+
+    ("amplitude-screen-forced-to-compute",
+     r"(?is)(?:forced|obliged)\s+to\s+compute",
+     '"the lower endpoint, which any amplitude-only screen is forced to compute"',
+     "M5: the lower endpoint is the most an amplitude-only screen can extract "
+     "without a model for S3; such a screen can report a point of the interval, "
+     "the interval, or abstain. Sec. III-A."),
+
+    ("intensity-reading-impossibility",
+     # anchored on "physical impossibility" beside the noise floor or the
+     # intensity reading. The original sentence also carries "not a worse fit
+     # but", and the scan's negation window reads that " not a " as a denial --
+     # so the anchor cannot rest on the negated half.
+     r"(?is)noise\W{0,4}\s*floor[^.\n]{0,80}physical\s+impossibility"
+     r"|physical\s+impossibility[^.\n]{0,80}noise\W{0,4}\s*floor"
+     r"|intensity reading[^.\n]{0,120}\bimpossib\w*",
+     '"under the intensity reading sigma0 sits below the noise floor, not a worse '
+     'fit but a physical impossibility"',
+     "M4: 'impossibility' is withdrawn. The intensity reading gives a value no "
+     "measured intensity containing the receiver's own noise can take, and the "
+     "label declares no noise subtraction -- support for the amplitude reading, "
+     "not proof. Sec. III-A."),
+
+    ("enl-bracketed-5p0-5p8",
+     r"(?is)bracket(?:ed|s|ing)?\s+(?:\S+\s+){0,6}?5\.0\s*(?:--|[-–—])\s*5\.8"
+     r"|5\.0\s*(?:--|[-–—])\s*5\.8[^.\n]{0,40}bracket",
+     '"the two biases bracket the true speckle ENL at 5.0-5.8"',
+     "M8: 5.0-5.8 is an INDICATIVE RANGE, not a bound: the two biases act in "
+     "opposite directions and neither is bounded. Sec. IV-A."),
+
+    ("oversampling-is-the-mechanism",
+     r"(?is)supports?\s+(?:azimuth\s+)?oversampling\s+as\s+the\s+mechanism"
+     r"|oversampling\s+is\s+the\s+mechanism",
+     '"the control supports azimuth oversampling as the mechanism"',
+     "M9: the experiment is CONSISTENT WITH oversampling as a contributing "
+     "mechanism; the label's 21 x 51.016 Hz is equally consistent with sub-band "
+     "multilooking, and the processor's operation is not identified. Sec. IV-B."),
+
+    ("terrain-no-reason-to-prefer-axes",
+     r"(?is)terrain[^.\n]{0,40}has\s+no\s+reason\s+to\s+prefer"
+     r"|no\s+reason\s+to\s+prefer\s+the\s+radar",
+     '"the anisotropy is the processing: terrain has no reason to prefer the '
+     'radar axes"',
+     "C10: incidence geometry and interpolation can also align with the radar "
+     "axes; the anisotropy is CONSISTENT WITH 21 azimuth looks against one in "
+     "range. Sec. IV-D."),
+
+    ("intensity-correlation-called-coherence",
+     r"(?is)circular(?:[- ]channel)?\s+coherence[^.\n]{0,40}\b0\.50\b"
+     r"|\b0\.50\b[^.\n]{0,30}circular(?:[- ]channel)?\s+coherence",
+     '"the circular-channel coherence measures 0.50 on the complex product"',
+     "M7: 0.50 is the INTENSITY correlation between the circular channels "
+     "(corr_sc_oc), which equals gamma_c^2 under Gaussian speckle and is larger "
+     "with shared texture. The field coherence gamma_c is a different quantity: "
+     "median 0.07 inside the DOP gate, 0.13 outside. Sec. V-C."),
+
+    ("scene-phase-bounds-calibration",
+     r"(?is)(?:phase[- ]calibration error|residual phase(?: error)?)[^.\n]{0,60}"
+     r"bound(?:ed)?\s+by\s+the\s+data"
+     r"|data\s+bound\s+the\s+phase[- ]calibration",
+     '"the residual phase-calibration error is bounded by the data at < 2 deg"',
+     "M12: the scene-mean phase equals the instrumental offset only under the "
+     "single-bounce quadrature assumption; scene and instrument phase are "
+     "confounded without a calibration target -- a consistency check, not a "
+     "bound. stokes_from_slc.json::sign.phase_evidence.reading."),
 ]
 
 #: A hit is EXCUSED when retraction language sits within RETRACTION_WINDOW
@@ -406,6 +497,29 @@ _SPECIMENS = {
     "exceedance-called-a-false-positive-rate":
         "The " + "false-positive rate" + " at the operating point is "
         + "17.8" + " %.",
+    "dop-gate-exceeds-crit-at-most-16pct":
+        "A pixel satisfying the DOP condition " + "exceeds the critical value at "
+        + "most 16.4" + " % of the time.",
+    "coupling-confines-true-cpr":
+        "The coupling " + "confines those cells' true CPR" + " to the band.",
+    "linear-N-conservative-choice":
+        "Using 13.72, the smaller count, is " + "the conservative choice" + " for the look count.",
+    "amplitude-screen-forced-to-compute":
+        "It is the endpoint any amplitude-only screen is " + "forced to compute" + ".",
+    "intensity-reading-impossibility":
+        "Under the intensity reading sigma0 falls below the " + "noise floor"
+        + ", a " + "physical impossibility" + ".",
+    "enl-bracketed-5p0-5p8":
+        "The two biases " + "bracket" + " the true speckle ENL at " + "5.0-5.8" + ".",
+    "oversampling-is-the-mechanism":
+        "The control " + "supports azimuth oversampling as the mechanism" + ".",
+    "terrain-no-reason-to-prefer-axes":
+        "This is the processing: the " + "terrain has no reason to prefer" + " the radar axes.",
+    "intensity-correlation-called-coherence":
+        "The " + "circular-channel coherence" + " measures " + "0.50" + " over the frame.",
+    "scene-phase-bounds-calibration":
+        "The " + "residual phase-calibration error" + " is " + "bounded by the data"
+        + " at 2 deg.",
 }
 
 

@@ -4,7 +4,7 @@ the anchors they were built on.
 
     python backend/scripts/assert_council_anchors.py
         [--inject size|significant|fwe|perpixel|bound|monotone|iut|mc|v3|ceiling|
-                  design_bound|design_size|design_pool]
+                  design_bound|design_size|design_pool|mh|het]
 
 The work order named two gates, and each is checked here from its artifact
 rather than trusted from the run that wrote it:
@@ -49,6 +49,23 @@ The v17a pre-submission pass adds:
       exactly known component times a simulated conditional), else the
       plain frequency.
 
+The v18a last analysis pass adds:
+
+  N1 / N2 (snr_control.json, crater_level_real.json)
+    * the Mantel-Haenszel odds ratio, all passes and pass 1, recomputed from
+      the stored coherence strata, equals the stored one;
+    * the per-pass disc counts and selections sum to the pooled summary;
+    * the SNR run's baseline variant reproduces every per-pass disc count and
+      F2's 50 selections.
+  N3 (region_design_curve.json::heterogeneous, ::f2_point)
+    * no heterogeneous configuration's regional IUT exceeds 5 % + 2 SE;
+    * the IUT power at F2's pooled N_eff lies between the grid's 254 and 400.
+  N4 / N6 (region_mean_null.json, enl_logratio.json::split_sample)
+    * E[m_hat | R >= 1] of an unpolarized population equals E[m_hat] (the sign
+      of q_hat is independent of m_hat at CPR 1), so its 0.13 / 0.10 crossings
+      reproduce dop_sampling_bias's within 1 %;
+    * the split-sample run's full-sample control reproduces the 64 x 64 median.
+
 Each check is recomputed from the stored cells, not read from the artifact's
 own gate verdict.
 """
@@ -79,7 +96,7 @@ def load(rel):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--inject", choices=("size", "significant", "fwe", "perpixel", "bound",
-                                         "monotone", "iut", "mc", "v3", "ceiling", "design_bound",
+                                         "monotone", "iut", "mc", "v3", "ceiling", "design_bound", "mh", "het",
                                          "design_size", "design_pool"))
     args = ap.parse_args()
     print("=" * 78)
@@ -265,6 +282,93 @@ def main() -> int:
             bad.append(f"design-curve IUT size exceeds 5 % + 2 SE at {big[:2]}")
         if max(zs) >= 3:
             bad.append("pooled cells do not reproduce the single cell at K N")
+
+    # ---- v18a: the last analysis pass ----------------------------------------
+    cl, sn = load("docs/crater_level_real.json"), load("docs/snr_control.json")
+    if cl is None or sn is None or "coherence_strata" not in cl:
+        bad.append("crater_level_real.json (with the v18a keys) or snr_control.json is absent")
+    else:
+        # N2: the Mantel-Haenszel odds ratio, recomputed from the stored strata
+        def mh(strata):
+            num = den = 0.0
+            for s in strata:
+                a, n1 = s["inside"]["k"], s["inside"]["n"]
+                c, n0 = s["outside"]["k"], s["outside"]["n"]
+                b, d = n1 - a, n0 - c
+                t = a + b + c + d
+                if t:
+                    num += a * d / t
+                    den += b * c / t
+            return num / den
+        or_all = mh(cl["coherence_strata"]["all"]) * (1.5 if args.inject == "mh" else 1.0)
+        or_p1 = mh(cl["coherence_strata"]["20200808"])
+        st = cl["mantel_haenszel_inside_vs_outside"]
+        mh_ok = abs(or_all - st["all"]["or"]) < 1e-9 and abs(or_p1 - st["20200808"]["or"]) < 1e-9
+        # N2: the per-pass cells sum to the pooled counts
+        pp, sm = cl["per_pass_class"], cl["summary"]
+        sums_ok = all(pp[f"20200808_{c}"]["ge1"]["k"] + pp[f"20200305_{c}"]["ge1"]["k"]
+                      == round(sm[c]["rule"]["p_ge_1"] * sm[c]["discs"])
+                      and pp[f"20200808_{c}"]["discs"] + pp[f"20200305_{c}"]["discs"] == sm[c]["discs"]
+                      for c in ("outside", "inside", "mixed"))
+        # N1: the SNR run's baseline reproduces the published discs and F2
+        f2p = load("docs/f2_complex_product.json")
+        base = sn["discs_by_variant"]["base"]
+        n1_ok = (sn["reproduces_crater_level_real"] is True
+                 and all(base[k]["ge1"]["k"] == pp[k]["ge1"]["k"] for k in pp)
+                 and sn["f2"]["base"]["published_rule_selects"]
+                 == f2p["passes"]["20200808"]["craters"]["F2"]["published_rule_selects"])
+        print(f"  N2: MH odds ratio recomputed from the strata {or_all:.4f} / pass 1 {or_p1:.4f} -> "
+              f"{'ok' if mh_ok else 'FAIL'}; per-pass cells sum to the pooled counts -> "
+              f"{'ok' if sums_ok else 'FAIL'}; N1 baseline reproduces discs and F2 -> {'ok' if n1_ok else 'FAIL'}")
+        if not mh_ok:
+            bad.append("the stored Mantel-Haenszel odds ratio does not follow from the stored strata")
+        if not sums_ok:
+            bad.append("per-pass disc counts do not sum to the pooled summary")
+        if not n1_ok:
+            bad.append("snr_control's baseline does not reproduce crater_level_real / f2_complex_product")
+    if rd is not None and "heterogeneous" in rd:
+        # N3: no heterogeneous configuration puts the regional IUT above 5 % + 2 SE
+        het = [(cls, k, dr, ph, r["iut"]) for cls, c in rd["heterogeneous"]["results"].items()
+               for k, x in c.items() for dr, y in x.items() for ph, r in y.items()]
+        worst = max(r["percent"] + 2 * r["mc_se_percent"] for *_, r in het) \
+            + (6.0 if args.inject == "het" else 0.0)
+        # f2_point sits between the grid's 254 and 400 (power non-decreasing)
+        fp = rd.get("f2_point")
+        g = rd["iut_power"]["CPR 1.1 DOP min"]
+        mid = best(fp["iut_power"]["CPR 1.1 DOP min"]) if fp else None
+        fp_ok = fp is not None and best(g[0])["percent"] - 2 * best(g[0])["mc_se_percent"] \
+            <= mid["percent"] <= best(g[1])["percent"] + 2 * best(g[1])["mc_se_percent"]
+        print(f"  N3: {len(het)} heterogeneous configurations, max IUT + 2 SE {worst:.3f} % -> "
+              f"{'ok' if worst <= 5.0 else 'FAIL'}; IUT power at F2's N_eff between the 254 and 400 "
+              f"grid points -> {'ok' if fp_ok else 'FAIL'}")
+        if worst > 5.0:
+            bad.append("a heterogeneous region's IUT rate exceeds 5 % + 2 SE")
+        if not fp_ok:
+            bad.append("the f2_point IUT power is not bracketed by the design grid")
+    rm, dsb = load("docs/region_mean_null.json"), load("docs/dop_sampling_bias.json")
+    el = load("docs/enl_logratio.json")
+    if rm is None or dsb is None or el is None or "split_sample" not in el:
+        bad.append("region_mean_null.json, dop_sampling_bias.json or enl_logratio.split_sample is absent")
+    else:
+        # N4: E[m_hat | R >= 1] of an unpolarized population equals E[m_hat]
+        # (the sign of q_hat is independent of m_hat at CPR 1), so its 0.13 and
+        # 0.10 crossings must reproduce dop_sampling_bias's unconditional ones
+        c13 = rm["conditional_mean_dop_unpolarized"]["N_conditional_0p13"]
+        c10 = rm["conditional_mean_dop_unpolarized"]["N_conditional_0p10"]
+        u = dsb["mean_sample_dop_unpolarized"]
+        r13 = abs(c13 / u["N_where_mean_is_0p13"] - 1)
+        r10 = abs(c10 / u["N_where_mean_is_0p10"] - 1)
+        # N6: the split-sample run's full-sample control reproduces 39.4
+        fs = el["split_sample"]["full_sample_check"]["N_logratio"]["median"]
+        ref = el["pass_20200808"]["blocks_64x64"]["N_logratio"]["median"]
+        print(f"  N4: conditional crossings {c13:.2f} / {c10:.2f} vs unconditional "
+              f"{u['N_where_mean_is_0p13']:.2f} / {u['N_where_mean_is_0p10']:.2f} -> "
+              f"{'ok' if max(r13, r10) < 0.01 else 'FAIL'}; N6 full-sample control {fs:.3f} vs {ref:.3f} -> "
+              f"{'ok' if abs(fs - ref) < 0.01 else 'FAIL'}")
+        if max(r13, r10) >= 0.01:
+            bad.append("region_mean_null's conditional crossings do not reproduce dop_sampling_bias")
+        if abs(fs - ref) >= 0.01:
+            bad.append("split_sample's full-sample control does not reproduce the 64 x 64 N_logratio median")
 
     if bad:
         print("\n  GATE FAIL —")

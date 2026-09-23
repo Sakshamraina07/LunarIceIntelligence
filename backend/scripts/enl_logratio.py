@@ -3,6 +3,8 @@ enl_logratio.py -- the look count at the SELECTED cells, estimated without the
 selection. (council work order, Task 2)
 
     python backend/scripts/enl_logratio.py
+    python backend/scripts/enl_logratio.py --split-sample   (v18a N6: selection on
+        half the rows, estimation on the other half; merged into the artifact)
     python backend/scripts/enl_logratio.py --only-random   (final pass B6: the random
         cells' local N with the selected cells' exclusion; merged into the artifact)
 
@@ -283,7 +285,72 @@ def random_like_for_like(pass_id: str) -> dict:
     return out
 
 
+def split_sample() -> dict:
+    """v18a N6: select the homogeneous blocks on half the rows, estimate N on
+    the other half, so the selection cannot pick blocks whose ln R happens to
+    vary little.
+
+    Ranking statistic, exactly as stokes_from_slc.low_cv_tiles defines it:
+    over non-overlapping 64 x 64 tiles of the complex-product grid wholly
+    inside the matched mask (hh > 0, vv > 0, S0 > 0), the coefficient of
+    variation of S0, sd (ddof 1) / mean, over the tile's cells; the tiles
+    below the 10th percentile of that CV are selected. Here the CV is computed
+    on the even rows of each tile (32 x 64 cells) and N = psi_1-inverse of
+    Var(ln R) / 2 on the odd rows' matched cells, then the roles swap."""
+    SFS.configure("20200808")
+    hh, vv, hv, _ = SFS.build_coherency(0)
+    s0, s3 = hh + vv, -2.0 * hv.imag
+    m = (hh > 0) & (vv > 0) & (s0 > 0)
+    sc, oc = 0.5 * (s0 - s3), 0.5 * (s0 + s3)
+    ok = m & (sc > 0) & (oc > 0)
+    lr = np.where(ok, np.log(np.where(ok, sc, 1.0) / np.where(ok, oc, 1.0)), np.nan)
+    del hh, vv, hv, s3, sc, oc
+    k = SFS.BLOCK
+    H, W = (s0.shape[0] // k) * k, (s0.shape[1] // k) * k
+    S = s0[:H, :W].reshape(H // k, k, W // k, k).swapaxes(1, 2)
+    Mm = m[:H, :W].reshape(H // k, k, W // k, k).swapaxes(1, 2)
+    LR = lr[:H, :W].reshape(H // k, k, W // k, k).swapaxes(1, 2)
+    inside = Mm.all(axis=(2, 3))
+    out = {}
+    for name, sel_rows, est_rows in (("select_even_estimate_odd", slice(0, k, 2), slice(1, k, 2)),
+                                     ("select_odd_estimate_even", slice(1, k, 2), slice(0, k, 2)),
+                                     ("full_sample_check", slice(0, k), slice(0, k))):
+        sub = S[:, :, sel_rows, :]
+        mu = sub.mean(axis=(2, 3))
+        sd = sub.reshape(sub.shape[0], sub.shape[1], -1).std(axis=2, ddof=1)
+        cv = np.where(inside & (mu > 0), sd / np.where(mu > 0, mu, 1.0), np.inf)
+        thr = np.percentile(cv[inside], 10)
+        chosen = np.argwhere(inside & (cv < thr))
+        ns = []
+        for i, j in chosen:
+            v = LR[i, j][est_rows]
+            v = v[np.isfinite(v)]
+            if v.size > 30:
+                ns.append(float(n_from_var(v.var(ddof=1))))
+        out[name] = {"blocks": int(len(chosen)), "N_logratio": describe(ns),
+                     "cv_threshold_10th_percentile": float(thr)}
+    both = [out["select_even_estimate_odd"]["N_logratio"], out["select_odd_estimate_even"]["N_logratio"]]
+    print(f"  split sample: even->odd median {both[0]['median']:.2f} IQR {both[0]['iqr']}; odd->even "
+          f"{both[1]['median']:.2f} {both[1]['iqr']}; full-sample check {out['full_sample_check']['N_logratio']['median']:.2f}",
+          flush=True)
+    return {"ranking_statistic": ("coefficient of variation of S0 (sd with ddof 1 over mean) over a 64 x 64 "
+                                  "tile's cells, tiles wholly inside the matched mask (hh > 0, vv > 0, S0 > 0), "
+                                  "selected below the 10th percentile of the CV over those tiles "
+                                  "(stokes_from_slc.low_cv_tiles)"),
+            "split": "rows of each tile: CV on one parity, Var(ln R) on the other; then swapped",
+            "reference": {"N_median": 39.4, "iqr": [28.5, 46.0], "blocks": 109,
+                          "source": "pass_20200808.blocks_64x64.N_logratio"},
+            **out}
+
+
 def main() -> int:
+    if "--split-sample" in sys.argv:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        doc["split_sample"] = split_sample()
+        doc["run_info_split_sample"] = run_info()
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  merged split_sample into {OUT.relative_to(BASE_DIR)}")
+        return 0
     if "--only-random" in sys.argv:
         doc = json.loads(OUT.read_text(encoding="utf-8"))
         doc["random_like_for_like"] = {p: random_like_for_like(p) for p in ("20200808", "20200305")}

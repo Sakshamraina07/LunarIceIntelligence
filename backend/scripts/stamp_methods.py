@@ -84,21 +84,25 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/enl_interval_validation.json": ["14.5"],
     # council work order on v11 (METHODS 15)
     "docs/joint_power_curve.json": ["15.2", "15.7", "16.1"],
-    "docs/enl_logratio.json": ["15.3", "16.7"],
+    "docs/enl_logratio.json": ["15.3", "16.7", "18.6"],
     "docs/stokes_from_slc_20200305.json": ["15.5"],
     "docs/stokes_from_slc_20200305_block32.json": ["15.5"],
     "docs/stokes_from_slc_block32.json": ["15.5"],
-    "docs/tail_calibration_ci.json": ["15.6"],
+    "docs/tail_calibration_ci.json": ["15.6", "18.5"],
     "docs/decision_rule.json": ["15.8", "16.2", "16.6"],
     # final pass on v14 (METHODS 16)
     "docs/np_power_bound.json": ["16.4"],
     "docs/complex_cell_ceiling.json": ["16.5"],
     "docs/complex_grid_correlation.json": ["16.3", "16.6"],
     # pre-submission pass on v17a (METHODS 17)
-    "docs/region_design_curve.json": ["17.1"],
+    "docs/region_design_curve.json": ["17.1", "18.3"],
     "docs/f2_complex_product.json": ["17.2"],
-    "docs/crater_level_real.json": ["17.3"],
-    "docs/handedness.json": ["17.6"],
+    "docs/crater_level_real.json": ["17.3", "18.2"],
+    "docs/handedness.json": ["17.6", "18.7"],
+    # last analysis pass on v18a (METHODS 18)
+    "docs/snr_control.json": ["18.1", "18.7"],
+    "docs/region_mean_null.json": ["18.4"],
+    "docs/slc_chain.json": ["18.7"],
     "docs/propagation_percentiles.json": ["12.6"],
     "docs/literature_screen.json": ["13.1"],
     "docs/published_moments.json": ["13.3"],
@@ -436,7 +440,14 @@ SECTIONS_WITHOUT_ARTIFACTS: dict = {
              "number_crosscheck.py to docs/manuscript_number_audit*.json and "
              "docs/number_crosscheck*.json on every run; its source list names the "
              "artifact behind each new literal, each audited on its own row."),
-    "0": "the defect register. Its numbers are counts of instances and quotations "
+    "18": "the pass's preamble; no measured figure of its own.",
+    "18.8": ("the figures: rendered heights, scale and legend text are properties of the PDFs "
+             "(G26 builds and inspects them); 1.2989 and 1.452 are closed forms quoted from "
+             "the legends, DERIVED rows of the audit."),
+    "18.9": ("the audit's own counts, written by audit_manuscript_numbers.py and "
+             "number_crosscheck.py to docs/manuscript_number_audit*.json and "
+             "docs/number_crosscheck*.json on every run; each new literal is audited on its own row."),
+    "0":"the defect register. Its numbers are counts of instances and quotations "
          "of figures that are checked where they are computed.",
     "13.2": "a pointer to docs/REPRODUCIBILITY.md; its only figure is the 256 of "
             "SHA-256, a hash name, not a measurement.",

@@ -1,15 +1,15 @@
 {
   "schema": "lunar-ice/manuscript-audit/1",
-  "generated_utc": "2026-09-23T19:00:20.816946+00:00",
+  "generated_utc": "2026-09-23T21:24:38.296700+00:00",
   "computed_by": "backend/scripts/audit_manuscript_numbers.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_supplement.tex",
   "row_set": "SUPPLEMENT_AUDIT",
   "manuscript_is_read_only": true,
-  "n_audited": 68,
+  "n_audited": 184,
   "counts": {
-    "PASS": 68,
-    "MISMATCH": 0,
-    "NO SOURCE": 0,
+    "PASS": 182,
+    "MISMATCH": 1,
+    "NO SOURCE": 1,
     "ABSENT": 0
   },
   "rows": [
@@ -23,7 +23,7 @@
       "section": "VI",
       "note": "transcribed from Fa & Cai Table 1",
       "tex_lines": [
-        55
+        59
       ]
     },
     {
@@ -36,7 +36,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        56
+        60
       ]
     },
     {
@@ -49,7 +49,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        57
+        61
       ]
     },
     {
@@ -62,7 +62,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        58
+        62
       ]
     },
     {
@@ -75,7 +75,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        59
+        63
       ]
     },
     {
@@ -88,7 +88,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        60
+        64
       ]
     },
     {
@@ -101,7 +101,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        61
+        65
       ]
     },
     {
@@ -114,7 +114,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        62
+        66
       ]
     },
     {
@@ -127,7 +127,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        55
+        59
       ]
     },
     {
@@ -140,7 +140,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        55
+        59
       ]
     },
     {
@@ -153,7 +153,7 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        55
+        59
       ]
     },
     {
@@ -166,8 +166,8 @@
       "section": "VI",
       "note": "the widest per-crater spread",
       "tex_lines": [
-        59,
-        84
+        63,
+        88
       ]
     },
     {
@@ -180,8 +180,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        59,
-        84
+        63,
+        88
       ]
     },
     {
@@ -194,7 +194,7 @@
       "section": "VI",
       "note": "from the printed medians; from the unrounded ones it is 3.7",
       "tex_lines": [
-        80
+        84
       ]
     },
     {
@@ -207,7 +207,7 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        110
+        114
       ]
     },
     {
@@ -220,7 +220,7 @@
       "section": "VI",
       "note": "the product Fa & Cai analysed",
       "tex_lines": [
-        98
+        102
       ]
     },
     {
@@ -233,18 +233,18 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        55,
-        56,
-        57,
-        58,
         59,
         60,
         61,
+        62,
+        63,
         64,
-        70,
-        84,
-        110,
-        121
+        65,
+        68,
+        74,
+        88,
+        114,
+        430
       ]
     },
     {
@@ -257,8 +257,14 @@
       "section": "VIII",
       "note": "after the 2026-09-16 re-screen",
       "tex_lines": [
-        98,
-        111
+        102,
+        115,
+        150,
+        197,
+        208,
+        239,
+        261,
+        422
       ]
     },
     {
@@ -271,8 +277,13 @@
       "section": "VIII",
       "note": null,
       "tex_lines": [
-        112,
-        116
+        116,
+        120,
+        144,
+        145,
+        208,
+        259,
+        260
       ]
     },
     {
@@ -285,8 +296,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        64,
-        70
+        68,
+        74
       ]
     },
     {
@@ -299,8 +310,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        64,
-        70
+        68,
+        74
       ]
     },
     {
@@ -313,8 +324,8 @@
       "section": "VI",
       "note": null,
       "tex_lines": [
-        64,
-        70
+        68,
+        74
       ]
     },
     {
@@ -327,18 +338,24 @@
       "section": "VI",
       "note": "presence check only; small integer",
       "tex_lines": [
-        37,
-        46,
-        56,
-        57,
-        59,
+        41,
+        50,
         60,
         61,
-        62,
+        63,
         64,
-        70,
-        71,
-        125
+        65,
+        66,
+        68,
+        74,
+        75,
+        150,
+        155,
+        197,
+        233,
+        254,
+        398,
+        434
       ]
     },
     {
@@ -351,7 +368,7 @@
       "section": "VI",
       "note": "Spudis et al. 2013, attributed to unpublished analysis",
       "tex_lines": [
-        97
+        101
       ]
     },
     {
@@ -364,9 +381,10 @@
       "section": "VIII",
       "note": "presence check only; small integer",
       "tex_lines": [
-        111,
-        112,
-        117
+        115,
+        116,
+        121,
+        268
       ]
     },
     {
@@ -379,7 +397,7 @@
       "section": "S-I",
       "note": "Hermite B",
       "tex_lines": [
-        55
+        59
       ]
     },
     {
@@ -392,9 +410,9 @@
       "section": "S-I",
       "note": "Hermite B",
       "tex_lines": [
-        55,
-        56,
-        58
+        59,
+        60,
+        62
       ]
     },
     {
@@ -407,7 +425,7 @@
       "section": "S-I",
       "note": "Hermite B",
       "tex_lines": [
-        55
+        59
       ]
     },
     {
@@ -420,7 +438,7 @@
       "section": "S-I",
       "note": "Rozhdestvenskiy N",
       "tex_lines": [
-        56
+        60
       ]
     },
     {
@@ -433,9 +451,9 @@
       "section": "S-I",
       "note": "Rozhdestvenskiy N",
       "tex_lines": [
-        55,
-        56,
-        58
+        59,
+        60,
+        62
       ]
     },
     {
@@ -448,7 +466,7 @@
       "section": "S-I",
       "note": "Rozhdestvenskiy N",
       "tex_lines": [
-        56
+        60
       ]
     },
     {
@@ -461,7 +479,7 @@
       "section": "S-I",
       "note": "Rozhdestvenskiy N",
       "tex_lines": [
-        56
+        60
       ]
     },
     {
@@ -474,7 +492,7 @@
       "section": "S-I",
       "note": "Rozhdestvenskiy N",
       "tex_lines": [
-        56
+        60
       ]
     },
     {
@@ -487,7 +505,7 @@
       "section": "S-I",
       "note": "Rozhdestvenskiy N",
       "tex_lines": [
-        56
+        60
       ]
     },
     {
@@ -500,7 +518,7 @@
       "section": "S-I",
       "note": "Main L",
       "tex_lines": [
-        57
+        61
       ]
     },
     {
@@ -513,7 +531,7 @@
       "section": "S-I",
       "note": "Main L",
       "tex_lines": [
-        57
+        61
       ]
     },
     {
@@ -526,7 +544,7 @@
       "section": "S-I",
       "note": "Main L",
       "tex_lines": [
-        57
+        61
       ]
     },
     {
@@ -539,7 +557,7 @@
       "section": "S-I",
       "note": "Main L",
       "tex_lines": [
-        57
+        61
       ]
     },
     {
@@ -552,7 +570,7 @@
       "section": "S-I",
       "note": "Main L",
       "tex_lines": [
-        57
+        61
       ]
     },
     {
@@ -565,7 +583,7 @@
       "section": "S-I",
       "note": "Main L",
       "tex_lines": [
-        57
+        61
       ]
     },
     {
@@ -578,7 +596,7 @@
       "section": "S-I",
       "note": "Schomberger A",
       "tex_lines": [
-        58
+        62
       ]
     },
     {
@@ -591,9 +609,9 @@
       "section": "S-I",
       "note": "Schomberger A",
       "tex_lines": [
-        55,
-        56,
-        58
+        59,
+        60,
+        62
       ]
     },
     {
@@ -606,7 +624,7 @@
       "section": "S-I",
       "note": "Schomberger A",
       "tex_lines": [
-        58
+        62
       ]
     },
     {
@@ -619,7 +637,7 @@
       "section": "S-I",
       "note": "Schomberger A",
       "tex_lines": [
-        58
+        62
       ]
     },
     {
@@ -632,7 +650,7 @@
       "section": "S-I",
       "note": "Schomberger A",
       "tex_lines": [
-        58
+        62
       ]
     },
     {
@@ -645,7 +663,7 @@
       "section": "S-I",
       "note": "Schomberger A",
       "tex_lines": [
-        58
+        62
       ]
     },
     {
@@ -658,7 +676,7 @@
       "section": "S-I",
       "note": "Cardanus E",
       "tex_lines": [
-        59
+        63
       ]
     },
     {
@@ -671,7 +689,7 @@
       "section": "S-I",
       "note": "Cardanus E",
       "tex_lines": [
-        59
+        63
       ]
     },
     {
@@ -684,7 +702,7 @@
       "section": "S-I",
       "note": "Cardanus E",
       "tex_lines": [
-        59
+        63
       ]
     },
     {
@@ -697,7 +715,7 @@
       "section": "S-I",
       "note": "Cardanus E",
       "tex_lines": [
-        59
+        63
       ]
     },
     {
@@ -710,7 +728,7 @@
       "section": "S-I",
       "note": "Byrgius C",
       "tex_lines": [
-        60
+        64
       ]
     },
     {
@@ -723,7 +741,7 @@
       "section": "S-I",
       "note": "Byrgius C",
       "tex_lines": [
-        60
+        64
       ]
     },
     {
@@ -736,7 +754,7 @@
       "section": "S-I",
       "note": "Byrgius C",
       "tex_lines": [
-        60
+        64
       ]
     },
     {
@@ -749,7 +767,7 @@
       "section": "S-I",
       "note": "Byrgius C",
       "tex_lines": [
-        60
+        64
       ]
     },
     {
@@ -762,7 +780,7 @@
       "section": "S-I",
       "note": "Byrgius C",
       "tex_lines": [
-        60
+        64
       ]
     },
     {
@@ -775,7 +793,7 @@
       "section": "S-I",
       "note": "Byrgius C",
       "tex_lines": [
-        60
+        64
       ]
     },
     {
@@ -788,7 +806,11 @@
       "section": "S-I",
       "note": "Dollond E",
       "tex_lines": [
-        61
+        65,
+        151,
+        161,
+        224,
+        320
       ]
     },
     {
@@ -801,7 +823,7 @@
       "section": "S-I",
       "note": "Dollond E",
       "tex_lines": [
-        61
+        65
       ]
     },
     {
@@ -814,7 +836,7 @@
       "section": "S-I",
       "note": "Dollond E",
       "tex_lines": [
-        61
+        65
       ]
     },
     {
@@ -827,7 +849,7 @@
       "section": "S-I",
       "note": "Dollond E",
       "tex_lines": [
-        61
+        65
       ]
     },
     {
@@ -840,7 +862,7 @@
       "section": "S-I",
       "note": "Dollond E",
       "tex_lines": [
-        61
+        65
       ]
     },
     {
@@ -853,7 +875,7 @@
       "section": "S-I",
       "note": "Dollond E",
       "tex_lines": [
-        61
+        65
       ]
     },
     {
@@ -866,7 +888,7 @@
       "section": "S-I",
       "note": "Stevinus A",
       "tex_lines": [
-        62
+        66
       ]
     },
     {
@@ -879,7 +901,7 @@
       "section": "S-I",
       "note": "Stevinus A",
       "tex_lines": [
-        62
+        66
       ]
     },
     {
@@ -892,7 +914,7 @@
       "section": "S-I",
       "note": "Stevinus A",
       "tex_lines": [
-        62
+        66
       ]
     },
     {
@@ -905,7 +927,7 @@
       "section": "S-I",
       "note": "Stevinus A",
       "tex_lines": [
-        62
+        66
       ]
     },
     {
@@ -918,7 +940,7 @@
       "section": "S-I",
       "note": "Stevinus A",
       "tex_lines": [
-        62
+        66
       ]
     },
     {
@@ -931,7 +953,1630 @@
       "section": "S-I",
       "note": "Stevinus A",
       "tex_lines": [
-        62
+        66
+      ]
+    },
+    {
+      "id": "x_bound",
+      "printed": "0.2614797",
+      "artifact": null,
+      "key": null,
+      "artifact_value": null,
+      "verdict": "NO SOURCE",
+      "section": "S-IV",
+      "note": "2*artanh(0.13); closed form, checked as DERIVED below",
+      "tex_lines": [
+        314,
+        317
+      ]
+    },
+    {
+      "id": "ceiling_full",
+      "printed": "4.2610829e-3",
+      "artifact": "docs/degeneracy_replication.json",
+      "key": "closed_form_ceiling",
+      "artifact_value": 0.004261082862785302,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "the same constant to eight figures",
+      "tex_lines": [
+        317
+      ]
+    },
+    {
+      "id": "factor",
+      "printed": "235",
+      "artifact": "frontend/public/analysis/sweep_grid.json",
+      "key": "crossing.factor_below_published",
+      "artifact_value": 234.68353413909173,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "1.00 / measured crossing",
+      "tex_lines": [
+        320
+      ]
+    },
+    {
+      "id": "max_resid_stored",
+      "printed": "1.241e-6",
+      "artifact": "frontend/public/analysis/faustini.json",
+      "key": "cpr_dop_identity.max_abs_residual",
+      "artifact_value": 1.2414956257877224e-06,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "stored float32 field",
+      "tex_lines": [
+        355
+      ]
+    },
+    {
+      "id": "crossing",
+      "printed": "4.2610574e-3",
+      "artifact": "frontend/public/analysis/sweep_grid.json",
+      "key": "crossing.cpr_value",
+      "artifact_value": 0.004261057358235121,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "max CPR where DOP < 0.13, screened field",
+      "tex_lines": [
+        357
+      ]
+    },
+    {
+      "id": "crossing_rel",
+      "printed": "5.99e-6",
+      "artifact": "frontend/public/analysis/sweep_grid.json",
+      "key": "crossing.relative_agreement",
+      "artifact_value": 5.985462147133474e-06,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "relative agreement, crossing vs closed form (also DERIVED crossing_rel)",
+      "tex_lines": [
+        358
+      ]
+    },
+    {
+      "id": "mc_trials",
+      "printed": "120 000",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo_run.trials_per_row",
+      "artifact_value": 120000.0,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "the run parameter, now recorded: the committed artifact reproduces bit-for-bit at --trials 120000 --coherence 0.9822",
+      "tex_lines": [
+        366
+      ]
+    },
+    {
+      "id": "mc_proxy_med_07",
+      "printed": "0.00043",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[1].amplitude_proxy.median",
+      "artifact_value": 0.0004332543811427249,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": null,
+      "tex_lines": [
+        367
+      ]
+    },
+    {
+      "id": "mc_proxy_1db",
+      "printed": "0.00331",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[4].amplitude_proxy.median",
+      "artifact_value": 0.0033095631676449857,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "1 dB imbalance",
+      "tex_lines": [
+        369
+      ]
+    },
+    {
+      "id": "mc_proxy_3db",
+      "printed": "0.02922",
+      "artifact": "docs/cpr_significance.json",
+      "key": "monte_carlo[5].amplitude_proxy.median",
+      "artifact_value": 0.029222298703409498,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "3 dB imbalance",
+      "tex_lines": [
+        369
+      ]
+    },
+    {
+      "id": "cpr_with_sin",
+      "printed": "0.053411",
+      "artifact": "docs/incidence_audit.json",
+      "key": "screening_blast_radius.cpr_max_with_sin",
+      "artifact_value": 0.05341120436787605,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": null,
+      "tex_lines": [
+        382
+      ]
+    },
+    {
+      "id": "cpr_without_sin",
+      "printed": "0.053852",
+      "artifact": "docs/incidence_audit.json",
+      "key": "screening_blast_radius.cpr_max_without",
+      "artifact_value": 0.05385207012295723,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": null,
+      "tex_lines": [
+        382
+      ]
+    },
+    {
+      "id": "dcpr_max",
+      "printed": "1.310e-2",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "cpr.over_amplitude_mask.max",
+      "artifact_value": 0.013095542788505554,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": null,
+      "tex_lines": [
+        383
+      ]
+    },
+    {
+      "id": "ddop_max",
+      "printed": "1.393e-1",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "dop.over_amplitude_mask.max",
+      "artifact_value": 0.1392841339111328,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": null,
+      "tex_lines": [
+        383
+      ]
+    },
+    {
+      "id": "dcpr_med",
+      "printed": "2.3e-5",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "cpr.over_amplitude_mask.p50",
+      "artifact_value": 2.3256994609255344e-05,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": null,
+      "tex_lines": [
+        384
+      ]
+    },
+    {
+      "id": "ddop_med",
+      "printed": "1.1e-3",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "dop.over_amplitude_mask.p50",
+      "artifact_value": 0.0011439844965934753,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": null,
+      "tex_lines": [
+        384
+      ]
+    },
+    {
+      "id": "patches",
+      "printed": "8,337",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.n_patches",
+      "artifact_value": 8337.0,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        398
+      ]
+    },
+    {
+      "id": "boot_lh_lo",
+      "printed": "4.03",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_raw_ci_block[0]",
+      "artifact_value": 4.031985555747318,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "block bootstrap, B = 2000",
+      "tex_lines": [
+        399
+      ]
+    },
+    {
+      "id": "boot_lh_hi",
+      "printed": "6.19",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_raw_ci_block[1]",
+      "artifact_value": 6.192660025009096,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        399
+      ]
+    },
+    {
+      "id": "boot_lv_lo",
+      "printed": "4.38",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_raw_ci_block[0]",
+      "artifact_value": 4.384364048960974,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        399
+      ]
+    },
+    {
+      "id": "boot_lv_hi",
+      "printed": "7.29",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_raw_ci_block[1]",
+      "artifact_value": 7.287695851202345,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        399
+      ]
+    },
+    {
+      "id": "boot_lh5_lo",
+      "printed": "10.7",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_box_ci_block[0]",
+      "artifact_value": 10.692978512715843,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "after the 5x5 boxcar",
+      "tex_lines": [
+        400
+      ]
+    },
+    {
+      "id": "boot_lh5_hi",
+      "printed": "22.5",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LH.enl_box_ci_block[1]",
+      "artifact_value": 22.521364411451465,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        400
+      ]
+    },
+    {
+      "id": "boot_lv5_lo",
+      "printed": "12.1",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_box_ci_block[0]",
+      "artifact_value": 12.110323877834976,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        400
+      ]
+    },
+    {
+      "id": "boot_lv5_hi",
+      "printed": "24.8",
+      "artifact": "docs/bootstrap_enl.json",
+      "key": "LV.enl_box_ci_block[1]",
+      "artifact_value": 24.755349160394275,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        400
+      ]
+    },
+    {
+      "id": "cov_lo",
+      "printed": "12",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.coverage_percent_range[0]",
+      "artifact_value": 12.0,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "coverage of the nominally 95 % block bootstrap, synthetic speckle",
+      "tex_lines": [
+        145,
+        203,
+        400,
+        402,
+        444
+      ]
+    },
+    {
+      "id": "cov_hi",
+      "printed": "26",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.coverage_percent_range[1]",
+      "artifact_value": 26.0,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        402,
+        404
+      ]
+    },
+    {
+      "id": "gen_osamp",
+      "printed": "2.905",
+      "artifact": "docs/enl_predictions.json",
+      "key": "predictions[2].oversampling",
+      "artifact_value": 2.9050867745577853,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        420
+      ]
+    },
+    {
+      "id": "gen_reference",
+      "printed": "13.42",
+      "artifact": "docs/enl_predictions.json",
+      "key": "predictions[2].predicted_ceiling",
+      "artifact_value": 13.424728080949187,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "registered before the product was opened",
+      "tex_lines": [
+        420
+      ]
+    },
+    {
+      "id": "gen_part_ratio",
+      "printed": "14.04",
+      "artifact": "docs/slepian_ceiling.json",
+      "key": "other_products[1].participation_ratio_rectangular",
+      "artifact_value": 14.040324585549053,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "39 samples at oversampling 2.905",
+      "tex_lines": [
+        422
+      ]
+    },
+    {
+      "id": "gen_lh",
+      "printed": "2.28",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[4].measured_enl",
+      "artifact_value": 2.280562763611556,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        422,
+        425
+      ]
+    },
+    {
+      "id": "gen_lv",
+      "printed": "2.21",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[5].measured_enl",
+      "artifact_value": 2.2084413069255153,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        422
+      ]
+    },
+    {
+      "id": "gen_attained",
+      "printed": "0.17",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[4].attained_fraction",
+      "artifact_value": 0.16987776213120215,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        423
+      ]
+    },
+    {
+      "id": "here_attained",
+      "printed": "0.86",
+      "artifact": "docs/enl_generality.json",
+      "key": "measurements[0].attained_fraction",
+      "artifact_value": 0.8603916324688512,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "this pass, for comparison",
+      "tex_lines": [
+        423
+      ]
+    },
+    {
+      "id": "b2d16_lo",
+      "printed": "19",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=16].coverage.block2d_percentile.95.coverage|min",
+      "artifact_value": 0.19333333333333333,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        404
+      ]
+    },
+    {
+      "id": "b2d16_hi",
+      "printed": "26",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=16].coverage.block2d_percentile.95.coverage|max",
+      "artifact_value": 0.26,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        402,
+        404
+      ]
+    },
+    {
+      "id": "b2d32_lo",
+      "printed": "98",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=32].coverage.block2d_percentile.95.coverage|min",
+      "artifact_value": 0.98,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        404,
+        407
+      ]
+    },
+    {
+      "id": "b2d32_hi",
+      "printed": "100",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=32].coverage.block2d_percentile.95.coverage|max",
+      "artifact_value": 1.0,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        150,
+        404
+      ]
+    },
+    {
+      "id": "bias16_lo",
+      "printed": "15",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=16].relative_bias_median|min",
+      "artifact_value": 0.14849121059294856,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        231,
+        405
+      ]
+    },
+    {
+      "id": "bias16_hi",
+      "printed": "16",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=16].relative_bias_median|max",
+      "artifact_value": 0.1614485934920371,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        150,
+        172,
+        208,
+        224,
+        226,
+        228,
+        229,
+        230,
+        232,
+        238,
+        397,
+        404,
+        405,
+        409,
+        447,
+        456
+      ]
+    },
+    {
+      "id": "bias32_lo",
+      "printed": "3",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=32].relative_bias_median|min",
+      "artifact_value": 0.034421969901105465,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        45,
+        84,
+        158,
+        159,
+        189,
+        201,
+        208,
+        219,
+        226,
+        228,
+        232,
+        317,
+        324,
+        328,
+        330,
+        349,
+        357,
+        368,
+        384,
+        405
+      ]
+    },
+    {
+      "id": "bias32_hi",
+      "printed": "5",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "rows[?texture=off&patch_px=32].relative_bias_median|max",
+      "artifact_value": 0.0469077496598711,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        75,
+        149,
+        150,
+        166,
+        167,
+        180,
+        188,
+        197,
+        202,
+        210,
+        222,
+        224,
+        229,
+        230,
+        241,
+        242,
+        250,
+        263,
+        270,
+        278,
+        358,
+        376,
+        384,
+        399,
+        405,
+        410
+      ]
+    },
+    {
+      "id": "param_lo",
+      "printed": "88",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "summary_texture_off.parametric_neyman.95.min",
+      "artifact_value": 0.88,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        225,
+        239,
+        407
+      ]
+    },
+    {
+      "id": "param_hi",
+      "printed": "98",
+      "artifact": "docs/enl_interval_validation.json",
+      "key": "summary_texture_off.parametric_neyman.95.max",
+      "artifact_value": 0.98,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        404,
+        407
+      ]
+    },
+    {
+      "id": "gen_slc39",
+      "printed": "6.25",
+      "artifact": "docs/enl_L_20200305_full.json",
+      "key": "candidate_causes.where_the_looks_are_lost.slc_39_line_average_median",
+      "artifact_value": 6.249023544222644,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        424
+      ]
+    },
+    {
+      "id": "gen_pr",
+      "printed": "13.75",
+      "artifact": "docs/enl_L_20200305_full.json",
+      "key": "candidate_causes.where_the_looks_are_lost.slc_participation_ratio_measured_spectrum",
+      "artifact_value": 13.751842825810918,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": null,
+      "tex_lines": [
+        425
+      ]
+    },
+    {
+      "id": "v14_f2_pp_lo",
+      "printed": "7.6",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v2.per_pixel.exceedance_rate",
+      "artifact_value": 0.0762753846153846,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "'7.6--7.8 %': 7.63 (v2); 7.8 is DERIVED f2_per_pixel (the first run)",
+      "tex_lines": [
+        240
+      ]
+    },
+    {
+      "id": "v14_f2_interior",
+      "printed": "6.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v2.per_pixel.interior_cells_rate",
+      "artifact_value": 0.06868181818181818,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": null,
+      "tex_lines": [
+        240
+      ]
+    },
+    {
+      "id": "v14_f2_tpix",
+      "printed": "2.087",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v2.calibrated_per_pixel_threshold.threshold",
+      "artifact_value": 2.087394534474784,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": null,
+      "tex_lines": [
+        241
+      ]
+    },
+    {
+      "id": "v14_f2_tpix_fwe",
+      "printed": "75",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v2.calibrated_per_pixel_threshold.fwe_at_threshold",
+      "artifact_value": 0.7524,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": null,
+      "tex_lines": [
+        230,
+        242,
+        276
+      ]
+    },
+    {
+      "id": "v17_ddop_139",
+      "printed": "0.139",
+      "artifact": "docs/propagation_percentiles.json",
+      "key": "dop.over_amplitude_mask.max",
+      "artifact_value": 0.1392841339111328,
+      "verdict": "PASS",
+      "section": "S-IV",
+      "note": "the III-D DOP_a excursion 1.393e-1, now also printed to three decimals",
+      "tex_lines": [
+        386
+      ]
+    },
+    {
+      "id": "v17_lift",
+      "printed": "5.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.complex_lags_lift_points.max",
+      "artifact_value": 5.940000000000012,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "'by up to 6 points' (5.94)",
+      "tex_lines": [
+        210
+      ]
+    },
+    {
+      "id": "v17_f2_ge5",
+      "printed": "48.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.null_N13p72_rule_ge5_percent",
+      "artifact_value": 48.86,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "48.86 (v3) and 49.31 (v2) both print 49",
+      "tex_lines": [
+        224
+      ]
+    },
+    {
+      "id": "v17_looks11",
+      "printed": "11",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.delivered_N39_looks",
+      "artifact_value": 11.0,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        116,
+        120,
+        144,
+        145,
+        208,
+        259,
+        260
+      ]
+    },
+    {
+      "id": "v17_n39_ge5",
+      "printed": "94.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.null_N39_rule_ge5_percent",
+      "artifact_value": 94.24,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": null,
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "v17_n39_1895",
+      "printed": "31.1",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.null_N39_cpr_only_at_1p895_percent",
+      "artifact_value": 31.05,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": null,
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "mode_bias",
+      "printed": "16",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.relative_bias_percent_median",
+      "artifact_value": 16.020621585920104,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "the mode estimator's relative bias on correlated speckle",
+      "tex_lines": [
+        150,
+        172,
+        208,
+        224,
+        226,
+        228,
+        229,
+        230,
+        232,
+        238,
+        397,
+        404,
+        405,
+        409,
+        447,
+        456
+      ]
+    },
+    {
+      "id": "corrected_raw",
+      "printed": "5.0",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "synthetic.speckle_only_summary.raw_enl_5p83_corrected",
+      "artifact_value": 5.0249687687481845,
+      "verdict": "PASS",
+      "section": "S-V",
+      "note": "5.83 read through the measured bias",
+      "tex_lines": [
+        410
+      ]
+    },
+    {
+      "id": "s2_e16_enl",
+      "printed": "16.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.achieved_enl",
+      "artifact_value": 15.983061958083857,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2: achieved field ENL",
+      "tex_lines": [
+        208,
+        224,
+        226,
+        228,
+        230,
+        232,
+        238
+      ]
+    },
+    {
+      "id": "s2_e16_c100_ge1",
+      "printed": "87.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{null CPR 1.00 DOP 0}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.8788,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N13p72",
+      "tex_lines": [
+        224
+      ]
+    },
+    {
+      "id": "s2_e16_c100_ge5",
+      "printed": "48.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{null CPR 1.00 DOP 0}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.4886,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N13p72",
+      "tex_lines": [
+        224
+      ]
+    },
+    {
+      "id": "s2_e16_c100_mean",
+      "printed": "5.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{null CPR 1.00 DOP 0}.joint_rule.mean_cells_selected",
+      "artifact_value": 5.4852,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N13p72",
+      "tex_lines": [
+        224
+      ]
+    },
+    {
+      "id": "s2_e16_c100_crit",
+      "printed": "89.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{null CPR 1.00 DOP 0}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.8988,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N13p72",
+      "tex_lines": [
+        224
+      ]
+    },
+    {
+      "id": "s2_e16_c100_1895",
+      "printed": "86.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{null CPR 1.00 DOP 0}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.8602,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N13p72",
+      "tex_lines": [
+        224
+      ]
+    },
+    {
+      "id": "s2_e16_c07m_ge1",
+      "printed": "72.8",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.7277,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N13p72",
+      "tex_lines": [
+        226
+      ]
+    },
+    {
+      "id": "s2_e16_c07m_ge5",
+      "printed": "30.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.302,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N13p72",
+      "tex_lines": [
+        226
+      ]
+    },
+    {
+      "id": "s2_e16_c07m_mean",
+      "printed": "3.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.mean_cells_selected",
+      "artifact_value": 3.5145,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N13p72",
+      "tex_lines": [
+        226
+      ]
+    },
+    {
+      "id": "s2_e16_c07m_crit",
+      "printed": "46.6",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP min 0.1765}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.4659,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N13p72",
+      "tex_lines": [
+        226
+      ]
+    },
+    {
+      "id": "s2_e16_c07m_1895",
+      "printed": "39.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP min 0.1765}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.3949,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N13p72",
+      "tex_lines": [
+        226
+      ]
+    },
+    {
+      "id": "s2_e16_c0720_ge1",
+      "printed": "68.6",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP 0.20}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.6857,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N13p72",
+      "tex_lines": [
+        228
+      ]
+    },
+    {
+      "id": "s2_e16_c0720_ge5",
+      "printed": "27.3",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP 0.20}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.2734,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N13p72",
+      "tex_lines": [
+        228
+      ]
+    },
+    {
+      "id": "s2_e16_c0720_mean",
+      "printed": "3.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP 0.20}.joint_rule.mean_cells_selected",
+      "artifact_value": 3.186,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N13p72",
+      "tex_lines": [
+        228
+      ]
+    },
+    {
+      "id": "s2_e16_c0720_crit",
+      "printed": "45.4",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP 0.20}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.4543,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N13p72",
+      "tex_lines": [
+        228
+      ]
+    },
+    {
+      "id": "s2_e16_c0720_1895",
+      "printed": "39.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.7 DOP 0.20}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.3904,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N13p72",
+      "tex_lines": [
+        228
+      ]
+    },
+    {
+      "id": "s2_e16_c09m_ge1",
+      "printed": "85.8",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP min 0.0526}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.8581,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N13p72",
+      "tex_lines": [
+        230
+      ]
+    },
+    {
+      "id": "s2_e16_c09m_ge5",
+      "printed": "45.7",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP min 0.0526}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.4568,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N13p72",
+      "tex_lines": [
+        230
+      ]
+    },
+    {
+      "id": "s2_e16_c09m_mean",
+      "printed": "5.1",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP min 0.0526}.joint_rule.mean_cells_selected",
+      "artifact_value": 5.1213,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N13p72",
+      "tex_lines": [
+        230
+      ]
+    },
+    {
+      "id": "s2_e16_c09m_crit",
+      "printed": "80.3",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP min 0.0526}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.8028,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N13p72",
+      "tex_lines": [
+        230
+      ]
+    },
+    {
+      "id": "s2_e16_c09m_1895",
+      "printed": "75.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP min 0.0526}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.7502,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N13p72",
+      "tex_lines": [
+        230
+      ]
+    },
+    {
+      "id": "s2_e16_c0920_ge1",
+      "printed": "74.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP 0.20}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.7423,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N13p72",
+      "tex_lines": [
+        232
+      ]
+    },
+    {
+      "id": "s2_e16_c0920_ge5",
+      "printed": "31.3",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP 0.20}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.3132,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N13p72",
+      "tex_lines": [
+        232
+      ]
+    },
+    {
+      "id": "s2_e16_c0920_mean",
+      "printed": "3.7",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP 0.20}.joint_rule.mean_cells_selected",
+      "artifact_value": 3.6517,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N13p72",
+      "tex_lines": [
+        232
+      ]
+    },
+    {
+      "id": "s2_e16_c0920_crit",
+      "printed": "79.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP 0.20}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.7903,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N13p72",
+      "tex_lines": [
+        232
+      ]
+    },
+    {
+      "id": "s2_e16_c0920_1895",
+      "printed": "73.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{ice-free CPR 0.9 DOP 0.20}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.7304,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N13p72",
+      "tex_lines": [
+        232
+      ]
+    },
+    {
+      "id": "s2_e40_enl",
+      "printed": "40.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.achieved_enl",
+      "artifact_value": 40.53783198875904,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2: achieved field ENL",
+      "tex_lines": [
+        208,
+        225,
+        227,
+        229,
+        231,
+        233,
+        238
+      ]
+    },
+    {
+      "id": "s2_e40_c100_ge1",
+      "printed": "99.1",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{null CPR 1.00 DOP 0}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.9908,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N39",
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "s2_e40_c100_ge5",
+      "printed": "94.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{null CPR 1.00 DOP 0}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.9424,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N39",
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "s2_e40_c100_mean",
+      "printed": "22.3",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{null CPR 1.00 DOP 0}.joint_rule.mean_cells_selected",
+      "artifact_value": 22.2873,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N39",
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "s2_e40_c100_crit",
+      "printed": "88.1",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{null CPR 1.00 DOP 0}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.8806,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N39",
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "s2_e40_c100_1895",
+      "printed": "31.1",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{null CPR 1.00 DOP 0}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.3105,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, null CPR 1.00 DOP 0, N39",
+      "tex_lines": [
+        225
+      ]
+    },
+    {
+      "id": "s2_e40_c07m_ge1",
+      "printed": "71.7",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.7166,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N39",
+      "tex_lines": [
+        227
+      ]
+    },
+    {
+      "id": "s2_e40_c07m_ge5",
+      "printed": "45.6",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.4555,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N39",
+      "tex_lines": [
+        227
+      ]
+    },
+    {
+      "id": "s2_e40_c07m_mean",
+      "printed": "6.6",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.mean_cells_selected",
+      "artifact_value": 6.5688,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N39",
+      "tex_lines": [
+        227
+      ]
+    },
+    {
+      "id": "s2_e40_c07m_crit",
+      "printed": "17.1",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.1712,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N39",
+      "tex_lines": [
+        227
+      ]
+    },
+    {
+      "id": "s2_e40_c07m_1895",
+      "printed": "1.3",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.0125,
+      "verdict": "MISMATCH",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP min 0.1765, N39",
+      "tex_lines": [
+        227
+      ]
+    },
+    {
+      "id": "s2_e40_c0720_ge1",
+      "printed": "65.7",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.6574,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N39",
+      "tex_lines": [
+        229
+      ]
+    },
+    {
+      "id": "s2_e40_c0720_ge5",
+      "printed": "38.7",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.3867,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N39",
+      "tex_lines": [
+        229
+      ]
+    },
+    {
+      "id": "s2_e40_c0720_mean",
+      "printed": "5.3",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.joint_rule.mean_cells_selected",
+      "artifact_value": 5.268,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N39",
+      "tex_lines": [
+        229
+      ]
+    },
+    {
+      "id": "s2_e40_c0720_crit",
+      "printed": "16.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.1686,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N39",
+      "tex_lines": [
+        229
+      ]
+    },
+    {
+      "id": "s2_e40_c0720_1895",
+      "printed": "1.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.0103,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.7 DOP 0.20, N39",
+      "tex_lines": [
+        229
+      ]
+    },
+    {
+      "id": "s2_e40_c09m_ge1",
+      "printed": "97.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP min 0.0526}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.9715,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N39",
+      "tex_lines": [
+        231
+      ]
+    },
+    {
+      "id": "s2_e40_c09m_ge5",
+      "printed": "87.8",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP min 0.0526}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.8784,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N39",
+      "tex_lines": [
+        231
+      ]
+    },
+    {
+      "id": "s2_e40_c09m_mean",
+      "printed": "18.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP min 0.0526}.joint_rule.mean_cells_selected",
+      "artifact_value": 18.4707,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N39",
+      "tex_lines": [
+        231
+      ]
+    },
+    {
+      "id": "s2_e40_c09m_crit",
+      "printed": "68.7",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP min 0.0526}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.6869,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N39",
+      "tex_lines": [
+        231
+      ]
+    },
+    {
+      "id": "s2_e40_c09m_1895",
+      "printed": "15.1",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP min 0.0526}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.1513,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP min 0.0526, N39",
+      "tex_lines": [
+        231
+      ]
+    },
+    {
+      "id": "s2_e40_c0920_ge1",
+      "printed": "79.9",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP 0.20}.joint_rule.p_at_least_1_cell.rate",
+      "artifact_value": 0.7993,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N39",
+      "tex_lines": [
+        233
+      ]
+    },
+    {
+      "id": "s2_e40_c0920_ge5",
+      "printed": "54.4",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP 0.20}.joint_rule.p_at_least_5_cells.rate",
+      "artifact_value": 0.5441,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N39",
+      "tex_lines": [
+        233
+      ]
+    },
+    {
+      "id": "s2_e40_c0920_mean",
+      "printed": "8.0",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP 0.20}.joint_rule.mean_cells_selected",
+      "artifact_value": 8.0095,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N39",
+      "tex_lines": [
+        233
+      ]
+    },
+    {
+      "id": "s2_e40_c0920_crit",
+      "printed": "67.7",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP 0.20}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate",
+      "artifact_value": 0.6768,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N39",
+      "tex_lines": [
+        233
+      ]
+    },
+    {
+      "id": "s2_e40_c0920_1895",
+      "printed": "13.6",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.9 DOP 0.20}.cpr_only.at_1p895.p_at_least_1_pixel.rate",
+      "artifact_value": 0.1363,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2, ice-free CPR 0.9 DOP 0.20, N39",
+      "tex_lines": [
+        233
+      ]
+    },
+    {
+      "id": "s2_e16_critval",
+      "printed": "1.805",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N13p72.{null CPR 1.00 DOP 0}.cpr_only.at_achieved_enl.crit",
+      "artifact_value": 1.8050628122247234,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2 note: critical value at the achieved ENL",
+      "tex_lines": [
+        238
+      ]
+    },
+    {
+      "id": "s2_e40_critval",
+      "printed": "1.444",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3.results.delivered_LH.N39.{null CPR 1.00 DOP 0}.cpr_only.at_achieved_enl.crit",
+      "artifact_value": 1.4441252960040367,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2 note: critical value at the achieved ENL",
+      "tex_lines": [
+        238
+      ]
+    },
+    {
+      "id": "s3_f2_v2_ge1",
+      "printed": "88.2",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.v2_rule_ge1_percent",
+      "artifact_value": 88.24,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "Table S2 note: 'With v2 (L=4, ENL 14.5) the null rate is 88.2 %'",
+      "tex_lines": [
+        239
+      ]
+    },
+    {
+      "id": "s3_f2_enl145",
+      "printed": "14.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.first_run_L4_enl",
+      "artifact_value": 14.501081761670315,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": null,
+      "tex_lines": [
+        208,
+        239
+      ]
+    },
+    {
+      "id": "s3_f2_tmax",
+      "printed": "4.12",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v2.crater_level_threshold.threshold_for_5pct_fwe",
+      "artifact_value": 4.117249415549223,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": "'a 5 % crater-level test needs 4.12'",
+      "tex_lines": [
+        243
+      ]
+    },
+    {
+      "id": "s3_f2_L11",
+      "printed": "40.5",
+      "artifact": "docs/f2_maximum.json",
+      "key": "complex_field_v3_summary.delivered_N39_achieved_enl",
+      "artifact_value": 40.53783198875904,
+      "verdict": "PASS",
+      "section": "S-III",
+      "note": null,
+      "tex_lines": [
+        208,
+        225,
+        227,
+        229,
+        231,
+        233,
+        238
       ]
     }
   ],
@@ -970,17 +2615,91 @@
           "docs/published_moments.json::craters[?name=Cardanus E].N_from_skewness rounds_to: 1 elements, 0 do not round to 7.49 -> ok",
           "docs/published_moments.json::craters[?name=Cardanus E].N_from_kurtosis rounds_to: 1 elements, 0 do not round to 9.12 -> ok"
         ]
+      },
+      {
+        "id": "q_bias_every_N",
+        "anchor": "at every look\\s+count tested",
+        "verdict": "PASS",
+        "section": "S-V",
+        "note": "'about 16 % high at every look count tested': speckle-only rows, N = 4, 6, 8, 12, each within 14-18 %",
+        "details": [
+          "docs/enl_benchmark.json::synthetic.rows[?texture_label=inf].relative_bias within: 4 elements in [0.15532, 0.171167]; 0 outside [0.14, 0.18] -> ok"
+        ]
+      },
+      {
+        "id": "q_all_pixels_fig1",
+        "anchor": "over all \\$2\\\\,337\\\\,086\\$",
+        "verdict": "PASS",
+        "section": "S-IV",
+        "note": "Fig. 1 is drawn over every measured pixel",
+        "details": [
+          "docs/dop_exclusion.json::measured_pixels equals: 1 elements, 0 != 2337086.0 -> ok",
+          "docs/dop_exclusion.json::figure_cache_cross_check.n equals: 1 elements, 0 != 2337086.0 -> ok"
+        ]
+      },
+      {
+        "id": "q_all_pixels_resid",
+        "anchor": "across all\\s+\\$2\\\\,337\\\\,086\\$",
+        "verdict": "PASS",
+        "section": "S-IV",
+        "note": "the residual is taken over every measured pixel",
+        "details": [
+          "frontend/public/analysis/faustini.json::cpr_dop_identity.verified_over_pixels equals: 1 elements, 0 != 2337086.0 -> ok"
+        ]
+      },
+      {
+        "id": "q_v11_texture_zero",
+        "anchor": "every procedure\\s+covers 0",
+        "verdict": "PASS",
+        "section": "S-V",
+        "note": null,
+        "details": [
+          "docs/enl_interval_validation.json::rows[?texture=order 8].coverage.block2d_percentile.95.coverage equals: 8 elements, 0 != 0.0 -> ok",
+          "docs/enl_interval_validation.json::rows[?texture=order 8].coverage.block2d_basic.95.coverage equals: 8 elements, 0 != 0.0 -> ok",
+          "docs/enl_interval_validation.json::rows[?texture=order 8].coverage.parametric_neyman.95.coverage equals: 8 elements, 0 != 0.0 -> ok",
+          "docs/enl_interval_validation.json::rows[?texture=order 8].coverage.parametric_basic.95.coverage equals: 8 elements, 0 != 0.0 -> ok"
+        ]
+      },
+      {
+        "id": "q_v17_proxy_all",
+        "anchor": "all give a proxy median of 0\\.00043",
+        "verdict": "PASS",
+        "section": "S-IV",
+        "note": "the four equal-power rows, CPR 0.30 / 0.70 / 1.00 / 1.50",
+        "details": [
+          "docs/cpr_significance.json::monte_carlo[0:4].amplitude_proxy.median rounds_to: 4 elements, 0 do not round to 0.00043 -> ok"
+        ]
+      },
+      {
+        "id": "q_v17_lift",
+        "anchor": "raise each joint-rule rate by up to 5\\.9 points",
+        "verdict": "PASS",
+        "section": "S-III",
+        "note": "every population and look count: the complex lags raise the rate, by 0.11 to 5.94 points",
+        "details": [
+          "docs/f2_maximum.json::complex_field_v3_summary.complex_lags_lift_points.max below: max 5.94 vs < 6.0 -> ok",
+          "docs/f2_maximum.json::complex_field_v3_summary.complex_lags_lift_points.min above: min 0.11 vs > 0.0 -> ok"
+        ]
       }
     ],
     "counts": {
-      "PASS": 3,
+      "PASS": 9,
       "FAIL": 0,
       "UNBACKED": 0,
       "ABSENT": 0
     },
     "scan": [
       {
-        "line": 33,
+        "line": 23,
+        "word": "every",
+        "sentence": "\\documentclass[journal]{IEEEtran} \\usepackage{amsmath,amssymb} \\usepackage{booktabs} \\usepackage{graphicx} \\renewcommand{\\thefigure}{S\\arabic{figure}} \\usepackage{url} \\usepackage[hidelinks]{hyperref} \\renewcommand{\\thesection}{S-\\Roman{sec",
+        "claimed_by": [
+          "EXEMPT",
+          "editorial: the supplement's contents"
+        ]
+      },
+      {
+        "line": 37,
         "word": "each",
         "sentence": "If those distributions are speckle-dominated, the second, third and fourth moments are each invertible for $N$, although their sample estimates from the same pixels are statistically dependent: the dispersion through Eq.~(7) of the main tex",
         "claimed_by": [
@@ -989,7 +2708,7 @@
         ]
       },
       {
-        "line": 84,
+        "line": 88,
         "word": "uniformly",
         "sentence": "The per-crater estimates do not agree uniformly (Cardanus E spans 7.49--9.12), and no uncertainty is propagated from finite samples, spatial dependence, rounded published moments or the covariance among the estimators, so the agreement carr",
         "claimed_by": [
@@ -998,7 +2717,7 @@
         ]
       },
       {
-        "line": 108,
+        "line": 112,
         "word": "all",
         "sentence": "\\section{Literature Search} \\label{sec:litsearch} Claims of absence refer to a documented search, recorded in the repository: eight query strings combining (``circular polarization ratio'' or CPR) with lunar, radar and statistical terms, 19",
         "claimed_by": [
@@ -1007,7 +2726,7 @@
         ]
       },
       {
-        "line": 113,
+        "line": 117,
         "word": "none",
         "sentence": "One of the 25, \\cite{spudis2013}, reports a measured effective look count for the product it analyzes; none reports one for a DFSAR product, and none reports a per-pixel critical value at a stated look count or a noise exceedance rate for t",
         "claimed_by": [
@@ -1016,12 +2735,237 @@
         ]
       },
       {
-        "line": 114,
+        "line": 118,
         "word": "none",
         "sentence": "One of the 25, \\cite{spudis2013}, reports a measured effective look count for the product it analyzes; none reports one for a DFSAR product, and none reports a per-pixel critical value at a stated look count or a noise exceedance rate for t",
         "claimed_by": [
           "QUANTIFIED",
           "q_lit_none_crit"
+        ]
+      },
+      {
+        "line": 127,
+        "word": "Every",
+        "sentence": "\\section{Simulation Specifications} Every artifact named below is in the author's repository and records its seed, generator and run information; every simulated rate carries the binomial Monte Carlo standard error $\\sqrt{p(1-p)/T}$ for $T$",
+        "claimed_by": [
+          "EXEMPT",
+          "scope: each rate in the artifacts has an mc_se field"
+        ]
+      },
+      {
+        "line": 128,
+        "word": "every",
+        "sentence": "\\section{Simulation Specifications} Every artifact named below is in the author's repository and records its seed, generator and run information; every simulated rate carries the binomial Monte Carlo standard error $\\sqrt{p(1-p)/T}$ for $T$",
+        "claimed_by": [
+          "EXEMPT",
+          "scope: each rate in the artifacts has an mc_se field"
+        ]
+      },
+      {
+        "line": 154,
+        "word": "each",
+        "sentence": "Arm B: each look's vector is multiplied by $\\sqrt{T_k}$, $T_k\\sim\\Gamma(8,1/8)$ independent per look and common to both channels.",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the texture model of arm B"
+        ]
+      },
+      {
+        "line": 170,
+        "word": "every",
+        "sentence": "The law of $\\hat m$ depends on $\\boldsymbol\\Sigma$ only through its eigenvalue ratio, that is its DOP, so one curve serves every population.",
+        "claimed_by": [
+          "EXEMPT",
+          "mathematical: the law of m_hat depends on Sigma only through its DOP"
+        ]
+      },
+      {
+        "line": 174,
+        "word": "each",
+        "sentence": "The plug-in $\\hat N$ solves $2\\psi_1(\\hat N)=\\widehat{\\mathrm{Var}}(\\ln R)$ over $W$ cells ($W=960$, 16 and 10 independent cells for a $31\\times31$ window at no correlation, at 61.42 and at 99.6 pixels per independent sample); on the produc",
+        "claimed_by": [
+          "EXEMPT",
+          "method: which window the plug-in N-hat uses"
+        ]
+      },
+      {
+        "line": 179,
+        "word": "each",
+        "sentence": "\\subsection{Neyman--Pearson bound (\\texttt{np\\_power\\_bound}, MC seed 20261005)} For each alternative $\\boldsymbol\\Sigma_1$ the bound is the minimum over null $\\boldsymbol\\Sigma_0$ of the power of the level-5\\,\\% test on $T=\\mathrm{tr}[(\\bo",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the Neyman-Pearson construction per simple alternative"
+        ]
+      },
+      {
+        "line": 188,
+        "word": "all",
+        "sentence": "Null boundary: CPR 1 with DOP in [0, 0.13], and DOP 0.13 with CPR in [1, 1.2989], all phases; 360 coarse points refined by six $5\\times5$ zoom rounds to a CPR spacing of $3.1\\times10^{-4}$.",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the null boundary grid covers every cross-term phase"
+        ]
+      },
+      {
+        "line": 210,
+        "word": "each",
+        "sentence": "Table~\\ref{tab:f2sim} lists the results with the delivered lags; the complex product's lags raise each joint-rule rate by up to 5.9 points.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_v17_lift"
+        ]
+      },
+      {
+        "line": 247,
+        "word": "Each",
+        "sentence": "With v2 ($L=4$, ENL 14.5) the null rate is 88.2\\,\\%, the per-pixel CPR-only rate at 1.895 is 7.6--7.8\\,\\% (6.9\\,\\% where the boxcar window is wholly valid), the threshold giving a 5\\,\\% per-pixel rate, 2.087, still fires in 75\\,\\% of realiz",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the held-out split"
+        ]
+      },
+      {
+        "line": 252,
+        "word": "each",
+        "sentence": "Exact-calibration reference: binomial at each block's effective count $n_{\\mathrm{test}}/A_b$, $A_b$ the block's integrated autocorrelation of $\\ln\\mathrm{CPR}$ over lags up to 8; the number of blocks above nominal is then Poisson-binomial.",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the exact-calibration reference (v17_eff_count)"
+        ]
+      },
+      {
+        "line": 263,
+        "word": "each",
+        "sentence": "$N_{\\mathrm{eff}}\\in\\{254,400,600,1000, 1500,2500,4000,6000,10\\,000\\}$, $2\\times10^5$ trials each, alternatives CPR 1.05, 1.1, 1.2 and 1.25 at minimum DOP and CPR 1.1 and 1.2 at DOP $(|q|+0.13)/2$.",
+        "claimed_by": [
+          "EXEMPT",
+          "run parameter: 2e5 trials per design-curve point"
+        ]
+      },
+      {
+        "line": 275,
+        "word": "each",
+        "sentence": "\\subsection{Crater-scale real-data comparison (\\texttt{crater\\_level\\_real}, seed 20261009)} Discs: a square lattice of 1100\\,m pitch in polar-stereographic coordinates, each disc keeping the 663 signal cells nearest its centre (F2's count)",
+        "claimed_by": [
+          "EXEMPT",
+          "method: the disc construction (crater_level_real.discs.rule)"
+        ]
+      },
+      {
+        "line": 280,
+        "word": "each",
+        "sentence": "Simulation on F2's own complex-grid layout, stationary AR(1) fields at the complex product's lags, $5\\times5$ boxcar, looks set so that the log-ratio $N$ matches the disc's $\\hat N$: (i) the sunlit discs' median population, $10^4$ trials; (",
+        "claimed_by": [
+          "EXEMPT",
+          "method: one simulation per disc at its own look count"
+        ]
+      },
+      {
+        "line": 310,
+        "word": "identically",
+        "sentence": "Because $\\mathrm{CPR}_a=c\\le1$ identically, $\\mathrm{CPR}_a>1$ is empty before any DOP condition is imposed; the ceiling below states how far below unity the DOP condition holds it, not whether.",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: CPR_a = c <= 1"
+        ]
+      },
+      {
+        "line": 325,
+        "word": "every",
+        "sentence": "The complement makes this an identifiability failure rather than a negative finding: wherever $\\mathrm{DOP}_a<0.13$, the admissible vector with $S_2=0$ and $S_3$ negative and arbitrarily small satisfies both conditions, so every pixel the s",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: the complement argument"
+        ]
+      },
+      {
+        "line": 336,
+        "word": "none",
+        "sentence": "Applied to this frame the screen selects none of the $2\\,337\\,086$ measured pixels; that zero is structural, not observed, since an interval on $k=0$ successes \\cite{brown2001} presumes an unknown firing probability and this screen's is zer",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic: CPR_a <= 4.261e-3 wherever DOP_a < 0.13 (Eq. 6); G31 checks it on corrupted inputs"
+        ]
+      },
+      {
+        "line": 338,
+        "word": "every",
+        "sentence": "Applied to this frame the screen selects none of the $2\\,337\\,086$ measured pixels; that zero is structural, not observed, since an interval on $k=0$ successes \\cite{brown2001} presumes an unknown firing probability and this screen's is zer",
+        "claimed_by": [
+          "EXEMPT",
+          "algebraic; G31 checks it on corrupted inputs"
+        ]
+      },
+      {
+        "line": 344,
+        "word": "Every",
+        "sentence": "\\begin{figure}[t] \\centering \\includegraphics[width=\\columnwidth]{fig1_degeneracy.pdf} \\caption{Every measured pixel on the analytic curve: the density of $(\\mathrm{DOP}_a,\\mathrm{CPR}_a)$ over all $2\\,337\\,086$ pixels with non-zero amplitu",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_all_pixels_fig1"
+        ]
+      },
+      {
+        "line": 345,
+        "word": "all",
+        "sentence": "\\begin{figure}[t] \\centering \\includegraphics[width=\\columnwidth]{fig1_degeneracy.pdf} \\caption{Every measured pixel on the analytic curve: the density of $(\\mathrm{DOP}_a,\\mathrm{CPR}_a)$ over all $2\\,337\\,086$ pixels with non-zero amplitu",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_all_pixels_fig1"
+        ]
+      },
+      {
+        "line": 354,
+        "word": "all",
+        "sentence": "The shaded band is $\\mathrm{DOP}_a<0.13$, the pixels the amplitudes do not exclude (60\\,\\%, before the boxcar); within it $\\mathrm{CPR}_a$ cannot exceed $4.261\\times10^{-3}$ (marked), while the criterion asks for CPR above unity (dotted).} ",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_all_pixels_resid"
+        ]
+      },
+      {
+        "line": 367,
+        "word": "all",
+        "sentence": "\\subsection{What the screen measures} \\label{sec:montecarlo} In simulated five-look circular Gaussian vectors at the measured $H$--$V$ correlation ($120\\,000$ trials per case), true CPRs of 0.30 to 1.50 at equal channel powers all give a pr",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_v17_proxy_all"
+        ]
+      },
+      {
+        "line": 368,
+        "word": "each",
+        "sentence": "\\subsection{What the screen measures} \\label{sec:montecarlo} In simulated five-look circular Gaussian vectors at the measured $H$--$V$ correlation ($120\\,000$ trials per case), true CPRs of 0.30 to 1.50 at equal channel powers all give a pr",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_v17_proxy_all"
+        ]
+      },
+      {
+        "line": 407,
+        "word": "every",
+        "sentence": "Validated on synthetic scenes with the product's lag correlations, that bootstrap covers the true look count 12--26\\,\\% of the time at nominal 95\\,\\%, a two-dimensional block bootstrap (percentile interval) 19--26\\,\\% at $16\\times16$ patche",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_v11_texture_zero"
+        ]
+      },
+      {
+        "line": 409,
+        "word": "every",
+        "sentence": "At $16\\times16$ the mode estimator reads about 16\\,\\% high at every look count tested, so the raw 5.83 corresponds to about 5.0 on untextured speckle.",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_bias_every_N"
+        ]
+      },
+      {
+        "line": 425,
+        "word": "none",
+        "sentence": "Its own SLC averaged over 39 lines reads 6.25 against a measured-spectrum value of 13.75, and the delivered product 2.28; none of three candidate causes (output spacing, pulse bandwidth, lag-one correlations) predicts a loss of that size in",
+        "claimed_by": [
+          "EXEMPT",
+          "judgement over enl_L_20200305_full.json::candidate_causes; no per-cause numeric field"
         ]
       }
     ],

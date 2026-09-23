@@ -675,5 +675,66 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "split_sample": {
+    "ranking_statistic": "coefficient of variation of S0 (sd with ddof 1 over mean) over a 64 x 64 tile's cells, tiles wholly inside the matched mask (hh > 0, vv > 0, S0 > 0), selected below the 10th percentile of the CV over those tiles (stokes_from_slc.low_cv_tiles)",
+    "split": "rows of each tile: CV on one parity, Var(ln R) on the other; then swapped",
+    "reference": {
+      "N_median": 39.4,
+      "iqr": [
+        28.5,
+        46.0
+      ],
+      "blocks": 109,
+      "source": "pass_20200808.blocks_64x64.N_logratio"
+    },
+    "select_even_estimate_odd": {
+      "blocks": 109,
+      "N_logratio": {
+        "n": 109,
+        "median": 39.687931431791206,
+        "iqr": [
+          28.87481827534755,
+          46.06860877204884
+        ],
+        "p95": 56.453565791206394
+      },
+      "cv_threshold_10th_percentile": 0.22524235997959893
+    },
+    "select_odd_estimate_even": {
+      "blocks": 109,
+      "N_logratio": {
+        "n": 109,
+        "median": 39.607379298309986,
+        "iqr": [
+          28.54997762186458,
+          46.42548081339442
+        ],
+        "p95": 57.35347047409244
+      },
+      "cv_threshold_10th_percentile": 0.2264051621268857
+    },
+    "full_sample_check": {
+      "blocks": 109,
+      "N_logratio": {
+        "n": 109,
+        "median": 39.43610776747363,
+        "iqr": [
+          28.476456881577036,
+          45.971240335326726
+        ],
+        "p95": 57.25377019831914
+      },
+      "cv_threshold_10th_percentile": 0.22528785950850136
+    }
+  },
+  "run_info_split_sample": {
+    "wall_s": 47.5,
+    "peak_rss_mb": 2964,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
   }
 }

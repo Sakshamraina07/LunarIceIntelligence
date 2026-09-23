@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/table-recompute/1",
-  "generated_utc": "2026-09-23T19:33:12.930408+00:00",
+  "generated_utc": "2026-09-23T21:33:14.815271+00:00",
   "generator": "backend/scripts/recompute_manuscript_tables.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "recomputed_from": [
@@ -324,26 +324,57 @@
           "at_printed_N": 0.1431,
           "at_measured_N": 0.1431,
           "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 39.4,
+          "N_measured": 39.4,
+          "cell": "rel_sd",
+          "printed": 0.23,
+          "at_printed_N": 0.22978,
+          "at_measured_N": 0.22978,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 39.4,
+          "N_measured": 39.4,
+          "cell": "bias",
+          "printed": 1.026,
+          "at_printed_N": 1.02604,
+          "at_measured_N": 1.02604,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 39.4,
+          "N_measured": 39.4,
+          "cell": "crit_95",
+          "printed": 1.452,
+          "at_printed_N": 1.45185,
+          "at_measured_N": 1.45185,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 39.4,
+          "N_measured": 39.4,
+          "cell": "p_0.7",
+          "printed": 5.78,
+          "at_printed_N": 5.7751,
+          "at_measured_N": 5.7751,
+          "verdict": "MATCH (printed N)"
+        },
+        {
+          "N": 39.4,
+          "N_measured": 39.4,
+          "cell": "p_0.5",
+          "printed": 0.12,
+          "at_printed_N": 0.1195,
+          "at_measured_N": 0.1195,
+          "verdict": "MATCH (printed N)"
         }
       ],
       "differ": 0
     },
     "V-A_critical_values_in_text": {
       "cells": [
-        {
-          "N": 13.72,
-          "cell": "crit",
-          "printed": 1.895,
-          "computed": 1.89462,
-          "verdict": "MATCH"
-        },
-        {
-          "N": 13.72,
-          "cell": "p_0.7",
-          "printed": 18.0,
-          "computed": 17.79,
-          "verdict": "MATCH"
-        },
         {
           "N": 39.4,
           "cell": "crit",
@@ -356,6 +387,20 @@
           "cell": "p_0.7",
           "printed": 5.8,
           "computed": 5.775,
+          "verdict": "MATCH"
+        },
+        {
+          "N": 13.72,
+          "cell": "crit",
+          "printed": 1.895,
+          "computed": 1.89462,
+          "verdict": "MATCH"
+        },
+        {
+          "N": 13.72,
+          "cell": "p_0.7",
+          "printed": 18.0,
+          "computed": 17.79,
           "verdict": "MATCH"
         }
       ],
@@ -559,10 +604,10 @@
       "parsed_from": "Claude outputs/grsl/dfsar_detection_limits_supplement.tex"
     }
   },
-  "total_cells": 66,
+  "total_cells": 71,
   "total_differ": 0,
   "expected_cells": {
-    "II_sampling_statistics": 35,
+    "II_sampling_statistics": 40,
     "V-A_critical_values_in_text": 4,
     "III_published_moments": 27
   },

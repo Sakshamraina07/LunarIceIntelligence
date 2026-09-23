@@ -1,0 +1,1783 @@
+{
+  "schema": "lunar-ice/region-mean-null/1",
+  "generated_utc": "2026-09-23T20:53:08.177709+00:00",
+  "generator": "backend/scripts/region_mean_null.py",
+  "seed": 20261011,
+  "statistic": "over the cells of a region with sample CPR >= 1: the mean sample CPR and the mean sample DOP (the per-region pair Sinha et al. report)",
+  "populations": [
+    {
+      "label": "CPR 1.00 DOP 0",
+      "cpr": 1.0,
+      "dop": 0.0
+    },
+    {
+      "label": "CPR 0.7 DOP 0.176",
+      "cpr": 0.7,
+      "dop": 0.17647058823529413
+    },
+    {
+      "label": "CPR 0.7 DOP 0.20",
+      "cpr": 0.7,
+      "dop": 0.2
+    },
+    {
+      "label": "sunlit median (CPR 0.155, DOP 0.737)",
+      "cpr": 0.15504823625087738,
+      "dop": 0.7366808633495531
+    }
+  ],
+  "N_grid": [
+    5.0,
+    13.72,
+    39.4,
+    80.0,
+    150.0
+  ],
+  "region_cells": [
+    260,
+    3647
+  ],
+  "trials": {
+    "independent": {
+      "260": 20000,
+      "3647": 4000
+    },
+    "correlated": {
+      "260": 2000,
+      "3647": 1000
+    }
+  },
+  "correlated_model": {
+    "lags_intensity_SC": [
+      0.5788821720843366,
+      0.6251740396818406
+    ],
+    "lags_intensity_OC": [
+      0.7383901900520211,
+      0.76853613404464
+    ],
+    "region": "ellipse on the complex grid, cell 10.0 m azimuth x 23.1 m ground range, scaled to the stated cell count",
+    "boxcar": 5
+  },
+  "results": {
+    "CPR 1.00 DOP 0": {
+      "N5": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.723148144944283,
+              2.0251472995557145
+            ],
+            "mean_dop_5_95": [
+              0.46707877547949367,
+              0.5174374057666461
+            ],
+            "mean_cpr_median": 1.8610488021361982,
+            "mean_dop_median": 0.49246250637088174,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.459475906032382,
+              3.02759614463825
+            ],
+            "mean_dop_5_95": [
+              0.46704837068724503,
+              0.6683227930094209
+            ],
+            "mean_cpr_median": 2.0162186531820536,
+            "mean_dop_median": 0.5688556333186154,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 2000,
+            "looks_per_channel": 1,
+            "achieved_log_ratio_N": 3.4737871933507476,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.826970442588567,
+              1.9048363957104937
+            ],
+            "mean_dop_5_95": [
+              0.48556177269564377,
+              0.49886535117182734
+            ],
+            "mean_cpr_median": 1.8647256482642989,
+            "mean_dop_median": 0.49218739114505405,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.9255179183788371,
+              2.4719541562064262
+            ],
+            "mean_dop_5_95": [
+              0.5438382037206551,
+              0.6038040253078479
+            ],
+            "mean_cpr_median": 2.179487011455495,
+            "mean_dop_median": 0.574328156285232,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 1,
+            "achieved_log_ratio_N": 3.6311083118914773,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N13.72": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.3506923720871282,
+              1.461195975077852
+            ],
+            "mean_dop_5_95": [
+              0.2847854272926744,
+              0.3194063801148419
+            ],
+            "mean_cpr_median": 1.403114642791253,
+            "mean_dop_median": 0.30184862978926963,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1854177738135743,
+              1.741927451485982
+            ],
+            "mean_dop_5_95": [
+              0.24324497296465772,
+              0.39593779274351715
+            ],
+            "mean_cpr_median": 1.3968423114290065,
+            "mean_dop_median": 0.3154012853798016,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 2000,
+            "looks_per_channel": 4,
+            "achieved_log_ratio_N": 12.73478400047014,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.3896804246848125,
+              1.4192678590504035
+            ],
+            "mean_dop_5_95": [
+              0.29726110196261957,
+              0.3065051087416204
+            ],
+            "mean_cpr_median": 1.4043491880589074,
+            "mean_dop_median": 0.3018222690360982,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.3212408438563203,
+              1.4800111107758125
+            ],
+            "mean_dop_5_95": [
+              0.2698284067130035,
+              0.3115906905413577
+            ],
+            "mean_cpr_median": 1.3933970818521602,
+            "mean_dop_median": 0.2908908529100259,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 5,
+            "achieved_log_ratio_N": 14.59609183403541,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N39.4": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1845952564029096,
+              1.235887642879578
+            ],
+            "mean_dop_5_95": [
+              0.1687431178010118,
+              0.19000801576678444
+            ],
+            "mean_cpr_median": 1.2094305331821125,
+            "mean_dop_median": 0.1791394633268284,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0867017635374963,
+              1.30464960526999
+            ],
+            "mean_dop_5_95": [
+              0.12110969718755485,
+              0.20761398124471983
+            ],
+            "mean_cpr_median": 1.175141951649682,
+            "mean_dop_median": 0.16205530071419483,
+            "p_mean_dop_lt_0p13": 0.0905,
+            "p_mean_dop_lt_0p13_se": 0.006415206543830058,
+            "p_mean_dop_lt_0p10": 0.006,
+            "p_mean_dop_lt_0p10_se": 0.0017268468374467957,
+            "regions_evaluated": 2000,
+            "looks_per_channel": 16,
+            "achieved_log_ratio_N": 37.380009449596635,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.2030901016174744,
+              1.2165765382986204
+            ],
+            "mean_dop_5_95": [
+              0.17633607992392555,
+              0.18205961096756337
+            ],
+            "mean_cpr_median": 1.2098093827882217,
+            "mean_dop_median": 0.17912428960432347,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1807451985222395,
+              1.263922732626781
+            ],
+            "mean_dop_5_95": [
+              0.17025616800901824,
+              0.19816630066633487
+            ],
+            "mean_cpr_median": 1.2214169179552037,
+            "mean_dop_median": 0.1842759361414401,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 13,
+            "achieved_log_ratio_N": 39.36086311206239,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N80": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1240014884517817,
+              1.1571436590307378
+            ],
+            "mean_dop_5_95": [
+              0.11836533603125231,
+              0.1336291149145856
+            ],
+            "mean_cpr_median": 1.1401072010713664,
+            "mean_dop_median": 0.12588996408848963,
+            "p_mean_dop_lt_0p13": 0.80795,
+            "p_mean_dop_lt_0p13_se": 0.002785379664426378,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.9995,
+            "mean_cpr_5_95": [
+              1.064836877918324,
+              1.2214687019437336
+            ],
+            "mean_dop_5_95": [
+              0.0932231759827258,
+              0.1602531512430116
+            ],
+            "mean_cpr_median": 1.1297290188224907,
+            "mean_dop_median": 0.12383158098097086,
+            "p_mean_dop_lt_0p13": 0.6133066533266633,
+            "p_mean_dop_lt_0p13_se": 0.010892204607725836,
+            "p_mean_dop_lt_0p10": 0.1025512756378189,
+            "p_mean_dop_lt_0p10_se": 0.006785298511442381,
+            "regions_evaluated": 1999,
+            "looks_per_channel": 28,
+            "achieved_log_ratio_N": 78.23777706402907,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1357934841734514,
+              1.1448611291188295
+            ],
+            "mean_dop_5_95": [
+              0.12397056073933505,
+              0.12805676491798315
+            ],
+            "mean_cpr_median": 1.1402870018294033,
+            "mean_dop_median": 0.12595700038082724,
+            "p_mean_dop_lt_0p13": 0.99925,
+            "p_mean_dop_lt_0p13_se": 0.00043285029167138965,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1165618457015232,
+              1.1690633378741533
+            ],
+            "mean_dop_5_95": [
+              0.11586052120567847,
+              0.13620084676706803
+            ],
+            "mean_cpr_median": 1.141844375089423,
+            "mean_dop_median": 0.12583388944131008,
+            "p_mean_dop_lt_0p13": 0.756,
+            "p_mean_dop_lt_0p13_se": 0.013581752464244074,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 28,
+            "achieved_log_ratio_N": 80.28346725872032,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N150": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.088027540421734,
+              1.1110933878093998
+            ],
+            "mean_dop_5_95": [
+              0.08650681532960146,
+              0.09761223486681475
+            ],
+            "mean_cpr_median": 1.0993206151949042,
+            "mean_dop_median": 0.09203074738614823,
+            "p_mean_dop_lt_0p13": 1.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.98905,
+            "p_mean_dop_lt_0p10_se": 0.0007358701481919216,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0482643891496781,
+              1.1637131776251075
+            ],
+            "mean_dop_5_95": [
+              0.070830492169215,
+              0.125464648110332
+            ],
+            "mean_cpr_median": 1.096844119584509,
+            "mean_dop_median": 0.09580754549768891,
+            "p_mean_dop_lt_0p13": 0.972,
+            "p_mean_dop_lt_0p13_se": 0.0036889022757454573,
+            "p_mean_dop_lt_0p10": 0.5945,
+            "p_mean_dop_lt_0p10_se": 0.010978837597851605,
+            "regions_evaluated": 2000,
+            "looks_per_channel": 46,
+            "achieved_log_ratio_N": 170.12641244901357,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0962772884327845,
+              1.1023923962037487
+            ],
+            "mean_dop_5_95": [
+              0.09053467423548911,
+              0.0935518833980393
+            ],
+            "mean_cpr_median": 1.0993130883622442,
+            "mean_dop_median": 0.09204178108160735,
+            "p_mean_dop_lt_0p13": 1.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 1.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0841764782568664,
+              1.1199812759570413
+            ],
+            "mean_dop_5_95": [
+              0.0850629020987332,
+              0.10008693665317865
+            ],
+            "mean_cpr_median": 1.1007885120408811,
+            "mean_dop_median": 0.09255558750530138,
+            "p_mean_dop_lt_0p13": 1.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.948,
+            "p_mean_dop_lt_0p10_se": 0.007021111023192843,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 52,
+            "achieved_log_ratio_N": 153.19457209578385,
+            "region_mask_cells": 3647
+          }
+        }
+      }
+    },
+    "CPR 0.7 DOP 0.176": {
+      "N5": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.5032935661699136,
+              1.799015994587476
+            ],
+            "mean_dop_5_95": [
+              0.43645411293491204,
+              0.5032362964822606
+            ],
+            "mean_cpr_median": 1.6354199513771945,
+            "mean_dop_median": 0.4698709035143165,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.999,
+            "mean_cpr_5_95": [
+              1.2976624887855068,
+              2.522431819112232
+            ],
+            "mean_dop_5_95": [
+              0.4208995595075415,
+              0.6525448704104194
+            ],
+            "mean_cpr_median": 1.7156815379744952,
+            "mean_dop_median": 0.5387844593635394,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1998,
+            "looks_per_channel": 1,
+            "achieved_log_ratio_N": 4.423166345869923,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.6019758523317018,
+              1.681117204672243
+            ],
+            "mean_dop_5_95": [
+              0.4611857425276665,
+              0.47866385794121974
+            ],
+            "mean_cpr_median": 1.6402575404006865,
+            "mean_dop_median": 0.4698830429531092,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.659586907316081,
+              2.111472421924998
+            ],
+            "mean_dop_5_95": [
+              0.5092570048090482,
+              0.5742380700962701
+            ],
+            "mean_cpr_median": 1.8544703365969961,
+            "mean_dop_median": 0.5435720598801435,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 1,
+            "achieved_log_ratio_N": 3.476458807420313,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N13.72": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1991725239344495,
+              1.3263355715216543
+            ],
+            "mean_dop_5_95": [
+              0.24857080669996293,
+              0.30518152104407914
+            ],
+            "mean_cpr_median": 1.256455864289864,
+            "mean_dop_median": 0.2765171600248894,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.9765,
+            "mean_cpr_5_95": [
+              1.0520420546017846,
+              1.4099873823496527
+            ],
+            "mean_dop_5_95": [
+              0.16290229023905417,
+              0.35631273088527515
+            ],
+            "mean_cpr_median": 1.1865453818408418,
+            "mean_dop_median": 0.25160484956585755,
+            "p_mean_dop_lt_0p13": 0.018433179723502304,
+            "p_mean_dop_lt_0p13_se": 0.003043749743013864,
+            "p_mean_dop_lt_0p10": 0.006144393241167435,
+            "p_mean_dop_lt_0p10_se": 0.0017682758912803231,
+            "regions_evaluated": 1953,
+            "looks_per_channel": 5,
+            "achieved_log_ratio_N": 14.516309014524914,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.242509348723924,
+              1.2761437707196395
+            ],
+            "mean_dop_5_95": [
+              0.26928079459173265,
+              0.28424519661587333
+            ],
+            "mean_cpr_median": 1.2590347021660566,
+            "mean_dop_median": 0.27653094220991886,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1833687390798484,
+              1.3115808787240664
+            ],
+            "mean_dop_5_95": [
+              0.23411225391747129,
+              0.2883085565123017
+            ],
+            "mean_cpr_median": 1.2419152317144635,
+            "mean_dop_median": 0.261356444692319,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 5,
+            "achieved_log_ratio_N": 13.761113434582265,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N39.4": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.066284425245995,
+              1.1568553620771407
+            ],
+            "mean_dop_5_95": [
+              0.12630345189308853,
+              0.1882366084308234
+            ],
+            "mean_cpr_median": 1.1053588937355006,
+            "mean_dop_median": 0.15638487098341639,
+            "p_mean_dop_lt_0p13": 0.07565,
+            "p_mean_dop_lt_0p13_se": 0.001869853971571042,
+            "p_mean_dop_lt_0p10": 0.0008,
+            "p_mean_dop_lt_0p10_se": 0.00019991998399359682,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.823,
+            "mean_cpr_5_95": [
+              1.0141938671052553,
+              1.1886245844577732
+            ],
+            "mean_dop_5_95": [
+              0.07852410460918616,
+              0.23899056795046597
+            ],
+            "mean_cpr_median": 1.073238622489902,
+            "mean_dop_median": 0.14901441395087867,
+            "p_mean_dop_lt_0p13": 0.3408262454434994,
+            "p_mean_dop_lt_0p13_se": 0.011682924050702188,
+            "p_mean_dop_lt_0p10": 0.1227217496962333,
+            "p_mean_dop_lt_0p10_se": 0.008087504494439993,
+            "regions_evaluated": 1646,
+            "looks_per_channel": 13,
+            "achieved_log_ratio_N": 37.99751515745223,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.096069274959553,
+              1.1187006293889754
+            ],
+            "mean_dop_5_95": [
+              0.14904879688542946,
+              0.1647602423411086
+            ],
+            "mean_cpr_median": 1.106983446814171,
+            "mean_dop_median": 0.15660382986955926,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0726262746371436,
+              1.157432105474224
+            ],
+            "mean_dop_5_95": [
+              0.13470339312484347,
+              0.1869228293316846
+            ],
+            "mean_cpr_median": 1.10910546249522,
+            "mean_dop_median": 0.1583270380784653,
+            "p_mean_dop_lt_0p13": 0.027,
+            "p_mean_dop_lt_0p13_se": 0.00512552436341883,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 13,
+            "achieved_log_ratio_N": 38.41632211698754,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N80": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.96185,
+            "mean_cpr_5_95": [
+              1.013036312665144,
+              1.1236985752338164
+            ],
+            "mean_dop_5_95": [
+              0.05839505551676579,
+              0.16058659672636563
+            ],
+            "mean_cpr_median": 1.0523330925468881,
+            "mean_dop_median": 0.10476161622036541,
+            "p_mean_dop_lt_0p13": 0.7967458543431928,
+            "p_mean_dop_lt_0p13_se": 0.002901422268299583,
+            "p_mean_dop_lt_0p10": 0.43218797109736445,
+            "p_mean_dop_lt_0p10_se": 0.003571658761482356,
+            "regions_evaluated": 19237
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.641,
+            "mean_cpr_5_95": [
+              1.0085906571654792,
+              1.1293423415788484
+            ],
+            "mean_dop_5_95": [
+              0.05753023492467849,
+              0.2050608023713004
+            ],
+            "mean_cpr_median": 1.0489684026954351,
+            "mean_dop_median": 0.12219365988892131,
+            "p_mean_dop_lt_0p13": 0.5795631825273011,
+            "p_mean_dop_lt_0p13_se": 0.013786586553165756,
+            "p_mean_dop_lt_0p10": 0.3112324492979719,
+            "p_mean_dop_lt_0p10_se": 0.012931078907716685,
+            "regions_evaluated": 1282,
+            "looks_per_channel": 19,
+            "achieved_log_ratio_N": 75.86695836166379,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0452046469226512,
+              1.0736193144621229
+            ],
+            "mean_dop_5_95": [
+              0.09478798645784614,
+              0.11927763124841541
+            ],
+            "mean_cpr_median": 1.057938652915889,
+            "mean_dop_median": 0.10673689503090966,
+            "p_mean_dop_lt_0p13": 0.99875,
+            "p_mean_dop_lt_0p13_se": 0.0005586674995021577,
+            "p_mean_dop_lt_0p10": 0.18425,
+            "p_mean_dop_lt_0p10_se": 0.0061298845319467474,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.987,
+            "mean_cpr_5_95": [
+              1.0159091662201558,
+              1.0833897985140948
+            ],
+            "mean_dop_5_95": [
+              0.06386835003046003,
+              0.1388411884782389
+            ],
+            "mean_cpr_median": 1.0435925735089782,
+            "mean_dop_median": 0.09777249835983433,
+            "p_mean_dop_lt_0p13": 0.9118541033434651,
+            "p_mean_dop_lt_0p13_se": 0.009024126030656578,
+            "p_mean_dop_lt_0p10": 0.541033434650456,
+            "p_mean_dop_lt_0p10_se": 0.015861490685581254,
+            "regions_evaluated": 987,
+            "looks_per_channel": 31,
+            "achieved_log_ratio_N": 83.58332946486621,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N150": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.24185,
+            "mean_cpr_5_95": [
+              1.0020392780093628,
+              1.0947309050801435
+            ],
+            "mean_dop_5_95": [
+              0.02556391269606243,
+              0.13715669149244764
+            ],
+            "mean_cpr_median": 1.025062435047865,
+            "mean_dop_median": 0.07153402420440591,
+            "p_mean_dop_lt_0p13": 0.9313624147198677,
+            "p_mean_dop_lt_0p13_se": 0.0036354008835123306,
+            "p_mean_dop_lt_0p10": 0.784370477568741,
+            "p_mean_dop_lt_0p10_se": 0.005913256071893508,
+            "regions_evaluated": 4837
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.137,
+            "mean_cpr_5_95": [
+              1.004446475040622,
+              1.069634922401709
+            ],
+            "mean_dop_5_95": [
+              0.02906464414331529,
+              0.13973788496675593
+            ],
+            "mean_cpr_median": 1.0234136350737373,
+            "mean_dop_median": 0.07506952376643544,
+            "p_mean_dop_lt_0p13": 0.927007299270073,
+            "p_mean_dop_lt_0p13_se": 0.015714697008869686,
+            "p_mean_dop_lt_0p10": 0.7518248175182481,
+            "p_mean_dop_lt_0p10_se": 0.02609529569162257,
+            "regions_evaluated": 274,
+            "looks_per_channel": 43,
+            "achieved_log_ratio_N": 158.68158059471702,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 0.98175,
+            "mean_cpr_5_95": [
+              1.0087865003512544,
+              1.0678100028111672
+            ],
+            "mean_dop_5_95": [
+              0.04366970228703611,
+              0.11318825464987681
+            ],
+            "mean_cpr_median": 1.0299233376676589,
+            "mean_dop_median": 0.07532379639199192,
+            "p_mean_dop_lt_0p13": 0.9844665138782785,
+            "p_mean_dop_lt_0p13_se": 0.0019733516831653255,
+            "p_mean_dop_lt_0p10": 0.8759867583396995,
+            "p_mean_dop_lt_0p10_se": 0.005259595558845668,
+            "regions_evaluated": 3927
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.475,
+            "mean_cpr_5_95": [
+              1.0023397138537866,
+              1.053708977537906
+            ],
+            "mean_dop_5_95": [
+              0.028262822873153747,
+              0.1266058288947463
+            ],
+            "mean_cpr_median": 1.0178560115191395,
+            "mean_dop_median": 0.06944136664634068,
+            "p_mean_dop_lt_0p13": 0.9557894736842105,
+            "p_mean_dop_lt_0p13_se": 0.009431855951610882,
+            "p_mean_dop_lt_0p10": 0.8189473684210526,
+            "p_mean_dop_lt_0p10_se": 0.017667846273730695,
+            "regions_evaluated": 475,
+            "looks_per_channel": 55,
+            "achieved_log_ratio_N": 145.95410139627307,
+            "region_mask_cells": 3647
+          }
+        }
+      }
+    },
+    "CPR 0.7 DOP 0.20": {
+      "N5": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.5005683251725834,
+              1.794562462275158
+            ],
+            "mean_dop_5_95": [
+              0.4418194533062306,
+              0.5081748566595304
+            ],
+            "mean_cpr_median": 1.6290811665077982,
+            "mean_dop_median": 0.47500621113580727,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.997,
+            "mean_cpr_5_95": [
+              1.2814020852875718,
+              2.495133143378409
+            ],
+            "mean_dop_5_95": [
+              0.4275370879236306,
+              0.6500037706157602
+            ],
+            "mean_cpr_median": 1.721713227754564,
+            "mean_dop_median": 0.5357129267051888,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1994,
+            "looks_per_channel": 1,
+            "achieved_log_ratio_N": 3.9236252349987724,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.5962987010653493,
+              1.6758381549447972
+            ],
+            "mean_dop_5_95": [
+              0.46623099407871954,
+              0.4836938136040984
+            ],
+            "mean_cpr_median": 1.6351340891242772,
+            "mean_dop_median": 0.47482786270617067,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.3829886253541381,
+              1.638757450190377
+            ],
+            "mean_dop_5_95": [
+              0.3801167927370813,
+              0.44491098832644965
+            ],
+            "mean_cpr_median": 1.492636666327956,
+            "mean_dop_median": 0.4120796785494346,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 2,
+            "achieved_log_ratio_N": 5.975021030016455,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N13.72": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.197518483638489,
+              1.3247756794517638
+            ],
+            "mean_dop_5_95": [
+              0.2583265170829789,
+              0.31776557063051525
+            ],
+            "mean_cpr_median": 1.2554459122007358,
+            "mean_dop_median": 0.2877952724295561,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.98,
+            "mean_cpr_5_95": [
+              1.0671982858579305,
+              1.478006329504536
+            ],
+            "mean_dop_5_95": [
+              0.1979971682737842,
+              0.41190443533886795
+            ],
+            "mean_cpr_median": 1.2303208615277113,
+            "mean_dop_median": 0.2950438810063854,
+            "p_mean_dop_lt_0p13": 0.007142857142857143,
+            "p_mean_dop_lt_0p13_se": 0.0019021787635007397,
+            "p_mean_dop_lt_0p10": 0.0020408163265306124,
+            "p_mean_dop_lt_0p10_se": 0.0010193663986616378,
+            "regions_evaluated": 1960,
+            "looks_per_channel": 4,
+            "achieved_log_ratio_N": 14.040649208203348,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.2407489878909692,
+              1.2740925636648555
+            ],
+            "mean_dop_5_95": [
+              0.2799828052193899,
+              0.2957687755531677
+            ],
+            "mean_cpr_median": 1.2572739725257085,
+            "mean_dop_median": 0.28777889224177666,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1820713121061404,
+              1.3068750109075518
+            ],
+            "mean_dop_5_95": [
+              0.24138111239161078,
+              0.3026104636717182
+            ],
+            "mean_cpr_median": 1.2398716520300401,
+            "mean_dop_median": 0.2715920084469722,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 5,
+            "achieved_log_ratio_N": 14.770671746104153,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N39.4": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0654736840615553,
+              1.1559710194896595
+            ],
+            "mean_dop_5_95": [
+              0.14307739653121296,
+              0.21366159365086773
+            ],
+            "mean_cpr_median": 1.1044562402551241,
+            "mean_dop_median": 0.17721853434090684,
+            "p_mean_dop_lt_0p13": 0.01215,
+            "p_mean_dop_lt_0p13_se": 0.0007746733989237012,
+            "p_mean_dop_lt_0p10": 0.00015,
+            "p_mean_dop_lt_0p10_se": 8.659604494432757e-05,
+            "regions_evaluated": 20000
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.807,
+            "mean_cpr_5_95": [
+              1.0147254508875296,
+              1.1835595426412402
+            ],
+            "mean_dop_5_95": [
+              0.0844437515701775,
+              0.27356025688772667
+            ],
+            "mean_cpr_median": 1.0736535705865213,
+            "mean_dop_median": 0.17076480181686032,
+            "p_mean_dop_lt_0p13": 0.21685254027261464,
+            "p_mean_dop_lt_0p13_se": 0.010257753619804633,
+            "p_mean_dop_lt_0p10": 0.08921933085501858,
+            "p_mean_dop_lt_0p10_se": 0.007095526360677478,
+            "regions_evaluated": 1614,
+            "looks_per_channel": 13,
+            "achieved_log_ratio_N": 33.38030136116237,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0948312579989172,
+              1.1184773944321547
+            ],
+            "mean_dop_5_95": [
+              0.16842051634099234,
+              0.186651196676
+            ],
+            "mean_cpr_median": 1.1064324260429785,
+            "mean_dop_median": 0.17752708785820284,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.0697582874395273,
+              1.1570413837317388
+            ],
+            "mean_dop_5_95": [
+              0.1473251053131413,
+              0.2123195626927628
+            ],
+            "mean_cpr_median": 1.1076430196167086,
+            "mean_dop_median": 0.17761490656540768,
+            "p_mean_dop_lt_0p13": 0.009,
+            "p_mean_dop_lt_0p13_se": 0.002986469487538756,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 1000,
+            "looks_per_channel": 13,
+            "achieved_log_ratio_N": 36.26202454278209,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N80": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.95635,
+            "mean_cpr_5_95": [
+              1.012466360094883,
+              1.123932433906343
+            ],
+            "mean_dop_5_95": [
+              0.07573314701707941,
+              0.2052053231590242
+            ],
+            "mean_cpr_median": 1.0517722746644032,
+            "mean_dop_median": 0.13548074276904495,
+            "p_mean_dop_lt_0p13": 0.43801955351074395,
+            "p_mean_dop_lt_0p13_se": 0.0035874340230757844,
+            "p_mean_dop_lt_0p10": 0.15736916400899253,
+            "p_mean_dop_lt_0p10_se": 0.0026330254928688623,
+            "regions_evaluated": 19127
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.361,
+            "mean_cpr_5_95": [
+              1.00456655410887,
+              1.092224223869104
+            ],
+            "mean_dop_5_95": [
+              0.052102665675628185,
+              0.22499871133271443
+            ],
+            "mean_cpr_median": 1.0314712921769873,
+            "mean_dop_median": 0.1305113988553122,
+            "p_mean_dop_lt_0p13": 0.4930747922437673,
+            "p_mean_dop_lt_0p13_se": 0.018606288272865763,
+            "p_mean_dop_lt_0p10": 0.2673130193905817,
+            "p_mean_dop_lt_0p10_se": 0.016470269069869353,
+            "regions_evaluated": 722,
+            "looks_per_channel": 28,
+            "achieved_log_ratio_N": 85.80371526312892,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.04499391575182,
+              1.072927214012415
+            ],
+            "mean_dop_5_95": [
+              0.12208483108628501,
+              0.15197733892806387
+            ],
+            "mean_cpr_median": 1.0575256242659372,
+            "mean_dop_median": 0.13694095396326816,
+            "p_mean_dop_lt_0p13": 0.22,
+            "p_mean_dop_lt_0p13_se": 0.006549809157525126,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.996,
+            "mean_cpr_5_95": [
+              1.0199709015627634,
+              1.0924090730245166
+            ],
+            "mean_dop_5_95": [
+              0.08676317039119309,
+              0.19289383960167794
+            ],
+            "mean_cpr_median": 1.05030287267676,
+            "mean_dop_median": 0.13274134626281864,
+            "p_mean_dop_lt_0p13": 0.463855421686747,
+            "p_mean_dop_lt_0p13_se": 0.015801656204772092,
+            "p_mean_dop_lt_0p10": 0.12048192771084337,
+            "p_mean_dop_lt_0p10_se": 0.010314630347362595,
+            "regions_evaluated": 996,
+            "looks_per_channel": 28,
+            "achieved_log_ratio_N": 76.87332958368846,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N150": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.22655,
+            "mean_cpr_5_95": [
+              1.0022160244985185,
+              1.0961515537054154
+            ],
+            "mean_dop_5_95": [
+              0.04140835657796317,
+              0.1979226277206953
+            ],
+            "mean_cpr_median": 1.0245631664557457,
+            "mean_dop_median": 0.11462459974136233,
+            "p_mean_dop_lt_0p13": 0.6214963584197749,
+            "p_mean_dop_lt_0p13_se": 0.007205386709708598,
+            "p_mean_dop_lt_0p10": 0.38446259103950564,
+            "p_mean_dop_lt_0p10_se": 0.007226986429156148,
+            "regions_evaluated": 4531
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.105,
+            "mean_cpr_5_95": [
+              1.001297449286544,
+              1.0627285565572138
+            ],
+            "mean_dop_5_95": [
+              0.04632221211277299,
+              0.19852760683714032
+            ],
+            "mean_cpr_median": 1.0204637251102264,
+            "mean_dop_median": 0.10929812470355457,
+            "p_mean_dop_lt_0p13": 0.6142857142857143,
+            "p_mean_dop_lt_0p13_se": 0.033589877692273964,
+            "p_mean_dop_lt_0p10": 0.38571428571428573,
+            "p_mean_dop_lt_0p10_se": 0.033589877692273964,
+            "regions_evaluated": 210,
+            "looks_per_channel": 46,
+            "achieved_log_ratio_N": 154.9533648105329,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 0.97225,
+            "mean_cpr_5_95": [
+              1.007372671296897,
+              1.0691655868054837
+            ],
+            "mean_dop_5_95": [
+              0.06874519056647481,
+              0.16689912009848465
+            ],
+            "mean_cpr_median": 1.0296962558867035,
+            "mean_dop_median": 0.11496413662897569,
+            "p_mean_dop_lt_0p13": 0.7019799434301877,
+            "p_mean_dop_lt_0p13_se": 0.007334425926047614,
+            "p_mean_dop_lt_0p10": 0.27770635124710724,
+            "p_mean_dop_lt_0p10_se": 0.007181759087842982,
+            "regions_evaluated": 3889
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.572,
+            "mean_cpr_5_95": [
+              1.0034042204532276,
+              1.0570070457687724
+            ],
+            "mean_dop_5_95": [
+              0.04646228185640907,
+              0.1810286425844379
+            ],
+            "mean_cpr_median": 1.0196349764590154,
+            "mean_dop_median": 0.11080398493398277,
+            "p_mean_dop_lt_0p13": 0.6730769230769231,
+            "p_mean_dop_lt_0p13_se": 0.01961359145470664,
+            "p_mean_dop_lt_0p10": 0.40384615384615385,
+            "p_mean_dop_lt_0p10_se": 0.020515832103653122,
+            "regions_evaluated": 572,
+            "looks_per_channel": 52,
+            "achieved_log_ratio_N": 154.75972636407036,
+            "region_mask_cells": 3647
+          }
+        }
+      }
+    },
+    "sunlit median (CPR 0.155, DOP 0.737)": {
+      "N5": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.57335,
+            "mean_cpr_5_95": [
+              1.020193554721028,
+              1.9413870235930475
+            ],
+            "mean_dop_5_95": [
+              0.18030986489938722,
+              0.7188778874538609
+            ],
+            "mean_cpr_median": 1.2145698448738806,
+            "mean_dop_median": 0.4355005218726576,
+            "p_mean_dop_lt_0p13": 0.019272695561175546,
+            "p_mean_dop_lt_0p13_se": 0.0012838682463291588,
+            "p_mean_dop_lt_0p10": 0.008546263190023546,
+            "p_mean_dop_lt_0p10_se": 0.0008596060279990596,
+            "regions_evaluated": 11467
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.359,
+            "mean_cpr_5_95": [
+              1.021753421882877,
+              1.5140903555809075
+            ],
+            "mean_dop_5_95": [
+              0.20282521736053127,
+              0.6507227475937281
+            ],
+            "mean_cpr_median": 1.154733371148052,
+            "mean_dop_median": 0.4078483724815899,
+            "p_mean_dop_lt_0p13": 0.013927576601671309,
+            "p_mean_dop_lt_0p13_se": 0.004373508374717815,
+            "p_mean_dop_lt_0p10": 0.005571030640668524,
+            "p_mean_dop_lt_0p10_se": 0.002777745387987608,
+            "regions_evaluated": 718,
+            "looks_per_channel": 1,
+            "achieved_log_ratio_N": 3.6820348228565885,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 1.0,
+            "mean_cpr_5_95": [
+              1.1571432923850682,
+              1.5236273483123206
+            ],
+            "mean_dop_5_95": [
+              0.3537987308105476,
+              0.5306189580120879
+            ],
+            "mean_cpr_median": 1.2953359838026526,
+            "mean_dop_median": 0.440566232493922,
+            "p_mean_dop_lt_0p13": 0.0,
+            "p_mean_dop_lt_0p13_se": 0.0,
+            "p_mean_dop_lt_0p10": 0.0,
+            "p_mean_dop_lt_0p10_se": 0.0,
+            "regions_evaluated": 4000
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.366,
+            "mean_cpr_5_95": [
+              1.0134430431798185,
+              1.2405013101424456
+            ],
+            "mean_dop_5_95": [
+              0.12255802318373195,
+              0.5189704355553884
+            ],
+            "mean_cpr_median": 1.084195100954128,
+            "mean_dop_median": 0.2948101881036714,
+            "p_mean_dop_lt_0p13": 0.0546448087431694,
+            "p_mean_dop_lt_0p13_se": 0.011880409739372945,
+            "p_mean_dop_lt_0p10": 0.02185792349726776,
+            "p_mean_dop_lt_0p10_se": 0.007643017935540434,
+            "regions_evaluated": 366,
+            "looks_per_channel": 2,
+            "achieved_log_ratio_N": 6.2019366734004775,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N13.72": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0006,
+            "mean_cpr_5_95": [
+              1.0507460861223665,
+              1.4058233954195454
+            ],
+            "mean_dop_5_95": [
+              0.11768847536756222,
+              0.5424281821076066
+            ],
+            "mean_cpr_median": 1.1406656974172011,
+            "mean_dop_median": 0.2513327033663686,
+            "p_mean_dop_lt_0p13": 0.08333333333333333,
+            "p_mean_dop_lt_0p13_se": 0.07978559231302818,
+            "p_mean_dop_lt_0p10": 0.08333333333333333,
+            "p_mean_dop_lt_0p10_se": 0.07978559231302818,
+            "regions_evaluated": 12
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 4,
+            "achieved_log_ratio_N": 13.561582612233458,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 0.011,
+            "mean_cpr_5_95": [
+              1.003566373672278,
+              1.4975473598757125
+            ],
+            "mean_dop_5_95": [
+              0.11332010842830502,
+              0.5146802930080061
+            ],
+            "mean_cpr_median": 1.0686379981531433,
+            "mean_dop_median": 0.2634050953371842,
+            "p_mean_dop_lt_0p13": 0.11363636363636363,
+            "p_mean_dop_lt_0p13_se": 0.047845190813675255,
+            "p_mean_dop_lt_0p10": 0.022727272727272728,
+            "p_mean_dop_lt_0p10_se": 0.022467523936912755,
+            "regions_evaluated": 44
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 5,
+            "achieved_log_ratio_N": 13.932943084602508,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N39.4": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 9,
+            "achieved_log_ratio_N": 34.40950827805774,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 13,
+            "achieved_log_ratio_N": 33.770822349087304,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N80": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 31,
+            "achieved_log_ratio_N": 84.16441568288403,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 28,
+            "achieved_log_ratio_N": 86.98171976890258,
+            "region_mask_cells": 3647
+          }
+        }
+      },
+      "N150": {
+        "cells260": {
+          "independent": {
+            "trials": 20000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0
+          },
+          "correlated": {
+            "trials": 2000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 49,
+            "achieved_log_ratio_N": 143.3376387632536,
+            "region_mask_cells": 260
+          }
+        },
+        "cells3647": {
+          "independent": {
+            "trials": 4000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0
+          },
+          "correlated": {
+            "trials": 1000,
+            "fraction_regions_with_cpr_ge1_cell": 0.0,
+            "looks_per_channel": 55,
+            "achieved_log_ratio_N": 147.56781517095087,
+            "region_mask_cells": 3647
+          }
+        }
+      }
+    }
+  },
+  "conditional_mean_dop_unpolarized": {
+    "grid_N": [
+      5.0,
+      5.653043716365938,
+      6.391380651828882,
+      7.226150846544817,
+      8.169949327314516,
+      9.237016141560687,
+      10.443451211404076,
+      11.807457249560409,
+      13.349614402177382,
+      15.093190762427414,
+      17.06449343989054,
+      19.293265482668197,
+      21.813134640995454,
+      24.662120743304705,
+      27.88320934003934,
+      31.52500027036508,
+      35.642440937364356,
+      40.297655355382325,
+      45.56088147820485,
+      51.511530950491824,
+      58.23938727201346,
+      65.8459604526116,
+      74.44601859694322,
+      84.16931952758232,
+      95.1625685732391,
+      107.59163206123839,
+      121.64403991146791,
+      137.5318150909782,
+      155.49467262009125,
+      175.8036363966771,
+      198.7651284093035,
+      224.72559203737634,
+      254.0767191947011,
+      287.26136018369556,
+      324.7802054282345,
+      367.19933989922384,
+      415.1587842142055,
+      469.3821512792473,
+      530.6875641726949,
+      600.0
+    ],
+    "conditional_mean_dop": [
+      0.49182335338392846,
+      0.4642465697589269,
+      0.4382601222902362,
+      0.41231107344005585,
+      0.38897418053216865,
+      0.3662770355941616,
+      0.3450993256723564,
+      0.32512230542215814,
+      0.30598467348872366,
+      0.28806929021858413,
+      0.2713479383695624,
+      0.2554659719286635,
+      0.24032423271818965,
+      0.22619130521834457,
+      0.21255373759380475,
+      0.2000100865729897,
+      0.18835597059058298,
+      0.17709013210249236,
+      0.16683852232766982,
+      0.15684029006455572,
+      0.1475084023975651,
+      0.13880184674197515,
+      0.13047992268815584,
+      0.12282737349430675,
+      0.1154764659043042,
+      0.10863893704858833,
+      0.10230777325535984,
+      0.09620274619108214,
+      0.0904011254671712,
+      0.0851205582998699,
+      0.0800018259182753,
+      0.0752923769601582,
+      0.07080914179402216,
+      0.06650310973182237,
+      0.06258770789561867,
+      0.05882424848287742,
+      0.05546562865290234,
+      0.05210384463182288,
+      0.0489907197807857,
+      0.046055983353799394
+    ],
+    "unconditional_mean_dop": [
+      0.49195009375751725,
+      0.4640447339013467,
+      0.43803094328698233,
+      0.4124270587644838,
+      0.3888613802206314,
+      0.3664292670283205,
+      0.34502066002413234,
+      0.325100984627073,
+      0.3059308172339275,
+      0.2880424149650691,
+      0.27134140512938754,
+      0.2553615951937849,
+      0.24027279783243136,
+      0.22612925082477822,
+      0.2126134142180581,
+      0.20014812882835137,
+      0.1884042855566161,
+      0.1771556550329037,
+      0.16676509012995316,
+      0.15680070071283578,
+      0.14749817681425148,
+      0.13878833907392177,
+      0.130508506123096,
+      0.12283933293320878,
+      0.11549075401666291,
+      0.10864640931450911,
+      0.10221812548766905,
+      0.09616758090125994,
+      0.09042376801079288,
+      0.08510919951364378,
+      0.07996617460180061,
+      0.07524573694037526,
+      0.07077564467697764,
+      0.0665287483803631,
+      0.06261259025534435,
+      0.058831924187779897,
+      0.05540231813048847,
+      0.05207389076766439,
+      0.048973616353687334,
+      0.0460675452610002
+    ],
+    "N_conditional_0p13": 75.02135631805727,
+    "N_conditional_0p10": 127.42174171457873,
+    "N_unconditional_0p13_simulated": 75.05443538700223,
+    "N_unconditional_0p10_simulated": 127.2433522375013,
+    "N_unconditional_0p13_closed_form": 75.08920325125341,
+    "N_unconditional_0p10_closed_form": 127.07370903824449,
+    "draws_per_N": 1000000
+  },
+  "sinha_reported": {
+    "in_repository": {
+      "mean_dop_range": [
+        0.1,
+        0.13
+      ],
+      "craters": [
+        "F2",
+        "F3",
+        "H3",
+        "S1"
+      ],
+      "quote": "low average DOP values, ranging from 0.1 to 0.13 in craters F2, F3, H3, and S1",
+      "aggregation": "region means over the pixels with CPR >= 1; per-pixel CPR and DOP are not published"
+    },
+    "not_in_repository": "the per-region mean CPR values and the per-region mean DOP of each crater; only the 0.10-0.13 range over the four craters is recorded, so the comparison is against that range"
+  },
+  "run_info": {
+    "wall_s": 1983.8,
+    "peak_rss_mb": 151,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

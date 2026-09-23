@@ -3,6 +3,8 @@ region_design_curve.py -- how many looks, cells and pixels a REGION-level test
 of the joint criterion needs. (v17a referee report, P1; simulation only)
 
     python backend/scripts/region_design_curve.py [--workers 8]
+    python backend/scripts/region_design_curve.py --heterogeneous   (v18a N3; merged)
+    python backend/scripts/region_design_curve.py --f2-point        (v18a: IUT power at F2 N_eff; merged)
 
 THE TEST
 --------
@@ -316,12 +318,159 @@ def _np_bound_job(args):
     return n, [float(b) for b in fin["bound"]], fin["argmin"], fin["max_quantile_residual"]
 
 
+# ------------------------------------------------------------ (N3) heterogeneous pooling
+SEED_HET = 20261013
+SEED_F2P = 20261014
+HET_K = (25, 100, 400)
+HET_TRIALS = 4000
+CACHE_N3 = BASE_DIR / "data" / "derived" / "v18" / "cells_by_disc.npz"
+
+
+def sigma_batch(cpr, gam, phi_deg, s0):
+    """(M, 2, 2) circular-basis covariances scaled to total power s0."""
+    S = NPB.sigma(cpr, gam, phi_deg)
+    return S * np.asarray(s0, float)[:, None, None]
+
+
+def bartlett_batch(rng, n, S):
+    """One Bartlett draw per row: n (M,) looks, S (M, 2, 2) covariances.
+    Returns the (M, 2, 2) sample covariances W / n."""
+    M = n.size
+    Lc = np.linalg.cholesky(S)
+    a11 = np.sqrt(rng.gamma(n, 1.0))
+    a22 = np.sqrt(rng.gamma(n - 1.0, 1.0))
+    a21 = (rng.standard_normal(M) + 1j * rng.standard_normal(M)) / np.sqrt(2.0)
+    A = np.zeros((M, 2, 2), dtype=complex)
+    A[:, 0, 0], A[:, 1, 0], A[:, 1, 1] = a11, a21, a22
+    LA = Lc @ A
+    return (LA @ np.conj(np.swapaxes(LA, 1, 2))) / n[:, None, None]
+
+
+def pop_dop(S):
+    a, b, c = S[..., 0, 0].real, S[..., 1, 1].real, S[..., 0, 1]
+    return np.sqrt((a - b) ** 2 + 4 * np.abs(c) ** 2) / (a + b)
+
+
+def heterogeneous(qtab_fn) -> dict:
+    """v18a N3. Regions of K cells whose populations are the MEASURED per-cell
+    (sample CPR, sample gamma_c, N_hat, S0) of real sunlit or PSR discs, each
+    cell simulated from its own population (one Bartlett draw at its own
+    N_hat), the covariances summed; the regional IUT is applied at the pooled
+    N_eff = (sum S0)^2 / sum(S0^2 / N) and the published rule to the pooled
+    Stokes vector. The cells' cross-term phases are not in the cache, so two
+    bounding cases: every cell at phase 0 (aligned: pooling depolarizes least)
+    and uniform random phases (pooling depolarizes most). Regions are drawn
+    within one random disc of the class (with replacement), and, as a
+    variant, across all discs of the class. Compared with a homogeneous
+    region at the pooled mean population and the same N_eff."""
+    z = np.load(CACHE_N3)
+    rng = np.random.default_rng(SEED_HET)
+    out = {"cache": str(CACHE_N3.relative_to(BASE_DIR)).replace("\\", "/"), "trials": HET_TRIALS,
+           "K": list(HET_K), "seed": SEED_HET, "results": {}}
+    for cls_code, cls in ((0, "sunlit"), (1, "psr")):
+        sel = (z["cls"] == cls_code) & np.isfinite(z["cpr"]) & np.isfinite(z["gam"]) & np.isfinite(z["nh"]) \
+            & (z["nh"] > 1.5) & (z["s0"] > 0)
+        cpr, gam, nh, s0, disc = (z[k][sel].astype(float) for k in ("cpr", "gam", "nh", "s0", "disc"))
+        gam = np.clip(gam, 0.0, 0.999)
+        discs = np.unique(disc)
+        by_disc = {d: np.flatnonzero(disc == d) for d in discs}
+        for K in HET_K:
+            for draw in ("within_disc", "across_discs"):
+                for phase in ("aligned", "random"):
+                    rows = {"iut": [], "rule": [], "iut_hom": [], "rule_hom": [], "neff": [],
+                            "pooled_pop_dop_lt": [], "no_unit_lt_but_pooled_lt": []}
+                    for t in range(HET_TRIALS):
+                        if draw == "within_disc":
+                            pool = by_disc[discs[rng.integers(0, discs.size)]]
+                            idx = pool[rng.integers(0, pool.size, K)]
+                        else:
+                            idx = rng.integers(0, cpr.size, K)
+                        ph = np.zeros(K) if phase == "aligned" else rng.uniform(0, 360, K)
+                        S = sigma_batch(cpr[idx], gam[idx], ph, s0[idx])
+                        n = nh[idx]
+                        W = bartlett_batch(rng, n, S).sum(axis=0)
+                        neff = s0[idx].sum() ** 2 / np.sum(s0[idx] ** 2 / n)
+                        r, m = W[0, 0].real / W[1, 1].real, float(pop_dop(W))
+                        rows["iut"].append((r > crit(neff)) and (m < qtab_fn(neff)))
+                        rows["rule"].append((m < 0.13) and (r > 1.0))
+                        rows["neff"].append(neff)
+                        Sp = S.sum(axis=0)
+                        unit = pop_dop(S)
+                        pd_ = float(pop_dop(Sp))
+                        rows["pooled_pop_dop_lt"].append(pd_ < 0.13)
+                        rows["no_unit_lt_but_pooled_lt"].append(pd_ < 0.13 and not (unit < 0.13).any())
+                        # homogeneous region at the pooled mean population, same N_eff
+                        Sm = (Sp / np.trace(Sp).real)[None]
+                        Wh = bartlett_batch(rng, np.array([neff]), Sm)[0]
+                        rh, mh = Wh[0, 0].real / Wh[1, 1].real, float(pop_dop(Wh))
+                        rows["iut_hom"].append((rh > crit(neff)) and (mh < qtab_fn(neff)))
+                        rows["rule_hom"].append((mh < 0.13) and (rh > 1.0))
+                    res = {k: rate(v) for k, v in rows.items() if k != "neff"}
+                    res["N_eff"] = {"median": float(np.median(rows["neff"])),
+                                    "iqr": [float(np.percentile(rows["neff"], 25)),
+                                            float(np.percentile(rows["neff"], 75))]}
+                    out["results"].setdefault(cls, {}).setdefault(f"K{K}", {}).setdefault(draw, {})[phase] = res
+                    print(f"  N3 {cls:6s} K {K:>3} {draw:12s} {phase:7s}: IUT {res['iut']['percent']:.3f} % "
+                          f"(hom {res['iut_hom']['percent']:.3f}); pooled rule {res['rule']['percent']:.2f} % "
+                          f"(hom {res['rule_hom']['percent']:.2f}); pooled pop DOP<0.13 "
+                          f"{res['pooled_pop_dop_lt']['percent']:.2f} %, of which no unit <0.13 "
+                          f"{res['no_unit_lt_but_pooled_lt']['percent']:.2f} %; N_eff "
+                          f"{res['N_eff']['median']:.0f}", flush=True)
+    worst = max(r["iut"]["percent"] + 2 * r["iut"]["mc_se_percent"]
+                for c in out["results"].values() for k in c.values() for d in k.values() for r in d.values())
+    out["max_iut_rate_plus_2se_percent"] = worst
+    out["flag"] = ("HETEROGENEITY RAISES THE REGIONAL IUT ABOVE 5 %" if worst > 5.0 else
+                   "heterogeneity does not raise the regional IUT above 5 % in any configuration")
+    out["caveat"] = ("the per-cell populations are sample values, so their spread includes each cell's "
+                     "sampling noise and overstates the terrain's heterogeneity")
+    return out
+
+
 def main() -> int:
     from concurrent.futures import ProcessPoolExecutor
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--heterogeneous", action="store_true",
+                    help="v18a N3: heterogeneous regional pooling from real disc cells; merged into the artifact")
+    ap.add_argument("--f2-point", action="store_true",
+                    help="v18a: the IUT's power at crater F2's pooled look count (about 262); merged")
     args = ap.parse_args()
     t0 = time.time()
+    if args.f2_point:
+        # v18a V-C: the IUT's power at crater F2's pooled look count
+        # (translation.crater_F2.complex_product.N_eff_at_39p4, about 262),
+        # which falls between the grid's 254 and 400
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        n = float(doc["translation"]["crater_F2"]["complex_product"]["N_eff_at_39p4"])
+        rng = np.random.default_rng(SEED_F2P)
+        qn = q05(rng, n)
+        pts = {}
+        for lab, cpr, dop in (("CPR 1.1 DOP min", 1.1, abs(q_of(1.1))),
+                              ("CPR 1.2 DOP min", 1.2, abs(q_of(1.2)))):
+            pts[lab] = iut_rate(rng, n, cpr, dop, qn)
+            print(f"  IUT power at N = {n:.1f}, {lab}: {best(pts[lab])['percent']:.3f} "
+                  f"+/- {best(pts[lab])['mc_se_percent']:.3f} %")
+        doc["f2_point"] = {"N": n, "q05": qn, "seed": SEED_F2P, "trials": TRIALS, "iut_power": pts,
+                           "run_info": {**run_info(), "wall_s": round(time.time() - t0, 1)}}
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  merged f2_point into {OUT.relative_to(BASE_DIR)}")
+        return 0
+    if args.heterogeneous:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        rq = np.random.default_rng(SEED_HET + 1)
+        grid = np.unique(np.round(np.geomspace(20, 50000, 44)))
+        qt = {float(n): q05(rq, n) for n in grid}
+        ks = np.array(sorted(qt))
+
+        def qfn(n):
+            return float(np.interp(np.log(n), np.log(ks), [qt[k] for k in ks]))
+        het = heterogeneous(qfn)
+        het["q05_grid"] = {"N": ks.tolist(), "draws_per_N": Q_TRIALS}
+        het["run_info"] = {**run_info(), "wall_s": round(time.time() - t0, 1)}
+        doc["heterogeneous"] = het
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  {het['flag']}; merged heterogeneous into {OUT.relative_to(BASE_DIR)}")
+        return 0
     ss = np.random.SeedSequence(SEED)
     r_chk, r_q, r_pool, r_corr, r_pow = [np.random.default_rng(s) for s in ss.spawn(5)]
     print("=" * 78)

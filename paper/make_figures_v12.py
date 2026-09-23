@@ -6,8 +6,9 @@ make_figures_v12.py -- Figs. 2 and 3 of manuscript v12.
                       written by backend/scripts/stokes_from_slc.py), with the
                       coupling curve, DOP = 0.13, CPR = 1, the band edge 1.2989
                       and the one-sided 95 % F(2N,2N) critical values at the
-                      delivered moment ENL (13.72) and at the complex product's
-                      log-ratio look count (39.4, docs/enl_logratio.json).
+                      complex product's
+                      log-ratio look count (39.4, docs/enl_logratio.json), with an
+                      inset on DOP 0-0.2, R 0.7-1.5 and the band 1 < R < 1.2989 shaded.
   fig_joint_power.pdf the joint rule's size and largest in-band selection rate
                       against look count (docs/joint_power_curve.json); the
                       correlated-looks arm is plotted at its effective look
@@ -52,30 +53,47 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     H, xe, ye = z["H"], z["xe"], z["ye"]
     fig, ax = plt.subplots(figsize=(COL1, 2.35))
     Hm = np.ma.masked_where(H.T <= 0, H.T)
-    pc = ax.pcolormesh(xe, 10 ** ye, Hm, cmap="Blues", norm=LogNorm(vmin=1, vmax=H.max()),
-                       shading="flat", rasterized=True)
+    norm = LogNorm(vmin=1, vmax=H.max())
+    pc = ax.pcolormesh(xe, 10 ** ye, Hm, cmap="Blues", norm=norm, shading="flat", rasterized=True)
     c = np.logspace(-3, 1.5, 800)
     ax.plot(np.abs(1 - c) / (1 + c), c, color=INK, lw=0.9)
     ax.axvline(0.13, color=ACC2, lw=0.8, ls="--")
     ax.axhline(1.0, color=MUTED, lw=0.7, ls=":", label="CPR = 1")
     ax.axhline(EDGE, color=ACC2, lw=0.8, ls="-.", label="band edge 1.2989")
-    c1, c2 = crit(13.72), crit(n_ratio)
-    ax.axhline(c1, color=ACC1, lw=0.8, ls="--", label=f"crit. {c1:.3f}, $N=13.72$")
-    ax.axhline(c2, color=ACC1, lw=0.8, ls=":", label=f"crit. {c2:.3f}, $N={n_ratio:.1f}$")
+    c2 = crit(n_ratio)
+    ax.axhline(c2, color=ACC1, lw=0.8, ls="--", label=f"crit. {c2:.3f}, $N={n_ratio:.1f}$")
     ax.plot([], [], color=INK, lw=0.9, label=r"$\mathrm{DOP}=|1-\mathrm{CPR}|/(1+\mathrm{CPR})$")
-    ax.text(0.145, 2.2e-3, "DOP = 0.13", color=ACC2, fontsize=6.2, rotation=90, va="bottom")
-    ax.legend(loc="lower left", bbox_to_anchor=(0.2, 0.0), frameon=False, fontsize=5.9)
+    ax.text(0.145, 3.2, "DOP = 0.13", color=ACC2, fontsize=6.2, rotation=90, va="bottom")
+    ax.legend(loc="upper left", bbox_to_anchor=(0.2, 1.0), frameon=True, framealpha=1.0,
+              facecolor="white", edgecolor="none", fontsize=5.9)
     ax.set_yscale("log")
     ax.set_xlim(0, 1)
     ax.set_ylim(10 ** ye[0], 10 ** ye[-1])
     ax.set_xlabel(r"sample DOP $\hat m$")
     ax.set_ylabel(r"sample CPR $R$")
+    # inset: the joint criterion's corner, DOP 0-0.2 and R 0.7-1.5, the band shaded
+    ia = ax.inset_axes([0.075, 0.075, 0.40, 0.42])
+    ia.pcolormesh(xe, 10 ** ye, Hm, cmap="Blues", norm=norm, shading="flat", rasterized=True)
+    ia.axhspan(1.0, EDGE, color=ACC2, alpha=0.18, lw=0)
+    ia.plot(np.abs(1 - c) / (1 + c), c, color=INK, lw=0.8)
+    ia.axvline(0.13, color=ACC2, lw=0.7, ls="--")
+    ia.axhline(1.0, color=MUTED, lw=0.6, ls=":")
+    ia.axhline(EDGE, color=ACC2, lw=0.7, ls="-.")
+    ia.axhline(c2, color=ACC1, lw=0.7, ls="--")
+    ia.set_xlim(0, 0.2)
+    ia.set_ylim(0.7, 1.5)
+    ia.set_xticks([0, 0.1, 0.2])
+    ia.set_yticks([0.8, 1.0, 1.2, 1.4])
+    ia.tick_params(labelsize=5.8, length=2, pad=1)
+    for sp in ia.spines.values():
+        sp.set_linewidth(0.5)
+    ia.text(0.004, 1.02, "band", fontsize=5.8, color=ACC2, va="bottom")
     cb = fig.colorbar(pc, ax=ax, pad=0.02, fraction=0.05)
     cb.set_label("cells per bin", fontsize=7)
     cb.ax.tick_params(labelsize=6.2)
     fig.savefig(out, dpi=600)
     plt.close(fig)
-    return int(z["n"]), c1, c2
+    return int(z["n"]), c2, c2
 
 
 def fig_joint_power(js, out="fig_joint_power.pdf"):
@@ -95,7 +113,8 @@ def fig_joint_power(js, out="fig_joint_power.pdf"):
         ax.plot(n, [r["size_percent"] for r in rows], color=col, lw=1.1, label=lab)
         ax.plot(n, [max(v) for v in strict], color=col, lw=0.8, ls="--")
         if arm == "A":
-            ax.plot(n, [min(v) for v in strict], color=col, lw=0.8, ls=":")
+            ax.plot(n, [min(v) for v in strict], color=col, lw=0.7, ls=":", marker="o", ms=1.8,
+                    mfc="white", mew=0.5)
     nb = DOCS / "np_power_bound.json"
     if nb.is_file():
         # the Neyman-Pearson bound: no level-5 % per-cell test of the criterion
@@ -103,10 +122,13 @@ def fig_joint_power(js, out="fig_joint_power.pdf"):
         cv = sorted(json.loads(nb.read_text(encoding="utf-8"))["curve"], key=lambda c: c["N"])
         ax.plot([c["N"] for c in cv], [c["bound_percent"] for c in cv], color=INK, lw=0.5,
                 label="upper bound, any level-5 % test")
-    ax.plot([], [], color=INK, lw=1.1, label="solid: size (CPR 1.00)")
-    ax.plot([], [], color=INK, lw=0.8, ls="--", label="dashed, dotted: max, min in band")
-    ax.axhline(5.0, color=INK, lw=0.6, ls=":")
-    for x, lab in ((13.72, "13.72"), (39.4, "39.4"), (79.6166, "79.6")):
+    ax.plot([], [], color=INK, lw=1.1, label="size (CPR 1.00): solid")
+    ax.plot([], [], color=INK, lw=0.8, ls="--", label="in-band max: dashed")
+    ax.plot([], [], color=INK, lw=0.7, ls=":", marker="o", ms=1.8, mfc="white", mew=0.5,
+            label="in-band min: dotted, markers")
+    # the 5 % reference: a dash-dot-dot line no curve uses
+    ax.axhline(5.0, color=MUTED, lw=0.6, ls=(0, (5, 1.5, 1, 1.5, 1, 1.5)))
+    for x, lab in ((39.4, "39.4"), (79.6166, "79.6")):
         ax.axvline(x, color=INK, lw=0.5, ls="-.")
         ax.text(x, 1.01, lab, fontsize=6.0, color=INK, ha="center", va="bottom",
                 transform=mpl.transforms.blended_transform_factory(ax.transData, ax.transAxes))

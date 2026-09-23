@@ -513,3 +513,27 @@ The audit now takes the supplement: `python backend/scripts/audit_manuscript_num
 `docs/manuscript_number_audit_supplement.json` (row set `SUPPLEMENT_AUDIT`), and
 `number_crosscheck.py` writes `docs/number_crosscheck_supplement.json`. G32 reads the
 Mini-RF table from the supplement when the manuscript no longer carries it.
+
+## 21 · Last analysis pass on v18a (2026-09-24)
+
+The analyses of METHODS §18, answering the two referee reports on v17. Every
+artifact records its seed (or that it draws none), generator and `run_info`;
+every simulated rate carries its Monte Carlo standard error. The per-cell disc
+cache `data/derived/v18/cells_by_disc.npz` is derived from ISRO rasters and
+stays under the gitignored `data/`.
+
+| item | artifact | command | seed | trials | wall (s) | peak (MB) |
+|---|---|---|---|---|---|---|
+| N1, N2, N7c | `snr_control.json`; merged into `crater_level_real.json` and `slc_chain.json::ellipticity` | `python backend/scripts/snr_control.py --workers 7` | 20261010 (N1 draws nothing) | 40 per disc x 1888 discs (mixture); B = 2000 (block bootstrap) | 2430 | 2642 |
+| N3 | `region_design_curve.json::heterogeneous` | `python backend/scripts/region_design_curve.py --heterogeneous` | 20261013 (q05 grid 20261014) | 4000 per configuration x 24; q05 10^6 per N | 159 | 219 |
+| N3 | `region_design_curve.json::f2_point` | `python backend/scripts/region_design_curve.py --f2-point` | 20261014 | 2 x 10^5; q05 10^6 | 1 | 219 |
+| N4 | `region_mean_null.json` | `python backend/scripts/region_mean_null.py` | 20261011 | 2 x 10^4 / 4 x 10^3 regions (independent), 2 x 10^3 / 10^3 (correlated); 10^6 per N (crossings) | 1984 | 151 |
+| N5 | `tail_calibration_ci.json::logratio_model` | `python backend/scripts/tail_calibration_ci.py --logratio-model` | 20261012 | B = 10^4 block bootstrap | 65 | 2860 |
+| N6 | `enl_logratio.json::split_sample` | `python backend/scripts/enl_logratio.py --split-sample` | none (no draws) | - | 48 | 2964 |
+| N7a, N7b | `slc_chain.json`; `handedness.json::instrument_paper` | `python backend/scripts/slc_chain.py` | none (no draws) | - | 4 | 88 |
+| N8 | `paper/fig_scene.pdf`, `fig_cpr_dop.pdf`, `fig_joint_power.pdf` | `cd paper && python make_fig_scene.py && python make_figures_v12.py` | - | - | - | - |
+
+Order: `snr_control.py` (writes the disc cache) → `region_design_curve.py
+--heterogeneous` (reads it) → `--f2-point`; the others are independent. The
+audit's key resolver takes `{name}` for a key whose name contains dots
+(`design.{CPR 1.1 DOP min}.iut.80pct.N`).

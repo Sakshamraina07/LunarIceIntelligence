@@ -6,7 +6,9 @@ make_fig_scene.py -- the data figure (v17a referee report, P4).
 fig_scene.pdf, single column: the complex product's sample CPR (log colour)
 over the 2020-08-08 frame, in along-track / cross-track map coordinates
 (south-polar stereographic, rotated to the frame's long axis), with the LOLA
-PSR outline, crater F2's disc and the cells the published rule selects.
+PSR outline (cyan, 0.5 pt, in both panels and the legend), crater F2's disc and the cells
+the published rule selects. Panel (b) lies wholly inside the PSR, so its outline has no edge
+there; the nearest edge is 4 km across track.
 (a) the whole frame at 100 m bins; (b) 12 x 3.8 km around F2 at 25 m bins (F2 sits on the swath's edge).
 
 Reads data/derived/fig_scene/fig_scene_cache.npz, written by
@@ -37,8 +39,8 @@ mpl.rcParams.update({
 HERE = Path(__file__).resolve().parent
 CACHE = HERE.parent / "data" / "derived" / "fig_scene" / "fig_scene_cache.npz"
 VMIN, VMAX = float(np.log10(0.03)), float(np.log10(2.0))   # sample CPR 0.03 to 2
-PSR_C, F2_C, SEL_C = "#ffffff", "#ff2d2d", "#ff9f1c"
-PSR_LEGEND_C = "#555555"   # the outline is white on the image; grey in the legend
+PSR_C, F2_C, SEL_C = "#00e5ff", "#ff2d2d", "#ff9f1c"
+PSR_LW = 0.5               # pt; the same colour and width on the image and in the legend
 LEGEND = ("PSR (LOLA)", "F2 disc", "published rule selects")
 ZOOM_Y = (-3.0, 0.8)     # km across track: F2 sits on the swath edge
 
@@ -67,15 +69,17 @@ def main(out="fig_scene.pdf"):
     ext = [0, nu * B / 1000, 0, nv * B / 1000]
     fu, fv = (float(z["f2_u"]) - u0) / 1000, (float(z["f2_v"]) - v0) / 1000
 
-    fig = plt.figure(figsize=(3.5, 1.95))
+    # 3.44 in: the tight bbox then stays under 3.5 in, so at the column width the
+    # figure scales UP and the 7 pt text stays at or above 7 pt (v18a N8)
+    fig = plt.figure(figsize=(3.44, 1.95))
     gs = fig.add_gridspec(2, 2, height_ratios=[0.45, 1.0], width_ratios=[1.0, 0.035],
                           hspace=0.42, wspace=0.04)
     a1 = fig.add_subplot(gs[0, :])
     a1.imshow(np.ma.masked_invalid(img), origin="lower", extent=ext, cmap="viridis",
               vmin=VMIN, vmax=VMAX, interpolation="nearest", rasterized=True, aspect="equal")
     a1.contour(np.linspace(ext[0], ext[1], nu), np.linspace(ext[2], ext[3], nv),
-               filled(z["psr_frac"]), levels=[0.5], colors=PSR_C, linewidths=0.35)
-    a1.scatter((z["sel_u"] - u0) / 1000, (z["sel_v"] - v0) / 1000, s=0.15, c=SEL_C, lw=0,
+               np.ma.masked_invalid(filled(z["psr_frac"], 2)), levels=[0.5], colors=PSR_C, linewidths=PSR_LW)
+    a1.scatter((z["sel_u"] - u0) / 1000, (z["sel_v"] - v0) / 1000, s=0.04, c=SEL_C, lw=0,
                rasterized=True)
     zw = 6.0
     a1.add_patch(Rectangle((fu - zw, fv + ZOOM_Y[0]), 2 * zw, ZOOM_Y[1] - ZOOM_Y[0], fill=False,
@@ -93,7 +97,7 @@ def main(out="fig_scene.pdf"):
     im = a2.imshow(np.ma.masked_invalid(filled(zi, 2)), origin="lower", extent=zext, cmap="viridis",
                    vmin=VMIN, vmax=VMAX, interpolation="nearest", rasterized=True, aspect="equal")
     a2.contour(np.linspace(zext[0], zext[1], zi.shape[1]), np.linspace(zext[2], zext[3], zi.shape[0]),
-               filled(z["zoom_psr_frac"]), levels=[0.5], colors=PSR_C, linewidths=0.5)
+               np.ma.masked_invalid(filled(z["zoom_psr_frac"], 2)), levels=[0.5], colors=PSR_C, linewidths=PSR_LW)
     a2.add_patch(Circle((0, 0), float(z["f2_r"]) / 1000, fill=False, ec=F2_C, lw=0.8))
     a2.scatter((z["zoom_sel_u"] - float(z["f2_u"])) / 1000, (z["zoom_sel_v"] - float(z["f2_v"])) / 1000,
                s=1.2, c=SEL_C, lw=0)
@@ -102,7 +106,7 @@ def main(out="fig_scene.pdf"):
     a2.set_xlabel("along track from F2 (km)", labelpad=1)
     a2.set_ylabel("across (km)", labelpad=1)
     a2.text(0.005, 1.02, "(b)", transform=a2.transAxes, va="bottom")
-    handles = [Line2D([], [], color=PSR_LEGEND_C, lw=0.8, label=LEGEND[0]),
+    handles = [Line2D([], [], color=PSR_C, lw=PSR_LW, label=LEGEND[0]),
                Line2D([], [], color=F2_C, lw=0.8, label=LEGEND[1]),
                Line2D([], [], color=SEL_C, marker="o", ms=2.5, lw=0, label=LEGEND[2])]
     fig.legend(handles=handles, loc="upper center", bbox_to_anchor=(0.46, -0.035), ncol=3,

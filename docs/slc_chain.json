@@ -1,0 +1,1338 @@
+{
+  "schema": "lunar-ice/slc-chain/1",
+  "generated_utc": "2026-09-23T20:18:18.659865+00:00",
+  "generator": "backend/scripts/slc_chain.py (N7a, N7b); snr_control.py (N7c, key 'ellipticity')",
+  "seed": null,
+  "seed_note": "no random draws",
+  "chain": {
+    "20200808": {
+      "pass": "20200808",
+      "product": "ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_xx_d18",
+      "K": {
+        "applied": true,
+        "value_db": 80.0,
+        "source": "SLI label isda:calibration_constant",
+        "note": "the SLI label's value, not the SRI's 70.308868; common to both channels, cancels in CPR and DOP"
+      },
+      "G_per_channel": {
+        "applied": true,
+        "LH": 1.018442,
+        "LV": 1.000923,
+        "how": "divides |E_H|^2 by G_LH^2, |E_V|^2 by G_LV^2 and <E_H E_V*> by G_LH G_LV (amplitude factors)"
+      },
+      "sin_theta": {
+        "applied": true,
+        "value": 0.34198601318056165,
+        "theta_deg": 19.997919,
+        "how": "one scalar from the label's incidence_angle, common to both channels: cancels in CPR and DOP"
+      },
+      "nesz_subtraction": {
+        "applied": false,
+        "label_nes0_coefficients": {
+          "LH": {
+            "coeff_1": -3.726717e-07,
+            "coeff_0": 0.0007038309
+          },
+          "LV": {
+            "coeff_1": 2.897689e-07,
+            "coeff_0": 0.0006065115
+          }
+        },
+        "note": "the noise-corrected variant is a sensitivity run in snr_control.json"
+      },
+      "dc_bias": {
+        "applied": false,
+        "label_bias": {
+          "LH": {
+            "real": 0.401957,
+            "imag": -0.248229
+          },
+          "LV": {
+            "real": 0.127858,
+            "imag": 1.821004
+          }
+        }
+      },
+      "crosstalk_or_phase_calibration": {
+        "applied": false,
+        "label_phase_orthogonality": {
+          "LH": 1.074722,
+          "LV": 0.467679
+        },
+        "label_phase_orthogonality_unit": "not stated in the label",
+        "note": "read and recorded, never applied; the measured inter-channel phase clusters at -88.3 deg (stokes_from_slc.json::results.sign.phase_evidence), and a +/-5 deg rotation is propagated in phase_gain_perturbation.json"
+      },
+      "averaging": {
+        "order": "1. per-line |E|^2 and E_H E_V* ; 2. mean over 21 consecutive azimuth lines (reshape; the label's azimuth_looks); 3. calibration scale; 4. 5 x 5 boxcar on the three coherency elements (boxcar2d, edge padding); 5. Stokes, CPR, DOP",
+        "azimuth_samples": 21,
+        "boxcar": 5,
+        "boxcar_on": "the coherency elements, never on a ratio",
+        "verified_in_code": true
+      },
+      "zero_samples": "zero SLC samples enter the 21-line mean as zeros; a cell is used only where the boxcar'd |E_H|^2, |E_V|^2 and S0 are positive (and SC, OC > 0 for CPR). Cells whose 5 x 5 window holds zero samples are kept ('partial window'); snr_control.json tabulates them separately"
+    },
+    "20200305": {
+      "pass": "20200305",
+      "product": "ch2_sar_ncxl_20200305t114902885_d_sli_xx_cp_xx_d18",
+      "K": {
+        "applied": true,
+        "value_db": 80.0,
+        "source": "SLI label isda:calibration_constant",
+        "note": "the SLI label's value, not the SRI's 70.308868; common to both channels, cancels in CPR and DOP"
+      },
+      "G_per_channel": {
+        "applied": true,
+        "LH": 1.021917,
+        "LV": 1.003667,
+        "how": "divides |E_H|^2 by G_LH^2, |E_V|^2 by G_LV^2 and <E_H E_V*> by G_LH G_LV (amplitude factors)"
+      },
+      "sin_theta": {
+        "applied": true,
+        "value": 0.4384911477841557,
+        "theta_deg": 26.00765,
+        "how": "one scalar from the label's incidence_angle, common to both channels: cancels in CPR and DOP"
+      },
+      "nesz_subtraction": {
+        "applied": false,
+        "label_nes0_coefficients": {
+          "LH": {
+            "coeff_1": 1.318735e-07,
+            "coeff_0": 0.0002354541
+          },
+          "LV": {
+            "coeff_1": -5.15482e-09,
+            "coeff_0": 0.0002604065
+          }
+        },
+        "note": "the noise-corrected variant is a sensitivity run in snr_control.json"
+      },
+      "dc_bias": {
+        "applied": false,
+        "label_bias": {
+          "LH": {
+            "real": 0.180279,
+            "imag": 0.663753
+          },
+          "LV": {
+            "real": 1.103917,
+            "imag": 2.647378
+          }
+        }
+      },
+      "crosstalk_or_phase_calibration": {
+        "applied": false,
+        "label_phase_orthogonality": {
+          "LH": 0.635989,
+          "LV": 0.386239
+        },
+        "label_phase_orthogonality_unit": "not stated in the label",
+        "note": "read and recorded, never applied; the measured inter-channel phase clusters at -88.3 deg (stokes_from_slc.json::results.sign.phase_evidence), and a +/-5 deg rotation is propagated in phase_gain_perturbation.json"
+      },
+      "averaging": {
+        "order": "1. per-line |E|^2 and E_H E_V* ; 2. mean over 21 consecutive azimuth lines (reshape; the label's azimuth_looks); 3. calibration scale; 4. 5 x 5 boxcar on the three coherency elements (boxcar2d, edge padding); 5. Stokes, CPR, DOP",
+        "azimuth_samples": 39,
+        "boxcar": 5,
+        "boxcar_on": "the coherency elements, never on a ratio",
+        "verified_in_code": true
+      },
+      "zero_samples": "zero SLC samples enter the 21-line mean as zeros; a cell is used only where the boxcar'd |E_H|^2, |E_V|^2 and S0 are positive (and SC, OC > 0 for CPR). Cells whose 5 x 5 window holds zero samples are kept ('partial window'); snr_control.json tabulates them separately"
+    }
+  },
+  "instrument_paper": {
+    "citation": "S. S. Bhiravarasu et al., 'Chandrayaan-2 Dual-frequency Synthetic Aperture Radar (DFSAR): Performance Characterization and Initial Results', Planet. Sci. J. 2:134 (2021), doi:10.3847/PSJ/abfdbf; read as arXiv:2104.14259v1 (HTML)",
+    "transmit_circular_sense": {
+      "value": "left-hand circular (LHCP) is the default transmit setting of the hybrid-polarimetric mode",
+      "fragment": "LHCP (Left Hand Circular Polarity on transmission) mode is the default setting",
+      "where": "Sec. III.2, DFSAR pre-flight (lab) characterization",
+      "note": "handedness verified in the lab with helical antennas of each sense (same section)"
+    },
+    "axial_ratio": {
+      "spec_L_hybrid_db": 0.4,
+      "spec_S_hybrid_db": 1.1,
+      "where_spec": "Table 1 (top-level specifications)",
+      "measured_min_L_db": 0.39,
+      "fragment": "minimum axial ratio of 0.39 dB",
+      "where_measured": "Sec. III.2 and Fig. 1 (axial ratio for the DFSAR modes)"
+    },
+    "isolation_crosstalk": {
+      "cross_polarization_isolation": ">> 30 dB",
+      "where": "Table 1",
+      "calibration_note": "cross-talk and channel imbalance are estimated iteratively in the full-polarimetric calibration (Sec. III.4.2); a compact-pol L-band phase correction of about 40 deg is reported in Sec. III.4.3",
+      "phase_stability": "co- and cross-pol phases stable within about +/-10 deg across acquisitions (Sec. III.4.2)"
+    },
+    "page_numbers": "the arXiv HTML carries no page numbers; the PSJ article's pages are not given here because they were not read"
+  },
+  "bundle_search": {
+    "source": "handedness.json",
+    "transmit_or_handedness_statement_found": false,
+    "text_files_scanned": 22,
+    "axial_ratio_or_isolation_in_bundles": false,
+    "terms_searched": [
+      "axial",
+      "isolation",
+      "crosstalk",
+      "cross-talk",
+      "cross_talk",
+      "ellipticity",
+      "orthogonality",
+      "transmit",
+      "handed",
+      "circular"
+    ],
+    "note": "no label or document in either bundle states an axial ratio, ellipticity or isolation figure; the only polarimetric non-ideality field is isda:phase_orthogonality, one value per receive channel, unit not stated (this pass LH 1.074722, LV 0.467679)"
+  },
+  "run_info_chain": {
+    "wall_s": 3.6,
+    "peak_rss_mb": 88,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  },
+  "ellipticity": {
+    "model": "z' = D z in the circular basis (SC, OC), D = [[1, eps e^{i phi}], [eps e^{i phi}, 1]], eps = (AR_lin - 1)/(AR_lin + 1), AR_lin = 10^(AR_dB/20); C' = D C D^H on the 21-look, boxcar'd covariance; phi unknown, swept",
+    "axial_ratios_db": [
+      0.4,
+      0.5,
+      1.0
+    ],
+    "phases_deg": [
+      0.0,
+      90.0,
+      180.0,
+      270.0
+    ],
+    "spec_source": "Bhiravarasu et al. 2021, PSJ 2:134, Table 1: L-band hybrid pol axial ratio 0.4 dB",
+    "results": {
+      "base": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 26462,
+            "joint_fraction": 0.0044975910982300955,
+            "iut": 0,
+            "dop_below_0p13": 88421,
+            "dop_below_fraction": 0.015028399308313931,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 24,
+            "joint_fraction": 2.6756688057152286e-05,
+            "iut": 0,
+            "dop_below_0p13": 406,
+            "dop_below_fraction": 0.00045263397296682617,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 50,
+          "iut_selects": 0
+        },
+        "discs_all": {
+          "outside": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "inside": {
+            "k": 40,
+            "n": 281,
+            "rate": 0.1423487544483986,
+            "wilson95": [
+              0.10630959061933024,
+              0.188034706066202
+            ]
+          },
+          "mixed": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 74,
+            "n": 844,
+            "rate": 0.08767772511848342,
+            "wilson95": [
+              0.07041697570381114,
+              0.10867483124986951
+            ]
+          },
+          "inside": {
+            "k": 40,
+            "n": 271,
+            "rate": 0.14760147601476015,
+            "wilson95": [
+              0.11030396592434669,
+              0.1947499339587387
+            ]
+          },
+          "mixed": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          }
+        }
+      },
+      "ellipticity_0.4dB_phi0": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 19681,
+            "joint_fraction": 0.0033450642583427747,
+            "iut": null,
+            "dop_below_0p13": 66543,
+            "dop_below_fraction": 0.011309923832269867,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 24,
+            "joint_fraction": 2.6756688057152286e-05,
+            "iut": null,
+            "dop_below_0p13": 353,
+            "dop_below_fraction": 0.0003935462868406149,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 35,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 77,
+            "n": 1331,
+            "rate": 0.05785123966942149,
+            "wilson95": [
+              0.04653501946277572,
+              0.07171232581640058
+            ]
+          },
+          "inside": {
+            "k": 37,
+            "n": 281,
+            "rate": 0.13167259786476868,
+            "wilson95": [
+              0.09705928990469191,
+              0.17622065742816956
+            ]
+          },
+          "mixed": {
+            "k": 15,
+            "n": 276,
+            "rate": 0.05434782608695652,
+            "wilson95": [
+              0.033208743617238856,
+              0.08772208277489689
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 75,
+            "n": 844,
+            "rate": 0.08886255924170616,
+            "wilson95": [
+              0.0714817612176126,
+              0.1099689773252816
+            ]
+          },
+          "inside": {
+            "k": 37,
+            "n": 271,
+            "rate": 0.13653136531365315,
+            "wilson95": [
+              0.10070234228150196,
+              0.18252079005864372
+            ]
+          },
+          "mixed": {
+            "k": 15,
+            "n": 188,
+            "rate": 0.0797872340425532,
+            "wilson95": [
+              0.04894607578279017,
+              0.12745718490256444
+            ]
+          }
+        }
+      },
+      "ellipticity_0.4dB_phi90": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 26516,
+            "joint_fraction": 0.004506769161842235,
+            "iut": null,
+            "dop_below_0p13": 88421,
+            "dop_below_fraction": 0.015028399308313931,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 28,
+            "joint_fraction": 3.121613606667767e-05,
+            "iut": null,
+            "dop_below_0p13": 406,
+            "dop_below_fraction": 0.00045263397296682617,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 48,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 75,
+            "n": 1331,
+            "rate": 0.056348610067618335,
+            "wilson95": [
+              0.045189342131526075,
+              0.0700613925963475
+            ]
+          },
+          "inside": {
+            "k": 42,
+            "n": 281,
+            "rate": 0.1494661921708185,
+            "wilson95": [
+              0.112518556612303,
+              0.1958686396416763
+            ]
+          },
+          "mixed": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "inside": {
+            "k": 42,
+            "n": 271,
+            "rate": 0.15498154981549817,
+            "wilson95": [
+              0.11674908945070356,
+              0.20285865546100834
+            ]
+          },
+          "mixed": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          }
+        }
+      },
+      "ellipticity_0.4dB_phi180": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 30822,
+            "joint_fraction": 0.005238634752839846,
+            "iut": null,
+            "dop_below_0p13": 101348,
+            "dop_below_fraction": 0.017225525758575454,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 23,
+            "joint_fraction": 2.564182605477094e-05,
+            "iut": null,
+            "dop_below_0p13": 413,
+            "dop_below_fraction": 0.00046043800698349557,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 59,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 75,
+            "n": 1331,
+            "rate": 0.056348610067618335,
+            "wilson95": [
+              0.045189342131526075,
+              0.0700613925963475
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 281,
+            "rate": 0.1387900355871886,
+            "wilson95": [
+              0.10321747567029645,
+              0.18410537123101217
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 276,
+            "rate": 0.06521739130434782,
+            "wilson95": [
+              0.041647795466020175,
+              0.10072374247752688
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 72,
+            "n": 844,
+            "rate": 0.08530805687203792,
+            "wilson95": [
+              0.06829049759165731,
+              0.10608344618359622
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 271,
+            "rate": 0.14391143911439114,
+            "wilson95": [
+              0.10709434518047775,
+              0.19068263218829437
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 188,
+            "rate": 0.09574468085106383,
+            "wilson95": [
+              0.06142293187373669,
+              0.14625615435521205
+            ]
+          }
+        }
+      },
+      "ellipticity_0.4dB_phi270": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 26479,
+            "joint_fraction": 0.004500480488626509,
+            "iut": null,
+            "dop_below_0p13": 88421,
+            "dop_below_fraction": 0.015028399308313931,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 22,
+            "joint_fraction": 2.4526964052389597e-05,
+            "iut": null,
+            "dop_below_0p13": 406,
+            "dop_below_fraction": 0.00045263397296682617,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 49,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 75,
+            "n": 1331,
+            "rate": 0.056348610067618335,
+            "wilson95": [
+              0.045189342131526075,
+              0.0700613925963475
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 281,
+            "rate": 0.1387900355871886,
+            "wilson95": [
+              0.10321747567029645,
+              0.18410537123101217
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 276,
+            "rate": 0.06521739130434782,
+            "wilson95": [
+              0.041647795466020175,
+              0.10072374247752688
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 271,
+            "rate": 0.14391143911439114,
+            "wilson95": [
+              0.10709434518047775,
+              0.19068263218829437
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 188,
+            "rate": 0.09574468085106383,
+            "wilson95": [
+              0.06142293187373669,
+              0.14625615435521205
+            ]
+          }
+        }
+      },
+      "ellipticity_0.5dB_phi0": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 17855,
+            "joint_fraction": 0.0030347097369397003,
+            "iut": null,
+            "dop_below_0p13": 60596,
+            "dop_below_fraction": 0.010299147085947806,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 23,
+            "joint_fraction": 2.564182605477094e-05,
+            "iut": null,
+            "dop_below_0p13": 338,
+            "dop_below_fraction": 0.0003768233568048947,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 32,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 74,
+            "n": 1331,
+            "rate": 0.05559729526671676,
+            "wilson95": [
+              0.044517406871055515,
+              0.0692350225811667
+            ]
+          },
+          "inside": {
+            "k": 35,
+            "n": 281,
+            "rate": 0.12455516014234876,
+            "wilson95": [
+              0.09093777682301293,
+              0.16829927094140143
+            ]
+          },
+          "mixed": {
+            "k": 15,
+            "n": 276,
+            "rate": 0.05434782608695652,
+            "wilson95": [
+              0.033208743617238856,
+              0.08772208277489689
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "inside": {
+            "k": 35,
+            "n": 271,
+            "rate": 0.12915129151291513,
+            "wilson95": [
+              0.09434867712663808,
+              0.1743206101848811
+            ]
+          },
+          "mixed": {
+            "k": 15,
+            "n": 188,
+            "rate": 0.0797872340425532,
+            "wilson95": [
+              0.04894607578279017,
+              0.12745718490256444
+            ]
+          }
+        }
+      },
+      "ellipticity_0.5dB_phi90": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 26543,
+            "joint_fraction": 0.004511358193648304,
+            "iut": null,
+            "dop_below_0p13": 88421,
+            "dop_below_fraction": 0.015028399308313931,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 29,
+            "joint_fraction": 3.233099806905901e-05,
+            "iut": null,
+            "dop_below_0p13": 406,
+            "dop_below_fraction": 0.00045263397296682617,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 48,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 75,
+            "n": 1331,
+            "rate": 0.056348610067618335,
+            "wilson95": [
+              0.045189342131526075,
+              0.0700613925963475
+            ]
+          },
+          "inside": {
+            "k": 42,
+            "n": 281,
+            "rate": 0.1494661921708185,
+            "wilson95": [
+              0.112518556612303,
+              0.1958686396416763
+            ]
+          },
+          "mixed": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "inside": {
+            "k": 42,
+            "n": 271,
+            "rate": 0.15498154981549817,
+            "wilson95": [
+              0.11674908945070356,
+              0.20285865546100834
+            ]
+          },
+          "mixed": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          }
+        }
+      },
+      "ellipticity_0.5dB_phi180": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 31192,
+            "joint_fraction": 0.0053015214849970954,
+            "iut": null,
+            "dop_below_0p13": 102476,
+            "dop_below_fraction": 0.017417245309584585,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 24,
+            "joint_fraction": 2.6756688057152286e-05,
+            "iut": null,
+            "dop_below_0p13": 404,
+            "dop_below_fraction": 0.0004504042489620635,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 58,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 281,
+            "rate": 0.1387900355871886,
+            "wilson95": [
+              0.10321747567029645,
+              0.18410537123101217
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 276,
+            "rate": 0.06521739130434782,
+            "wilson95": [
+              0.041647795466020175,
+              0.10072374247752688
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 271,
+            "rate": 0.14391143911439114,
+            "wilson95": [
+              0.10709434518047775,
+              0.19068263218829437
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 188,
+            "rate": 0.09574468085106383,
+            "wilson95": [
+              0.06142293187373669,
+              0.14625615435521205
+            ]
+          }
+        }
+      },
+      "ellipticity_0.5dB_phi270": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 26454,
+            "joint_fraction": 0.004496231385102371,
+            "iut": null,
+            "dop_below_0p13": 88421,
+            "dop_below_fraction": 0.015028399308313931,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 22,
+            "joint_fraction": 2.4526964052389597e-05,
+            "iut": null,
+            "dop_below_0p13": 406,
+            "dop_below_fraction": 0.00045263397296682617,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 49,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 74,
+            "n": 1331,
+            "rate": 0.05559729526671676,
+            "wilson95": [
+              0.044517406871055515,
+              0.0692350225811667
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 281,
+            "rate": 0.1387900355871886,
+            "wilson95": [
+              0.10321747567029645,
+              0.18410537123101217
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 276,
+            "rate": 0.06521739130434782,
+            "wilson95": [
+              0.041647795466020175,
+              0.10072374247752688
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 72,
+            "n": 844,
+            "rate": 0.08530805687203792,
+            "wilson95": [
+              0.06829049759165731,
+              0.10608344618359622
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 271,
+            "rate": 0.14391143911439114,
+            "wilson95": [
+              0.10709434518047775,
+              0.19068263218829437
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 188,
+            "rate": 0.09574468085106383,
+            "wilson95": [
+              0.06142293187373669,
+              0.14625615435521205
+            ]
+          }
+        }
+      },
+      "ellipticity_1dB_phi0": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 9516,
+            "joint_fraction": 0.00161737876542807,
+            "iut": null,
+            "dop_below_0p13": 33571,
+            "dop_below_fraction": 0.005705866176354113,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 13,
+            "joint_fraction": 1.4493206030957487e-05,
+            "iut": null,
+            "dop_below_0p13": 235,
+            "dop_below_fraction": 0.0002619925705596161,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 13,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 64,
+            "n": 1331,
+            "rate": 0.04808414725770098,
+            "wilson95": [
+              0.03783410243849135,
+              0.0609352742572173
+            ]
+          },
+          "inside": {
+            "k": 32,
+            "n": 281,
+            "rate": 0.11387900355871886,
+            "wilson95": [
+              0.0818301109665718,
+              0.15634258744517188
+            ]
+          },
+          "mixed": {
+            "k": 13,
+            "n": 276,
+            "rate": 0.04710144927536232,
+            "wilson95": [
+              0.027730006085164294,
+              0.07890701260603057
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 63,
+            "n": 844,
+            "rate": 0.07464454976303317,
+            "wilson95": [
+              0.05877644943839838,
+              0.09436711003393305
+            ]
+          },
+          "inside": {
+            "k": 32,
+            "n": 271,
+            "rate": 0.11808118081180811,
+            "wilson95": [
+              0.08489612320348944,
+              0.16194239656509
+            ]
+          },
+          "mixed": {
+            "k": 13,
+            "n": 188,
+            "rate": 0.06914893617021277,
+            "wilson95": [
+              0.040853016338935344,
+              0.11469969398402319
+            ]
+          }
+        }
+      },
+      "ellipticity_1dB_phi90": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 26627,
+            "joint_fraction": 0.0045256351814894095,
+            "iut": null,
+            "dop_below_0p13": 88421,
+            "dop_below_fraction": 0.015028399308313931,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 33,
+            "joint_fraction": 3.6790446078584395e-05,
+            "iut": null,
+            "dop_below_0p13": 406,
+            "dop_below_fraction": 0.00045263397296682617,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 46,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 79,
+            "n": 1331,
+            "rate": 0.059353869271224644,
+            "wilson95": [
+              0.04788303385736682,
+              0.07336092197311218
+            ]
+          },
+          "inside": {
+            "k": 41,
+            "n": 281,
+            "rate": 0.14590747330960854,
+            "wilson95": [
+              0.10941003291466274,
+              0.19195571355509305
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 276,
+            "rate": 0.06521739130434782,
+            "wilson95": [
+              0.041647795466020175,
+              0.10072374247752688
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 76,
+            "n": 844,
+            "rate": 0.09004739336492891,
+            "wilson95": [
+              0.07254755321674748,
+              0.11126211691536027
+            ]
+          },
+          "inside": {
+            "k": 41,
+            "n": 271,
+            "rate": 0.15129151291512916,
+            "wilson95": [
+              0.11352229902981306,
+              0.19880852336758556
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 188,
+            "rate": 0.09574468085106383,
+            "wilson95": [
+              0.06142293187373669,
+              0.14625615435521205
+            ]
+          }
+        }
+      },
+      "ellipticity_1dB_phi180": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 28791,
+            "joint_fraction": 0.004893437582538836,
+            "iut": null,
+            "dop_below_0p13": 93745,
+            "dop_below_fraction": 0.015933288394814463,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 23,
+            "joint_fraction": 2.564182605477094e-05,
+            "iut": null,
+            "dop_below_0p13": 323,
+            "dop_below_fraction": 0.0003601004267691745,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 56,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 72,
+            "n": 1331,
+            "rate": 0.054094665664913597,
+            "wilson95": [
+              0.04317540032769285,
+              0.06758041857322665
+            ]
+          },
+          "inside": {
+            "k": 36,
+            "n": 281,
+            "rate": 0.12811387900355872,
+            "wilson95": [
+              0.09399379357479365,
+              0.1722647039738443
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 276,
+            "rate": 0.06521739130434782,
+            "wilson95": [
+              0.041647795466020175,
+              0.10072374247752688
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 69,
+            "n": 844,
+            "rate": 0.08175355450236967,
+            "wilson95": [
+              0.06510880484430734,
+              0.1021883441633055
+            ]
+          },
+          "inside": {
+            "k": 36,
+            "n": 271,
+            "rate": 0.13284132841328414,
+            "wilson95": [
+              0.09752055597967516,
+              0.1784256538461573
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 188,
+            "rate": 0.09574468085106383,
+            "wilson95": [
+              0.06142293187373669,
+              0.14625615435521205
+            ]
+          }
+        }
+      },
+      "ellipticity_1dB_phi270": {
+        "frame": {
+          "20200808": {
+            "cells_matched": 5883594,
+            "joint": 26517,
+            "joint_fraction": 0.0045069391259832,
+            "iut": null,
+            "dop_below_0p13": 88421,
+            "dop_below_fraction": 0.015028399308313931,
+            "unphysical_dop_gt_1": 0
+          },
+          "20200305": {
+            "cells_matched": 896972,
+            "joint": 20,
+            "joint_fraction": 2.2297240047626904e-05,
+            "iut": null,
+            "dop_below_0p13": 406,
+            "dop_below_fraction": 0.00045263397296682617,
+            "unphysical_dop_gt_1": 0
+          }
+        },
+        "f2": {
+          "cells": 663,
+          "cells_retained": 663,
+          "published_rule_selects": 53,
+          "iut_selects": null
+        },
+        "discs_all": {
+          "outside": {
+            "k": 72,
+            "n": 1331,
+            "rate": 0.054094665664913597,
+            "wilson95": [
+              0.04317540032769285,
+              0.06758041857322665
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 281,
+            "rate": 0.1387900355871886,
+            "wilson95": [
+              0.10321747567029645,
+              0.18410537123101217
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 276,
+            "rate": 0.06521739130434782,
+            "wilson95": [
+              0.041647795466020175,
+              0.10072374247752688
+            ]
+          }
+        },
+        "discs_pass1": {
+          "outside": {
+            "k": 71,
+            "n": 844,
+            "rate": 0.08412322274881516,
+            "wilson95": [
+              0.06722884327921617,
+              0.10478616890682375
+            ]
+          },
+          "inside": {
+            "k": 39,
+            "n": 271,
+            "rate": 0.14391143911439114,
+            "wilson95": [
+              0.10709434518047775,
+              0.19068263218829437
+            ]
+          },
+          "mixed": {
+            "k": 18,
+            "n": 188,
+            "rate": 0.09574468085106383,
+            "wilson95": [
+              0.06142293187373669,
+              0.14625615435521205
+            ]
+          }
+        }
+      }
+    },
+    "generator": "backend/scripts/snr_control.py",
+    "run_info": {
+      "wall_s": 2429.6,
+      "peak_rss_mb": 2642,
+      "python": "3.13.1",
+      "numpy": "2.2.2",
+      "scipy": "1.17.1",
+      "platform": "Windows-11-10.0.22631-SP0",
+      "cpu_count": 8
+    }
+  }
+}

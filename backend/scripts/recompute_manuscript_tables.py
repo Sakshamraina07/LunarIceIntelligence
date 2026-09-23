@@ -193,6 +193,16 @@ def main() -> int:
                    r"true CPR of 1\.00, and terrain at a true CPR of 0\.7 reads above 1\.00 "
                    r"(\d+(?:\.\d+)?)\\,\\% of the time; at \$N=(\d+\.\d+)\$ the figures "
                    r"are (\d+\.\d+) and (\d+(?:\.\d+)?)\\,\\%", flat_all)
+    if not ms:
+        # v18a reorders the sentence and leads with the log-ratio count: "At
+        # $N=39.4$ a cell must read above 1.452 to reject a true CPR of 1.00,
+        # and terrain at a true CPR of 0.7 reads above 1.00 5.8 % of the time;
+        # at the delivered product's 13.72 the figures would be 1.895 and 18 %"
+        ms = re.search(r"At \$N=(\d+\.\d+)\$ a cell must read above (\d+\.\d+) to reject a "
+                       r"true CPR of 1\.00, and terrain at a true CPR of 0\.7 reads above 1\.00 "
+                       r"(\d+(?:\.\d+)?)\\,\\% of the time; at the delivered product's "
+                       r"(\d+\.\d+) the figures would be (\d+\.\d+) and (\d+(?:\.\d+)?)\\,\\%",
+                       flat_all)
     if ms:
         n1, c1, p1, n2, c2, p2 = ms.groups()
         n1u = UNROUNDED.get(float(n1), float(n1))
@@ -291,7 +301,8 @@ def main() -> int:
     # removes cells from the comparison and the summary still reads "0 differ".
     # Both have happened here. So the expected counts are asserted too.
     # v14: the V-A block is the two-look-count sentence, four cells (v11: two)
-    EXPECT = {"II_sampling_statistics": 35, "V-A_critical_values_in_text": 4,
+    # v18a: Table II gains the bold 39.40 row (8 rows x 5 cells)
+    EXPECT = {"II_sampling_statistics": 40, "V-A_critical_values_in_text": 4,
               "III_published_moments": 27}
     short = {k: (len(report["tables"][k]["cells"]), v) for k, v in EXPECT.items()
              if len(report["tables"][k]["cells"]) != v}
@@ -300,7 +311,8 @@ def main() -> int:
         total_bad += 1
     if args.inject == "row":
         print("\n  --inject row: one table parsed short\n")
-        short["II_sampling_statistics"] = (30, 35)
+        short["II_sampling_statistics"] = (EXPECT["II_sampling_statistics"] - 5,
+                                           EXPECT["II_sampling_statistics"])
     report["expected_cells"] = EXPECT
     report["tables_parsed_short"] = {k: {"parsed": a, "expected": b}
                                      for k, (a, b) in short.items()}

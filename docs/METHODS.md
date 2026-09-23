@@ -4472,6 +4472,9 @@ L = ψ₁⁻¹(Var ln I), on the headline's 16 × 16 patches (8337, same mask).
   | this pass | 4.727 | 1.51 % | 0.212 | 98.49 % |
   | second pass | 6.868 | 0.01 % | 0.146 | 99.99 % |
 
+v18a: the bundles still state no transmit sense, but the DFSAR instrument
+paper does (LHCP, the default hybrid-pol transmit); see §18.7.
+
 ### 17.7 The v17a audit (P8)
 
 The audit now takes the supplement, which has its own row set
@@ -4501,6 +4504,283 @@ Three merge-only modes store printed figures under addressable keys:
 `dop_sampling_bias.py --strict-summary`, `f2_maximum.py --v3-summary` and
 `np_power_bound.py --grid-keys`.
 
+## 18 · Last analysis pass on v18a (2026-09-24)
+
+Two referees reviewed v17 (Major Revision; no equation or arithmetic error).
+Their converging requests: thermal noise, the pass confound in the disc
+comparison, heterogeneous pooling, the region-mean statistic of [17], held-out
+validation of the model the decisions use, the selection bias of the 39.4, and
+the SLC chain. Every artifact below records its seed (or that it draws none),
+generator and `run_info`; every simulated rate carries its Monte Carlo
+standard error. Nothing under `data/` is committed.
+
+### 18.1 Thermal noise (N1)
+
+`python backend/scripts/snr_control.py` → `docs/snr_control.json` (seed
+20261010, used only by §18.2's mixture and bootstrap).
+* **SNR.** SNR_X = boxcar'd calibrated intensity / NESZ_X, with NESZ_X the
+  label's `nes0_coeff_0` (−31.5 dB LH), constant over the swath. The
+  sensitivity model is linear in the SLC range-sample index, c0 + c1·j. The
+  cell's SNR is min(SNR_H, SNR_V). A window is "full" when every sample of its
+  5 × 5 boxcar is non-zero in both channels.
+* **Where the selections sit.** On this pass, 22 990 of the 26 462 selections
+  (87 %) have min SNR above 10 dB, and 193 are below 6 dB. The selection rate
+  is 0.76 % of full-window cells above 10 dB, against 0–0.14 % in the
+  full-window bins below 10 dB. Median min SNR is 12.7 dB for selected cells against 10.1 dB for all
+  matched cells. In F2, 41 of the 50 selections are above 10 dB, 3 are at
+  3–6 dB, and 22 lie in partial windows. Median disc SNR: pass 1 sunlit
+  10.6 dB, PSR 10.3 dB; pass 2 sunlit 12.1 dB, PSR 12.2 dB.
+* **Noise-corrected rerun.** C_HH − n_H and C_VV − n_V; C_HV is untouched.
+
+  | variant | joint, pass 1 | joint, pass 2 | F2 | sunlit ≥ 1 | PSR ≥ 1 |
+  |---|---|---|---|---|---|
+  | published (base) | 26 462 | 24 | 50 | 5.7 % | 14.2 % |
+  | noise-corrected, constant NESZ | 23 784 | 22 | 48 | 5.6 % | 13.2 % |
+  | noise-corrected, linear NESZ | 22 977 | 22 | 39 | 5.5 % | 13.5 % |
+  | min SNR ≥ 3 dB | 26 425 | 23 | 50 | 5.7 % | 13.9 % |
+  | min SNR ≥ 6 dB | 26 269 | 22 | 47 | 5.6 % | 13.9 % |
+
+  The IUT selects no cell and no disc in any variant. The PSR/sunlit contrast
+  and F2's selections do not change materially under the primary model. Under
+  the linear-NESZ sensitivity model F2 falls from 50 to 39.
+
+### 18.2 The disc comparison, by pass and coherence (N2)
+
+`snr_control.py` merges into `docs/crater_level_real.json`: `per_pass_class`,
+`coherence_strata`, `mantel_haenszel_inside_vs_outside`, `logistic_fires`,
+`simulation_per_disc_mixture_all_classes`, `spatial`, `per_disc_v18`.
+
+| pass | sunlit ≥ 1 (Wilson) | PSR ≥ 1 | mixed ≥ 1 |
+|---|---|---|---|
+| 1 (2020-08-08) | 74/844 = 8.8 % (7.0–10.9) | 40/271 = 14.8 % (11.0–19.5) | 17/188 = 9.0 % (5.7–14.0) |
+| 2 (2020-03-05) | 2/487 = 0.4 % (0.1–1.5) | 0/10 (0–27.8) | 0/88 (0–4.2) |
+
+* **Coherence strata** (< 0.4, 0.4–0.5, 0.5–0.6, ≥ 0.6), PSR against sunlit,
+  mixed excluded:
+  * Mantel–Haenszel OR 0.593 (Robins–Breslow–Greenland 95 % CI 0.34–1.05)
+    over both passes.
+  * Pass 1 alone: 0.443 (0.25–0.80).
+  * Below 0.4 the rates are 53 % (PSR) and 73 % (sunlit); at ≥ 0.6 they are
+    0/136 and 1/1028.
+* **Logistic regression** of "≥ 1 selection" (IRLS, 1888 discs, 133 events;
+  estimate ± SE):
+
+  | term | estimate ± SE |
+  |---|---|
+  | median coherence | −22.5 ± 2.0 |
+  | ln N̂ | −1.39 ± 0.27 |
+  | pass 2 | −1.95 ± 0.86 |
+  | inside PSR | −0.40 ± 0.38 |
+  | mixed | −0.94 ± 0.55 |
+  | median min SNR (dB) | −0.08 ± 0.06 |
+
+  Once coherence is in the model, shadow does not raise firing.
+* **Per-disc mixture, all classes:** each disc is simulated at its own median
+  CPR, γ_c and N̂ (40 trials per disc).
+
+  | class | predicted ≥ 1 | real ≥ 1 |
+  |---|---|---|
+  | sunlit | 7.18 ± 0.07 % | 5.7 % (4.6–7.1) |
+  | PSR | 12.6 ± 0.2 % | 14.2 % (10.6–18.8) |
+  | mixed | 10.6 ± 0.2 % | 6.2 % (3.9–9.6) |
+  | pass 1 sunlit | 10.3 % | 8.8 % |
+  | pass 2 sunlit | 1.8 % | 0.4 % |
+
+  The v17a sunlit-only run of the same design predicted 6.99 ± 0.07 %. The two
+  runs straddle the Wilson upper bound of 7.09.
+* **Spatial.**
+  * No two discs share a cell: 1 068 756 cached cells were checked, since each
+    cell goes to its nearest lattice centre.
+  * The block bootstrap resamples 5 × 5-disc lattice blocks (146 blocks,
+    B = 2000). Its intervals are sunlit 5.7 % (3.6–8.1), PSR 14.2 %
+    (7.6–22.5) and mixed 6.2 % (2.7–9.7).
+* The median-population simulation (`simulation_sunlit`, 10⁴ trials, 0
+  firings) is unchanged.
+
+### 18.3 Heterogeneous pooling (N3)
+
+`python backend/scripts/region_design_curve.py --heterogeneous` →
+`region_design_curve.json::heterogeneous` (seed 20261013; its q05 grid, 44 N from 20 to
+50 000, uses 20261014).
+* **Setup.** Regions of K = 25, 100 and 400 cells are drawn from the measured
+  per-cell sample CPR, γ_c, N̂ and S0 of real sunlit or PSR discs
+  (`data/derived/v18/cells_by_disc.npz`, gitignored). Cells come from one disc
+  or from across discs. Cross-term phases are either aligned or uniformly
+  random. Each cell gets one Bartlett draw at its own N̂; the covariances are
+  summed. The region is tested at N_eff = (ΣS0)² / Σ(S0²/N̂).
+* **Result.** Over all 24 configurations the regional IUT is at most
+  0.25 ± 0.08 %, and never above 5 %; the homogeneous comparison agrees. The
+  pooled published rule fires in ≤ 0.33 %.
+* **Pooling below 0.13.** A pooled population DOP below 0.13 with no unit
+  below 0.13 occurs in ≤ 0.05 % of regions.
+* **N_eff.** Across discs it is 52–226, because bright cells dominate. Within
+  a disc it is 336–9590.
+* **Caveat.** Sample per-cell values include sampling noise, so they overstate
+  the terrain's heterogeneity.
+
+**F2 point.** `region_design_curve.py --f2-point` → `::f2_point` (seed
+20261014). At F2's pooled N_eff of 262.3 the IUT's power is 0.578 ± 0.017 % at
+CPR 1.1 (0.654 ± 0.018 % at 1.2), both at minimum DOP.
+
+### 18.4 The region-mean statistic of [17] (N4)
+
+`python backend/scripts/region_mean_null.py` → `docs/region_mean_null.json`
+(seed 20261011).
+* **Statistic.** The mean CPR and mean DOP over the pixels with CPR ≥ 1.
+* **Regions.** Elliptical regions of 260 and 3647 cells on the complex grid.
+* **Draws.** Independent draws are complex-Wishart (Bartlett; 2 × 10⁴ and
+  4 × 10³ regions). Correlated draws are AR(1) complex fields at the product's
+  SC/OC lags with a 5 × 5 boxcar, looks calibrated so the log-ratio N matches
+  (2 × 10³ and 10³ regions).
+* **Results at N = 39.4**, P(mean DOP < 0.13):
+
+  | population | 260 cells, independent | 260 cells, correlated | 3647 cells, correlated |
+  |---|---|---|---|
+  | CPR 1.00, DOP 0 | 0 | 9.1 ± 0.6 % | 0 |
+  | CPR 0.7, DOP 0.176 | 7.6 ± 0.2 % | 34.1 ± 1.2 % | 2.7 ± 0.5 % |
+  | CPR 0.7, DOP 0.20 | 1.2 % | 21.7 ± 1.0 % | 0.9 % |
+
+* **Sunlit median.** CPR 0.155 yields no pixel with CPR ≥ 1 at N ≥ 39.4, so
+  the statistic is undefined there.
+* **Crossings.** E[m̂ | R ≥ 1] of an unpolarized population falls to 0.13 at
+  N = 75.0 and to 0.10 at 127.4 (10⁶ draws per N). These reproduce the
+  unconditional 75.09 and 127.07; G33 checks it.
+* **Sinha et al.** Their per-region values are not in the repository. Only the
+  quoted range, 0.10–0.13 over F2, F3, H3 and S1, is recorded.
+
+### 18.5 Held-out test of F(2N̂, 2N̂) with the log-ratio N̂ (N5)
+
+`python backend/scripts/tail_calibration_ci.py --logratio-model` →
+`tail_calibration_ci.json::logratio_model` (seed 20261012).
+* **Method.** The blocks are those of §15.6, split by rows into two folds. N̂
+  comes from Var(ln R) on the training half, and the location is the training
+  half's median CPR.
+
+  | blocks | 1 % | 5 % | 10 % | above nominal at 5 % (expected) |
+  |---|---|---|---|---|
+  | 64 × 64, pass 1 (109) | 1.80 % (1.53–2.10) | 6.38 % (5.95–6.83) | 11.50 % (10.96–12.03) | 84 (48.7) |
+  | 32 × 32, pass 1 (501) | 2.29 % | 7.40 % | 12.73 % | 390 (224) |
+  | 32 × 32, pass 2 (53) | 3.73 % | 9.56 % | 14.78 % | 48 (22.3) |
+
+* **Result.** The model the decisions use is anti-conservative on held-out
+  data. A normal approximation to the plug-in location's noise, with
+  n_eff ≈ 30 per training half at 64 × 64, accounts for about 5.4 % of the
+  6.38 % at nominal 5 %. The remainder is consistent with an N̂ that reads high.
+  The unequal-look moment model of §15.6 stays conservative (2.31 %).
+
+### 18.6 Split-sample look count (N6)
+
+`python backend/scripts/enl_logratio.py --split-sample` →
+`enl_logratio.json::split_sample`.
+* **Ranking statistic.** Exactly `stokes_from_slc.low_cv_tiles`: the CV of S0,
+  sd (ddof 1) / mean, over non-overlapping 64 × 64 tiles wholly inside the
+  matched mask; tiles below the 10th percentile are selected.
+* **Result.** Selecting on even rows and estimating on odd rows gives a median
+  N of 39.69 (IQR 28.87–46.07) over 109 blocks. The swap gives 39.61
+  (28.55–46.43). The full-sample control gives 39.44, against 39.4
+  (28.5–46.0). The selection does not bias the 39.4.
+
+### 18.7 The SLC chain, transmit sense and ellipticity (N7)
+
+`python backend/scripts/slc_chain.py` → `docs/slc_chain.json` (draws nothing);
+it also updates `docs/handedness.json` (`instrument_paper`, `verdict_v18`).
+
+**(a) What the chain does.**
+
+| step | applied? | detail |
+|---|---|---|
+| K | yes | 80 dB (SLI label; cancels in CPR and DOP) |
+| G | yes | amplitude factors, LH 1.018442, LV 1.000923 (pass 1) |
+| sin θ | yes | one scalar, 0.342 (θ 20.0°); cancels |
+| NESZ subtraction | no | see §18.1 for the sensitivity run |
+| DC bias | no | |
+| cross-talk / phase calibration | no | the label's `phase_orthogonality` (LH 1.0747, LV 0.4677, unit not stated) is recorded only |
+
+* **Order:** per-line |E|² and E_H E_V*, then the mean over 21 azimuth lines,
+  then calibration, then a 5 × 5 boxcar on the coherency, then Stokes.
+* **Zeros:** zeros enter the mean as zeros. A cell is used where the
+  boxcar'd powers are positive, and partial windows are kept.
+
+**(b) The instrument paper.** Bhiravarasu et al. 2021, PSJ 2:134, read as
+arXiv 2104.14259v1 (HTML, no page numbers):
+* LHCP is "the default setting" of hybrid-pol transmit (Sec. III.2).
+* The L-band hybrid-pol axial-ratio specification is 0.4 dB (S-band 1.1 dB,
+  Table 1), and the measured minimum is 0.39 dB (Sec. III.2).
+* Cross-pol isolation is > 30 dB (Table 1).
+* Cross-talk is corrected iteratively (Sec. III.4.2), with a compact-pol
+  L-band phase correction near 40° (Sec. III.4.3).
+
+The bundles hold no transmit, axial-ratio or isolation field. The only
+non-ideality field is `isda:phase_orthogonality`.
+
+**(c) Transmit ellipticity.**
+* **Model.** In (SC, OC), D = [[1, ε e^{iφ}], [ε e^{iφ}, 1]] with
+  ε = (AR − 1)/(AR + 1) and AR linear; C′ = D C Dᴴ. φ is unknown and is swept
+  over 0/90/180/270°.
+* **Result** (range over φ):
+
+  | AR | DOP < 0.13 | joint | F2 | sunlit | PSR |
+  |---|---|---|---|---|---|
+  | none (published) | 1.50 % | 0.45 % | 50 | 5.7 % | 14.2 % |
+  | 0.4 dB (spec) | 1.13–1.72 % | 0.34–0.52 % | 35–59 | 5.6–5.8 % | 13.2–14.9 % |
+  | 1 dB | 0.57–1.59 % | 0.16–0.49 % | 13–56 | 4.8–5.9 % | 11.4–14.6 % |
+
+  At the specification the effect is the size of the ±0.5 dB relative-gain
+  sensitivity already reported (1.03–1.74 %).
+
+### 18.8 Figures (N8)
+
+Heights at \columnwidth (3.5 in), from each PDF's MediaBox; no Type 3 font in
+any figure.
+
+| figure | height | text |
+|---|---|---|
+| `fig_scene.pdf` | 2.12 in | 7 pt at 1.004×; canvas narrowed to 3.44 in so the figure scales up |
+| `fig_cpr_dop.pdf` | 2.21 in | |
+| `fig_joint_power.pdf` | 2.37 in | |
+
+* **fig_scene.** The PSR outline is cyan (#00e5ff) at 0.5 pt, identical in
+  (a), (b) and the legend. Legend: "PSR (LOLA)", "F2 disc", "published rule
+  selects".
+* **fig_cpr_dop.** Legend: "CPR = 1", "band edge 1.2989", "crit. 1.452,
+  $N=39.4$", "$\mathrm{DOP}=|1-\mathrm{CPR}|/(1+\mathrm{CPR})$". The inset
+  covers DOP 0–0.2 and R 0.7–1.5, with 1 < R < 1.2989 shaded.
+* **fig_joint_power.** Legend: "speckle", "texture, shape 8", "correlated
+  looks, at effective $N$", "upper bound, any level-5 % test", "size (CPR
+  1.00): solid", "in-band max: dashed", "in-band min: dotted, markers".
+  Verticals sit at 39.4 and 79.6, the IUT band spans 218–254, and the 5 %
+  line is dash-dot-dot.
+
+### 18.9 The v18a audit (N9)
+
+* **Resolver.** The audit's key resolver accepts `{name}` for a key whose
+  name contains dots.
+* **Row changes.**
+  * 56 rows moved to the supplement (S-III, S-IV and S-V), and 2 copied.
+  * 34 retired with reasons (`RETIRED_V18A`). 22 of these had passed only on a
+    match to an unrelated figure elsewhere in v18a; each was checked by hand.
+  * 6 quantified rows moved and 2 retired.
+  * New main rows: 63 AUDIT, 13 DERIVED, 2 APPROX, 1 STRING and 7
+    QUANTIFIED. The supplement gains 54 Table S2 rows (50 cells,
+    two ENLs, two critical values) and 4 S-III text rows.
+* **G32** expects 40 Table II cells (the bold 39.40 row) and reads v18a's
+  reordered critical-value sentence.
+* **G33** gains the N1–N6 checks.
+
+| file | PASS | MISMATCH | NO SOURCE | ABSENT | quantified |
+|---|---|---|---|---|---|
+| submission | 349 | 1 | 3 | 0 | 48: 29 checked, 19 exempt, 0 unchecked |
+| master | 349 | 1 | 3 | 0 | as submission |
+| supplement | 182 | 1 | 1 | 0 | 31: 11 checked, 20 exempt, 0 unchecked |
+
+* **Submission MISMATCH:** `v18_f2_pow`. The text says the IUT's power at
+  about 262 looks is "below 0.5 %"; the computed value is 0.578 ± 0.017 %.
+* **Supplement MISMATCH:** `s2_e40_c07m_1895`, 1.25 % printed as 1.3. It is a
+  tie under half-up rounding; the audit rounds half to even.
+* **Cross-check:** 307/308 matched in the submission; the exception is 3500,
+  an APPROX row. The supplement matched 229/232; the exceptions are three
+  simulation grid lists.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -4518,7 +4798,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `a66fd71`.
+Stamped at commit `37d8624`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -4532,7 +4812,7 @@ Stamped at commit `a66fd71`.
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
 | `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
-| `docs/crater_level_real.json` | `561ff0b2be2603b3…` | §17.3 |
+| `docs/crater_level_real.json` | `7e67812c389f4f4f…` | §17.3, §18.2 |
 | `docs/decision_rule.json` | `19cc84e41695299c…` | §15.8, §16.2, §16.6 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `16707f02b03be20c…` | §11.1, §11.2, §11.3 |
@@ -4543,12 +4823,12 @@ Stamped at commit `a66fd71`.
 | `docs/enl_estimator_spec.json` | `95577a403a4d57be…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
 | `docs/enl_interval_validation.json` | `ad9514471b8885a6…` | §14.5 |
-| `docs/enl_logratio.json` | `aa4d23a9aef3f878…` | §15.3, §16.7 |
+| `docs/enl_logratio.json` | `dcfbf30d8879d4ae…` | §15.3, §16.7, §18.6 |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
 | `docs/f2_complex_product.json` | `55a6fd2483c2bd5e…` | §17.2 |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
 | `docs/f2_maximum.json` | `4208438d42b4b442…` | §6.2a, §14.6, §15.4, §16.3 |
-| `docs/handedness.json` | `9cf8202020599875…` | §17.6 |
+| `docs/handedness.json` | `13e1285342d142fa…` | §17.6, §18.7 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/joint_calibration.json` | `69091c8284d96fb1…` | §14.2, §15.1 |
@@ -4567,18 +4847,21 @@ Stamped at commit `a66fd71`.
 | `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
 | `docs/published_moments.json` | `5bfe5549f64bc236…` | §13.3 |
-| `docs/region_design_curve.json` | `0ec011e84f985791…` | §17.1 |
+| `docs/region_design_curve.json` | `e684c9bf1af7b40f…` | §17.1, §18.3 |
+| `docs/region_mean_null.json` | `c40c3df7c03b5571…` | §18.4 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
+| `docs/slc_chain.json` | `c404ef43393174b6…` | §18.7 |
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
+| `docs/snr_control.json` | `98f2a3cc114c382d…` | §18.1, §18.7 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/stationarity.json` | `4d72eb5cd1877932…` | §7.3.3 |
 | `docs/stokes_from_slc.json` | `cf47bccb7fa4c245…` | §1.11, §14.7, §15.7 |
 | `docs/stokes_from_slc_20200305.json` | `e5eca2c112a2a157…` | §15.5 |
 | `docs/stokes_from_slc_20200305_block32.json` | `a3b893d7f7c5399d…` | §15.5 |
 | `docs/stokes_from_slc_block32.json` | `453a44d7e23d5df6…` | §15.5 |
-| `docs/tail_calibration_ci.json` | `047b83a5364006e6…` | §15.6 |
+| `docs/tail_calibration_ci.json` | `1afd6cb1446dd34e…` | §15.6, §18.5 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |

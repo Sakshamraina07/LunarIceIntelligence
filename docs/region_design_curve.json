@@ -2493,5 +2493,1095 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "heterogeneous": {
+    "cache": "data/derived/v18/cells_by_disc.npz",
+    "trials": 4000,
+    "K": [
+      25,
+      100,
+      400
+    ],
+    "seed": 20261013,
+    "results": {
+      "sunlit": {
+        "K25": {
+          "within_disc": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.075,
+                "mc_se_percent": 0.043285029167138146,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.05,
+                "mc_se_percent": 0.0353464991194319,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.25,
+                "mc_se_percent": 0.07895805848676879,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 337.4629013884537,
+                "iqr": [
+                  194.5192184970375,
+                  576.4278285186509
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.1,
+                "mc_se_percent": 0.049974993746873045,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.25,
+                "mc_se_percent": 0.07895805848676879,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.1,
+                "mc_se_percent": 0.049974993746873045,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.325,
+                "mc_se_percent": 0.08999218716088636,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 1.4749999999999999,
+                "mc_se_percent": 0.19060717129740948,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.025,
+                "mc_se_percent": 0.02499687480466308,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 335.76160260076074,
+                "iqr": [
+                  197.45318291965674,
+                  584.6459190017101
+                ]
+              }
+            }
+          },
+          "across_discs": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 77.65293914221542,
+                "iqr": [
+                  35.13047620948257,
+                  128.38903065071722
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 79.82499891712368,
+                "iqr": [
+                  37.06694926553417,
+                  128.851557741925
+                ]
+              }
+            }
+          }
+        },
+        "K100": {
+          "within_disc": {
+            "aligned": {
+              "iut": {
+                "percent": 0.025,
+                "mc_se_percent": 0.02499687480466308,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.1,
+                "mc_se_percent": 0.049974993746873045,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.05,
+                "mc_se_percent": 0.0353464991194319,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.25,
+                "mc_se_percent": 0.07895805848676879,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 1357.0153894085424,
+                "iqr": [
+                  800.8938305631318,
+                  2237.260893424579
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.075,
+                "mc_se_percent": 0.043285029167138146,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.2,
+                "mc_se_percent": 0.07063993204979745,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.125,
+                "mc_se_percent": 0.05586674995021637,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.17500000000000002,
+                "mc_se_percent": 0.06608588162383855,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 1.4749999999999999,
+                "mc_se_percent": 0.19060717129740948,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 1356.7420031498332,
+                "iqr": [
+                  784.0050693916845,
+                  2283.2474757294804
+                ]
+              }
+            }
+          },
+          "across_discs": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 124.27578737046233,
+                "iqr": [
+                  50.67988901701347,
+                  243.08036147241842
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 125.70172527300889,
+                "iqr": [
+                  53.555689749619404,
+                  244.68156674013136
+                ]
+              }
+            }
+          }
+        },
+        "K400": {
+          "within_disc": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.025,
+                "mc_se_percent": 0.02499687480466308,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.25,
+                "mc_se_percent": 0.07895805848676879,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 5256.271846601327,
+                "iqr": [
+                  3173.4881654014266,
+                  9017.002240806545
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.25,
+                "mc_se_percent": 0.07895805848676879,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.25,
+                "mc_se_percent": 0.07895805848676879,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.22499999999999998,
+                "mc_se_percent": 0.07491557748559374,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.25,
+                "mc_se_percent": 0.07895805848676879,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 1.9,
+                "mc_se_percent": 0.2158645408583818,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 5252.372263486492,
+                "iqr": [
+                  3117.9456738732915,
+                  8972.334243536017
+                ]
+              }
+            }
+          },
+          "across_discs": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 226.1608854082469,
+                "iqr": [
+                  131.50854359508114,
+                  393.55742392810475
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 221.55220458735738,
+                "iqr": [
+                  130.36531816254342,
+                  378.66582038841204
+                ]
+              }
+            }
+          }
+        }
+      },
+      "psr": {
+        "K25": {
+          "within_disc": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 597.1934268917389,
+                "iqr": [
+                  329.2544452566313,
+                  873.066999469508
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.025,
+                "mc_se_percent": 0.02499687480466308,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 1.825,
+                "mc_se_percent": 0.21164201792177284,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.05,
+                "mc_se_percent": 0.0353464991194319,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 589.5792904378493,
+                "iqr": [
+                  336.3275639914044,
+                  872.2913640133955
+                ]
+              }
+            }
+          },
+          "across_discs": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 74.86381502948129,
+                "iqr": [
+                  21.12223633024334,
+                  231.58567146710948
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 70.45428879938626,
+                "iqr": [
+                  21.619713596521457,
+                  223.09088744254964
+                ]
+              }
+            }
+          }
+        },
+        "K100": {
+          "within_disc": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 2376.8077165181057,
+                "iqr": [
+                  1331.1190451219318,
+                  3553.5026059126394
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 1.225,
+                "mc_se_percent": 0.17392482212151317,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 2360.1510727484692,
+                "iqr": [
+                  1286.351808246903,
+                  3519.5405889751337
+                ]
+              }
+            }
+          },
+          "across_discs": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 52.27336513371996,
+                "iqr": [
+                  19.945542394039286,
+                  162.15218096513152
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 52.521658368036796,
+                "iqr": [
+                  20.17465283232625,
+                  159.58575196819953
+                ]
+              }
+            }
+          }
+        },
+        "K400": {
+          "within_disc": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 9589.502726732182,
+                "iqr": [
+                  5370.408787935308,
+                  14102.399204697158
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 1.4000000000000001,
+                "mc_se_percent": 0.1857686733547936,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 9221.361383430562,
+                "iqr": [
+                  5092.021378760606,
+                  13729.613186260083
+                ]
+              }
+            }
+          },
+          "across_discs": {
+            "aligned": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 85.34547075741442,
+                "iqr": [
+                  61.99811832726077,
+                  130.0565181327121
+                ]
+              }
+            },
+            "random": {
+              "iut": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "iut_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "rule_hom": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "pooled_pop_dop_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "no_unit_lt_but_pooled_lt": {
+                "percent": 0.0,
+                "mc_se_percent": 0.0,
+                "trials": 4000
+              },
+              "N_eff": {
+                "median": 84.94075384821491,
+                "iqr": [
+                  60.778184883981574,
+                  129.54454476926531
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "max_iut_rate_plus_2se_percent": 0.4079161169735376,
+    "flag": "heterogeneity does not raise the regional IUT above 5 % in any configuration",
+    "caveat": "the per-cell populations are sample values, so their spread includes each cell's sampling noise and overstates the terrain's heterogeneity",
+    "q05_grid": {
+      "N": [
+        20.0,
+        24.0,
+        29.0,
+        35.0,
+        41.0,
+        50.0,
+        60.0,
+        71.0,
+        86.0,
+        103.0,
+        123.0,
+        148.0,
+        178.0,
+        213.0,
+        255.0,
+        306.0,
+        368.0,
+        441.0,
+        529.0,
+        635.0,
+        761.0,
+        913.0,
+        1095.0,
+        1314.0,
+        1576.0,
+        1890.0,
+        2268.0,
+        2720.0,
+        3263.0,
+        3914.0,
+        4696.0,
+        5633.0,
+        6757.0,
+        8105.0,
+        9722.0,
+        11663.0,
+        13990.0,
+        16782.0,
+        20131.0,
+        24148.0,
+        28967.0,
+        34748.0,
+        41682.0,
+        50000.0
+      ],
+      "draws_per_N": 1000000
+    },
+    "run_info": {
+      "wall_s": 158.5,
+      "peak_rss_mb": 219,
+      "python": "3.13.1",
+      "numpy": "2.2.2",
+      "scipy": "1.17.1",
+      "platform": "Windows-11-10.0.22631-SP0",
+      "cpu_count": 8
+    }
+  },
+  "f2_point": {
+    "N": 262.2710843373494,
+    "q05": 0.0781239152336192,
+    "seed": 20261014,
+    "trials": 200000,
+    "iut_power": {
+      "CPR 1.1 DOP min": {
+        "percent": 0.5775,
+        "mc_se_percent": 0.01694350815946922,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.5783068873717798,
+          "mc_se_percent": 0.016845617034907875,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 28.957903749910724,
+          "conditioning_draws": 57835
+        }
+      },
+      "CPR 1.2 DOP min": {
+        "percent": 0.6535,
+        "mc_se_percent": 0.018017066596702137,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.653883416321769,
+          "mc_se_percent": 0.017998423053412437,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 67.04931557417252,
+          "conditioning_draws": 134020
+        }
+      }
+    },
+    "run_info": {
+      "wall_s": 0.5,
+      "peak_rss_mb": 219,
+      "python": "3.13.1",
+      "numpy": "2.2.2",
+      "scipy": "1.17.1",
+      "platform": "Windows-11-10.0.22631-SP0",
+      "cpu_count": 8
+    }
   }
 }

@@ -68,12 +68,14 @@ _SEG = re.compile(r"([^\[]*)((?:\[[^\]]*\])*)$")
 
 def _split_path(path: str) -> list:
     """Dotted path, but a filter's value may itself contain dots or spaces
-    ("records[?name=Cardanus E]"), so dots inside brackets do not split."""
+    ("records[?name=Cardanus E]"), so dots inside brackets do not split.
+    v18a: a key whose NAME contains dots is written in braces,
+    "results.{null CPR 1.00 DOP 0}.rate"; the braces are stripped in resolve."""
     parts, depth, cur = [], 0, ""
     for ch in path.strip("."):
-        if ch == "[":
+        if ch in "[{":
             depth += 1
-        elif ch == "]":
+        elif ch in "]}":
             depth -= 1
         if ch == "." and depth == 0:
             parts.append(cur)
@@ -118,6 +120,8 @@ def resolve(rel: str, path: str):
     for part in _split_path(path):
         m = _SEG.fullmatch(part)
         name, brackets = m.group(1), m.group(2)
+        if name.startswith("{") and name.endswith("}"):
+            name = name[1:-1]
         nxt = []
         for c in curs:
             try:

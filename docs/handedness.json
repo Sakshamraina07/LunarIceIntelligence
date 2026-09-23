@@ -141,5 +141,15 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
-  }
+  },
+  "instrument_paper": {
+    "citation": "S. S. Bhiravarasu et al., 'Chandrayaan-2 Dual-frequency Synthetic Aperture Radar (DFSAR): Performance Characterization and Initial Results', Planet. Sci. J. 2:134 (2021), doi:10.3847/PSJ/abfdbf; read as arXiv:2104.14259v1 (HTML)",
+    "transmit_circular_sense": {
+      "value": "left-hand circular (LHCP) is the default transmit setting of the hybrid-polarimetric mode",
+      "fragment": "LHCP (Left Hand Circular Polarity on transmission) mode is the default setting",
+      "where": "Sec. III.2, DFSAR pre-flight (lab) characterization",
+      "note": "handedness verified in the lab with helical antennas of each sense (same section)"
+    }
+  },
+  "verdict_v18": "the bundles state no transmit sense; the DFSAR instrument paper states LHCP as the default hybrid-pol transmit (Sec. III.2). The physical check is unchanged: the adopted 180 deg reading puts 98.49 % of cells below CPR 1"
 }

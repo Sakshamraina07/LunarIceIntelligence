@@ -4,6 +4,8 @@ tail_calibration_ci.py -- intervals on the held-out tail calibration, and whethe
 (council work order, Task 6)
 
     python backend/scripts/tail_calibration_ci.py
+    python backend/scripts/tail_calibration_ci.py --logratio-model   (v18a N5: the
+        held-out test of F(2 N_hat, 2 N_hat) with the log-ratio N_hat; merged)
 
 Reads stokes_from_slc.json::results.t3e.180_deg.tail_calibration.per_block.
 
@@ -103,7 +105,94 @@ def analyse(per: list, rng) -> dict:
     return out
 
 
+SEED_LR = 20261012
+PASS_OF = {"20200808_64px": ("20200808", 64), "20200808_32px": ("20200808", 32),
+           "20200305_32px": ("20200305", 32)}
+
+
+def logratio_model() -> dict:
+    """v18a N5: the held-out test of the model the decisions use,
+    F(2 N_hat, 2 N_hat) with N_hat from Var(ln R), on the same blocks.
+    Each block is split by rows; N_hat (Var ln R, ddof 1) and the median CPR
+    are estimated on one half and the other half is tested at 1, 5 and 10 %:
+    z = R / median x F^-1_0.5(2 N_hat, 2 N_hat), rejected above
+    F^-1_(1-alpha)(2 N_hat, 2 N_hat); two folds, pooled. The effective count
+    per block reuses the block's own correlation area of ln CPR."""
+    import stokes_from_slc as SFS
+    from scipy.stats import f as Fdist
+    import enl_logratio as L
+    rng = np.random.default_rng(SEED_LR)
+    out, cache = {}, {}
+    for tag, rel in SOURCES.items():
+        pid, k = PASS_OF[tag]
+        per_src = json.loads((BASE_DIR / rel).read_text(encoding="utf-8"))["results"]["t3e"]["180_deg"][
+            "tail_calibration"].get("per_block", [])
+        if not per_src:
+            out[tag] = {"blocks": 0}
+            continue
+        if pid not in cache:
+            SFS.configure(pid)
+            hh, vv, hv, _ = SFS.build_coherency(0)
+            s0, s3 = hh + vv, -2.0 * hv.imag
+            m = (hh > 0) & (vv > 0) & (s0 > 0)
+            cpr = SFS.cpr_from(s0, s3, m)
+            cache = {pid: (cpr, m)}
+            del hh, vv, hv, s0, s3
+        cpr, m = cache[pid]
+        per = []
+        for b in per_src:
+            r0, c0 = b["row"], b["col"]
+            bc, bm = cpr[r0:r0 + k, c0:c0 + k], m[r0:r0 + k, c0:c0 + k]
+            rej = {a: 0 for a in NOMINAL}
+            n_test = 0
+            nh_folds = []
+            for tr, te in ((slice(0, k // 2), slice(k // 2, k)), (slice(k // 2, k), slice(0, k // 2))):
+                ctr = bc[tr][bm[tr]]
+                ctr = ctr[np.isfinite(ctr) & (ctr > 0)]
+                cte = bc[te][bm[te]]
+                cte = cte[np.isfinite(cte) & (cte > 0)]
+                if ctr.size < 30 or cte.size < 30:
+                    continue
+                nh = float(L.n_from_var(np.var(np.log(ctr), ddof=1)))
+                nh_folds.append(nh)
+                med = float(np.median(ctr))
+                z = cte / med * Fdist.ppf(0.5, 2 * nh, 2 * nh)
+                for a in NOMINAL:
+                    rej[a] += int((z > Fdist.ppf(1 - a, 2 * nh, 2 * nh)).sum())
+                n_test += int(cte.size)
+            if n_test == 0:
+                continue
+            per.append({"row": r0, "col": c0, "n_test": n_test, "corr_area_px": b["corr_area_px"],
+                        "N_hat_folds": nh_folds,
+                        "rejection": {f"{int(100 * a)}pct": rej[a] / n_test for a in NOMINAL}})
+        res = analyse(per, rng)
+        nh_all = [x for b in per for x in b["N_hat_folds"]]
+        res["N_hat_train_halves"] = {"median": float(np.median(nh_all)),
+                                     "iqr": [float(np.percentile(nh_all, 25)), float(np.percentile(nh_all, 75))]}
+        out[tag] = {"source_blocks": rel, **res}
+        for key, v in res["levels"].items():
+            print(f"  log-ratio model {tag} {key}: pooled {100 * v['pooled']:.2f} % "
+                  f"[{100 * v['pooled_ci95'][0]:.2f}, {100 * v['pooled_ci95'][1]:.2f}], median "
+                  f"{100 * v['median_over_blocks']:.2f} %; above nominal {v['blocks_above_nominal']} vs "
+                  f"{v['expected_above_if_exactly_calibrated']:.1f} -> {v['verdict']}", flush=True)
+    return {"model": ("F(2 N_hat, 2 N_hat), N_hat from Var(ln R) (ddof 1) on the training half, scaled to "
+                      "the training half's median CPR; the model the decision rule uses"),
+            "split": "each block by rows, two folds (top -> bottom, bottom -> top), pooled",
+            "seed": SEED_LR, "bootstrap_B": B, "results": out}
+
+
+NOMINAL = (0.01, 0.05, 0.10)
+
+
 def main() -> int:
+    import sys as _sys
+    if "--logratio-model" in _sys.argv:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        doc["logratio_model"] = logratio_model()
+        doc["run_info_logratio_model"] = run_info()
+        OUT.write_text(json.dumps(doc, indent=2), encoding="utf-8")
+        print(f"  merged logratio_model into {OUT.relative_to(BASE_DIR)}")
+        return 0
     rng = np.random.default_rng(SEED)
     res = {}
     for tag, rel in SOURCES.items():

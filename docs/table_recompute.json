@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/table-recompute/1",
-  "generated_utc": "2026-09-23T09:31:57.796760+00:00",
+  "generated_utc": "2026-09-23T11:34:21.142824+00:00",
   "generator": "backend/scripts/recompute_manuscript_tables.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "recomputed_from": [

@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/literature-search/1",
-  "generated_utc": "2026-09-23T09:31:55.770048+00:00",
+  "generated_utc": "2026-09-23T11:33:51.710789+00:00",
   "generator": "backend/scripts/literature_search_gate.py",
   "record": "docs/literature_search_record.csv",
   "counts": {

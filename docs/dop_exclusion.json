@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/dop-exclusion/1",
-  "generated_utc": "2026-09-23T09:15:09.852207+00:00",
+  "generated_utc": "2026-09-23T11:15:16.093408+00:00",
   "generator": "backend/scripts/dop_exclusion.py",
   "dop_threshold": 0.13,
   "gain_imbalance": {

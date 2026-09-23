@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/stokes-from-slc/2",
-  "generated_utc": "2026-09-23T09:11:22.450664+00:00",
+  "generated_utc": "2026-09-23T11:13:59.329231+00:00",
   "generator": "backend/scripts/stokes_from_slc.py",
   "seed": 7,
   "slc": {
@@ -12975,8 +12975,8 @@
     }
   },
   "run_info": {
-    "wall_s": 51.5,
-    "peak_rss_mb": null,
+    "wall_s": 69.3,
+    "peak_rss_mb": 3130,
     "python": "3.13.1",
     "numpy": "2.2.2",
     "scipy": "1.17.1",

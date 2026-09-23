@@ -1,9 +1,9 @@
 {
   "schema": "lunar-ice/number-crosscheck/1",
-  "generated_utc": "2026-09-23T09:26:05.611696+00:00",
+  "generated_utc": "2026-09-23T11:34:19.131691+00:00",
   "generator": "backend/scripts/number_crosscheck.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
-  "artifact_numbers_loaded": 24902,
+  "artifact_numbers_loaded": 26319,
   "artifact_trees": [
     "docs",
     "frontend/public/analysis",
@@ -224,7 +224,7 @@
         149,
         536
       ],
-      "example_key": "enl_predictions.json.predictions[0].declared.pulse_repetition_frequency:str"
+      "example_key": "enl_L_20200305_full.json.labels.20200808.sri.prf_hz"
     },
     {
       "literal": "70.308868",
@@ -232,7 +232,7 @@
         150,
         217
       ],
-      "example_key": "dop_exclusion.json.calibration.K_db"
+      "example_key": "calibration_example.json.inputs.K_db"
     },
     {
       "literal": "1.0",
@@ -254,7 +254,7 @@
       "lines": [
         152
       ],
-      "example_key": "number_crosscheck.json.matched_rows[20].literal:str"
+      "example_key": "number_crosscheck.json.matched_rows[21].literal:str"
     },
     {
       "literal": "84.833",
@@ -310,14 +310,14 @@
       "lines": [
         180
       ],
-      "example_key": "number_crosscheck.json.matched_rows[28].literal:str"
+      "example_key": "number_crosscheck.json.matched_rows[29].literal:str"
     },
     {
       "literal": "64.37",
       "lines": [
         181
       ],
-      "example_key": "number_crosscheck.json.matched_rows[29].literal:str"
+      "example_key": "number_crosscheck.json.matched_rows[30].literal:str"
     },
     {
       "literal": "19.99",
@@ -347,7 +347,7 @@
         203,
         781
       ],
-      "example_key": "text.after.json.strings[71]:str"
+      "example_key": "enl_L_20200305_full.json.benchmark_at_product_lags.replicates"
     },
     {
       "literal": "5\\,324\\,545",
@@ -361,14 +361,14 @@
       "lines": [
         193
       ],
-      "example_key": "enl_predictions.json.predictions[0].declared.pulse_repetition_frequency:str"
+      "example_key": "enl_L_20200305_full.json.labels.20200808.sri.prf_hz"
     },
     {
       "literal": "35.63",
       "lines": [
         193
       ],
-      "example_key": "detection_statistics.json.per_pixel_significance.shortfall_factor"
+      "example_key": "bootstrap_enl.json.generated_utc:str"
     },
     {
       "literal": "2\\,337\\,086",
@@ -379,7 +379,7 @@
         606,
         901
       ],
-      "example_key": "degeneracy_replication.json.products[0].valid_px"
+      "example_key": "calibration_example.json.inputs.amplitude_pixels"
     },
     {
       "literal": "1460.68",
@@ -393,14 +393,14 @@
       "lines": [
         194
       ],
-      "example_key": "layout.before.json.type.distinct_sizes[3].px"
+      "example_key": "enl_L_20200305_full.json.slc_control_39_looks.windows[4].enl_subband_39"
     },
     {
       "literal": "43.89",
       "lines": [
         196
       ],
-      "example_key": "capture.before.json.views[0].centre[0]"
+      "example_key": "enl_interval_validation.json.rows[12].estimate_median"
     },
     {
       "literal": "1.1",
@@ -453,21 +453,21 @@
       "lines": [
         231
       ],
-      "example_key": "joint_calibration.json.run_info.wall_s"
+      "example_key": "calibration_example.json.scene_example.nesz_LH_db"
     },
     {
       "literal": "20.3",
       "lines": [
         233
       ],
-      "example_key": "enl.json.patch_sizes.16.LV.on_DN.mean"
+      "example_key": "calibration_example.json.scene_example.amplitude_reading_without_G_db"
     },
     {
       "literal": "47.6",
       "lines": [
         234
       ],
-      "example_key": "enl.json.amplitude_vs_intensity.sigma0_if_intensity_db"
+      "example_key": "calibration_example.json.scene_example.intensity_reading_without_G_db"
     },
     {
       "literal": "5.8",
@@ -506,7 +506,7 @@
       "lines": [
         244
       ],
-      "example_key": "cpr_dispersion.json.correlation_correction.sd_inflation_factor"
+      "example_key": "calibration_example.json.run_info.scipy:str"
     },
     {
       "literal": "0.2614797",
@@ -702,7 +702,7 @@
       "lines": [
         391
       ],
-      "example_key": "incidence_audit.json.screening_blast_radius.cpr_max_abs_difference"
+      "example_key": "calibration_example.json.incidence_applied_once.comparison.0_applications.cpr_native_abs_diff.max"
     },
     {
       "literal": "1.393\\times10^{-1}",
@@ -716,7 +716,7 @@
       "lines": [
         392
       ],
-      "example_key": "manuscript_number_audit.json.rows[54].printed:str"
+      "example_key": "calibration_example.json.incidence_applied_once.comparison.0_applications.cpr_native_abs_diff.median"
     },
     {
       "literal": "1.1\\times10^{-3}",
@@ -756,7 +756,7 @@
       "lines": [
         423
       ],
-      "example_key": "enl_benchmark.json.synthetic.rows[0].coverage_simple_95"
+      "example_key": "enl_L_20200305_full.json.benchmark_at_product_lags.rows[1].block_coverage_95"
     },
     {
       "literal": "0.32",
@@ -785,7 +785,7 @@
       "lines": [
         442
       ],
-      "example_key": "manuscript_number_audit.json.rows[65].printed:str"
+      "example_key": "enl_L_20200305_full.json.labels.20200808.sli.output_line_spacing_m"
     },
     {
       "literal": "0.786",
@@ -1037,7 +1037,7 @@
       "lines": [
         516
       ],
-      "example_key": "joint_calibration.json.cells[16].p_cpr_gt_crit.percent"
+      "example_key": "enl_interval_validation.json.rows[12].coverage.parametric_neyman.90.median_width"
     },
     {
       "literal": "6.01",
@@ -1087,7 +1087,7 @@
         534,
         852
       ],
-      "example_key": "manuscript_number_audit.json.rows[113].printed:str"
+      "example_key": "enl_interval_validation.json.rows[10].coverage.parametric_neyman.90.median_width"
     },
     {
       "literal": "1.12",
@@ -1154,7 +1154,7 @@
       "lines": [
         551
       ],
-      "example_key": "capture.before.json.views[1].zoom"
+      "example_key": "enl_L_20200305_full.json.comparison_20200808.slc_spatial_21_median"
     },
     {
       "literal": "9.95",
@@ -1218,7 +1218,7 @@
       "lines": [
         564
       ],
-      "example_key": "enl_S_20200808.json.patch_sizes.32.LH.on_DN_squared.mode"
+      "example_key": "enl_L_20200305_full.json.benchmark_at_product_lags.rows[2].estimate_mean"
     },
     {
       "literal": "21\\,489",
@@ -1239,14 +1239,14 @@
       "lines": [
         587
       ],
-      "example_key": "enl_predictions.json.predictions[2].oversampling"
+      "example_key": "enl_L_20200305_full.json.slc_control_39_looks.windows[0].oversampling_factor"
     },
     {
       "literal": "13.42",
       "lines": [
         587
       ],
-      "example_key": "enl_generality.json.measurements[4].predicted_ceiling"
+      "example_key": "enl_L_20200305_full.json.registered_reference.value"
     },
     {
       "literal": "14.04",
@@ -1267,7 +1267,7 @@
       "lines": [
         589
       ],
-      "example_key": "composite_contrast.json.layers.cpr_heatmap.retention[1]"
+      "example_key": "calibration_example.json.run_info.numpy:str"
     },
     {
       "literal": "0.17",
@@ -1305,7 +1305,7 @@
         606,
         907
       ],
-      "example_key": "cpr_significance.json.native_proxy.n"
+      "example_key": "calibration_example.json.incidence_applied_once.comparison.0_applications.cpr_native_abs_diff.n"
     },
     {
       "literal": "2.35",
@@ -1420,7 +1420,7 @@
       "lines": [
         661
       ],
-      "example_key": "detection_statistics.json.sampling_statistics.rows[0].p_exceed_true_cpr_0p5_percent"
+      "example_key": "calibration_example.json.inputs.theta_raster_median_over_amplitude_deg"
     },
     {
       "literal": "0.623",
@@ -1434,7 +1434,7 @@
       "lines": [
         662
       ],
-      "example_key": "composite_contrast.json.layers.dop_heatmap.retention[0]"
+      "example_key": "calibration_example.json.run_info.scipy:str"
     },
     {
       "literal": "2.525",
@@ -1766,7 +1766,7 @@
         719,
         849
       ],
-      "example_key": "text.after.json.strings[32]:str"
+      "example_key": "enl_L_20200305_full.json.slc_control_39_looks.windows[8].enl_single_look"
     },
     {
       "literal": "3.7",
@@ -1832,7 +1832,7 @@
       "lines": [
         744
       ],
-      "example_key": "f2_maximum.json.results.N13p72.exceedance_count_over_amplitude_pixels.mean"
+      "example_key": "f2_maximum.json.results.N13p72.correlated_spatial.area_gt_1.mean"
     },
     {
       "literal": "0.2",
@@ -1951,7 +1951,7 @@
       "lines": [
         800
       ],
-      "example_key": "joint_calibration.json.cells[51].p_cpr_gt_crit.percent"
+      "example_key": "f2_maximum.json.complex_field.look_calibration.5.boxcar_mode_enl_fields[1]"
     },
     {
       "literal": "19.7",
@@ -1979,7 +1979,7 @@
       "lines": [
         810
       ],
-      "example_key": "cpr_significance.json.f2_peak_cpr.9.effective"
+      "example_key": "calibration_example.json.generated_utc:str"
     },
     {
       "literal": "0.97",
@@ -2042,7 +2042,7 @@
       "lines": [
         846
       ],
-      "example_key": "number_crosscheck.json.matched_rows[263].literal:str"
+      "example_key": "number_crosscheck.json.matched_rows[264].literal:str"
     },
     {
       "literal": "9.14",
@@ -2056,14 +2056,14 @@
       "lines": [
         846
       ],
-      "example_key": "number_crosscheck.json.matched_rows[265].literal:str"
+      "example_key": "number_crosscheck.json.matched_rows[266].literal:str"
     },
     {
       "literal": "0.92",
       "lines": [
         847
       ],
-      "example_key": "text.after.json.strings[36]:str"
+      "example_key": "enl_estimator_spec.json.interval_validation.summary_texture_off.parametric_neyman.90.max"
     },
     {
       "literal": "0.48",
@@ -2126,7 +2126,7 @@
       "lines": [
         848
       ],
-      "example_key": "dop_sampling_bias.json.run_info.wall_s"
+      "example_key": "enl_interval_validation.json.rows[15].estimate_median"
     },
     {
       "literal": "9.42",
@@ -2140,7 +2140,7 @@
       "lines": [
         848
       ],
-      "example_key": "enl_L_20200305.json.patch_sizes.16.LH.on_DN_squared.p95"
+      "example_key": "dop_sampling_bias.json.run_info.wall_s"
     },
     {
       "literal": "9.61",
@@ -2163,7 +2163,7 @@
       "lines": [
         849
       ],
-      "example_key": "dop_sampling_bias.json.run_info.numpy:str"
+      "example_key": "calibration_example.json.run_info.numpy:str"
     },
     {
       "literal": "7.19",
@@ -2177,7 +2177,7 @@
       "lines": [
         849
       ],
-      "example_key": "f2_maximum.json.results.N5.correlated_max_over_amplitude_pixels.p95"
+      "example_key": "enl_L_20200305_full.json.slc_control_39_looks.windows[7].enl_spatial_39"
     },
     {
       "literal": "7.49",
@@ -2228,7 +2228,7 @@
       "lines": [
         850
       ],
-      "example_key": "number_crosscheck.json.matched_rows[265].literal:str"
+      "example_key": "number_crosscheck.json.matched_rows[266].literal:str"
     },
     {
       "literal": "9.03",
@@ -2298,14 +2298,14 @@
       "lines": [
         852
       ],
-      "example_key": "joint_calibration.json.cells[43].p_dop_below.percent"
+      "example_key": "enl_interval_validation.json.rows[12].coverage.parametric_neyman.95.median_width"
     },
     {
       "literal": "8.49",
       "lines": [
         852
       ],
-      "example_key": "number_crosscheck.json.matched_rows[263].literal:str"
+      "example_key": "number_crosscheck.json.matched_rows[264].literal:str"
     },
     {
       "literal": "8.59",
@@ -2319,7 +2319,7 @@
       "lines": [
         852
       ],
-      "example_key": "number_crosscheck.json.matched_rows[294].literal:str"
+      "example_key": "enl_L_20200305_full.json.slc_control_39_looks.windows[6].enl_spatial_39"
     },
     {
       "literal": "9.08",
@@ -2356,7 +2356,7 @@
       "lines": [
         890
       ],
-      "example_key": "manuscript_number_audit.json.rows[4].tex_lines[0]"
+      "example_key": "enl_interval_validation.json.test_scenes_per_configuration"
     },
     {
       "literal": "6.7",
@@ -2385,7 +2385,7 @@
       "lines": [
         922
       ],
-      "example_key": "composite_contrast.json.layers.hazard_map.correlation[2]"
+      "example_key": "calibration_example.json.scene_example.note:str"
     }
   ]
 }

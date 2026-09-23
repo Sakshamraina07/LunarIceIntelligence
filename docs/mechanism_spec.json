@@ -1,0 +1,246 @@
+{
+  "schema": "lunar-ice/mechanism-spec/1",
+  "generated_utc": "2026-09-23T09:57:41.868765+00:00",
+  "generator": "backend/scripts/mechanism_spec.py",
+  "review_item": "M9",
+  "specification": {
+    "fft": {
+      "axis": "azimuth (lines)",
+      "length": "the window's own line count, truncated to a multiple of 21 -- no zero-padding",
+      "length_used": 8400,
+      "mean_removal": "the azimuth mean of each range bin is removed before the FFT",
+      "circular": true
+    },
+    "window_function": {
+      "spatial_arm": "none (boxcar of 21 consecutive lines)",
+      "subband_arm": "rectangular split, no taper (mlook_subband); subband_looks() offers Hamming + guard bins, used only in the diagnostic variants"
+    },
+    "subbands": {
+      "count": 21,
+      "overlap_bins": 0,
+      "bins_per_subband": 128,
+      "band_bins_total": 2708,
+      "occupied_bins_threshold": "PSD > 0.05 of its maximum (measure_oversampling)",
+      "alignment": "the band is centred on the argmax of the mean |FFT| convolved with a boxcar of the occupied width -- the measured Doppler centroid, not bin zero",
+      "band_width_rule": "2 * max(occupied // 2, 21) bins"
+    },
+    "decimation": {
+      "spatial_arm": "mean of 21 consecutive lines (reshape), 1 row per 21 lines",
+      "subband_arm": "each sub-band intensity taken every 21st line ([::21]) after the average, so both arms share one grid"
+    },
+    "normalization": {
+      "looks": "intensities averaged with equal weight 1/21",
+      "subband_power": "no per-band equalization (powers recorded here: subband_power_cv)"
+    },
+    "registration": "none required: both arms are formed from the same complex samples on the same slant-range grid and decimated identically",
+    "range_crop": "range bins kept where > 99.9 % of lines are non-zero; a window is dropped if < 98 % of its samples are non-zero",
+    "windows": {
+      "count": 9,
+      "lines_each": 8400,
+      "starts": "numpy.linspace(0, LINES - lines - 1, windows)"
+    },
+    "spatial_kernels": {
+      "enl_estimator": "16 x 16 non-overlapping patches, mode of mean^2/var (120 log bins)",
+      "acf": "intensity / uniform_filter(33, reflect) - 1, FFT autocovariance, lags 0-10",
+      "matched_resolution": "gaussian_filter1d along azimuth, mode reflect, sigma by 40-step bisection on the ACF half-width"
+    },
+    "boundary_treatment": {
+      "fft": "circular (no padding)",
+      "uniform_filter": "reflect",
+      "gaussian_filter1d": "reflect",
+      "patches": "partial patches at the right/bottom edge dropped"
+    },
+    "source_functions": {
+      "measure_oversampling": 20,
+      "mlook_spatial": "slc_multilook_control.py",
+      "mlook_subband": "slc_multilook_control.py",
+      "acf2d / half_width / match_resolution": "mechanism_controls.py"
+    }
+  },
+  "residual_cross_band": {
+    "why_not_whole_window": "a hard spectral split makes sub-band images exactly orthogonal over the window (Parseval): their whole-window coherence is zero by construction",
+    "measures": {
+      "intensity_corr": "adjacent-look intensity fluctuations, decimated grid",
+      "local_coherence": "median |<a b*>| over 5x5 windows after shifting each sub-band to baseband"
+    },
+    "control": "bands k and k+10, which should be uncorrelated: the estimator's floor",
+    "medians": {
+      "intensity_corr_adjacent_median": 0.19329379932088203,
+      "intensity_corr_distant_median": 0.02149798007783811,
+      "local_coherence_adjacent_median": 0.4188682427851097,
+      "local_coherence_distant_median": 0.320381766994206
+    },
+    "ranges": {
+      "intensity_corr_adjacent_median": [
+        0.1334390594587146,
+        0.4183771124794077
+      ],
+      "intensity_corr_distant_median": [
+        0.0061000346198461135,
+        0.12421430094013684
+      ],
+      "local_coherence_adjacent_median": [
+        0.38568105423053345,
+        0.43875360359799903
+      ],
+      "local_coherence_distant_median": [
+        0.28770686883768604,
+        0.3411651922636446
+      ]
+    }
+  },
+  "expected_looks_from_measured_spectrum": {
+    "definition": "(sum lambda)^2 / sum lambda^2 of the 21 x 21 Toeplitz covariance of 21 consecutive samples, from the inverse FFT of the window's measured azimuth power spectrum",
+    "median": 7.134056501576642,
+    "range": [
+      6.875724980625807,
+      7.196100043976845
+    ],
+    "compare": {
+      "rectangular_same_support": 7.34,
+      "two_WT": 6.77,
+      "measured_spatial_arm_patch_mode": 4.52
+    }
+  },
+  "subband_powers": {
+    "cv_median": 0.7992984423227605,
+    "equal_power_enl_median": 12.813644457541441
+  },
+  "per_window": [
+    {
+      "window": 0,
+      "start_line": 0,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.19329379932088203,
+      "intensity_corr_distant_median": 0.017231236038457443,
+      "local_coherence_adjacent_median": 0.38568105423053345,
+      "local_coherence_distant_median": 0.28770686883768604,
+      "subband_power_cv": 0.7973603175016265,
+      "subband_equal_power_enl": 12.837884909008716,
+      "participation_ratio": 7.161961654279668,
+      "acf_lag1_abs": 0.8503408885999387,
+      "acf_lag3_abs": 0.10814970094652866
+    },
+    {
+      "window": 1,
+      "start_line": 43420,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.1334390594587146,
+      "intensity_corr_distant_median": 0.03885486453615387,
+      "local_coherence_adjacent_median": 0.4136486362034891,
+      "local_coherence_distant_median": 0.33415918177068726,
+      "subband_power_cv": 0.8338524562010311,
+      "subband_equal_power_enl": 12.387115634850117,
+      "participation_ratio": 6.899561889618065,
+      "acf_lag1_abs": 0.8652745517342678,
+      "acf_lag3_abs": 0.16897936280274706
+    },
+    {
+      "window": 2,
+      "start_line": 86841,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.3446051774390561,
+      "intensity_corr_distant_median": 0.033192654249242504,
+      "local_coherence_adjacent_median": 0.43875360359799903,
+      "local_coherence_distant_median": 0.3411651922636446,
+      "subband_power_cv": 0.8490414729854271,
+      "subband_equal_power_enl": 12.203119722466015,
+      "participation_ratio": 6.875724980625807,
+      "acf_lag1_abs": 0.8632121103676544,
+      "acf_lag3_abs": 0.1787039524033079
+    },
+    {
+      "window": 3,
+      "start_line": 130262,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.1896266973361559,
+      "intensity_corr_distant_median": 0.02149798007783811,
+      "local_coherence_adjacent_median": 0.41402033579850817,
+      "local_coherence_distant_median": 0.3042118049423546,
+      "subband_power_cv": 0.8402039830799427,
+      "subband_equal_power_enl": 12.309909114482773,
+      "participation_ratio": 6.881772654506822,
+      "acf_lag1_abs": 0.8598085920829379,
+      "acf_lag3_abs": 0.18394664418166426
+    },
+    {
+      "window": 4,
+      "start_line": 173683,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.17695061398917217,
+      "intensity_corr_distant_median": 0.014337851637105636,
+      "local_coherence_adjacent_median": 0.4188682427851097,
+      "local_coherence_distant_median": 0.320381766994206,
+      "subband_power_cv": 0.7862398757893453,
+      "subband_equal_power_enl": 12.977597669427958,
+      "participation_ratio": 7.196100043976845,
+      "acf_lag1_abs": 0.8491103267729624,
+      "acf_lag3_abs": 0.09425160814009227
+    },
+    {
+      "window": 5,
+      "start_line": 217104,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.15761544305436848,
+      "intensity_corr_distant_median": 0.007847075540426475,
+      "local_coherence_adjacent_median": 0.41376902029246077,
+      "local_coherence_distant_median": 0.3143879714155927,
+      "subband_power_cv": 0.7780382012678788,
+      "subband_equal_power_enl": 13.081312971614313,
+      "participation_ratio": 7.1908043226648815,
+      "acf_lag1_abs": 0.8497920356906852,
+      "acf_lag3_abs": 0.09289576019246883
+    },
+    {
+      "window": 6,
+      "start_line": 260525,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.25333497966403823,
+      "intensity_corr_distant_median": 0.02482026077175453,
+      "local_coherence_adjacent_median": 0.42149101240557574,
+      "local_coherence_distant_median": 0.32025252060311715,
+      "subband_power_cv": 0.7992984423227605,
+      "subband_equal_power_enl": 12.813644457541441,
+      "participation_ratio": 7.134056501576642,
+      "acf_lag1_abs": 0.8523420194459261,
+      "acf_lag3_abs": 0.11045083419966993
+    },
+    {
+      "window": 7,
+      "start_line": 303946,
+      "range_bins": 142,
+      "intensity_corr_adjacent_median": 0.21358952462137615,
+      "intensity_corr_distant_median": 0.0061000346198461135,
+      "local_coherence_adjacent_median": 0.42402412170353254,
+      "local_coherence_distant_median": 0.3204691740958564,
+      "subband_power_cv": 0.7905264731377324,
+      "subband_equal_power_enl": 12.92361689380796,
+      "participation_ratio": 7.169233847062061,
+      "acf_lag1_abs": 0.8510282284456372,
+      "acf_lag3_abs": 0.10232659241362087
+    },
+    {
+      "window": 8,
+      "start_line": 347367,
+      "range_bins": 343,
+      "intensity_corr_adjacent_median": 0.4183771124794077,
+      "intensity_corr_distant_median": 0.12421430094013684,
+      "local_coherence_adjacent_median": 0.4343848073650558,
+      "local_coherence_distant_median": 0.33898613644573783,
+      "subband_power_cv": 0.833547634645869,
+      "subband_equal_power_enl": 12.390830446566067,
+      "participation_ratio": 6.955553505666653,
+      "acf_lag1_abs": 0.8606384814888155,
+      "acf_lag3_abs": 0.15998638978299962
+    }
+  ],
+  "run_info": {
+    "wall_s": 128.1,
+    "peak_rss_mb": 1639,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

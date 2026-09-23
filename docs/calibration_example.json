@@ -1,0 +1,189 @@
+{
+  "schema": "lunar-ice/calibration-example/1",
+  "generated_utc": "2026-09-23T09:40:01.809762+00:00",
+  "generator": "backend/scripts/calibration_example.py",
+  "review_item": "M3",
+  "product": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+  "equation": "sigma0_X = DN_X^2 sin(theta_inc) / (K G_X^2), K = 10^(K_dB/10)",
+  "inputs": {
+    "K_db": 70.308868,
+    "K_db_unit": "dB",
+    "K_lin": 10737095.10653753,
+    "G": {
+      "LH": 1.018442,
+      "LV": 1.000923
+    },
+    "theta_label_deg": 19.997919,
+    "theta_raster_median_over_amplitude_deg": 14.439136028289795,
+    "median_DN": {
+      "LH": 542.0,
+      "LV": 520.0
+    },
+    "nesz_linear": {
+      "LH": 0.0007038309,
+      "LV": 0.0006065115
+    },
+    "amplitude_pixels": 2337086
+  },
+  "scene_example": {
+    "definition": "the median LH DN over the amplitude mask at the label's incidence, as Section III-A's NESZ comparison states it",
+    "amplitude_reading_without_G_db": -20.288798826294233,
+    "amplitude_reading_with_G_db": -20.44752484800675,
+    "intensity_reading_without_G_db": -47.6287916916781,
+    "intensity_reading_with_G_db": -47.78751771339061,
+    "nesz_LH_db": -31.52531670429348,
+    "nesz_LV_db": -32.171609601078906,
+    "manuscript_prints": {
+      "amplitude_reading_db": -20.3,
+      "intensity_reading_db": -47.6,
+      "nesz_db": -31.5
+    },
+    "reproduced_by": {
+      "amplitude": {
+        "without_G": true,
+        "with_G": false
+      },
+      "intensity": {
+        "without_G": true,
+        "with_G": false
+      }
+    },
+    "note": "the printed -20.3 and -47.6 dB are reproduced WITHOUT the gain G_LH = 1.018442; with it the amplitude reading is -20.45 dB and the intensity reading -47.79 dB. The 0.16 dB changes neither margin to the -31.5 dB floor."
+  },
+  "pixel_example": {
+    "line": 1116,
+    "sample": 3291,
+    "DN_LH": 542.0,
+    "DN_LV": 477.0,
+    "theta_inc_raster_deg": 14.960509300231934,
+    "sin_theta": 0.25815322632033116,
+    "sigma0_LH_linear": 0.00680952357858958,
+    "sigma0_LH_db": -21.66883271997268,
+    "sigma0_LV_linear": 0.005460421617359378,
+    "sigma0_LV_db": -22.62773822675601
+  },
+  "incidence_applied_once": {
+    "method": "recompute the pipeline's stored rasters from the raw DN with sin(theta) applied 0, 1 and 2 times; the boxcar makes the three distinguishable",
+    "stored": [
+      "data/pradan/dfsar/s0_real.tif",
+      "data/pradan/native/cpr_native.tif"
+    ],
+    "comparison": {
+      "0_applications": {
+        "s0_real_rel_diff": {
+          "median": 3.0170894915686723,
+          "p99": 51.74582752466232,
+          "max": 497.06548737514305,
+          "n": 673721
+        },
+        "cpr_native_abs_diff": {
+          "median": 2.3160726414062083e-05,
+          "max": 0.013095485046505928,
+          "n": 2294084
+        }
+      },
+      "1_applications": {
+        "s0_real_rel_diff": {
+          "median": 0.0,
+          "p99": 1.61333539105968e-07,
+          "max": 3.324916306723935e-07,
+          "n": 673721
+        },
+        "cpr_native_abs_diff": {
+          "median": 0.0,
+          "max": 2.8870999813079834e-08,
+          "n": 2294084
+        }
+      },
+      "2_applications": {
+        "s0_real_rel_diff": {
+          "median": 0.7485297790360512,
+          "p99": 0.9753652429436631,
+          "max": 0.997918670964902,
+          "n": 673721
+        },
+        "cpr_native_abs_diff": {
+          "median": 2.2291205823421478e-05,
+          "max": 0.03146673506125808,
+          "n": 2294084
+        }
+      }
+    },
+    "matches": "1_applications",
+    "verdict": "PASS"
+  },
+  "sin_theta_in_code": {
+    "uses": [
+      {
+        "file": "backend/scripts/cpr_dispersion.py",
+        "line": 288,
+        "code": "ground_range_m = slant_spacing_m / np.sin(np.deg2rad(inc_deg))",
+        "role": "UNCLASSIFIED -- inspect"
+      },
+      {
+        "file": "backend/scripts/cpr_significance.py",
+        "line": 318,
+        "code": "sin_t = np.sin(np.deg2rad(inc))",
+        "role": "native-grid proxy recomputation; same single application"
+      },
+      {
+        "file": "backend/scripts/enl_benchmark.py",
+        "line": 241,
+        "code": "sin_t = float(np.sin(np.deg2rad(lab[\"incidence_angle_deg\"])))",
+        "role": "SLC arm calibration at the label's theta; common, cancels"
+      },
+      {
+        "file": "backend/scripts/incidence_audit.py",
+        "line": 220,
+        "code": "s = np.sin(np.deg2rad(inc)).astype(np.float32) if use_sin else np.float32(1.0)",
+        "role": "ablation: with and without, never twice"
+      },
+      {
+        "file": "backend/scripts/measure_enl.py",
+        "line": 316,
+        "code": "sin_t = math.sin(math.radians(inc_deg))",
+        "role": "scene sigma0 at the label's theta, for the NESZ comparison"
+      },
+      {
+        "file": "backend/scripts/process_real_sar_pipeline.py",
+        "line": 409,
+        "code": "sin_inc = np.sin(np.deg2rad(inc))",
+        "role": "PRODUCTION: DN^2 x sin / (K G^2), once, before the boxcar"
+      },
+      {
+        "file": "backend/scripts/propagation_percentiles.py",
+        "line": 70,
+        "code": "s = np.sin(np.deg2rad(inc)).astype(np.float32) if use_sin else np.float32(1.0)",
+        "role": "ablation: with and without, never twice"
+      },
+      {
+        "file": "backend/scripts/sanity_check_sar.py",
+        "line": 49,
+        "code": "sin_inc = np.sin(np.deg2rad(inc_deg))",
+        "role": "diagnostic replica of the production equation"
+      },
+      {
+        "file": "backend/scripts/stokes_from_slc.py",
+        "line": 477,
+        "code": "sin_t = float(np.sin(np.deg2rad(lab[\"incidence_angle_deg\"])))",
+        "role": "SLC calibration at the label's theta; common, cancels in ratios"
+      }
+    ],
+    "unclassified": 1
+  },
+  "label_declaration": {
+    "normalization_keywords_found": [],
+    "processing_level": "Calibrated",
+    "declares_normalization": false
+  },
+  "not_decidable": "whether ISRO applied an incidence normalization before writing the DN: the label declares none (no sigma0/beta0/gamma0 or normalization field) and no layer records one; terrain backscatter's own incidence dependence cannot be separated from a normalization in the data",
+  "run_info": {
+    "wall_s": 4.1,
+    "peak_rss_mb": 1308,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

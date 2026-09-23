@@ -1651,7 +1651,10 @@ and 46 of its 260 pixels above the threshold on average; correlation lowers
 the maximum relative to 260 independent samples (1.91 against 2.11) because
 the correlated field holds fewer independent draws. The achieved lag-one
 correlation of the simulated CPR field is 0.897 (az) and 0.447 (rg) against
-the targets 0.884 and 0.509.
+the targets 0.884 and 0.509. A second generative model — correlated complex
+fields, boxcar'd with the production zero-fill, then divided — is in §14.6; at
+true CPR 0.7 it gives a median maximum of 1.754 and puts the excursions into
+larger clusters.
 
 ### 6.3 It is a different pass, and that is the point
 
@@ -3746,6 +3749,193 @@ which is the one measured look count found anywhere in the 25 records screened
 (§13.1), and the exception every absence claim in this document is scoped
 around.
 
+## 14 · Third review (2026-09-23): the repository's answers
+
+The third review (M1–M16, C1–C16) was answered in the manuscript by rewording;
+this section is what the repository computed so the response letter can point
+at files. Each subsection names its artifact and its command. Nothing here
+changes a sentence the paper prints; where an artifact disagrees with a printed
+figure the disagreement is stated, not resolved.
+
+### 14.1 The incidence factor is applied once (M3)
+
+`python backend/scripts/calibration_example.py` → `docs/calibration_example.json`.
+The production code multiplies DN² by sin θ_inc once, before the boxcar
+(`process_real_sar_pipeline.py:409-412`). Because a spatially varying weight
+does not commute with a boxcar, zero, one and two applications give different
+stored fields, so the stored rasters were recomputed from the raw DN under
+each: one application reproduces `cpr_native.tif` to 2.9 × 10⁻⁸ (maximum
+absolute) and `s0_real.tif` to 3.3 × 10⁻⁷ (maximum relative); zero and two
+applications miss by 1.3 × 10⁻² and 3.1 × 10⁻² in CPR_a. Every other sin θ in
+the tracked code is classified (ablations that apply it zero or one time, and
+label-θ uses that cancel in ratios). The label declares no normalization — no
+σ⁰/β⁰/γ⁰ or normalization field — and whether ISRO normalized before writing
+the DN cannot be separated from terrain's own incidence dependence in the data;
+that is recorded as not decidable.
+
+Worked example, median LH DN 542 over the 2 337 086 amplitude pixels, label
+θ = 19.997919°, K_dB = 70.308868 → K = 1.073710 × 10⁷, G_LH = 1.018442: the
+amplitude reading gives σ⁰ = −20.29 dB without G and −20.45 dB with it; the
+intensity reading −47.63 / −47.79 dB; NESZ −31.53 dB. **The manuscript's
+−20.3 and −47.6 dB are reproduced only without the gain G** — its own
+calibration equation (III-A) includes G². The 0.16 dB changes neither margin to
+the floor. One pixel through the full equation, with its own incidence-raster
+value, is in `pixel_example`.
+
+### 14.2 What the joint screen selects (M6)
+
+`python backend/scripts/dop_sampling_bias.py` → `docs/dop_sampling_bias.json`
+and `docs/joint_calibration.json`. For an unpolarized population the squared
+sample DOP is Beta(3/2, N − 1): 1.398 / 7.060 / 12.449 / 26.367 % of cells read
+below 0.13 at N = 5 / 14 / 21 / 38, and 4 × 10⁵ simulated cells per N give
+1.410 / 7.052 / 12.480 / 26.384 % (each within one Monte Carlo SE; KS on m̂²
+≤ 0.0026). The grid of population DOP {0, 0.05, 0.10, 0.13, 0.2, 0.3} × CPR
+{0.7, 1.0, 1.1, 1.2, 1.299} × N {5, 14, 21, 38} is simulated only where a
+covariance realizes the pair (DOP ≥ |q|): 19 of 30 pairs, 76 cells, 10⁵ trials
+each. Two readings. The gate is insensitive: a population sitting exactly at
+DOP 0.13 passes it 5.7 % of the time at N = 14, and an unpolarized one 7.1 %,
+so the 1.50 % of Sec. III-E is a screen frequency dominated by which cells the
+estimator's upward bias lets through. And no jointly selected cell ever
+exceeds the one-sided critical value (0 of 76 cells, as the sample identity
+requires below N ≈ 80). At CPR 0.7 (DOP ≥ 0.176) the joint selection is 1.61 %
+at DOP 0.2 and N = 14 — the manuscript's "about 1.8 %" at DOP 0.1765.
+
+### 14.3 The SLC control's processor, and its spectrum (M9)
+
+`python backend/scripts/mechanism_spec.py` → `docs/mechanism_spec.json`.
+Specification, read from the control's code: azimuth FFT of the whole window
+(8400 lines, no zero-padding, azimuth mean removed, circular); occupied band =
+PSD > 0.05 of its maximum; 21 non-overlapping rectangular sub-bands of 128 bins
+over a 2708-bin band centred on the measured Doppler centroid; no taper in the
+headline arm; each arm decimated by 21 onto one grid (no registration needed);
+equal-weight intensity averaging with no per-band equalization; range bins
+kept where > 99.9 % of lines are non-zero; ACF with a 33 × 33 reflect local
+mean; matched resolution by a 1-D Gaussian (reflect). Two new numbers:
+
+* **Expected looks from the measured spectrum.** The participation ratio of
+  the 21 × 21 covariance of consecutive samples, from each window's measured
+  azimuth spectrum, is 7.13 (6.88–7.20 over nine windows), against 7.34 for a
+  rectangular spectrum of the same support and 4.52 measured on the spatial
+  arm.
+* **Residual cross-band correlation.** Adjacent sub-band looks' intensity
+  fluctuations correlate at +0.19 (median; 0.13–0.42) against +0.02 for bands
+  ten apart; the local baseband complex coherence is 0.42 adjacent against 0.32
+  distant (the 5 × 5 estimator's floor). The sub-band powers are far from equal
+  (CV 0.80; equal-power ENL 12.8 of 21). Both lower the sub-band arm below 21
+  looks without any appeal to terrain.
+
+### 14.4 The second acquisition, full suite (M14)
+
+`python backend/scripts/enl_generality_full.py` → `docs/enl_L_20200305_full.json`
+(read in place from `data/generality/`, not ingested). Label: L band, 39
+azimuth looks of 27.43 Hz, PRF 3107.60 Hz, pulse bandwidth 2 MHz (7.5 MHz on
+2020-08-08), slant-range resolution 74.9 m, 90 m output, K 70.308868 dB (sri) /
+80.0 dB (sli), incidence 26.0°. SLC on disk, layout confirmed against the
+label (330 044 × 128 complex, offset 2 673 220). Delivered product: 86 357
+amplitude pixels, 197 16 × 16 and 14 32 × 32 patches; ENL 2.28 / 2.21 at 16 px
+(the figures the manuscript prints), 1.38 / 0.22 at 32 px (14 patches: the mode
+of 14 values over 120 bins is not an estimate and is recorded, not used);
+row-block bootstrap 1.60–7.02 (LH); boxcar gain 7.66 against 2.35 on
+2020-08-08; intensity lag-one 0.715 azimuth, 0.744 range. The benchmark at
+these lags gives the same +16–18 % mode bias and 7–16 % block coverage.
+
+**Where the looks are lost.** On the pass's own SLC, 39-line averages measure
+ENL 6.25 (median of nine windows; 2.77–10.00), sub-band averages 11.85, and the
+participation ratio of the measured spectrum is 13.75 — the reference the label
+predicts. So the spectrum delivers what the oversampling relation says; the
+39-line average on these (textured: single-look ENL 0.43–1.07) windows attains
+0.47 of it; the delivered product attains 0.17. About half the shortfall is
+at the multilook on this terrain, the rest after it.
+
+**The three candidate causes.** (i) Output spacing against resolution: in
+GROUND range the 90 m pixel spans 0.96 resolution cells (1.81 along track,
+0.53 across; 0.40 on 2020-08-08, 0.94 × 0.43) — at or below one cell in both
+products, so resampling cannot add looks in either; along track the 2020-03-05
+grid spans 1.81 azimuth cells per pixel, and the delivered ENL falling BELOW
+the SLC's 39-line average (ratio 0.36) says those cells are not averaged; the
+higher boxcar gain (7.66 against 2.35) and lower azimuth lag-one on 2020-03-05
+are what a less-oversampled grid does. (ii) Pulse bandwidth sets the range
+resolution (74.9 m slant against 20.0 m) and enters only through (i). (iii) Lag
+correlation biases the mode estimator HIGH, by the same +16–18 % at both
+products' lags; it cannot remove looks. None of the three accounts for the
+delivered product falling from 6.25 to 2.28, which the label does not explain;
+with two acquisitions none is tested statistically. (The first version of this
+calculation compared the label's SLANT across-track resolution with a GROUND
+spacing; corrected before it was reported.)
+
+### 14.5 Does any ENL interval cover the ENL? (M8)
+
+`python backend/scripts/enl_interval_validation.py` → `docs/enl_interval_validation.json`
+(4804 s on four workers, root seed 20260925). On the benchmark's own synthetic
+scenes (1024 × 512, the product's intensity lag-one 0.838 / 0.576, the
+production mode estimator), 150 test scenes per configuration, N = 5, 14, 21,
+38, texture off and on (order 8), patches 16 and 32 px. Two procedures:
+
+* **2-D block bootstrap**: non-overlapping 64 × 64 px blocks of the patch grid
+  — at least three correlation lengths (5.67 px azimuth, 1.81 px range) in both
+  axes — resampled whole, B = 200; percentile and basic intervals.
+* **Parametric**, under the fitted correlated-speckle model: the estimator's
+  sampling distribution simulated at 18 values of N (200 texture-free scenes
+  each) and inverted (Neyman); the basic parametric bootstrap at the estimate
+  beside it. The lag nuisance parameters are held at their generating values,
+  an advantage to this method that is stated, not hidden.
+
+| texture | procedure | coverage at nominal 95 % (range over N × patch) | at nominal 90 % |
+|---|---|---|---|
+| off | 2-D block, percentile | 19–26 % at 16 px; 98–100 % at 32 px | 9–99 % |
+| off | 2-D block, basic | 41–67 % | 37–58 % |
+| off | parametric, Neyman | 88–98 % | 81–92 % |
+| off | parametric, basic | 90–99 % | 87–94 % |
+| on (order 8) | every procedure | 0 % | 0 % |
+
+The bootstrap fails at 16 px for the reason §7.3.2 found — it resamples an
+estimate biased +15–16 % and cannot see the bias — and "covers" at 32 px only
+because four patches per block leave so few blocks that the interval widens
+past the bias. The model-based interval reaches near-nominal coverage when the
+model is right. Under within-cell texture the mode reads 3–7 whatever the true
+N and no speckle-only procedure covers it. The product's own evidence of
+texture — the ENL falling with patch size, the 3.3–8.0 range over blocks —
+means the model the parametric interval needs is not the product's, so the
+manuscript's ranges stay labelled precision, not confidence. The estimator
+specification the reviewer listed (stride, selection rule, ddof, bin count and
+the realized bin width, ≈ 5 % in ENL at 16 px; retained patches 8337 / 1925 /
+399 at 16 / 32 / 64 px; B) is complete in `docs/enl_estimator_spec.json`.
+
+### 14.6 The F2 spatial null from complex fields (M13)
+
+`python backend/scripts/f2_maximum.py` → `docs/f2_maximum.json::complex_field`.
+§6.2a draws the CPR field as correlated F variates. The second model draws what
+the CPR is formed from: L equal-weight looks per circular channel, each a
+separable AR(1) complex field at the delivered product's intensity lag-one
+0.838 / 0.576, channels independent; both set to zero outside F2's amplitude
+mask (as the production boxcar sees them), 5 × 5 boxcar, then CPR over the
+260 pixels; 10 000 trials per case, seed 20260926. The look count is matched
+where CPR is formed: L = 4 gives a boxcar'd patch-mode ENL of 14.50 against
+13.72 (L = 2, 3, 5, 6 give 7.9, 10.9, 21.7, 21.4). A separable AR(1) field
+cannot also match the raw ENL — its boxcar gain is ≈ 3 against the product's
+2.35 — so its raw ENL is 4.96 against 5.83. (A first run offered only L = 5, 6,
+sat at N ≈ 21 and was superseded before it was reported.)
+
+| model, true CPR | max over 260 px, median / p95 | FWE P(max > 1.895) | area > 1.895, mean | largest cluster > 1.895, p95 |
+|---|---|---|---|---|
+| correlated F, 0.7 | 1.911 / 2.729 | 51.9 ± 0.5 % | 1.50 | 4 px |
+| complex field, 0.7 | 1.754 / 2.891 | 39.4 ± 0.5 % | 3.40 | 17 px |
+| complex field, 1.00 (the test's null) | 2.510 / 4.114 | 86.3 ± 0.3 % | 20.2 | 49 px |
+
+The crater-level family-wise error of a per-pixel 1.895 test over F2's 260
+pixels is 86 % under the null it was built for. The two models agree that an
+ice-free F2 at CPR 0.7 produces a nominally significant pixel in a large
+fraction of realizations; they disagree on how large — 52 % against 39 % — and
+the complex-field model puts the excursions into clusters (p95 17 pixels
+against 4), because the boxcar correlates the channels' intensities before the
+ratio, which the F copula does not. The manuscript's "about half" is the
+correlated-F figure (`q_half_realizations`, checked against 0.519).
+
+### 14.7 The Stokes-side answers (M7, M10, M11, M12)
+
+In §1.11: circular coherence by gate, the two-channel tail models, the held-out
+tail calibration, and the phase/gain perturbation of the screen.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -3763,7 +3953,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `b568667`.
+Stamped at commit `8633a95`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3771,27 +3961,34 @@ Stamped at commit `b568667`.
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/bootstrap_enl.json` | `5f4239f07f372c3f…` | §7.3.1 |
+| `docs/calibration_example.json` | `38df1586f396f66e…` | §14.1 |
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
 | `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `5973a71e51d0bd1f…` | §11.1, §11.2, §11.3 |
+| `docs/dop_sampling_bias.json` | `980897a538b2e97c…` | §14.2 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/enl_L_20200305_full.json` | `bf7bc6f1bdf4219a…` | §14.4 |
 | `docs/enl_benchmark.json` | `aad47ad4c52def4c…` | §7.3.2 |
-| `docs/enl_estimator_spec.json` | `8fd6dd6552233401…` | §7.3.1 |
+| `docs/enl_estimator_spec.json` | `95577a403a4d57be…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
+| `docs/enl_interval_validation.json` | `ad9514471b8885a6…` | §14.5 |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
-| `docs/f2_maximum.json` | `849cd7f9c88ea47a…` | §6.2a |
+| `docs/f2_maximum.json` | `1383d23ece072c67…` | §6.2a, §14.6 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
+| `docs/joint_calibration.json` | `8025123b3691d726…` | §14.2 |
 | `docs/joint_criterion.json` | `984eb95dc9497a0d…` | §7.9.4 |
 | `docs/kclutter.json` | `ae285515e3abdb5d…` | §7.13 |
 | `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
 | `docs/literature_screen.json` | `d5ff73f7ec44aea2…` | §13.1 |
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
+| `docs/mechanism_spec.json` | `14bc6ef44f9ff8e2…` | §14.3 |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
+| `docs/phase_gain_perturbation.json` | `875e2386c733a46e…` | §1.11 |
 | `docs/propagation_percentiles.json` | `847af0a883190b4b…` | §12.6 |
 | `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
@@ -3802,7 +3999,7 @@ Stamped at commit `b568667`.
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/stationarity.json` | `4d72eb5cd1877932…` | §7.3.3 |
-| `docs/stokes_from_slc.json` | `4c191394768589d6…` | §1.11 |
+| `docs/stokes_from_slc.json` | `bf21a08a276631fe…` | §1.11, §14.7 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |

@@ -88,7 +88,7 @@
     "bootstrap_sd_block_box": 3.5724482171158023
   },
   "schema": "lunar-ice/bootstrap-enl/1",
-  "generated_utc": "2026-09-16T06:35:28.228338+00:00",
+  "generated_utc": "2026-09-23T11:15:35.512818+00:00",
   "generator": "backend/scripts/bootstrap_enl.py",
   "seed": 2026,
   "B": 2000,

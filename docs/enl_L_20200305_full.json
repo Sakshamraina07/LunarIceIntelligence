@@ -1,0 +1,491 @@
+{
+  "schema": "lunar-ice/enl-generality-full/1",
+  "generated_utc": "2026-09-23T10:11:20.954201+00:00",
+  "generator": "backend/scripts/enl_generality_full.py",
+  "review_item": "M14",
+  "product": "ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp",
+  "stays_in": "data/generality/20200305 (not ingested into data/pradan)",
+  "seed": 20260927,
+  "labels": {
+    "20200305": {
+      "sri": {
+        "file": "ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+        "band": "L",
+        "azimuth_looks": 39.0,
+        "range_looks": 1.0,
+        "calibration_constant_db": 70.308868,
+        "gain_imbalance": [
+          1.021917,
+          1.003667
+        ],
+        "input_resolution_along_m": 49.61163,
+        "input_resolution_across_m": 74.948115,
+        "output_line_spacing_m": 90.0,
+        "output_pixel_spacing_m": 90.0,
+        "pulse_bandwidth_hz": 2000000.0,
+        "prf_hz": 3107.597454,
+        "total_processed_azimuth_bandwidth_hz": 1069.708995,
+        "azimuth_look_bandwidth_hz": 27.428436,
+        "incidence_angle_deg": 26.00765,
+        "swath_m": 5220.0,
+        "lines": 1714,
+        "samples": 700,
+        "offset_bytes": 14348
+      },
+      "sli": {
+        "file": "ch2_sar_ncxl_20200305t114902885_d_sli_xx_cp_xx_d18.xml",
+        "band": "L",
+        "azimuth_looks": 1.0,
+        "range_looks": 1.0,
+        "calibration_constant_db": 80.0,
+        "gain_imbalance": [
+          1.021917,
+          1.003667
+        ],
+        "input_resolution_along_m": 49.61163,
+        "input_resolution_across_m": 74.948115,
+        "output_line_spacing_m": 0.494234,
+        "output_pixel_spacing_m": 19.186717,
+        "pulse_bandwidth_hz": 2000000.0,
+        "prf_hz": 3107.597454,
+        "total_processed_azimuth_bandwidth_hz": 1069.708995,
+        "azimuth_look_bandwidth_hz": 1069.708995,
+        "incidence_angle_deg": 26.00765,
+        "swath_m": 5220.0,
+        "lines": 330044,
+        "samples": 128,
+        "offset_bytes": 2673220
+      }
+    },
+    "20200808": {
+      "sri": {
+        "file": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+        "band": "L",
+        "azimuth_looks": 21.0,
+        "range_looks": 1.0,
+        "calibration_constant_db": 70.308868,
+        "gain_imbalance": [
+          1.018442,
+          1.000923
+        ],
+        "input_resolution_along_m": 26.729926,
+        "input_resolution_across_m": 19.986164,
+        "output_line_spacing_m": 25.0,
+        "output_pixel_spacing_m": 25.0,
+        "pulse_bandwidth_hz": 7500000.0,
+        "prf_hz": 3321.641156,
+        "total_processed_azimuth_bandwidth_hz": 1071.335975,
+        "azimuth_look_bandwidth_hz": 51.015999,
+        "incidence_angle_deg": 19.997919,
+        "swath_m": 19650.0,
+        "lines": 2258,
+        "samples": 6618,
+        "offset_bytes": 18700
+      },
+      "sli": {
+        "file": "ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_xx_d18.xml",
+        "band": "L",
+        "azimuth_looks": 1.0,
+        "range_looks": 1.0,
+        "calibration_constant_db": 80.0,
+        "gain_imbalance": [
+          1.018442,
+          1.000923
+        ],
+        "input_resolution_along_m": 26.729926,
+        "input_resolution_across_m": 19.986164,
+        "output_line_spacing_m": 0.463383,
+        "output_pixel_spacing_m": 9.593359,
+        "pulse_bandwidth_hz": 7500000.0,
+        "prf_hz": 3321.641156,
+        "total_processed_azimuth_bandwidth_hz": 1071.335975,
+        "azimuth_look_bandwidth_hz": 1071.335975,
+        "incidence_angle_deg": 19.997919,
+        "swath_m": 19650.0,
+        "lines": 355768,
+        "samples": 759,
+        "offset_bytes": 5725302
+      }
+    }
+  },
+  "slc_availability": {
+    "20200305": {
+      "lh": {
+        "file": "ch2_sar_ncxl_20200305t114902885_d_sli_xx_cp_lh_d18.tif",
+        "present": true,
+        "bytes": 340638276,
+        "bytes_implied": 340638276,
+        "layout_confirmed": true
+      },
+      "lv": {
+        "file": "ch2_sar_ncxl_20200305t114902885_d_sli_xx_cp_lv_d18.tif",
+        "present": true,
+        "bytes": 340638276,
+        "bytes_implied": 340638276,
+        "layout_confirmed": true
+      }
+    }
+  },
+  "delivered": {
+    "frame": [
+      1714,
+      700
+    ],
+    "amplitude_pixels": 86357,
+    "eroded_pixels": 76479,
+    "incidence_raster_over_mask_deg": {
+      "min": 3.0506017208099365,
+      "p50": 27.236337661743164,
+      "max": 69.88262939453125
+    },
+    "LH": {
+      "patch_16": {
+        "n_patches": 197,
+        "mode": 2.280297856523385,
+        "median": 2.7628443581318183
+      },
+      "patch_32": {
+        "n_patches": 14,
+        "mode": 1.3847471643249156,
+        "median": 1.4617387065178002
+      },
+      "block_bootstrap_16": {
+        "B": 2000,
+        "range_2p5_97p5": [
+          1.6008429371337434,
+          7.022924679646793
+        ],
+        "unit": "one row of the 16 x 16 patch grid"
+      },
+      "boxcar5": {
+        "enl_raw_eroded": 2.280562763611556,
+        "enl_boxcar5": 17.457745503045494,
+        "gain": 7.6550164641814,
+        "n_patches_eroded": 156
+      },
+      "lag_correlation": {
+        "azimuth": [
+          0.7152264014411811,
+          0.6341462661298917,
+          0.539807019021874
+        ],
+        "range": [
+          0.7436039692420012,
+          0.6140054753689499,
+          0.47778104704498137
+        ]
+      }
+    },
+    "LV": {
+      "patch_16": {
+        "n_patches": 197,
+        "mode": 2.2084413069255153,
+        "median": 2.9818759200705403
+      },
+      "patch_32": {
+        "n_patches": 14,
+        "mode": 0.22378713648200738,
+        "median": 1.56259069761926
+      },
+      "block_bootstrap_16": {
+        "B": 2000,
+        "range_2p5_97p5": [
+          1.6793771075818316,
+          5.561759113707283
+        ],
+        "unit": "one row of the 16 x 16 patch grid"
+      },
+      "boxcar5": {
+        "enl_raw_eroded": 2.2084413069255153,
+        "enl_boxcar5": 11.179147632578275,
+        "gain": 5.06200803142074,
+        "n_patches_eroded": 156
+      },
+      "lag_correlation": {
+        "azimuth": [
+          0.7050133283360643,
+          0.6205196660620544,
+          0.5251229446540798
+        ],
+        "range": [
+          0.7395250834743675,
+          0.6028318471875103,
+          0.46138278142244965
+        ]
+      }
+    }
+  },
+  "benchmark_at_product_lags": {
+    "lags_used": {
+      "azimuth": 0.7152264014411811,
+      "range": 0.7436039692420012
+    },
+    "replicates": 100,
+    "rows": [
+      {
+        "true_N": 2,
+        "estimate_mean": 2.3572246747462002,
+        "relative_bias": 0.17861233737310012,
+        "bias_se": 0.005991649597508094,
+        "block_coverage_95": 0.07,
+        "coverage_se": 0.02551470164434615
+      },
+      {
+        "true_N": 3,
+        "estimate_mean": 3.508767956041149,
+        "relative_bias": 0.16958931868038296,
+        "bias_se": 0.006772897195712842,
+        "block_coverage_95": 0.1,
+        "coverage_se": 0.030000000000000002
+      },
+      {
+        "true_N": 4,
+        "estimate_mean": 4.657835426580218,
+        "relative_bias": 0.16445885664505444,
+        "bias_se": 0.006653476862857849,
+        "block_coverage_95": 0.16,
+        "coverage_se": 0.03666060555964672
+      }
+    ]
+  },
+  "slc_control_39_looks": {
+    "windows": [
+      {
+        "window": 0,
+        "start_line": 0,
+        "range_bins": 102,
+        "occupied_bins": 2685,
+        "measured_bandwidth_hz": 1069.73066205,
+        "oversampling_factor": 2.905027932960894,
+        "enl_spatial_39": 4.593384348427975,
+        "enl_subband_39": 11.845237498689007,
+        "enl_single_look": 0.9667717877434431,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.74952809414068
+      },
+      {
+        "window": 1,
+        "start_line": 40280,
+        "range_bins": 102,
+        "occupied_bins": 2686,
+        "measured_bandwidth_hz": 1070.12907198,
+        "oversampling_factor": 2.9039463886820553,
+        "enl_spatial_39": 4.920917458371922,
+        "enl_subband_39": 5.880226148091091,
+        "enl_single_look": 0.4348242980125035,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.736823334201336
+      },
+      {
+        "window": 2,
+        "start_line": 80560,
+        "range_bins": 102,
+        "occupied_bins": 2685,
+        "measured_bandwidth_hz": 1069.73066205,
+        "oversampling_factor": 2.905027932960894,
+        "enl_spatial_39": 2.768822624760621,
+        "enl_subband_39": 10.667319041322669,
+        "enl_single_look": 1.065619054727941,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.733305409556282
+      },
+      {
+        "window": 3,
+        "start_line": 120841,
+        "range_bins": 102,
+        "occupied_bins": 2685,
+        "measured_bandwidth_hz": 1069.73066205,
+        "oversampling_factor": 2.905027932960894,
+        "enl_spatial_39": 6.249023544222644,
+        "enl_subband_39": 11.85704031626145,
+        "enl_single_look": 0.9516177735071701,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.751842825810918
+      },
+      {
+        "window": 4,
+        "start_line": 161121,
+        "range_bins": 102,
+        "occupied_bins": 2685,
+        "measured_bandwidth_hz": 1069.73066205,
+        "oversampling_factor": 2.905027932960894,
+        "enl_spatial_39": 7.689293822356165,
+        "enl_subband_39": 15.61249549552158,
+        "enl_single_look": 0.9500803243737129,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.748212439158678
+      },
+      {
+        "window": 5,
+        "start_line": 201401,
+        "range_bins": 102,
+        "occupied_bins": 2685,
+        "measured_bandwidth_hz": 1069.73066205,
+        "oversampling_factor": 2.905027932960894,
+        "enl_spatial_39": 10.001944794260792,
+        "enl_subband_39": 20.04263431916099,
+        "enl_single_look": 0.9264033567047222,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.782630389170714
+      },
+      {
+        "window": 6,
+        "start_line": 241682,
+        "range_bins": 102,
+        "occupied_bins": 2685,
+        "measured_bandwidth_hz": 1069.73066205,
+        "oversampling_factor": 2.905027932960894,
+        "enl_spatial_39": 8.685502890776066,
+        "enl_subband_39": 10.928866436469345,
+        "enl_single_look": 0.808992656181316,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.788957636009984
+      },
+      {
+        "window": 7,
+        "start_line": 281962,
+        "range_bins": 102,
+        "occupied_bins": 2686,
+        "measured_bandwidth_hz": 1070.12907198,
+        "oversampling_factor": 2.9039463886820553,
+        "enl_spatial_39": 8.096529509869066,
+        "enl_subband_39": 12.504383575963395,
+        "enl_single_look": 0.8369513569125006,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.839728415142337
+      },
+      {
+        "window": 8,
+        "start_line": 322243,
+        "range_bins": 102,
+        "occupied_bins": 2685,
+        "measured_bandwidth_hz": 1069.73066205,
+        "oversampling_factor": 2.905027932960894,
+        "enl_spatial_39": 6.184816762592535,
+        "enl_subband_39": 9.034320961175489,
+        "enl_single_look": 0.8263837141311057,
+        "n_patches": 72,
+        "participation_ratio_measured_spectrum": 13.755776541140607
+      }
+    ],
+    "lines_per_window": 7800,
+    "medians": {
+      "oversampling_factor": 2.905027932960894,
+      "measured_bandwidth_hz": 1069.73066205,
+      "enl_spatial_39": 6.249023544222644,
+      "enl_subband_39": 11.845237498689007,
+      "enl_single_look": 0.9264033567047222,
+      "participation_ratio_measured_spectrum": 13.751842825810918
+    },
+    "min": {
+      "oversampling_factor": 2.9039463886820553,
+      "measured_bandwidth_hz": 1069.73066205,
+      "enl_spatial_39": 2.768822624760621,
+      "enl_subband_39": 5.880226148091091,
+      "enl_single_look": 0.4348242980125035,
+      "participation_ratio_measured_spectrum": 13.733305409556282
+    },
+    "max": {
+      "oversampling_factor": 2.905027932960894,
+      "measured_bandwidth_hz": 1070.12907198,
+      "enl_spatial_39": 10.001944794260792,
+      "enl_subband_39": 20.04263431916099,
+      "enl_single_look": 1.065619054727941,
+      "participation_ratio_measured_spectrum": 13.839728415142337
+    }
+  },
+  "registered_reference": {
+    "value": 13.42,
+    "source": "docs/enl_generality.json (registered before the product was opened)",
+    "recorded": false
+  },
+  "comparison_20200808": {
+    "enl_raw_LH": 5.827582742508031,
+    "lag1_LH": {
+      "azimuth": 0.8382981178766415,
+      "range": 0.5761794944483448
+    },
+    "slc_spatial_21_median": 4.524020841500781,
+    "oversampling": 3.1007751937984493
+  },
+  "candidate_causes": {
+    "output_spacing_vs_input_resolution": {
+      "resolution_cells_per_output_pixel": {
+        "20200808": {
+          "along": 0.9352813023126215,
+          "across_ground": 0.42777845360990946,
+          "ground_range_resolution_m": 58.441466111795954,
+          "product": 0.40009318919355547
+        },
+        "20200305": {
+          "along": 1.8140907686363057,
+          "across_ground": 0.526553647154088,
+          "ground_range_resolution_m": 170.92275494896126,
+          "product": 0.9552161104940097
+        }
+      },
+      "predicts": "an output pixel spanning k > 1 independent resolution cells and averaging them multiplies the ENL by up to k; at k <= 1 the grid OVERSAMPLES the resolution, adds no looks and correlates neighbours -- more strongly the smaller k",
+      "boxcar5_gain_LH": {
+        "20200808": 2.3537443028393765,
+        "20200305": 7.6550164641814
+      },
+      "measured": {
+        "enl_ratio_delivered_over_slc_39": 0.3649046671670119,
+        "lag1_azimuth": {
+          "20200808": 0.8382981178766415,
+          "20200305": 0.7152264014411811
+        }
+      }
+    },
+    "pulse_bandwidth": {
+      "hz": {
+        "20200808": 7500000.0,
+        "20200305": 2000000.0
+      },
+      "slant_range_resolution_m": {
+        "20200808": 19.986163866666665,
+        "20200305": 74.9481145
+      },
+      "predicts": "with one range look, bandwidth sets the range resolution, not the look count; it enters the ENL only through how many resolution cells the 90 m output pixel spans (the cause above)"
+    },
+    "lag_one_correlations": {
+      "LH_intensity": {
+        "20200808": {
+          "azimuth": 0.8382981178766415,
+          "range": 0.5761794944483448
+        },
+        "20200305": {
+          "azimuth": 0.7152264014411811,
+          "range": 0.7436039692420012
+        }
+      },
+      "benchmark_relative_bias_at_0305_lags": [
+        0.17861233737310012,
+        0.16958931868038296,
+        0.16445885664505444
+      ],
+      "predicts": "lag correlation biases the patch variance low and the ENL HIGH (benchmark); weaker correlation removes that inflation but cannot by itself remove looks"
+    },
+    "where_the_looks_are_lost": {
+      "reference_from_label": 13.42,
+      "slc_39_line_average_median": 6.249023544222644,
+      "slc_39_subband_median": 11.845237498689007,
+      "slc_participation_ratio_measured_spectrum": 13.751842825810918,
+      "delivered_enl_LH": 2.280297856523385,
+      "fraction_attained": {
+        "slc_39_line_average": 0.46565004055310316,
+        "delivered": 0.1699178730643357
+      }
+    },
+    "limit": "two acquisitions: every cause is examined for direction and magnitude against the measured numbers; none is tested statistically"
+  },
+  "run_info": {
+    "wall_s": 318.7,
+    "peak_rss_mb": 224,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

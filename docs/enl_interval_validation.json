@@ -1,0 +1,1136 @@
+{
+  "schema": "lunar-ice/enl-interval-validation/1",
+  "generated_utc": "2026-09-23T11:04:33.158890+00:00",
+  "generator": "backend/scripts/enl_interval_validation.py",
+  "review_item": "M8",
+  "estimator": "mode of per-patch mean^2/var (measure_enl.mode_of, 120 log bins)",
+  "scenes": {
+    "rows": 1024,
+    "cols": 512,
+    "generator": "enl_benchmark.speckle_field",
+    "intensity_lag1_target": {
+      "azimuth": 0.8382981178766415,
+      "range": 0.5761794944483448
+    },
+    "texture_on": "K texture, Gamma(8, 1/8) per cell"
+  },
+  "block_bootstrap_2d": {
+    "block_px": 64,
+    "B": 200,
+    "correlation_lengths_px": {
+      "azimuth": 5.669529074636043,
+      "range": 1.8137758449348726
+    },
+    "rule": "block >= 3 x the correlation length in both axes",
+    "intervals": {
+      "percentile": "[q_a/2, q_1-a/2] of the bootstrap modes",
+      "basic": "[2 est - q_1-a/2, 2 est - q_a/2]"
+    }
+  },
+  "parametric": {
+    "model": "texture-free correlated speckle at the product's lags",
+    "grid_N": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      10,
+      12,
+      14,
+      17,
+      21,
+      25,
+      30,
+      38,
+      46,
+      55,
+      65
+    ],
+    "replicates_per_N": 200,
+    "nuisance": "lags held at their generating values, not re-fitted per scene",
+    "intervals": {
+      "neyman": "every N whose central band contains the estimate",
+      "basic": "quantiles at N = est, reflected about est"
+    }
+  },
+  "seed_root": 20260925,
+  "test_scenes_per_configuration": 150,
+  "levels": [
+    0.9,
+    0.95
+  ],
+  "rows": [
+    {
+      "true_N": 5,
+      "texture": "off",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 5.742456052964743,
+      "relative_bias_median": 0.14849121059294856,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.09333333333333334,
+            "mc_se": 0.023751803050466466,
+            "median_width": 1.1459051495245252
+          },
+          "95": {
+            "coverage": 0.19333333333333333,
+            "mc_se": 0.03224443678688936,
+            "median_width": 1.3837358634710761
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.44666666666666666,
+            "mc_se": 0.04059191672862596,
+            "median_width": 1.1459051495245252
+          },
+          "95": {
+            "coverage": 0.5466666666666666,
+            "mc_se": 0.04064662529839529,
+            "median_width": 1.3837358634710761
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.92,
+            "mc_se": 0.022150996967781528,
+            "median_width": 1.0181178556122665
+          },
+          "95": {
+            "coverage": 0.98,
+            "mc_se": 0.01143095213298817,
+            "median_width": 1.2011035157565022
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.9066666666666666,
+            "mc_se": 0.023751803050466473,
+            "median_width": 1.3791086248482727
+          },
+          "95": {
+            "coverage": 0.9933333333333333,
+            "mc_se": 0.006644407283433823,
+            "median_width": 1.5691951435891451
+          }
+        }
+      }
+    },
+    {
+      "true_N": 5,
+      "texture": "off",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 5.2345387482993555,
+      "relative_bias_median": 0.0469077496598711,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.94,
+            "mc_se": 0.019390719429665325,
+            "median_width": 0.9318851407673145
+          },
+          "95": {
+            "coverage": 0.98,
+            "mc_se": 0.01143095213298817,
+            "median_width": 1.07334128877695
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.56,
+            "mc_se": 0.04052982440952177,
+            "median_width": 0.9318851407673145
+          },
+          "95": {
+            "coverage": 0.6066666666666667,
+            "mc_se": 0.03988501992997891,
+            "median_width": 1.07334128877695
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.88,
+            "mc_se": 0.0265329983228432,
+            "median_width": 0.8119331852845337
+          },
+          "95": {
+            "coverage": 0.96,
+            "mc_se": 0.016000000000000007,
+            "median_width": 0.9520990173587398
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.9133333333333333,
+            "mc_se": 0.022971802360801027,
+            "median_width": 0.8586748509210698
+          },
+          "95": {
+            "coverage": 0.96,
+            "mc_se": 0.016000000000000007,
+            "median_width": 0.9984735875061803
+          }
+        }
+      }
+    },
+    {
+      "true_N": 5,
+      "texture": "order 8",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 3.16140879074719,
+      "relative_bias_median": -0.367718241850562,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4692910855843948
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5416120265794875
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4692910855843948
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5416120265794875
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5641643705787491
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.6369268581210621
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.7485735702709784
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.8527057470408794
+          }
+        }
+      }
+    },
+    {
+      "true_N": 5,
+      "texture": "order 8",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 2.9519132558367884,
+      "relative_bias_median": -0.40961734883264234,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.3762086514058087
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4473271827449372
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.3762086514058087
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4473271827449372
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5004589261208041
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5900696621318995
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5177509880650564
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.6279740471111741
+          }
+        }
+      }
+    },
+    {
+      "true_N": 14,
+      "texture": "off",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 16.260280308888518,
+      "relative_bias_median": 0.1614485934920371,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.10666666666666667,
+            "mc_se": 0.02520435000668058,
+            "median_width": 3.3487747711794666
+          },
+          "95": {
+            "coverage": 0.19333333333333333,
+            "mc_se": 0.03224443678688936,
+            "median_width": 3.9103911247672336
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.36666666666666664,
+            "mc_se": 0.039346513799168384,
+            "median_width": 3.3487747711794658
+          },
+          "95": {
+            "coverage": 0.41333333333333333,
+            "mc_se": 0.04020687245475073,
+            "median_width": 3.9103911247672336
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.8733333333333333,
+            "mc_se": 0.027156610272298008,
+            "median_width": 2.6168174598025473
+          },
+          "95": {
+            "coverage": 0.9466666666666667,
+            "mc_se": 0.018346459947155818,
+            "median_width": 3.1839873622664765
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.9266666666666666,
+            "mc_se": 0.02128466671190877,
+            "median_width": 3.558404664277541
+          },
+          "95": {
+            "coverage": 0.9866666666666667,
+            "mc_se": 0.009365025558091315,
+            "median_width": 4.3389846648081445
+          }
+        }
+      }
+    },
+    {
+      "true_N": 14,
+      "texture": "off",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 14.587269713863753,
+      "relative_bias_median": 0.04194783670455382,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.96,
+            "mc_se": 0.016000000000000007,
+            "median_width": 2.55246062225286
+          },
+          "95": {
+            "coverage": 0.9933333333333333,
+            "mc_se": 0.006644407283433823,
+            "median_width": 2.9768615746923306
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.5533333333333333,
+            "mc_se": 0.04059191672862596,
+            "median_width": 2.55246062225286
+          },
+          "95": {
+            "coverage": 0.6533333333333333,
+            "mc_se": 0.038857765323367814,
+            "median_width": 2.9768615746923315
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.9,
+            "mc_se": 0.02449489742783178,
+            "median_width": 2.178510126153335
+          },
+          "95": {
+            "coverage": 0.9533333333333334,
+            "mc_se": 0.017221863795553384,
+            "median_width": 2.4789621257790397
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.94,
+            "mc_se": 0.019390719429665325,
+            "median_width": 2.373098563647723
+          },
+          "95": {
+            "coverage": 0.9533333333333334,
+            "mc_se": 0.017221863795553384,
+            "median_width": 2.7574729779997753
+          }
+        }
+      }
+    },
+    {
+      "true_N": 14,
+      "texture": "order 8",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 5.189918858141642,
+      "relative_bias_median": -0.6292915101327399,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5951524753365862
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.7155988945597351
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5951524753365862
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.7155988945597351
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.9019334456057466
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.1194448596619786
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.228271336694057
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.490924379290389
+          }
+        }
+      }
+    },
+    {
+      "true_N": 14,
+      "texture": "order 8",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 4.962972268730572,
+      "relative_bias_median": -0.6455019808049591,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4617865469606004
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5573359349731657
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4617865469606004
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5573359349731657
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.8021268897230609
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.9072777123170943
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.8038006318090312
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.950804476486534
+          }
+        }
+      }
+    },
+    {
+      "true_N": 21,
+      "texture": "off",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 24.257677262982547,
+      "relative_bias_median": 0.1551274887134546,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.13333333333333333,
+            "mc_se": 0.02775554665954844,
+            "median_width": 5.179861128639153
+          },
+          "95": {
+            "coverage": 0.26,
+            "mc_se": 0.03581433604950211,
+            "median_width": 5.857333817353691
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.4,
+            "mc_se": 0.04,
+            "median_width": 5.179861128639153
+          },
+          "95": {
+            "coverage": 0.4533333333333333,
+            "mc_se": 0.04064662529839529,
+            "median_width": 5.857333817353691
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.8533333333333334,
+            "mc_se": 0.028885469883150078,
+            "median_width": 4.070480762989483
+          },
+          "95": {
+            "coverage": 0.94,
+            "mc_se": 0.019390719429665325,
+            "median_width": 4.906509442513874
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.8866666666666667,
+            "mc_se": 0.025882927305966103,
+            "median_width": 5.456692925794959
+          },
+          "95": {
+            "coverage": 0.9466666666666667,
+            "mc_se": 0.018346459947155818,
+            "median_width": 6.888081901019875
+          }
+        }
+      }
+    },
+    {
+      "true_N": 21,
+      "texture": "off",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 21.722861367923215,
+      "relative_bias_median": 0.034421969901105465,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.96,
+            "mc_se": 0.016000000000000007,
+            "median_width": 3.779349627548953
+          },
+          "95": {
+            "coverage": 0.9866666666666667,
+            "mc_se": 0.009365025558091315,
+            "median_width": 4.546879758907181
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.58,
+            "mc_se": 0.040298883359219766,
+            "median_width": 3.779349627548953
+          },
+          "95": {
+            "coverage": 0.6733333333333333,
+            "mc_se": 0.038293215722505866,
+            "median_width": 4.546879758907181
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.8533333333333334,
+            "mc_se": 0.028885469883150078,
+            "median_width": 3.0540810577499276
+          },
+          "95": {
+            "coverage": 0.92,
+            "mc_se": 0.022150996967781528,
+            "median_width": 3.702637180519247
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.8666666666666667,
+            "mc_se": 0.027755546659548436,
+            "median_width": 3.2133010924304326
+          },
+          "95": {
+            "coverage": 0.9,
+            "mc_se": 0.02449489742783178,
+            "median_width": 4.013284620967948
+          }
+        }
+      }
+    },
+    {
+      "true_N": 21,
+      "texture": "order 8",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 5.881242683596131,
+      "relative_bias_median": -0.7199408245906604,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.6046951929262474
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.712268444825535
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.6046951929262474
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.712268444825535
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.0441407474608093
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.2255691519616465
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.4147141392319664
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.5876711508030423
+          }
+        }
+      }
+    },
+    {
+      "true_N": 21,
+      "texture": "order 8",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 5.6770972956541375,
+      "relative_bias_median": -0.7296620335402791,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4582291510912322
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.535922473299967
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4582291510912322
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.535922473299967
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.8331935266896804
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.029845154987243
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.9534473246903037
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.0767734726422322
+          }
+        }
+      }
+    },
+    {
+      "true_N": 38,
+      "texture": "off",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 43.8730105960946,
+      "relative_bias_median": 0.15455291042354213,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.09333333333333334,
+            "mc_se": 0.023751803050466466,
+            "median_width": 9.179484447971209
+          },
+          "95": {
+            "coverage": 0.22666666666666666,
+            "mc_se": 0.03418468359649673,
+            "median_width": 10.645888844824668
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.42,
+            "mc_se": 0.040298883359219766,
+            "median_width": 9.179484447971209
+          },
+          "95": {
+            "coverage": 0.49333333333333335,
+            "mc_se": 0.04082120001139568,
+            "median_width": 10.645888844824668
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.8133333333333334,
+            "mc_se": 0.031814275854530276,
+            "median_width": 6.596821244783477
+          },
+          "95": {
+            "coverage": 0.88,
+            "mc_se": 0.0265329983228432,
+            "median_width": 7.934671848460567
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.8733333333333333,
+            "mc_se": 0.027156610272298008,
+            "median_width": 9.270800814201372
+          },
+          "95": {
+            "coverage": 0.9333333333333333,
+            "mc_se": 0.02036700308869262,
+            "median_width": 10.919270661108548
+          }
+        }
+      }
+    },
+    {
+      "true_N": 38,
+      "texture": "off",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 39.66565538517177,
+      "relative_bias_median": 0.04383303645188863,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.9866666666666667,
+            "mc_se": 0.009365025558091315,
+            "median_width": 6.90560570818587
+          },
+          "95": {
+            "coverage": 1.0,
+            "mc_se": 0.0,
+            "median_width": 8.1563668500024
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.5333333333333333,
+            "mc_se": 0.04073400617738524,
+            "median_width": 6.90560570818587
+          },
+          "95": {
+            "coverage": 0.6466666666666666,
+            "mc_se": 0.03902895411434003,
+            "median_width": 8.1563668500024
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.92,
+            "mc_se": 0.022150996967781528,
+            "median_width": 6.471166217028518
+          },
+          "95": {
+            "coverage": 0.9333333333333333,
+            "mc_se": 0.02036700308869262,
+            "median_width": 7.187225102357754
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.9266666666666666,
+            "mc_se": 0.02128466671190877,
+            "median_width": 6.762091845949797
+          },
+          "95": {
+            "coverage": 0.98,
+            "mc_se": 0.01143095213298817,
+            "median_width": 7.4465212738535165
+          }
+        }
+      }
+    },
+    {
+      "true_N": 38,
+      "texture": "order 8",
+      "patch_px": 16,
+      "scenes": 150,
+      "n_patches": 2048,
+      "block_patches": 4,
+      "estimate_median": 6.601588318611942,
+      "relative_bias_median": -0.8262739916154752,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.6265182737119623
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.737354990078944
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.6265182737119623
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.737354990078944
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.1416176491149193
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.3108682431753595
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.435581659800075
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.6114439374810043
+          }
+        }
+      }
+    },
+    {
+      "true_N": 38,
+      "texture": "order 8",
+      "patch_px": 32,
+      "scenes": 150,
+      "n_patches": 512,
+      "block_patches": 2,
+      "estimate_median": 6.504711190715012,
+      "relative_bias_median": -0.8288233897180259,
+      "coverage": {
+        "block2d_percentile": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4543325138025893
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5418397224509439
+          }
+        },
+        "block2d_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.4543325138025893
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.5418397224509439
+          }
+        },
+        "parametric_neyman": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 0.9316085273240233
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.1189146229448688
+          }
+        },
+        "parametric_basic": {
+          "90": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.0353916960269989
+          },
+          "95": {
+            "coverage": 0.0,
+            "mc_se": 0.0,
+            "median_width": 1.203232905364882
+          }
+        }
+      }
+    }
+  ],
+  "summary_texture_off": {
+    "block2d_percentile": {
+      "90": {
+        "min": 0.09333333333333334,
+        "max": 0.9866666666666667,
+        "median": 0.5366666666666666
+      },
+      "95": {
+        "min": 0.19333333333333333,
+        "max": 1.0,
+        "median": 0.62
+      }
+    },
+    "block2d_basic": {
+      "90": {
+        "min": 0.36666666666666664,
+        "max": 0.58,
+        "median": 0.49
+      },
+      "95": {
+        "min": 0.41333333333333333,
+        "max": 0.6733333333333333,
+        "median": 0.5766666666666667
+      }
+    },
+    "parametric_neyman": {
+      "90": {
+        "min": 0.8133333333333334,
+        "max": 0.92,
+        "median": 0.8766666666666667
+      },
+      "95": {
+        "min": 0.88,
+        "max": 0.98,
+        "median": 0.9433333333333334
+      }
+    },
+    "parametric_basic": {
+      "90": {
+        "min": 0.8666666666666667,
+        "max": 0.94,
+        "median": 0.9099999999999999
+      },
+      "95": {
+        "min": 0.9,
+        "max": 0.9933333333333333,
+        "median": 0.9566666666666667
+      }
+    }
+  },
+  "summary_texture_on": {
+    "block2d_percentile": {
+      "90": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      },
+      "95": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      }
+    },
+    "block2d_basic": {
+      "90": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      },
+      "95": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      }
+    },
+    "parametric_neyman": {
+      "90": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      },
+      "95": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      }
+    },
+    "parametric_basic": {
+      "90": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      },
+      "95": {
+        "min": 0.0,
+        "max": 0.0,
+        "median": 0.0
+      }
+    }
+  },
+  "run_info": {
+    "wall_s": 4804.4,
+    "peak_rss_mb": 35,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

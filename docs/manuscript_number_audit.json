@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/manuscript-audit/1",
-  "generated_utc": "2026-09-23T09:24:31.697500+00:00",
+  "generated_utc": "2026-09-23T11:34:18.368310+00:00",
   "computed_by": "backend/scripts/audit_manuscript_numbers.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "manuscript_is_read_only": true,
@@ -3258,7 +3258,7 @@
       "artifact_value": 0.4990735996741713,
       "verdict": "PASS",
       "section": "V",
-      "note": "|corr(SC, OC)| over the frame",
+      "note": "circular-channel INTENSITY correlation |corr(SC, OC)| over the frame -- not the field coherence gamma_c (third review M7; gamma_c is in stokes_from_slc.json::coherence_by_gate)",
       "tex_lines": [
         774,
         786,
@@ -4184,11 +4184,11 @@
       {
         "id": "q_half_realizations",
         "anchor": "about half of all\\s+realizations",
-        "verdict": "FAIL",
+        "verdict": "PASS",
         "section": "V",
         "note": "P(max over the 260 pixels > 1.895), correlated-F rows",
         "details": [
-          "docs/f2_maximum.json::results.N13p72.correlated_max_over_amplitude_pixels.p_exceeds_crit within: docs/f2_maximum.json::results.N13p72.correlated_max_over_amplitude_pixels.p_exceeds_crit absent -> FAIL"
+          "docs/f2_maximum.json::results.N13p72.correlated_max_over_amplitude_pixels.p_exceeds_crit within: 1 elements in [0.5192, 0.5192]; 0 outside [0.4, 0.6] -> ok"
         ]
       },
       {
@@ -4278,8 +4278,8 @@
       }
     ],
     "counts": {
-      "PASS": 15,
-      "FAIL": 2,
+      "PASS": 16,
+      "FAIL": 1,
       "UNBACKED": 1,
       "ABSENT": 0
     },

@@ -77,6 +77,30 @@ def main() -> int:
     p0 = int(patches_default.split(",")[0])
     n_patch_amp = int(me.patch_ratios(lh.astype(np.float64), amplitude, p0).size)
     n_patch_inner = int(me.patch_ratios(lh.astype(np.float64), inner, p0).size)
+    # third review M8: the retained patch count at EVERY size, and the mode
+    # estimator's realized bin width (its effective bandwidth) on the headline
+    # data -- 120 equal bins over [min, max] of ln(mean^2/var) is a width that
+    # depends on the data, so it is measured, not assumed
+    sizes = [int(x) for x in patches_default.split(",")]
+    retained = {}
+    for p in sizes:
+        retained[f"{p}x{p}"] = {
+            "amplitude_mask": int(me.patch_ratios(lh.astype(np.float64), amplitude, p).size),
+            "enl_measurement_mask": int(me.patch_ratios(lh.astype(np.float64), inner, p).size)}
+    bw = {}
+    for ch, dn in (("LH", lh), ("LV", lv)):
+        r = me.patch_ratios(dn.astype(np.float64) ** 2, inner, p0)
+        lr = np.log(r[r > 0])
+        bw[ch] = {"n_patches": int(lr.size), "ln_range": [float(lr.min()), float(lr.max())],
+                  "bin_width_ln": float((lr.max() - lr.min()) / int(bins)),
+                  "bin_width_relative": float(np.expm1((lr.max() - lr.min()) / int(bins)))}
+    val = BASE_DIR / "docs" / "enl_interval_validation.json"
+    validation = None
+    if val.is_file():
+        v = json.loads(val.read_text(encoding="utf-8"))
+        validation = {"artifact": "docs/enl_interval_validation.json",
+                      "summary_texture_off": v.get("summary_texture_off"),
+                      "summary_texture_on": v.get("summary_texture_on")}
 
     spec = {
         "schema": "lunar-ice/enl-estimator-spec/1",
@@ -107,6 +131,10 @@ def main() -> int:
                         "is the upper mode, not the centre",
             "alternative_reported": "mean, p5, p25, median, p75, p95 of the same "
                                     "per-patch distribution",
+            "realized_bin_width_headline": bw,
+            "bandwidth_note": ("the histogram's bin width is the estimator's bandwidth; "
+                               "it is set by the data's range over 120 bins, recorded "
+                               "here for the headline 16 px, eroded-mask estimate"),
         },
         "masks": {
             "amplitude_mask": {
@@ -132,6 +160,7 @@ def main() -> int:
             },
             f"patches_{p0}x{p0}_wholly_inside": {"amplitude_mask": n_patch_amp,
                                                   "enl_measurement_mask": n_patch_inner},
+            "patches_wholly_inside_by_size": retained,
         },
         "bootstrap": {
             "replicates_B": be.B_DEFAULT,
@@ -149,6 +178,14 @@ def main() -> int:
                          "bca": False},
             "statistic_bootstrapped": "mode_of over the resampled patch ratios",
         },
+        "interval_validation": validation,
+        "third_review_checklist": {
+            "patch_stride": "patch.stride_px", "selection_rule": "patch.inclusion_rule",
+            "variance_denominator": "patch.variance_ddof (n - 1)",
+            "mode_bandwidth_binning": "mode_estimator.histogram_bins, realized_bin_width_headline",
+            "retained_patch_count": "masks.patches_wholly_inside_by_size",
+            "bootstrap_repetitions": "bootstrap.replicates_B",
+            "validated_interval": "interval_validation (enl_interval_validation.py)"},
         "boxcar": {"size_px": boxcar_size, "filter": "scipy.ndimage.uniform_filter, "
                                                       "reflect boundary (default)",
                    "applied_to": "DN^2 before the patch statistic, for the "

@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/f2-maximum/1",
-  "generated_utc": "2026-09-16T07:14:35.470557+00:00",
+  "generated_utc": "2026-09-23T11:09:07.961511+00:00",
   "generator": "backend/scripts/f2_maximum.py",
   "seed": 7,
   "trials": 10000,
@@ -64,6 +64,35 @@
         "p95_se": 0.0923399736487291,
         "p_exceeds_threshold": 1.0,
         "p_exceeds_se": 0.0,
+        "n_trials": 10000,
+        "crit_95": 2.9782370160823213,
+        "p_exceeds_crit": 0.8302,
+        "p_exceeds_crit_se": 0.0037545700153279868
+      },
+      "correlated_spatial": {
+        "crit_95": 2.9782370160823213,
+        "max": {
+          "median": 4.035059190058007,
+          "p95": 8.085318447786344
+        },
+        "fwe_p_max_gt_crit": 0.8302,
+        "fwe_se": 0.0037545700153279868,
+        "area_gt_1": {
+          "mean": 75.8187,
+          "se": 0.19896196022647575,
+          "p95": 110.0
+        },
+        "area_gt_crit": {
+          "mean": 4.1683,
+          "se": 0.03948003771955941,
+          "p95": 12.0
+        },
+        "largest_cluster_gt_crit": {
+          "mean": 2.6042,
+          "p95": 7.0,
+          "p_at_least_5px": 0.158,
+          "max": 22
+        },
         "n_trials": 10000
       },
       "correlated_max_over_full_disc": {
@@ -134,6 +163,35 @@
         "p95_se": 0.015812700897131216,
         "p_exceeds_threshold": 1.0,
         "p_exceeds_se": 0.0,
+        "n_trials": 10000,
+        "crit_95": 1.8946236969971033,
+        "p_exceeds_crit": 0.5192,
+        "p_exceeds_crit_se": 0.00499631224004265
+      },
+      "correlated_spatial": {
+        "crit_95": 1.8946236969971033,
+        "max": {
+          "median": 1.9108827708008589,
+          "p95": 2.7291547003658008
+        },
+        "fwe_p_max_gt_crit": 0.5192,
+        "fwe_se": 0.00499631224004265,
+        "area_gt_1": {
+          "mean": 46.4833,
+          "se": 0.1602581054955964,
+          "p95": 75.0
+        },
+        "area_gt_crit": {
+          "mean": 1.498,
+          "se": 0.021240638325428152,
+          "p95": 6.0
+        },
+        "largest_cluster_gt_crit": {
+          "mean": 1.1748,
+          "p95": 4.0,
+          "p_at_least_5px": 0.0372,
+          "max": 19
+        },
         "n_trials": 10000
       },
       "correlated_max_over_full_disc": {
@@ -195,6 +253,145 @@
         "n_trials": 10000
       }
     }
+  },
+  "complex_field": {
+    "model": "L equal-weight looks per circular channel, each a separable AR(1) circular complex Gaussian field; intensity lag-one correlations = the delivered LH product's; channels independent (the independent-channel null); both set to zero outside F2's amplitude mask, 5x5 boxcar, then CPR = c box(SC) / box(OC)",
+    "intensity_lag1_target": {
+      "azimuth": 0.8382981178766415,
+      "range": 0.5761794944483448
+    },
+    "look_calibration": {
+      "2": {
+        "raw_mode_enl": 2.2628825111211857,
+        "boxcar_mode_enl": 7.890332320972749,
+        "boxcar_mode_enl_fields": [
+          6.35579029409568,
+          9.202594117387088,
+          8.112612551435475
+        ],
+        "boxcar_gain": 3.486850193147386
+      },
+      "3": {
+        "raw_mode_enl": 3.5707938832739194,
+        "boxcar_mode_enl": 10.847886745910008,
+        "boxcar_mode_enl_fields": [
+          10.89475701495537,
+          11.428844488013137,
+          10.220058734761519
+        ],
+        "boxcar_gain": 3.037948170775965
+      },
+      "4": {
+        "raw_mode_enl": 4.955506999876202,
+        "boxcar_mode_enl": 14.501081761670315,
+        "boxcar_mode_enl_fields": [
+          14.293041915062677,
+          15.177886798323064,
+          14.032316571625211
+        ],
+        "boxcar_gain": 2.9262559334559675
+      },
+      "5": {
+        "raw_mode_enl": 5.869082192374357,
+        "boxcar_mode_enl": 21.72706269366248,
+        "boxcar_mode_enl_fields": [
+          23.050766650640373,
+          18.80322357688643,
+          23.327197853460635
+        ],
+        "boxcar_gain": 3.7019523635045095
+      },
+      "6": {
+        "raw_mode_enl": 6.890078288615886,
+        "boxcar_mode_enl": 21.391985766256955,
+        "boxcar_mode_enl_fields": [
+          21.936779212164723,
+          21.47530323586334,
+          20.763874850742816
+        ],
+        "boxcar_gain": 3.104752206023814
+      },
+      "chosen": 4,
+      "target": 13.72,
+      "matched_on": "the boxcar'd field's patch-mode ENL (where CPR is formed)",
+      "product_for_comparison": {
+        "raw_mode_enl": 5.83,
+        "boxcar_mode_enl": 13.72,
+        "boxcar_gain": 2.35
+      },
+      "first_version": "offered L = 5, 6 only; boxcar'd ENL 21-24, a null at the wrong operating point; superseded 2026-09-23"
+    },
+    "looks": 4,
+    "operating_N": 13.72,
+    "crit_95": 1.8946236969971033,
+    "seed": 20260926,
+    "trials": 10000,
+    "box_shape": [
+      47,
+      47
+    ],
+    "amplitude_pixels": 260,
+    "true_cpr_1": {
+      "crit_95": 1.8946236969971033,
+      "max": {
+        "median": 2.509724150460709,
+        "p95": 4.114466883508473
+      },
+      "fwe_p_max_gt_crit": 0.8631,
+      "fwe_se": 0.0034374174899188493,
+      "area_gt_1": {
+        "mean": 130.3051,
+        "se": 0.4526507159676947,
+        "p95": 205.0
+      },
+      "area_gt_crit": {
+        "mean": 20.1654,
+        "se": 0.2107862599144851,
+        "p95": 62.0
+      },
+      "largest_cluster_gt_crit": {
+        "mean": 15.7319,
+        "p95": 49.0,
+        "p_at_least_5px": 0.6749,
+        "max": 143
+      },
+      "n_trials": 10000
+    },
+    "true_cpr_0p7": {
+      "crit_95": 1.8946236969971033,
+      "max": {
+        "median": 1.7544678993030172,
+        "p95": 2.890513048967404
+      },
+      "fwe_p_max_gt_crit": 0.3939,
+      "fwe_se": 0.004886131291727639,
+      "area_gt_1": {
+        "mean": 55.6862,
+        "se": 0.3552231007425194,
+        "p95": 121.0
+      },
+      "area_gt_crit": {
+        "mean": 3.3967,
+        "se": 0.07197090309346695,
+        "p95": 19.0
+      },
+      "largest_cluster_gt_crit": {
+        "mean": 3.0369,
+        "p95": 17.0,
+        "p_at_least_5px": 0.1975,
+        "max": 68
+      },
+      "n_trials": 10000
+    }
+  },
+  "run_info": {
+    "wall_s": 1006.0,
+    "peak_rss_mb": 1229,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
   },
   "paper_f2_peak_cpr_verbatim": {
     "5": {

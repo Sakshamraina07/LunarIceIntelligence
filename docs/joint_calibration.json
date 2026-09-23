@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/joint-calibration/1",
-  "generated_utc": "2026-09-23T09:12:40.161071+00:00",
+  "generated_utc": "2026-09-23T11:14:50.109556+00:00",
   "generator": "backend/scripts/dop_sampling_bias.py",
   "model": "N independent equal-weight circular complex Gaussian looks of a 2x2 circular-basis covariance; sample covariance = mean over looks; R = a_hat/b_hat, m_hat = sqrt((a_hat-b_hat)^2 + 4|c_hat|^2)/(a_hat+b_hat). Speckle only.",
   "dop_threshold": 0.13,
@@ -2305,7 +2305,7 @@
   ],
   "joint_and_significant_nonzero_cells": 0,
   "run_info": {
-    "wall_s": 31.6,
+    "wall_s": 45.7,
     "peak_rss_mb": 209,
     "python": "3.13.1",
     "numpy": "2.2.2",

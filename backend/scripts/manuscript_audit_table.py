@@ -299,6 +299,10 @@ AUDIT = [
     # ---- IV-B, the control --------------------------------------------
     ("bw_measured", "1071.2", "docs/slc_multilook_control.json",
      "medians.measured_bandwidth_hz", "IV", "median across the nine windows"),
+    ("patches_21489", "21,489", "docs/enl_benchmark.json",
+     "slc_spatial_arm.estimators.moment_LH.n_patches", "IV",
+     "the patches the trace-moment and log-cumulant estimators share with the "
+     "moment estimator on the spatial arm"),
     ("bw_min", "1071.2", "docs/slc_multilook_control.json",
      "windows[*].measured_bandwidth_hz|min", "IV", "'1071.2--1071.6 Hz across the nine windows'"),
     ("bw_max", "1071.6", "docs/slc_multilook_control.json",

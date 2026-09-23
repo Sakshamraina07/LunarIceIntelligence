@@ -1,9 +1,9 @@
 {
   "schema": "lunar-ice/number-crosscheck/1",
-  "generated_utc": "2026-09-23T11:34:19.131691+00:00",
+  "generated_utc": "2026-09-23T11:35:31.306984+00:00",
   "generator": "backend/scripts/number_crosscheck.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
-  "artifact_numbers_loaded": 26319,
+  "artifact_numbers_loaded": 26321,
   "artifact_trees": [
     "docs",
     "frontend/public/analysis",
@@ -1336,7 +1336,7 @@
         624,
         695
       ],
-      "example_key": "manuscript_number_audit.json.rows[147].printed:str"
+      "example_key": "manuscript_number_audit.json.rows[148].printed:str"
     },
     {
       "literal": "18.1",
@@ -1359,7 +1359,7 @@
       "lines": [
         640
       ],
-      "example_key": "manuscript_number_audit.json.rows[150].printed:str"
+      "example_key": "manuscript_number_audit.json.rows[151].printed:str"
     },
     {
       "literal": "7.9",

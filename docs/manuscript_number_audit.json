@@ -1,12 +1,12 @@
 {
   "schema": "lunar-ice/manuscript-audit/1",
-  "generated_utc": "2026-09-23T11:34:18.368310+00:00",
+  "generated_utc": "2026-09-23T11:35:30.579546+00:00",
   "computed_by": "backend/scripts/audit_manuscript_numbers.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "manuscript_is_read_only": true,
-  "n_audited": 283,
+  "n_audited": 284,
   "counts": {
-    "PASS": 279,
+    "PASS": 280,
     "MISMATCH": 0,
     "NO SOURCE": 4,
     "ABSENT": 0
@@ -1633,6 +1633,19 @@
       "note": "median across the nine windows",
       "tex_lines": [
         531
+      ]
+    },
+    {
+      "id": "patches_21489",
+      "printed": "21,489",
+      "artifact": "docs/enl_benchmark.json",
+      "key": "slc_spatial_arm.estimators.moment_LH.n_patches",
+      "artifact_value": 21489.0,
+      "verdict": "PASS",
+      "section": "IV",
+      "note": "the patches the trace-moment and log-cumulant estimators share with the moment estimator on the spatial arm",
+      "tex_lines": [
+        564
       ]
     },
     {

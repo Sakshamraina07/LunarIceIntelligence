@@ -532,11 +532,13 @@ def summarise(group, label):
                                  max(g["cpr_median"] for g in group)]}
 
 
-def build_coherency(max_lines: int = 0):
+def build_coherency(max_lines: int = 0, smooth: bool = True):
     """The calibrated, 5x5-boxcar'd coherency elements <|E_H|^2>, <|E_V|^2>,
     <E_H E_V*> on the SLC grid, for the pass `configure()` selected. Shared by
     enl_logratio.py and decision_rule.py so every script forms the Stokes
-    vector the same way."""
+    vector the same way. smooth=False returns them BEFORE the boxcar (the
+    azimuth average only), for lag correlations measured where the delivered
+    product's were: before the boxcar (complex_grid.py)."""
     lab = label_fields()
     k_lin = 10.0 ** (lab["calibration_constant_db"] / 10.0)
     g_lh, g_lv = lab["gain_imbalance"]["LH"], lab["gain_imbalance"]["LV"]
@@ -571,8 +573,9 @@ def build_coherency(max_lines: int = 0):
     # are linear in the coherency matrix, so boxcar-then-derive equals the
     # pipeline's smoothing; boxcar-on-the-ratio would not, and is a way 3b
     # could silently fail.
-    hh, vv = boxcar2d(hh), boxcar2d(vv)
-    hv = boxcar2d(hv.real) + 1j * boxcar2d(hv.imag)
+    if smooth:
+        hh, vv = boxcar2d(hh), boxcar2d(vv)
+        hv = boxcar2d(hv.real) + 1j * boxcar2d(hv.imag)
     return hh, vv, hv, {"lab": lab, "k_lin": k_lin, "g_lh": g_lh, "g_lv": g_lv,
                         "sin_t": sin_t, "n_lines": n_lines, "n_out": n_out}
 

@@ -20,9 +20,12 @@ launder an error into agreement.
 
 Three blocks, numbered as the third revision prints them (2026-09-23):
   Table II   sampling statistics, 7 rows x 5 columns
-  V-A text   the sensitivity block, 4 estimates x 3 figures. It was Table III
-             until the third revision folded it into one sentence of V-A;
-             the parser follows the cells, not the float
+  V-A text   the critical values in the text. It was Table III until the
+             third revision folded it into a sentence of V-A; v11 kept one
+             bootstrap-range sentence (two cells); v14 removed that and prints
+             the critical value and the 0.7-background exceedance at the two
+             look counts, 13.72 and 39.4 (four cells). The parser follows the
+             cells, not the float
   Table III  24 Mini-RF inversions and their three medians (was Table IV)
 
 Each cell is compared at the precision the manuscript prints it. Where a cell
@@ -176,33 +179,41 @@ def main() -> int:
     report["tables"]["II_sampling_statistics"] = {"cells": rows2, "differ": bad2}
     total_bad += bad2
 
-    # ---------------- the sensitivity sentence of V-A --------------------------
-    # v11 (2026-09-23 18:00) keeps ONE sentence of the old sensitivity block:
-    # "Across the block-bootstrap range of the smoothed ENL (10.7--22.5) the
-    # critical value runs from 2.07 to 1.64". The four-estimate sentence the
-    # third revision had moved here from Table III is gone, so the parser now
-    # reads this one: two critical values, each recomputed at its N.
-    print("\n  V-A TEXT — the critical value across the bootstrap range of the ENL")
+    # ---------------- the critical values in the text of V-A -----------------
+    # v14 (final pass, 2026-09-23): the bootstrap-range sentence ("the critical
+    # value runs from 2.07 to 1.64") is gone. V-A now prints, at the two look
+    # counts, the one-sided 95 % critical value and P(R > 1) at a true CPR of
+    # 0.7: "At $N=13.72$ a pixel must read above 1.895 ... reads above 1.00
+    # 18 % of the time; at $N=39.4$ the figures are 1.452 and 5.8 %". Four
+    # cells, each recomputed at its N from detection_statistics.
+    print("\n  V-A TEXT — the critical value and the 0.7-background exceedance at two N")
     rows3, bad3 = [], 0
     flat_all = re.sub(r"\s+", " ", " ".join(raw_lines))
-    ms = re.search(r"smoothed ENL \((\d+\.\d+)--(\d+\.\d+)\) the critical value runs "
-                   r"from (\d+\.\d+) to (\d+\.\d+)", flat_all)
+    ms = re.search(r"At \$N=(\d+\.\d+)\$ a pixel must read above (\d+\.\d+) to reject a "
+                   r"true CPR of 1\.00, and terrain at a true CPR of 0\.7 reads above 1\.00 "
+                   r"(\d+(?:\.\d+)?)\\,\\% of the time; at \$N=(\d+\.\d+)\$ the figures "
+                   r"are (\d+\.\d+) and (\d+(?:\.\d+)?)\\,\\%", flat_all)
     if ms:
-        n_lo, n_hi, c_lo, c_hi = ms.groups()
-        for n_s, c_s in ((n_lo, c_lo), (n_hi, c_hi)):
-            val = DS.floor_95(float(n_s))
-            d = dec(c_s)
-            ok = round(val, d) == round(float(c_s), d)
+        n1, c1, p1, n2, c2, p2 = ms.groups()
+        n1u = UNROUNDED.get(float(n1), float(n1))
+        for n_s, n_val, cell, printed, fn in (
+                (n1, n1u, "crit", c1, DS.floor_95), (n1, n1u, "p_0.7", p1, lambda n: DS.exceedance(n, 0.7)),
+                (n2, float(n2), "crit", c2, DS.floor_95), (n2, float(n2), "p_0.7", p2,
+                                                           lambda n: DS.exceedance(n, 0.7))):
+            val = fn(float(n_s))
+            d = dec(printed)
+            ok = round(val, d) == round(float(printed), d)
             if not ok:
                 bad3 += 1
-                print(f"    N {n_s}: crit printed {c_s}, computed {round(val, d + 2)}  DIFFERS")
-            rows3.append({"N": float(n_s), "cell": "crit", "printed": float(c_s),
+                print(f"    N {n_s}: {cell} printed {printed}, computed {round(val, d + 2)}  DIFFERS")
+            rows3.append({"N": float(n_s), "cell": cell, "printed": float(printed),
                           "computed": round(val, d + 2), "verdict": "MATCH" if ok else "DIFFERS"})
     print(f"    {len(rows3)} cells; {len(rows3) - bad3} match, {bad3} differ")
-    report["tables"]["V-A_sensitivity_in_text"] = {
+    report["tables"]["V-A_critical_values_in_text"] = {
         "cells": rows3, "differ": bad3,
         "was": ("Table III until the third revision; a four-estimate sentence of V-A until "
-                "v11; now the bootstrap-range sentence")}
+                "v11; the bootstrap-range sentence (2.07 -> 1.64) until v14; now the critical "
+                "value and 0.7-background exceedance at N = 13.72 and 39.4")}
     total_bad += bad3
 
     # ---------------- Table III (Mini-RF inversions; was Table IV) --------
@@ -260,8 +271,8 @@ def main() -> int:
     # check is most exposed to: a wrapped row or a LaTeX spacing macro silently
     # removes cells from the comparison and the summary still reads "0 differ".
     # Both have happened here. So the expected counts are asserted too.
-    # v11: the V-A block is the bootstrap-range sentence, two cells (was 12)
-    EXPECT = {"II_sampling_statistics": 35, "V-A_sensitivity_in_text": 2,
+    # v14: the V-A block is the two-look-count sentence, four cells (v11: two)
+    EXPECT = {"II_sampling_statistics": 35, "V-A_critical_values_in_text": 4,
               "III_published_moments": 27}
     short = {k: (len(report["tables"][k]["cells"]), v) for k, v in EXPECT.items()
              if len(report["tables"][k]["cells"]) != v}
@@ -286,7 +297,7 @@ def main() -> int:
                   "pipeline's own arithmetic, or a table was parsed short.")
             return 1
         print("\n  GATE PASS — every cell of Tables II and III and of the V-A "
-              "sensitivity sentence recomputes from the pipeline's functions at "
+              "critical-value sentence recomputes from the pipeline's functions at "
               "the precision printed.")
     return 0
 

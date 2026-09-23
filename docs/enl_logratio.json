@@ -580,5 +580,100 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "random_like_for_like": {
+    "20200808": {
+      "pass": "20200808",
+      "cells": 26462,
+      "exclusion": "every selected cell AND every random cell dropped from every window: each tested cell estimated from neighbours only",
+      "local_N": {
+        "n": 26462,
+        "median": 17.47778152001871,
+        "iqr": [
+          9.843626457316347,
+          31.493046228519177
+        ],
+        "p95": 54.84377501621497
+      },
+      "n_local_N_ge_79p6": 107,
+      "window_count_used": {
+        "n": 26462,
+        "median": 955.0000000000001,
+        "iqr": [
+          952.0000000000002,
+          957.0
+        ],
+        "p95": 958.9999999999999
+      },
+      "reproduces_random_non_selected": {
+        "n": 26462,
+        "median": 17.46801359620165,
+        "iqr": [
+          9.841145695813406,
+          31.487049050945316
+        ],
+        "p95": 54.853057928145645
+      },
+      "selected_for_comparison": {
+        "n": 26462,
+        "median": 41.780272308908124,
+        "iqr": [
+          23.007221202703484,
+          54.96185075564671
+        ],
+        "p95": 73.59091466466445
+      }
+    },
+    "20200305": {
+      "pass": "20200305",
+      "cells": 24,
+      "exclusion": "every selected cell AND every random cell dropped from every window: each tested cell estimated from neighbours only",
+      "local_N": {
+        "n": 24,
+        "median": 22.551624425126366,
+        "iqr": [
+          11.853808052341265,
+          36.78725381906941
+        ],
+        "p95": 46.25217029511605
+      },
+      "n_local_N_ge_79p6": 0,
+      "window_count_used": {
+        "n": 24,
+        "median": 960.0000000000001,
+        "iqr": [
+          959.7500000000001,
+          960.0000000000001
+        ],
+        "p95": 960.0000000000001
+      },
+      "reproduces_random_non_selected": {
+        "n": 24,
+        "median": 22.560756661126977,
+        "iqr": [
+          11.86679516402714,
+          36.788710754850975
+        ],
+        "p95": 46.297371034270185
+      },
+      "selected_for_comparison": {
+        "n": 24,
+        "median": 32.50860841680712,
+        "iqr": [
+          20.707116514418985,
+          36.03343844801709
+        ],
+        "p95": 39.719352688599606
+      }
+    }
+  },
+  "run_info_random_like_for_like": {
+    "wall_s": 179.4,
+    "peak_rss_mb": 2733,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
   }
 }

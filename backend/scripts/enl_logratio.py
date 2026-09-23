@@ -3,6 +3,8 @@ enl_logratio.py -- the look count at the SELECTED cells, estimated without the
 selection. (council work order, Task 2)
 
     python backend/scripts/enl_logratio.py
+    python backend/scripts/enl_logratio.py --only-random   (final pass B6: the random
+        cells' local N with the selected cells' exclusion; merged into the artifact)
 
 WHY
 ---
@@ -234,7 +236,61 @@ def product(pass_id: str) -> dict:
     return out
 
 
+def random_like_for_like(pass_id: str) -> dict:
+    """B6 (final pass): the random non-selected cells' local N with the
+    exclusion the selected cells get. product() already drops every selected
+    cell from every window; a selected cell is also absent from its OWN window,
+    a random cell was not. Here the random cells (the same draw: same seed,
+    same pool) are dropped too, so every tested cell is estimated from
+    neighbours only, as the selected cells are."""
+    SFS.configure(pass_id)
+    hh, vv, hv, _ = SFS.build_coherency(0)
+    s0, s1 = hh + vv, hh - vv
+    s2, s3 = 2.0 * hv.real, -2.0 * hv.imag
+    m = (hh > 0) & (vv > 0) & (s0 > 0)
+    del hh, vv, hv
+    sc, oc = 0.5 * (s0 - s3), 0.5 * (s0 + s3)
+    ok = m & (sc > 0) & (oc > 0)
+    lr = np.where(ok, np.log(np.where(ok, sc, 1.0) / np.where(ok, oc, 1.0)), np.nan)
+    dop = np.where(m, np.sqrt(s1 ** 2 + s2 ** 2 + s3 ** 2) / (s0 + 1e-300), np.nan)
+    del s0, s1, s2, s3, sc, oc
+    sel = ok & (dop < 0.13) & (np.exp(lr) > 1.0)
+    use = ok & ~sel
+    rng = np.random.default_rng(SEED_RAND)
+    si = np.flatnonzero(sel.ravel())
+    pool = np.flatnonzero(use.ravel())
+    ri = rng.choice(pool, size=si.size, replace=False)
+    n_old, _ = local_n(lr, use)
+    use2 = use.copy().ravel()
+    use2[ri] = False
+    use2 = use2.reshape(use.shape)
+    n_new, cnt = local_n(lr, use2)
+    old = n_old.ravel()[ri]
+    new = n_new.ravel()[ri]
+    fin = np.isfinite(new)
+    out = {"pass": pass_id, "cells": int(ri.size),
+           "exclusion": ("every selected cell AND every random cell dropped from every window: "
+                         "each tested cell estimated from neighbours only"),
+           "local_N": describe(new),
+           "n_local_N_ge_79p6": int((new[fin] >= N_EDGE).sum()),
+           "window_count_used": describe(cnt.ravel()[ri]),
+           "reproduces_random_non_selected": describe(old),
+           "selected_for_comparison": describe(n_old.ravel()[si])}
+    print(f"  pass {pass_id}: random cells, like for like: median {out['local_N'].get('median', float('nan')):.2f} "
+          f"IQR {out['local_N'].get('iqr')}  (as before: {out['reproduces_random_non_selected'].get('median', float('nan')):.2f}; "
+          f"selected {out['selected_for_comparison'].get('median', float('nan')):.2f}); >= 79.6: "
+          f"{out['n_local_N_ge_79p6']}", flush=True)
+    return out
+
+
 def main() -> int:
+    if "--only-random" in sys.argv:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        doc["random_like_for_like"] = {p: random_like_for_like(p) for p in ("20200808", "20200305")}
+        doc["run_info_random_like_for_like"] = run_info()
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  merged random_like_for_like into {OUT.relative_to(BASE_DIR)}")
+        return 0
     print("=" * 78)
     print("TASK 2 — the look count from Var(ln R), validated, then at the selected cells")
     print("=" * 78)

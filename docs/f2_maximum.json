@@ -495,5 +495,1223 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "complex_field_v3": {
+    "model": "L equal-weight looks per circular channel; per look, OC = sqrt(b) w_OC and SC = sqrt(a) (gamma_c w_OC + sqrt(1 - gamma_c^2) w_SC), w exactly stationary separable AR(1) complex fields at each channel's lag-one field correlation (sqrt of the intensity lag-one), a = CPR/(1+CPR), b = 1/(1+CPR), gamma_c from DOP^2 = q^2 + gamma_c^2 (1 - q^2); zero outside F2's 260-px amplitude mask, 5 x 5 boxcar on SC, OC and the cross product, then per cell R = box SC / box OC and the sample DOP",
+    "seed": 20261006,
+    "trials": 10000,
+    "amplitude_pixels": 260,
+    "lag_sets": {
+      "delivered_LH": {
+        "source": "enl.json::lag_correlation.LH (delivered product, before the boxcar)",
+        "intensity_lag1_SC": [
+          0.8382981178766415,
+          0.5761794944483448
+        ],
+        "intensity_lag1_OC": [
+          0.8382981178766415,
+          0.5761794944483448
+        ]
+      },
+      "complex_SC_OC": {
+        "source": "complex_grid_correlation.json::lag_correlation_before_boxcar (Stokes SC and OC of the complex product, physical sign)",
+        "intensity_lag1_SC": [
+          0.5788821720843366,
+          0.6251740396818406
+        ],
+        "intensity_lag1_OC": [
+          0.7383901900520211,
+          0.76853613404464
+        ]
+      }
+    },
+    "look_calibration": {
+      "boxcar_mode_enl_by_L": {
+        "delivered_LH": {
+          "2": 8.309686477677566,
+          "3": 11.537402879043698,
+          "4": 15.983061958083857,
+          "5": 18.328423046269393,
+          "6": 22.60967343073833,
+          "7": 28.699034567045768,
+          "8": 29.870581558504654,
+          "9": 34.45332163096142,
+          "10": 36.720931683112575,
+          "11": 40.53783198875904,
+          "12": 48.53229242436922,
+          "13": 49.19382778262608,
+          "14": 49.11115841063336,
+          "15": 62.28109632574816,
+          "16": 58.59647644633626
+        },
+        "complex_SC_OC": {
+          "2": 6.991355717622002,
+          "3": 11.302815019315888,
+          "4": 15.039670129322664,
+          "5": 19.008450890649524,
+          "6": 23.770791110793894,
+          "7": 24.481380208387904,
+          "8": 32.12050614252099,
+          "9": 32.41916544550552,
+          "10": 38.00049152620793,
+          "11": 46.008790953174774,
+          "12": 43.704870050347324,
+          "13": 50.2839856488593,
+          "14": 53.27917248817419,
+          "15": 59.28121035909452,
+          "16": 58.35798956334404
+        }
+      },
+      "chosen": {
+        "delivered_LH": {
+          "N13p72": {
+            "target": 13.72,
+            "chosen": 4,
+            "achieved": 15.983061958083857,
+            "pinned": true
+          },
+          "N39": {
+            "target": 39.4,
+            "chosen": 11,
+            "achieved": 40.53783198875904,
+            "pinned": false
+          }
+        },
+        "complex_SC_OC": {
+          "N13p72": {
+            "target": 13.72,
+            "chosen": 4,
+            "achieved": 15.039670129322664,
+            "pinned": false
+          },
+          "N39": {
+            "target": 39.4,
+            "chosen": 10,
+            "achieved": 38.00049152620793,
+            "pinned": false
+          }
+        }
+      }
+    },
+    "results": {
+      "delivered_LH": {
+        "N13p72": {
+          "looks": 4,
+          "achieved_enl": 15.983061958083857,
+          "null CPR 1.00 DOP 0": {
+            "cpr": 1.0,
+            "dop": 0.0,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.8788,
+                "mc_se": 0.0032635955631787465
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.4886,
+                "mc_se": 0.00499870023106007
+              },
+              "mean_cells_selected": 5.4852,
+              "mean_cells_se": 0.04894259529043568
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8050628122247234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8988,
+                  "mc_se": 0.003015933686273622
+                },
+                "per_pixel_rate": 0.09378730769230768,
+                "per_pixel_se": 0.0008957179049471519,
+                "mean_pixels": 24.3847
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8602,
+                  "mc_se": 0.003467794111535459
+                },
+                "per_pixel_rate": 0.07689499999999999,
+                "per_pixel_se": 0.0008027364508066932,
+                "mean_pixels": 19.9927
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8602,
+                  "mc_se": 0.003467794111535459
+                },
+                "per_pixel_rate": 0.07689499999999999,
+                "per_pixel_se": 0.0008027364508066932,
+                "mean_pixels": 19.9927
+              }
+            },
+            "max_cpr": {
+              "median": 2.496772718811985,
+              "p95": 4.080837962429358
+            }
+          },
+          "ice-free CPR 0.7 DOP min 0.1765": {
+            "cpr": 0.7,
+            "dop": 0.17647058823529413,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7277,
+                "mc_se": 0.004451434712539317
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.302,
+                "mc_se": 0.004591252552408765
+              },
+              "mean_cells_selected": 3.5145,
+              "mean_cells_se": 0.039587064662195616
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8050628122247234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4659,
+                  "mc_se": 0.00498835834719199
+                },
+                "per_pixel_rate": 0.017013461538461536,
+                "per_pixel_se": 0.0003261763866122133,
+                "mean_pixels": 4.4235
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.3949,
+                  "mc_se": 0.004888292033011121
+                },
+                "per_pixel_rate": 0.012845,
+                "per_pixel_se": 0.00027541961470001534,
+                "mean_pixels": 3.3397
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.3949,
+                  "mc_se": 0.004888292033011121
+                },
+                "per_pixel_rate": 0.012845,
+                "per_pixel_se": 0.00027541961470001534,
+                "mean_pixels": 3.3397
+              }
+            },
+            "max_cpr": {
+              "median": 1.761999856224734,
+              "p95": 2.861305786661027
+            }
+          },
+          "ice-free CPR 0.7 DOP 0.20": {
+            "cpr": 0.7,
+            "dop": 0.2,
+            "gamma_c": 0.09561828874675146,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.6857,
+                "mc_se": 0.004642364806862985
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.2734,
+                "mc_se": 0.004457044312097424
+              },
+              "mean_cells_selected": 3.186,
+              "mean_cells_se": 0.03782331900225091
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8050628122247234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4543,
+                  "mc_se": 0.0049790712989472245
+                },
+                "per_pixel_rate": 0.016892307692307693,
+                "per_pixel_se": 0.0003262257953410329,
+                "mean_pixels": 4.392
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.3904,
+                  "mc_se": 0.004878399737618885
+                },
+                "per_pixel_rate": 0.012841538461538462,
+                "per_pixel_se": 0.0002762839169183223,
+                "mean_pixels": 3.3388
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.3904,
+                  "mc_se": 0.004878399737618885
+                },
+                "per_pixel_rate": 0.012841538461538462,
+                "per_pixel_se": 0.0002762839169183223,
+                "mean_pixels": 3.3388
+              }
+            },
+            "max_cpr": {
+              "median": 1.7503038354475995,
+              "p95": 2.847820489457816
+            }
+          },
+          "ice-free CPR 0.9 DOP min 0.0526": {
+            "cpr": 0.9,
+            "dop": 0.052631578947368425,
+            "gamma_c": 1.1422156601203747e-09,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.8581,
+                "mc_se": 0.003489475462014313
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.4568,
+                "mc_se": 0.004981302640876179
+              },
+              "mean_cells_selected": 5.1213,
+              "mean_cells_se": 0.0473989799186621
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8050628122247234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8028,
+                  "mc_se": 0.003978846063873294
+                },
+                "per_pixel_rate": 0.061155,
+                "per_pixel_se": 0.000705335950453117,
+                "mean_pixels": 15.9003
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7502,
+                  "mc_se": 0.004328971702379215
+                },
+                "per_pixel_rate": 0.04905076923076923,
+                "per_pixel_se": 0.0006199788522678679,
+                "mean_pixels": 12.7532
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7502,
+                  "mc_se": 0.004328971702379215
+                },
+                "per_pixel_rate": 0.04905076923076923,
+                "per_pixel_se": 0.0006199788522678679,
+                "mean_pixels": 12.7532
+              }
+            },
+            "max_cpr": {
+              "median": 2.2718727522326416,
+              "p95": 3.6682574546884066
+            }
+          },
+          "ice-free CPR 0.9 DOP 0.20": {
+            "cpr": 0.9,
+            "dop": 0.2,
+            "gamma_c": 0.19321835661585918,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7423,
+                "mc_se": 0.004373679343527598
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.3132,
+                "mc_se": 0.00463794954694421
+              },
+              "mean_cells_selected": 3.6517,
+              "mean_cells_se": 0.04071098683948775
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8050628122247234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7903,
+                  "mc_se": 0.00407094473064914
+                },
+                "per_pixel_rate": 0.056659615384615385,
+                "per_pixel_se": 0.0006802626212966964,
+                "mean_pixels": 14.7315
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7304,
+                  "mc_se": 0.004437520028123817
+                },
+                "per_pixel_rate": 0.045066153846153846,
+                "per_pixel_se": 0.0005970723981211275,
+                "mean_pixels": 11.7172
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7304,
+                  "mc_se": 0.004437520028123817
+                },
+                "per_pixel_rate": 0.045066153846153846,
+                "per_pixel_se": 0.0005970723981211275,
+                "mean_pixels": 11.7172
+              }
+            },
+            "max_cpr": {
+              "median": 2.221556230191329,
+              "p95": 3.5885450825549423
+            }
+          }
+        },
+        "N39": {
+          "looks": 11,
+          "achieved_enl": 40.53783198875904,
+          "null CPR 1.00 DOP 0": {
+            "cpr": 1.0,
+            "dop": 0.0,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.9908,
+                "mc_se": 0.0009547439447307318
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.9424,
+                "mc_se": 0.0023298549311062265
+              },
+              "mean_cells_selected": 22.2873,
+              "mean_cells_se": 0.1369857378716413
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4441252960040367,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8806,
+                  "mc_se": 0.0032425860050274685
+                },
+                "per_pixel_rate": 0.08809153846153846,
+                "per_pixel_se": 0.0008741965091942409,
+                "mean_pixels": 22.9038
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8751,
+                  "mc_se": 0.0033060548997256535
+                },
+                "per_pixel_rate": 0.0849996153846154,
+                "per_pixel_se": 0.0008573592060747811,
+                "mean_pixels": 22.0999
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.3105,
+                  "mc_se": 0.004626983358517729
+                },
+                "per_pixel_rate": 0.009129615384615384,
+                "per_pixel_se": 0.00022914943688076924,
+                "mean_pixels": 2.3737
+              }
+            },
+            "max_cpr": {
+              "median": 1.7401683885854684,
+              "p95": 2.345447774299561
+            }
+          },
+          "ice-free CPR 0.7 DOP min 0.1765": {
+            "cpr": 0.7,
+            "dop": 0.17647058823529413,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7166,
+                "mc_se": 0.004506489099065924
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.4555,
+                "mc_se": 0.004980158130019568
+              },
+              "mean_cells_selected": 6.5688,
+              "mean_cells_se": 0.08069930541082357
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4441252960040367,
+                "p_at_least_1_pixel": {
+                  "rate": 0.1712,
+                  "mc_se": 0.003766836338361411
+                },
+                "per_pixel_rate": 0.004239615384615385,
+                "per_pixel_se": 0.00014661106498790394,
+                "mean_pixels": 1.1023
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.1649,
+                  "mc_se": 0.003710902720363335
+                },
+                "per_pixel_rate": 0.004002307692307692,
+                "per_pixel_se": 0.00014147733164899352,
+                "mean_pixels": 1.0406
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.0125,
+                  "mc_se": 0.0011110243021644486
+                },
+                "per_pixel_rate": 0.00013884615384615384,
+                "per_pixel_se": 1.817156533848624e-05,
+                "mean_pixels": 0.0361
+              }
+            },
+            "max_cpr": {
+              "median": 1.221626055152969,
+              "p95": 1.6637174336756777
+            }
+          },
+          "ice-free CPR 0.7 DOP 0.20": {
+            "cpr": 0.7,
+            "dop": 0.2,
+            "gamma_c": 0.09561828874675146,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.6574,
+                "mc_se": 0.004745790134424404
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.3867,
+                "mc_se": 0.004869939527345283
+              },
+              "mean_cells_selected": 5.268,
+              "mean_cells_se": 0.06965402191027326
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4441252960040367,
+                "p_at_least_1_pixel": {
+                  "rate": 0.1686,
+                  "mc_se": 0.0037439823717533714
+                },
+                "per_pixel_rate": 0.003973461538461538,
+                "per_pixel_se": 0.0001446860482633379,
+                "mean_pixels": 1.0331
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.1613,
+                  "mc_se": 0.003678074360314103
+                },
+                "per_pixel_rate": 0.0037603846153846155,
+                "per_pixel_se": 0.00014014115001513845,
+                "mean_pixels": 0.9777
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.0103,
+                  "mc_se": 0.0010096489488926337
+                },
+                "per_pixel_rate": 0.00013846153846153845,
+                "per_pixel_se": 2.0218175122180986e-05,
+                "mean_pixels": 0.036
+              }
+            },
+            "max_cpr": {
+              "median": 1.2242355259227984,
+              "p95": 1.6450670591244838
+            }
+          },
+          "ice-free CPR 0.9 DOP min 0.0526": {
+            "cpr": 0.9,
+            "dop": 0.052631578947368425,
+            "gamma_c": 1.1422156601203747e-09,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.9715,
+                "mc_se": 0.001663963641429703
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.8784,
+                "mc_se": 0.0032682325498654473
+              },
+              "mean_cells_selected": 18.4707,
+              "mean_cells_se": 0.1284136408537494
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4441252960040367,
+                "p_at_least_1_pixel": {
+                  "rate": 0.6869,
+                  "mc_se": 0.004637546657447233
+                },
+                "per_pixel_rate": 0.04198807692307693,
+                "per_pixel_se": 0.0005753058980847225,
+                "mean_pixels": 10.9169
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.6756,
+                  "mc_se": 0.00468150232297283
+                },
+                "per_pixel_rate": 0.04028730769230769,
+                "per_pixel_se": 0.0005613322332793485,
+                "mean_pixels": 10.4747
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.1513,
+                  "mc_se": 0.003583410526300329
+                },
+                "per_pixel_rate": 0.003410769230769231,
+                "per_pixel_se": 0.00012994950835988283,
+                "mean_pixels": 0.8868
+              }
+            },
+            "max_cpr": {
+              "median": 1.569906208501838,
+              "p95": 2.1395567696043414
+            }
+          },
+          "ice-free CPR 0.9 DOP 0.20": {
+            "cpr": 0.9,
+            "dop": 0.2,
+            "gamma_c": 0.19321835661585918,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7993,
+                "mc_se": 0.0040052404422206665
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.5441,
+                "mc_se": 0.004980513929304886
+              },
+              "mean_cells_selected": 8.0095,
+              "mean_cells_se": 0.08615220946278472
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4441252960040367,
+                "p_at_least_1_pixel": {
+                  "rate": 0.6768,
+                  "mc_se": 0.004676983643332527
+                },
+                "per_pixel_rate": 0.04019923076923077,
+                "per_pixel_se": 0.0005544644773436432,
+                "mean_pixels": 10.4518
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.665,
+                  "mc_se": 0.004719904660054057
+                },
+                "per_pixel_rate": 0.03849307692307692,
+                "per_pixel_se": 0.0005408615577584782,
+                "mean_pixels": 10.0082
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.1363,
+                  "mc_se": 0.003431068492467033
+                },
+                "per_pixel_rate": 0.002871923076923077,
+                "per_pixel_se": 0.00011211514598789019,
+                "mean_pixels": 0.7467
+              }
+            },
+            "max_cpr": {
+              "median": 1.5563008858556522,
+              "p95": 2.099152922237171
+            }
+          }
+        }
+      },
+      "complex_SC_OC": {
+        "N13p72": {
+          "looks": 4,
+          "achieved_enl": 15.039670129322664,
+          "null CPR 1.00 DOP 0": {
+            "cpr": 1.0,
+            "dop": 0.0,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.9142,
+                "mc_se": 0.0028006849162303133
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.5378,
+                "mc_se": 0.004985691125611373
+              },
+              "mean_cells_selected": 5.9814,
+              "mean_cells_se": 0.04901291289612418
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8393426226541758,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8966,
+                  "mc_se": 0.003044806069358113
+                },
+                "per_pixel_rate": 0.08995038461538461,
+                "per_pixel_se": 0.0008741954159671812,
+                "mean_pixels": 23.3871
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8727,
+                  "mc_se": 0.003333087307587366
+                },
+                "per_pixel_rate": 0.07964461538461538,
+                "per_pixel_se": 0.0008149410961395458,
+                "mean_pixels": 20.7076
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8727,
+                  "mc_se": 0.003333087307587366
+                },
+                "per_pixel_rate": 0.07964461538461538,
+                "per_pixel_se": 0.0008149410961395458,
+                "mean_pixels": 20.7076
+              }
+            },
+            "max_cpr": {
+              "median": 2.568942633873623,
+              "p95": 4.195897481647085
+            }
+          },
+          "ice-free CPR 0.7 DOP min 0.1765": {
+            "cpr": 0.7,
+            "dop": 0.17647058823529413,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7703,
+                "mc_se": 0.004206398816089601
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.3346,
+                "mc_se": 0.004718504424073374
+              },
+              "mean_cells_selected": 3.8434,
+              "mean_cells_se": 0.04090959549421566
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8393426226541758,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4803,
+                  "mc_se": 0.0049961175926913496
+                },
+                "per_pixel_rate": 0.01715730769230769,
+                "per_pixel_se": 0.0003184813443367056,
+                "mean_pixels": 4.4609
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4397,
+                  "mc_se": 0.0049635059181993525
+                },
+                "per_pixel_rate": 0.01455346153846154,
+                "per_pixel_se": 0.0002872306504876685,
+                "mean_pixels": 3.7839
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4397,
+                  "mc_se": 0.0049635059181993525
+                },
+                "per_pixel_rate": 0.01455346153846154,
+                "per_pixel_se": 0.0002872306504876685,
+                "mean_pixels": 3.7839
+              }
+            },
+            "max_cpr": {
+              "median": 1.8122336926284488,
+              "p95": 2.9938222491296647
+            }
+          },
+          "ice-free CPR 0.7 DOP 0.20": {
+            "cpr": 0.7,
+            "dop": 0.2,
+            "gamma_c": 0.09561828874675146,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7451,
+                "mc_se": 0.004358049907929005
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.3102,
+                "mc_se": 0.004625753560232105
+              },
+              "mean_cells_selected": 3.555,
+              "mean_cells_se": 0.03887658213968772
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8393426226541758,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4731,
+                  "mc_se": 0.0049927586562941335
+                },
+                "per_pixel_rate": 0.016075384615384613,
+                "per_pixel_se": 0.0003059993657594868,
+                "mean_pixels": 4.1796
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4321,
+                  "mc_se": 0.00495368135834351
+                },
+                "per_pixel_rate": 0.013574230769230769,
+                "per_pixel_se": 0.0002760051324428457,
+                "mean_pixels": 3.5293
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4321,
+                  "mc_se": 0.00495368135834351
+                },
+                "per_pixel_rate": 0.013574230769230769,
+                "per_pixel_se": 0.0002760051324428457,
+                "mean_pixels": 3.5293
+              }
+            },
+            "max_cpr": {
+              "median": 1.8045869747296672,
+              "p95": 2.96457912976891
+            }
+          },
+          "ice-free CPR 0.9 DOP min 0.0526": {
+            "cpr": 0.9,
+            "dop": 0.052631578947368425,
+            "gamma_c": 1.1422156601203747e-09,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.8907,
+                "mc_se": 0.0031201524001240703
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.4997,
+                "mc_se": 0.004999999099999919
+              },
+              "mean_cells_selected": 5.6238,
+              "mean_cells_se": 0.04958985048704153
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8393426226541758,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8061,
+                  "mc_se": 0.003953514765370176
+                },
+                "per_pixel_rate": 0.05783923076923077,
+                "per_pixel_se": 0.0006724255161130472,
+                "mean_pixels": 15.0382
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7734,
+                  "mc_se": 0.004186316280454691
+                },
+                "per_pixel_rate": 0.05049461538461539,
+                "per_pixel_se": 0.000618870837719808,
+                "mean_pixels": 13.1286
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7734,
+                  "mc_se": 0.004186316280454691
+                },
+                "per_pixel_rate": 0.05049461538461539,
+                "per_pixel_se": 0.000618870837719808,
+                "mean_pixels": 13.1286
+              }
+            },
+            "max_cpr": {
+              "median": 2.315006536504474,
+              "p95": 3.7795889223605053
+            }
+          },
+          "ice-free CPR 0.9 DOP 0.20": {
+            "cpr": 0.9,
+            "dop": 0.2,
+            "gamma_c": 0.19321835661585918,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7899,
+                "mc_se": 0.00407379417742232
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.3501,
+                "mc_se": 0.004770010377347202
+              },
+              "mean_cells_selected": 3.9909,
+              "mean_cells_se": 0.04088384605057098
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.8393426226541758,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7921,
+                  "mc_se": 0.004058048669003367
+                },
+                "per_pixel_rate": 0.055758076923076924,
+                "per_pixel_se": 0.0006705901210996006,
+                "mean_pixels": 14.4971
+              },
+              "at_N13p72": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7568,
+                  "mc_se": 0.004290148715371065
+                },
+                "per_pixel_rate": 0.04857538461538462,
+                "per_pixel_se": 0.0006165926897434295,
+                "mean_pixels": 12.6296
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7568,
+                  "mc_se": 0.004290148715371065
+                },
+                "per_pixel_rate": 0.04857538461538462,
+                "per_pixel_se": 0.0006165926897434295,
+                "mean_pixels": 12.6296
+              }
+            },
+            "max_cpr": {
+              "median": 2.2875875324754693,
+              "p95": 3.738133540486217
+            }
+          }
+        },
+        "N39": {
+          "looks": 10,
+          "achieved_enl": 38.00049152620793,
+          "null CPR 1.00 DOP 0": {
+            "cpr": 1.0,
+            "dop": 0.0,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.9919,
+                "mc_se": 0.000896347588829244
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.945,
+                "mc_se": 0.0022798026230356006
+              },
+              "mean_cells_selected": 21.8766,
+              "mean_cells_se": 0.1298431483302713
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4618809362649234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.8938,
+                  "mc_se": 0.0030809342738851143
+                },
+                "per_pixel_rate": 0.09326,
+                "per_pixel_se": 0.0009071826532948095,
+                "mean_pixels": 24.2476
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.904,
+                  "mc_se": 0.0029459124223235145
+                },
+                "per_pixel_rate": 0.09742269230769231,
+                "per_pixel_se": 0.0009306161752186078,
+                "mean_pixels": 25.3299
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.4034,
+                  "mc_se": 0.00490579697908505
+                },
+                "per_pixel_rate": 0.012826153846153847,
+                "per_pixel_se": 0.0002672590920228049,
+                "mean_pixels": 3.3348
+              }
+            },
+            "max_cpr": {
+              "median": 1.8074207857296876,
+              "p95": 2.4873689416152356
+            }
+          },
+          "ice-free CPR 0.7 DOP min 0.1765": {
+            "cpr": 0.7,
+            "dop": 0.17647058823529413,
+            "gamma_c": 0.0,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.7556,
+                "mc_se": 0.0042973089253624756
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.4844,
+                "mc_se": 0.0049975658074706735
+              },
+              "mean_cells_selected": 6.7878,
+              "mean_cells_se": 0.07847262523511706
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4618809362649234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.2265,
+                  "mc_se": 0.004185663029915332
+                },
+                "per_pixel_rate": 0.005293076923076924,
+                "per_pixel_se": 0.00015918424867929464,
+                "mean_pixels": 1.3762
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.2367,
+                  "mc_se": 0.004250565962316077
+                },
+                "per_pixel_rate": 0.005643846153846154,
+                "per_pixel_se": 0.00016529418018666783,
+                "mean_pixels": 1.4674
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.0246,
+                  "mc_se": 0.0015490267912466847
+                },
+                "per_pixel_rate": 0.0003273076923076923,
+                "per_pixel_se": 3.0228903885888825e-05,
+                "mean_pixels": 0.0851
+              }
+            },
+            "max_cpr": {
+              "median": 1.2693288703477237,
+              "p95": 1.7617872810212127
+            }
+          },
+          "ice-free CPR 0.7 DOP 0.20": {
+            "cpr": 0.7,
+            "dop": 0.2,
+            "gamma_c": 0.09561828874675146,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.6904,
+                "mc_se": 0.0046232871422830744
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.4104,
+                "mc_se": 0.004919063325471628
+              },
+              "mean_cells_selected": 5.5941,
+              "mean_cells_se": 0.07059130847550021
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4618809362649234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.2248,
+                  "mc_se": 0.004174505479694571
+                },
+                "per_pixel_rate": 0.005305,
+                "per_pixel_se": 0.00015638238627601713,
+                "mean_pixels": 1.3793
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.2351,
+                  "mc_se": 0.004240613045303709
+                },
+                "per_pixel_rate": 0.005696923076923077,
+                "per_pixel_se": 0.00016341787582099733,
+                "mean_pixels": 1.4812
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.0225,
+                  "mc_se": 0.001483028994996389
+                },
+                "per_pixel_rate": 0.00024500000000000005,
+                "per_pixel_se": 2.3761651705777805e-05,
+                "mean_pixels": 0.0637
+              }
+            },
+            "max_cpr": {
+              "median": 1.2651140095533766,
+              "p95": 1.7660340392515348
+            }
+          },
+          "ice-free CPR 0.9 DOP min 0.0526": {
+            "cpr": 0.9,
+            "dop": 0.052631578947368425,
+            "gamma_c": 1.1422156601203747e-09,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.9744,
+                "mc_se": 0.0015793872229443913
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.884,
+                "mc_se": 0.0032022492095400697
+              },
+              "mean_cells_selected": 18.0564,
+              "mean_cells_se": 0.12367437664748472
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4618809362649234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7311,
+                  "mc_se": 0.004433878550434146
+                },
+                "per_pixel_rate": 0.04598807692307692,
+                "per_pixel_se": 0.000602422593553859,
+                "mean_pixels": 11.9569
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7461,
+                  "mc_se": 0.004352410711318499
+                },
+                "per_pixel_rate": 0.04838269230769231,
+                "per_pixel_se": 0.0006204156127980309,
+                "mean_pixels": 12.5795
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.2086,
+                  "mc_se": 0.004063078143476938
+                },
+                "per_pixel_rate": 0.004758846153846154,
+                "per_pixel_se": 0.00014785180918827157,
+                "mean_pixels": 1.2373
+              }
+            },
+            "max_cpr": {
+              "median": 1.6274038439238727,
+              "p95": 2.245124103902899
+            }
+          },
+          "ice-free CPR 0.9 DOP 0.20": {
+            "cpr": 0.9,
+            "dop": 0.2,
+            "gamma_c": 0.19321835661585918,
+            "trials": 10000,
+            "joint_rule": {
+              "p_at_least_1_cell": {
+                "rate": 0.8191,
+                "mc_se": 0.0038493530625288187
+              },
+              "p_at_least_5_cells": {
+                "rate": 0.5468,
+                "mc_se": 0.004978049417191437
+              },
+              "mean_cells_selected": 7.795,
+              "mean_cells_se": 0.08192330952094334
+            },
+            "cpr_only": {
+              "at_achieved_enl": {
+                "crit": 1.4618809362649234,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7078,
+                  "mc_se": 0.004547737459440683
+                },
+                "per_pixel_rate": 0.04297961538461538,
+                "per_pixel_se": 0.0005814372538526076,
+                "mean_pixels": 11.1747
+              },
+              "at_N39": {
+                "crit": 1.451846058638269,
+                "p_at_least_1_pixel": {
+                  "rate": 0.7205,
+                  "mc_se": 0.004487535515179796
+                },
+                "per_pixel_rate": 0.045292307692307694,
+                "per_pixel_se": 0.0005995579290482597,
+                "mean_pixels": 11.776
+              },
+              "at_1p895": {
+                "crit": 1.8946236969971033,
+                "p_at_least_1_pixel": {
+                  "rate": 0.1948,
+                  "mc_se": 0.003960466639172713
+                },
+                "per_pixel_rate": 0.004228846153846153,
+                "per_pixel_se": 0.00014051540000383305,
+                "mean_pixels": 1.0995
+              }
+            },
+            "max_cpr": {
+              "median": 1.6098782057737901,
+              "p95": 2.2198430529829922
+            }
+          }
+        }
+      }
+    },
+    "gate": {
+      "reproduces_v2_on_the_null": true,
+      "same_looks_as_v2": true,
+      "v2_joint_ge1": 0.8824,
+      "v3_joint_ge1": 0.8788,
+      "v2_fwe_1p895": 0.852,
+      "v3_fwe_1p895": 0.8602,
+      "verdict": "PASS"
+    }
+  },
+  "run_info_v3": {
+    "wall_s": 1090.5,
+    "peak_rss_mb": 189,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
   }
 }

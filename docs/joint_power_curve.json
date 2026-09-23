@@ -28909,7 +28909,8 @@
     "size": "max over the null cells (CPR 1.00, DOP 0-0.13) of P(joint)",
     "power": "P(joint) at the in-band populations",
     "ratio_to_null_same_dop": "P(joint) in band / P(joint) at CPR 1.00 interpolated to the same DOP",
-    "joint_and_significant": "P(joint AND R > crit_95(F(2N, 2N)))"
+    "joint_and_significant": "P(joint AND R > crit_95(F(2N, 2N)))",
+    "strict_band": "in-band populations with population DOP < 0.13 only (drops 'DOP 0.13' and 'CPR 1.299 DOP min 0.1301')"
   },
   "summary": {
     "A": {
@@ -28987,6 +28988,18 @@
               "ratio_to_null_same_dop": 1.183574879227053
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.658,
+            "power_max_percent": 0.73,
+            "max_ratio_to_null_same_dop": 1.1344631095981648,
+            "max_excess_over_null_same_dop_percent": 13.446310959816476
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29062,6 +29075,18 @@
               "ratio_to_null_same_dop": 1.0569758948137327
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 1.467,
+            "power_max_percent": 1.585,
+            "max_ratio_to_null_same_dop": 1.1031539163299882,
+            "max_excess_over_null_same_dop_percent": 10.315391632998816
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29137,6 +29162,18 @@
               "ratio_to_null_same_dop": 1.2287822878228785
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 3.496,
+            "power_max_percent": 3.598,
+            "max_ratio_to_null_same_dop": 1.2051940092695446,
+            "max_excess_over_null_same_dop_percent": 20.519400926954457
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29212,6 +29249,18 @@
               "ratio_to_null_same_dop": 1.2056737588652482
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 4.115,
+            "power_max_percent": 4.441,
+            "max_ratio_to_null_same_dop": 1.1800623655394138,
+            "max_excess_over_null_same_dop_percent": 18.006236553941378
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29287,6 +29336,18 @@
               "ratio_to_null_same_dop": 1.2642413987591654
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 4.58,
+            "power_max_percent": 4.923,
+            "max_ratio_to_null_same_dop": 1.2005708682439975,
+            "max_excess_over_null_same_dop_percent": 20.05708682439975
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29362,6 +29423,18 @@
               "ratio_to_null_same_dop": 1.2066159096875821
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 4.97,
+            "power_max_percent": 5.216,
+            "max_ratio_to_null_same_dop": 1.228643630170851,
+            "max_excess_over_null_same_dop_percent": 22.864363017085097
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29437,6 +29510,18 @@
               "ratio_to_null_same_dop": 1.2066780404582014
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 5.382,
+            "power_max_percent": 5.716,
+            "max_ratio_to_null_same_dop": 1.2205106668906431,
+            "max_excess_over_null_same_dop_percent": 22.051066689064314
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29512,6 +29597,18 @@
               "ratio_to_null_same_dop": 1.202161913523459
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 5.778,
+            "power_max_percent": 6.104,
+            "max_ratio_to_null_same_dop": 1.2285484785484784,
+            "max_excess_over_null_same_dop_percent": 22.854847854847836
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29587,6 +29684,18 @@
               "ratio_to_null_same_dop": 1.2627927146574154
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 6.043,
+            "power_max_percent": 6.612,
+            "max_ratio_to_null_same_dop": 1.2485251509756692,
+            "max_excess_over_null_same_dop_percent": 24.85251509756692
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29662,6 +29771,18 @@
               "ratio_to_null_same_dop": 1.3651562499999998
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 9.634,
+            "power_max_percent": 10.664,
+            "max_ratio_to_null_same_dop": 1.3116273441006066,
+            "max_excess_over_null_same_dop_percent": 31.162734410060654
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29737,6 +29858,18 @@
               "ratio_to_null_same_dop": 1.4534636101716147
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 12.784,
+            "power_max_percent": 14.264,
+            "max_ratio_to_null_same_dop": 1.4077629909987806,
+            "max_excess_over_null_same_dop_percent": 40.77629909987805
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29812,6 +29945,18 @@
               "ratio_to_null_same_dop": 1.6239208633093527
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 20.426,
+            "power_max_percent": 24.644,
+            "max_ratio_to_null_same_dop": 1.5332021150606325,
+            "max_excess_over_null_same_dop_percent": 53.32021150606325
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -29887,6 +30032,18 @@
               "ratio_to_null_same_dop": 1.7424906132665832
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 26.504,
+            "power_max_percent": 33.549,
+            "max_ratio_to_null_same_dop": 1.6651998985440133,
+            "max_excess_over_null_same_dop_percent": 66.51998985440133
+          },
           "joint_and_significant_count": 2
         },
         {
@@ -29962,6 +30119,18 @@
               "ratio_to_null_same_dop": 1.797355278891468
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 31.713,
+            "power_max_percent": 41.577999999999996,
+            "max_ratio_to_null_same_dop": 1.756689774590038,
+            "max_excess_over_null_same_dop_percent": 75.6689774590038
+          },
           "joint_and_significant_count": 7131
         },
         {
@@ -30037,6 +30206,18 @@
               "ratio_to_null_same_dop": 1.9242818226844969
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 40.946,
+            "power_max_percent": 57.387,
+            "max_ratio_to_null_same_dop": 1.8796332346655462,
+            "max_excess_over_null_same_dop_percent": 87.96332346655463
+          },
           "joint_and_significant_count": 57813
         },
         {
@@ -30112,10 +30293,23 @@
               "ratio_to_null_same_dop": 1.9853128991060025
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 46.800000000000004,
+            "power_max_percent": 68.447,
+            "max_ratio_to_null_same_dop": 1.9416312099238926,
+            "max_excess_over_null_same_dop_percent": 94.16312099238925
+          },
           "joint_and_significant_count": 119094
         }
       ],
       "first_N_size_exceeds_5pct": 19,
+      "first_N_size_within_2se_of_5pct": 18,
       "first_N_joint_and_significant_nonzero": 80,
       "joint_and_significant_zero_for_every_N_below_79p6": true
     },
@@ -30194,6 +30388,18 @@
               "ratio_to_null_same_dop": 1.1669691470054446
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.61,
+            "power_max_percent": 0.642,
+            "max_ratio_to_null_same_dop": 1.1107266435986158,
+            "max_excess_over_null_same_dop_percent": 11.072664359861584
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30269,6 +30475,18 @@
               "ratio_to_null_same_dop": 1.1015228426395938
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 1.307,
+            "power_max_percent": 1.4040000000000001,
+            "max_ratio_to_null_same_dop": 1.1606147817035088,
+            "max_excess_over_null_same_dop_percent": 16.061478170350885
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30344,6 +30562,18 @@
               "ratio_to_null_same_dop": 1.142628205128205
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 2.972,
+            "power_max_percent": 3.289,
+            "max_ratio_to_null_same_dop": 1.135188669901951,
+            "max_excess_over_null_same_dop_percent": 13.51886699019511
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30419,6 +30649,18 @@
               "ratio_to_null_same_dop": 1.1848341232227488
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 3.58,
+            "power_max_percent": 3.903,
+            "max_ratio_to_null_same_dop": 1.1340810963018584,
+            "max_excess_over_null_same_dop_percent": 13.408109630185837
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30494,6 +30736,18 @@
               "ratio_to_null_same_dop": 1.1831559173450217
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 3.9690000000000003,
+            "power_max_percent": 4.175,
+            "max_ratio_to_null_same_dop": 1.1780814388109582,
+            "max_excess_over_null_same_dop_percent": 17.808143881095816
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30569,6 +30823,18 @@
               "ratio_to_null_same_dop": 1.2208407341622263
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 4.167,
+            "power_max_percent": 4.55,
+            "max_ratio_to_null_same_dop": 1.142037841568882,
+            "max_excess_over_null_same_dop_percent": 14.203784156888211
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30644,6 +30910,18 @@
               "ratio_to_null_same_dop": 1.193234100135318
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 4.537,
+            "power_max_percent": 4.872,
+            "max_ratio_to_null_same_dop": 1.1395255813953487,
+            "max_excess_over_null_same_dop_percent": 13.952558139534865
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30719,6 +30997,18 @@
               "ratio_to_null_same_dop": 1.2298911600743296
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 4.864,
+            "power_max_percent": 5.333,
+            "max_ratio_to_null_same_dop": 1.207647107506414,
+            "max_excess_over_null_same_dop_percent": 20.76471075064139
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30794,6 +31084,18 @@
               "ratio_to_null_same_dop": 1.2512437810945274
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 5.188000000000001,
+            "power_max_percent": 5.684,
+            "max_ratio_to_null_same_dop": 1.195085743537241,
+            "max_excess_over_null_same_dop_percent": 19.508574353724107
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30869,6 +31171,18 @@
               "ratio_to_null_same_dop": 1.3010734652801073
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 8.36,
+            "power_max_percent": 9.223,
+            "max_ratio_to_null_same_dop": 1.2719199386917908,
+            "max_excess_over_null_same_dop_percent": 27.191993869179075
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -30944,6 +31258,18 @@
               "ratio_to_null_same_dop": 1.3659381663113008
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 11.218,
+            "power_max_percent": 12.443,
+            "max_ratio_to_null_same_dop": 1.3317885220817138,
+            "max_excess_over_null_same_dop_percent": 33.178852208171385
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31019,6 +31345,18 @@
               "ratio_to_null_same_dop": 1.5695158630057244
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 18.462,
+            "power_max_percent": 21.872,
+            "max_ratio_to_null_same_dop": 1.537844991947874,
+            "max_excess_over_null_same_dop_percent": 53.78449919478741
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31094,6 +31432,18 @@
               "ratio_to_null_same_dop": 1.6881094812750963
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 24.136,
+            "power_max_percent": 30.014999999999997,
+            "max_ratio_to_null_same_dop": 1.5977522139515723,
+            "max_excess_over_null_same_dop_percent": 59.77522139515723
+          },
           "joint_and_significant_count": 4
         },
         {
@@ -31169,6 +31519,18 @@
               "ratio_to_null_same_dop": 1.7593918370359438
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 28.965999999999998,
+            "power_max_percent": 37.411,
+            "max_ratio_to_null_same_dop": 1.6992252171608093,
+            "max_excess_over_null_same_dop_percent": 69.92252171608094
+          },
           "joint_and_significant_count": 6579
         },
         {
@@ -31244,6 +31606,18 @@
               "ratio_to_null_same_dop": 1.909681569636539
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 38.512,
+            "power_max_percent": 52.608999999999995,
+            "max_ratio_to_null_same_dop": 1.872062479858419,
+            "max_excess_over_null_same_dop_percent": 87.20624798584188
+          },
           "joint_and_significant_count": 53041
         },
         {
@@ -31319,10 +31693,23 @@
               "ratio_to_null_same_dop": 1.9143575353677074
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 44.36,
+            "power_max_percent": 63.763000000000005,
+            "max_ratio_to_null_same_dop": 1.9144957049644662,
+            "max_excess_over_null_same_dop_percent": 91.44957049644663
+          },
           "joint_and_significant_count": 110876
         }
       ],
       "first_N_size_exceeds_5pct": 21,
+      "first_N_size_within_2se_of_5pct": 20,
       "first_N_joint_and_significant_nonzero": 80,
       "joint_and_significant_zero_for_every_N_below_79p6": true
     },
@@ -31401,6 +31788,18 @@
               "ratio_to_null_same_dop": 0.9615384615384617
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.04,
+            "power_max_percent": 0.047,
+            "max_ratio_to_null_same_dop": 1.3608247422680417,
+            "max_excess_over_null_same_dop_percent": 36.08247422680417
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31476,6 +31875,18 @@
               "ratio_to_null_same_dop": 0.8165137614678899
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.087,
+            "power_max_percent": 0.11499999999999999,
+            "max_ratio_to_null_same_dop": 1.0790884718498657,
+            "max_excess_over_null_same_dop_percent": 7.908847184986567
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31551,6 +31962,18 @@
               "ratio_to_null_same_dop": 1.0116731517509727
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.262,
+            "power_max_percent": 0.293,
+            "max_ratio_to_null_same_dop": 1.108135642555669,
+            "max_excess_over_null_same_dop_percent": 10.813564255566899
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31626,6 +32049,18 @@
               "ratio_to_null_same_dop": 1.0778816199376946
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.329,
+            "power_max_percent": 0.347,
+            "max_ratio_to_null_same_dop": 1.1026244556902436,
+            "max_excess_over_null_same_dop_percent": 10.262445569024358
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31701,6 +32136,18 @@
               "ratio_to_null_same_dop": 1.207667731629393
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.33999999999999997,
+            "power_max_percent": 0.391,
+            "max_ratio_to_null_same_dop": 1.1203193522995614,
+            "max_excess_over_null_same_dop_percent": 12.031935229956137
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31776,6 +32223,18 @@
               "ratio_to_null_same_dop": 1.032418952618454
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.40800000000000003,
+            "power_max_percent": 0.43299999999999994,
+            "max_ratio_to_null_same_dop": 1.0653504560729714,
+            "max_excess_over_null_same_dop_percent": 6.535045607297141
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31851,6 +32310,18 @@
               "ratio_to_null_same_dop": 0.9002217294900222
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.424,
+            "power_max_percent": 0.481,
+            "max_ratio_to_null_same_dop": 1.0940308443359592,
+            "max_excess_over_null_same_dop_percent": 9.403084433595922
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -31926,6 +32397,18 @@
               "ratio_to_null_same_dop": 1.0087336244541485
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.443,
+            "power_max_percent": 0.501,
+            "max_ratio_to_null_same_dop": 1.0889152341434498,
+            "max_excess_over_null_same_dop_percent": 8.89152341434498
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -32001,6 +32484,18 @@
               "ratio_to_null_same_dop": 1.1164241164241162
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.503,
+            "power_max_percent": 0.544,
+            "max_ratio_to_null_same_dop": 1.0787813232377863,
+            "max_excess_over_null_same_dop_percent": 7.8781323237786305
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -32076,6 +32571,18 @@
               "ratio_to_null_same_dop": 1.1428571428571428
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 0.872,
+            "power_max_percent": 0.9039999999999999,
+            "max_ratio_to_null_same_dop": 1.0248998781124847,
+            "max_excess_over_null_same_dop_percent": 2.489987811248473
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -32151,6 +32658,18 @@
               "ratio_to_null_same_dop": 1.0336206896551725
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 1.233,
+            "power_max_percent": 1.336,
+            "max_ratio_to_null_same_dop": 1.0850561134081513,
+            "max_excess_over_null_same_dop_percent": 8.505611340815133
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -32226,6 +32745,18 @@
               "ratio_to_null_same_dop": 1.1205164992826397
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 2.403,
+            "power_max_percent": 2.574,
+            "max_ratio_to_null_same_dop": 1.109133801733422,
+            "max_excess_over_null_same_dop_percent": 10.913380173342201
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -32301,6 +32832,18 @@
               "ratio_to_null_same_dop": 1.1280853902601735
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 3.56,
+            "power_max_percent": 3.9050000000000002,
+            "max_ratio_to_null_same_dop": 1.1360804851157664,
+            "max_excess_over_null_same_dop_percent": 13.608048511576643
+          },
           "joint_and_significant_count": 0
         },
         {
@@ -32376,6 +32919,18 @@
               "ratio_to_null_same_dop": 1.2003154574132493
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 4.759,
+            "power_max_percent": 5.223,
+            "max_ratio_to_null_same_dop": 1.1610473607344043,
+            "max_excess_over_null_same_dop_percent": 16.104736073440428
+          },
           "joint_and_significant_count": 1232
         },
         {
@@ -32451,6 +33006,18 @@
               "ratio_to_null_same_dop": 1.2946001367053996
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 8.311,
+            "power_max_percent": 8.905000000000001,
+            "max_ratio_to_null_same_dop": 1.2798770297786422,
+            "max_excess_over_null_same_dop_percent": 27.987702977864217
+          },
           "joint_and_significant_count": 11366
         },
         {
@@ -32526,10 +33093,23 @@
               "ratio_to_null_same_dop": 1.3816955429176034
             }
           ],
+          "strict_band": {
+            "populations": [
+              "band CPR 1.05 DOP min 0.0244",
+              "band CPR 1.1 DOP min 0.0476",
+              "band CPR 1.2 DOP min 0.0909",
+              "band CPR 1.25 DOP min 0.1111"
+            ],
+            "power_min_percent": 11.327,
+            "power_max_percent": 13.034,
+            "max_ratio_to_null_same_dop": 1.3207846219623323,
+            "max_excess_over_null_same_dop_percent": 32.078462196233225
+          },
           "joint_and_significant_count": 27801
         }
       ],
       "first_N_size_exceeds_5pct": 150,
+      "first_N_size_within_2se_of_5pct": 100,
       "first_N_joint_and_significant_nonzero": 100,
       "joint_and_significant_zero_for_every_N_below_79p6": true
     }
@@ -32568,6 +33148,15 @@
   "run_info": {
     "wall_s": 2394.8,
     "peak_rss_mb": 510,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  },
+  "run_info_strict_summary": {
+    "wall_s": 0.1,
+    "peak_rss_mb": 92,
     "python": "3.13.1",
     "numpy": "2.2.2",
     "scipy": "1.17.1",

@@ -202,6 +202,56 @@ def n_where_mean_dop_is(target: float) -> float:
     return float(brentq(lambda n: mean_sample_dop_unpolarized(n) - target, 1.5, 1e6))
 
 
+def strict_band(cn, band) -> dict:
+    keep = {c["population"] for c in cn if c["kind"] == "band" and c["pop_dop"] < DOP_THRESHOLD - 1e-12}
+    sb = [b for b in band if b["population"] in keep]
+    return {"populations": [b["population"] for b in sb],
+            "power_min_percent": min(b["power_percent"] for b in sb),
+            "power_max_percent": max(b["power_percent"] for b in sb),
+            "max_ratio_to_null_same_dop": max(b["ratio_to_null_same_dop"] for b in sb),
+            "max_excess_over_null_same_dop_percent":
+                100 * (max(b["ratio_to_null_same_dop"] for b in sb) - 1)}
+
+
+def curve_summary(cells):
+    """Per-N size and in-band rates of one arm. The STRICT band keeps only the
+    in-band populations with population DOP < 0.13 (the band's definition):
+    'DOP 0.13' and 'CPR 1.299 DOP min 0.1301' sit on or outside its edge."""
+    out = []
+    for n in CURVE_N:
+        cn = [c for c in cells if c["N"] == n]
+        nulls = [c for c in cn if c["kind"] == "null"]
+        size_c = max(nulls, key=lambda c: c["p_joint"]["percent"])
+        nd = np.array([c["pop_dop"] for c in nulls])
+        nv = np.array([c["p_joint"]["percent"] for c in nulls])
+        band = []
+        for c in (c for c in cn if c["kind"] == "band"):
+            ref = float(np.interp(c["pop_dop"], nd, nv))
+            band.append({"population": c["population"], "power_percent": c["p_joint"]["percent"],
+                         "mc_se_percent": c["p_joint"]["mc_se_percent"],
+                         "null_at_same_dop_percent": ref,
+                         "ratio_to_null_same_dop": c["p_joint"]["percent"] / ref if ref > 0 else None})
+        out.append({"N": n, "size_percent": size_c["p_joint"]["percent"],
+                    "size_mc_se_percent": size_c["p_joint"]["mc_se_percent"],
+                    "size_at": size_c["population"],
+                    "power_max_percent": max(b["power_percent"] for b in band),
+                    "power_min_percent": min(b["power_percent"] for b in band),
+                    "max_ratio_to_null": max(b["ratio_to_null_same_dop"] for b in band
+                                             if b["ratio_to_null_same_dop"]),
+                    "band": band,
+                    "strict_band": strict_band(cn, band),
+                    "joint_and_significant_count": sum(c["n_joint_and_significant"] for c in cn)})
+    first_size = next((r["N"] for r in out if r["size_percent"] > 5.0), None)
+    first_sig = next((r["N"] for r in out if r["joint_and_significant_count"] > 0), None)
+    below_edge_zero = all(r["joint_and_significant_count"] == 0 for r in out if r["N"] < N_EDGE)
+    first_2se = next((r["N"] for r in out
+                      if r["size_percent"] + 2 * r["size_mc_se_percent"] >= 5.0), None)
+    return {"by_N": out, "first_N_size_exceeds_5pct": first_size,
+            "first_N_size_within_2se_of_5pct": first_2se,
+            "first_N_joint_and_significant_nonzero": first_sig,
+            "joint_and_significant_zero_for_every_N_below_79p6": below_edge_zero}
+
+
 def part_c(trials: int) -> dict:
     """The joint rule as a test across N, three arms."""
     rng = np.random.default_rng(SEED_C)
@@ -230,38 +280,7 @@ def part_c(trials: int) -> dict:
             print(f"  arm {arm} N {n:>3}: size {size:6.3f} %", flush=True)
         arms[arm] = {"cells": cells, "look_correlation": chol_info or None}
 
-    def summary(cells):
-        out = []
-        for n in CURVE_N:
-            cn = [c for c in cells if c["N"] == n]
-            nulls = [c for c in cn if c["kind"] == "null"]
-            size_c = max(nulls, key=lambda c: c["p_joint"]["percent"])
-            nd = np.array([c["pop_dop"] for c in nulls])
-            nv = np.array([c["p_joint"]["percent"] for c in nulls])
-            band = []
-            for c in (c for c in cn if c["kind"] == "band"):
-                ref = float(np.interp(c["pop_dop"], nd, nv))
-                band.append({"population": c["population"], "power_percent": c["p_joint"]["percent"],
-                             "mc_se_percent": c["p_joint"]["mc_se_percent"],
-                             "null_at_same_dop_percent": ref,
-                             "ratio_to_null_same_dop": c["p_joint"]["percent"] / ref if ref > 0 else None})
-            out.append({"N": n, "size_percent": size_c["p_joint"]["percent"],
-                        "size_mc_se_percent": size_c["p_joint"]["mc_se_percent"],
-                        "size_at": size_c["population"],
-                        "power_max_percent": max(b["power_percent"] for b in band),
-                        "power_min_percent": min(b["power_percent"] for b in band),
-                        "max_ratio_to_null": max(b["ratio_to_null_same_dop"] for b in band
-                                                 if b["ratio_to_null_same_dop"]),
-                        "band": band,
-                        "joint_and_significant_count": sum(c["n_joint_and_significant"] for c in cn)})
-        first_size = next((r["N"] for r in out if r["size_percent"] > 5.0), None)
-        first_sig = next((r["N"] for r in out if r["joint_and_significant_count"] > 0), None)
-        below_edge_zero = all(r["joint_and_significant_count"] == 0 for r in out if r["N"] < N_EDGE)
-        return {"by_N": out, "first_N_size_exceeds_5pct": first_size,
-                "first_N_joint_and_significant_nonzero": first_sig,
-                "joint_and_significant_zero_for_every_N_below_79p6": below_edge_zero}
-
-    summ = {arm: summary(v["cells"]) for arm, v in arms.items()}
+    summ = {arm: curve_summary(v["cells"]) for arm, v in arms.items()}
     a14 = next(r for r in summ["A"]["by_N"] if r["N"] == 14)
     gate = {"arm_A_N14_size_percent": a14["size_percent"], "reference_percent": 3.575,
             "mc_se_percent": a14["size_mc_se_percent"],
@@ -395,7 +414,33 @@ def main() -> int:
     ap.add_argument("--trials-b", type=int, default=100_000)
     ap.add_argument("--curve", action="store_true",
                     help="run only Task 1's joint power curve -> joint_power_curve.json")
+    ap.add_argument("--strict-summary", action="store_true",
+                    help=("recompute joint_power_curve.json's summaries from its stored cells "
+                          "(no simulation) -- adds the strict-band keys"))
     args = ap.parse_args()
+    if args.strict_summary:
+        doc = json.loads(OUT_C.read_text(encoding="utf-8"))
+        for arm in ("A", "B", "C"):
+            new = curve_summary(doc["arms"][arm]["cells"])
+            old = doc["summary"][arm]
+            for r0, r1 in zip(old["by_N"], new["by_N"]):
+                assert r0["size_percent"] == r1["size_percent"] and r0["band"] == r1["band"], arm
+            assert old["first_N_size_exceeds_5pct"] == new["first_N_size_exceeds_5pct"]
+            doc["summary"][arm] = new
+            for r in new["by_N"]:
+                if r["N"] in (14, 38):
+                    sb = r["strict_band"]
+                    print(f"  arm {arm} N {r['N']}: strict band {sb['power_min_percent']:.3f}-"
+                          f"{sb['power_max_percent']:.3f} % (size {r['size_percent']:.3f}); max ratio "
+                          f"{sb['max_ratio_to_null_same_dop']:.4f}")
+            print(f"  arm {arm}: size first > 5 % at N = {new['first_N_size_exceeds_5pct']}, "
+                  f"within 2 SE of 5 % at N = {new['first_N_size_within_2se_of_5pct']}")
+        doc["definitions"]["strict_band"] = ("in-band populations with population DOP < 0.13 only "
+                                             "(drops 'DOP 0.13' and 'CPR 1.299 DOP min 0.1301')")
+        doc["run_info_strict_summary"] = run_info()
+        OUT_C.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  rewrote the summaries of {OUT_C.relative_to(BASE_DIR)}")
+        return 0
     if args.curve:
         print("=" * 78)
         print("THE JOINT RULE AS A TEST ACROSS N — three arms")

@@ -53,6 +53,7 @@ and family-wise figures, computed from the same draws.
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import sys
 from datetime import datetime, timezone
@@ -96,6 +97,17 @@ BOXCAR = 5
 BURN = 64
 LOOK_CHOICES = (2, 3, 4, 5, 6)
 CAL_FIELDS = 3
+#: v14 final pass B2: the F2 null at the complex product's look count, and
+#: ice-free populations, from correlated circular channels
+SEED_COMPLEX_V3 = 20261006
+V3_TARGETS = (("N13p72", 13.72), ("N39", 39.4))
+V3_LOOK_CHOICES = tuple(range(2, 17))
+V3_POPULATIONS = (("null CPR 1.00 DOP 0", 1.0, 0.0),
+                  ("ice-free CPR 0.7 DOP min 0.1765", 0.7, 0.3 / 1.7),
+                  ("ice-free CPR 0.7 DOP 0.20", 0.7, 0.20),
+                  ("ice-free CPR 0.9 DOP min 0.0526", 0.9, 0.1 / 1.9),
+                  ("ice-free CPR 0.9 DOP 0.20", 0.9, 0.20))
+GRID_JSON = BASE_DIR / "docs" / "complex_grid_correlation.json"
 
 for _s in (sys.stdout, sys.stderr):
     try:
@@ -395,11 +407,198 @@ def complex_field_v2(box_amp: np.ndarray, trials: int, n_looks: int) -> dict:
     return out
 
 
+# ---------------------------------------------------------------- v3 (B2)
+def ar1_stationary(rng, shape, rho_az: float, rho_rg: float, batch: int) -> np.ndarray:
+    """(batch, H, W) unit-variance circular complex Gaussian field with
+    separable correlation rho_az^|di| rho_rg^|dj|, EXACTLY stationary: the
+    first row / column is the innovation itself and the filter starts from it
+    (no burn-in; v1/v2 discarded 64 samples, leaving 0.915^64 = 0.3 % of the
+    start-up transient)."""
+    H, W = shape
+    w = (rng.standard_normal((batch, H, W)) + 1j * rng.standard_normal((batch, H, W))) / np.sqrt(2.0)
+    x = np.empty_like(w)
+    x[:, 0] = w[:, 0]
+    x[:, 1:], _ = lfilter([np.sqrt(1 - rho_az ** 2)], [1.0, -rho_az], w[:, 1:], axis=1,
+                          zi=rho_az * w[:, :1])
+    y = np.empty_like(x)
+    y[:, :, 0] = x[:, :, 0]
+    y[:, :, 1:], _ = lfilter([np.sqrt(1 - rho_rg ** 2)], [1.0, -rho_rg], x[:, :, 1:], axis=2,
+                             zi=rho_rg * x[:, :, :1])
+    return y
+
+
+def calibrate_v3(rng, rho_f: tuple) -> dict:
+    """The boxcar'd patch-mode ENL for each L, with the production estimator
+    (16-px patches, mode), mean of CAL_FIELDS fields of 1024 x 512 per L."""
+    spec = importlib.util.spec_from_file_location(
+        "measure_enl", Path(__file__).resolve().parent / "measure_enl.py")
+    ME = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ME)
+    out = {}
+    ones = np.ones((1024, 512), dtype=bool)
+    for L in V3_LOOK_CHOICES:
+        boxes = []
+        for _ in range(CAL_FIELDS):
+            i = np.zeros((1024, 512))
+            for _l in range(L):
+                i += np.abs(ar1_stationary(rng, (1024, 512), *rho_f, 1)[0]) ** 2
+            boxes.append(ME.mode_of(ME.patch_ratios(uniform_filter(i / L, BOXCAR), ones, 16)))
+        out[str(L)] = float(np.mean(boxes))
+    return out
+
+
+def choose_looks(curve: dict, target: float, pin: int | None = None) -> dict:
+    """L nearest the target on the calibration curve, unless pinned."""
+    chosen = pin if pin is not None else int(min(V3_LOOK_CHOICES,
+                                                 key=lambda L: abs(curve[str(L)] - target)))
+    return {"target": target, "chosen": chosen, "achieved": curve[str(chosen)],
+            "pinned": pin is not None}
+
+
+def _v3_job(args) -> dict:
+    """One (lag set, target, population): `trials` realizations over F2's mask."""
+    (seed, box_amp, L, rho_sc, rho_oc, cpr, dop, crits, trials) = args
+    rng = np.random.default_rng(seed)
+    q = (cpr - 1.0) / (cpr + 1.0)
+    gam = float(np.sqrt(max(dop * dop - q * q, 0.0) / (1.0 - q * q)))
+    a, b = cpr / (1 + cpr), 1 / (1 + cpr)
+    H, W = box_amp.shape
+    npx = int(box_amp.sum())
+    sel, mx = [], []
+    exc = {k: [] for k in crits}
+    batch = 100
+    for _ in range(0, trials, batch):
+        sc = np.zeros((batch, H, W))
+        oc = np.zeros((batch, H, W))
+        x = np.zeros((batch, H, W), dtype=np.complex128)
+        for _l in range(L):
+            w_oc = ar1_stationary(rng, (H, W), *rho_oc, batch)
+            w_sc = ar1_stationary(rng, (H, W), *rho_sc, batch)
+            z_oc = np.sqrt(b) * w_oc
+            z_sc = np.sqrt(a) * (gam * w_oc + np.sqrt(1 - gam * gam) * w_sc)
+            sc += np.abs(z_sc) ** 2
+            oc += np.abs(z_oc) ** 2
+            x += z_sc * np.conj(z_oc)
+        sc[:, ~box_amp] = 0.0
+        oc[:, ~box_amp] = 0.0
+        x[:, ~box_amp] = 0.0
+        bs = uniform_filter(sc, size=(1, BOXCAR, BOXCAR), mode="constant")
+        bo = uniform_filter(oc, size=(1, BOXCAR, BOXCAR), mode="constant")
+        bx = (uniform_filter(x.real, size=(1, BOXCAR, BOXCAR), mode="constant")
+              + 1j * uniform_filter(x.imag, size=(1, BOXCAR, BOXCAR), mode="constant"))
+        r = (bs / bo)[:, box_amp]
+        m = (np.sqrt((bs - bo) ** 2 + 4 * np.abs(bx) ** 2) / (bs + bo))[:, box_amp]
+        sel.append(((r > 1.0) & (m < 0.13)).sum(axis=1))
+        for k, c in crits.items():
+            exc[k].append((r > c).sum(axis=1))
+        mx.append(r.max(axis=1))
+    sel = np.concatenate(sel)
+    mx = np.concatenate(mx)
+    t = sel.size
+
+    def p_se(v):
+        p = float(np.mean(v))
+        return {"rate": p, "mc_se": float(np.sqrt(p * (1 - p) / t))}
+
+    out = {"gamma_c": gam, "trials": t,
+           "joint_rule": {"p_at_least_1_cell": p_se(sel >= 1), "p_at_least_5_cells": p_se(sel >= 5),
+                          "mean_cells_selected": float(sel.mean()),
+                          "mean_cells_se": float(sel.std(ddof=1) / np.sqrt(t))},
+           "cpr_only": {},
+           "max_cpr": {"median": float(np.median(mx)), "p95": float(np.percentile(mx, 95))}}
+    for k, c in crits.items():
+        e = np.concatenate(exc[k])
+        out["cpr_only"][k] = {"crit": float(c), "p_at_least_1_pixel": p_se(e >= 1),
+                              "per_pixel_rate": float(e.mean() / npx),
+                              "per_pixel_se": float(e.std(ddof=1) / np.sqrt(t) / npx),
+                              "mean_pixels": float(e.mean())}
+    return out
+
+
+def complex_field_v3(box_amp: np.ndarray, trials: int, workers: int) -> dict:
+    """B2: the joint rule and the CPR-only test on F2's mask at ENL 13.72 and
+    ~39, at the null boundary and four ice-free populations, with two sets of
+    lag correlations."""
+    from concurrent.futures import ProcessPoolExecutor
+    lc = json.loads(ENL_JSON.read_text(encoding="utf-8"))["lag_correlation"]["LH"]
+    gc = json.loads(GRID_JSON.read_text(encoding="utf-8"))["lag_correlation_before_boxcar"]
+    lagsets = {
+        "delivered_LH": {"source": "enl.json::lag_correlation.LH (delivered product, before the boxcar)",
+                         "SC": (float(lc["azimuth_lines"][0]), float(lc["range_samples"][0])),
+                         "OC": (float(lc["azimuth_lines"][0]), float(lc["range_samples"][0]))},
+        "complex_SC_OC": {"source": ("complex_grid_correlation.json::lag_correlation_before_boxcar "
+                                     "(Stokes SC and OC of the complex product, physical sign)"),
+                          "SC": (float(gc["SC"]["azimuth_lines"][0]), float(gc["SC"]["range_samples"][0])),
+                          "OC": (float(gc["OC"]["azimuth_lines"][0]), float(gc["OC"]["range_samples"][0]))}}
+    ss = np.random.SeedSequence(SEED_COMPLEX_V3)
+    cal_seed, job_seed = ss.spawn(2)
+    cal_rng = np.random.default_rng(cal_seed)
+    cal, curves = {}, {}
+    v2_looks = json.loads(OUT.read_text(encoding="utf-8"))["complex_field_v2"]["looks"]
+    for ls, v in lagsets.items():
+        # looks calibrated on the mean of the two channels' field correlations.
+        # The delivered-lag arm at 13.72 is PINNED to v2's four looks (boxcar'd
+        # ENL 14.5 in the first run's calibration, the operating point the
+        # manuscript prints), so that arm is v2's model and its null can be
+        # checked against v2; the mode estimator's field-to-field noise (14.0-
+        # 15.2 at L = 4 in the first run) would otherwise let it drift to L = 3.
+        rf = tuple(float(np.sqrt(0.5 * (v["SC"][i] + v["OC"][i]))) for i in (0, 1))
+        curves[ls] = calibrate_v3(cal_rng, rf)
+        cal[ls] = {k: choose_looks(curves[ls], tgt,
+                                   v2_looks if (ls == "delivered_LH" and k == "N13p72") else None)
+                   for k, tgt in V3_TARGETS}
+        print(f"  v3 calibration {ls}: " + ", ".join(
+            f"{k}: L {c['chosen']} -> ENL {c['achieved']:.2f}" for k, c in cal[ls].items()), flush=True)
+    jobs, keys = [], []
+    seeds = job_seed.spawn(len(lagsets) * len(V3_TARGETS) * len(V3_POPULATIONS))
+    i = 0
+    for ls, v in lagsets.items():
+        rsc = tuple(float(np.sqrt(x)) for x in v["SC"])
+        roc = tuple(float(np.sqrt(x)) for x in v["OC"])
+        for k, tgt in V3_TARGETS:
+            c = cal[ls][k]
+            crits = {"at_achieved_enl": crit95(c["achieved"]), f"at_{k}": crit95(tgt),
+                     "at_1p895": crit95(OPERATING_N)}
+            for lab, cpr, dop in V3_POPULATIONS:
+                jobs.append((seeds[i], box_amp, c["chosen"], rsc, roc, cpr, dop, crits, trials))
+                keys.append((ls, k, lab, cpr, dop))
+                i += 1
+    with ProcessPoolExecutor(max_workers=workers) as ex:
+        res = list(ex.map(_v3_job, jobs))
+    out = {"model": ("L equal-weight looks per circular channel; per look, OC = sqrt(b) w_OC and "
+                     "SC = sqrt(a) (gamma_c w_OC + sqrt(1 - gamma_c^2) w_SC), w exactly stationary "
+                     "separable AR(1) complex fields at each channel's lag-one field correlation "
+                     "(sqrt of the intensity lag-one), a = CPR/(1+CPR), b = 1/(1+CPR), gamma_c from "
+                     "DOP^2 = q^2 + gamma_c^2 (1 - q^2); zero outside F2's 260-px amplitude mask, "
+                     "5 x 5 boxcar on SC, OC and the cross product, then per cell R = box SC / box "
+                     "OC and the sample DOP"),
+           "seed": SEED_COMPLEX_V3, "trials": trials, "amplitude_pixels": int(box_amp.sum()),
+           "lag_sets": {k: {"source": v["source"], "intensity_lag1_SC": v["SC"],
+                            "intensity_lag1_OC": v["OC"]} for k, v in lagsets.items()},
+           "look_calibration": {"boxcar_mode_enl_by_L": curves, "chosen": cal},
+           "results": {}}
+    for (ls, k, lab, cpr, dop), r in zip(keys, res):
+        blk = out["results"].setdefault(ls, {}).setdefault(k, {"looks": cal[ls][k]["chosen"],
+                                                               "achieved_enl": cal[ls][k]["achieved"]})
+        blk[lab] = {"cpr": cpr, "dop": dop, **r}
+        j = r["joint_rule"]
+        c0 = r["cpr_only"]["at_achieved_enl"]
+        print(f"  {ls:14s} {k:7s} {lab:34s} joint >=1 {100 * j['p_at_least_1_cell']['rate']:5.1f} "
+              f"+/- {100 * j['p_at_least_1_cell']['mc_se']:.1f} %  >=5 "
+              f"{100 * j['p_at_least_5_cells']['rate']:5.1f} %  mean {j['mean_cells_selected']:6.2f} | "
+              f"CPR-only at {c0['crit']:.3f}: >=1 {100 * c0['p_at_least_1_pixel']['rate']:5.1f} %  "
+              f"per-pixel {100 * c0['per_pixel_rate']:.2f} %", flush=True)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--trials", type=int, default=10_000)
     ap.add_argument("--only-v2", action="store_true",
                     help="compute complex_field_v2 only and merge it into the artifact")
+    ap.add_argument("--only-v3", action="store_true",
+                    help="compute complex_field_v3 (final pass B2) only and merge it")
+    ap.add_argument("--workers", type=int, default=8)
     args = ap.parse_args()
     rng = np.random.default_rng(SEED)
     from app.ingestion.sar_geometry import read_geotiff_frame
@@ -441,6 +640,33 @@ def main() -> int:
     C = f_az(py[:, None] - py[None, :]) * f_rg(px[:, None] - px[None, :])
     L = np.linalg.cholesky(C + 1e-9 * np.eye(n_disc))
     amp_idx = amp[disc]
+    if args.only_v3:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        v3 = complex_field_v3(amp, args.trials, args.workers)
+        v2 = doc["complex_field_v2"]
+        # cross-check: the delivered-lag null at v2's look count reproduces v2
+        # (the only change is the exactly stationary start in place of burn-in)
+        n13 = v3["results"]["delivered_LH"]["N13p72"]
+        nul = n13["null CPR 1.00 DOP 0"]
+        same_l = n13["looks"] == v2["looks"]
+        p3 = nul["joint_rule"]["p_at_least_1_cell"]["rate"]
+        s3 = nul["joint_rule"]["p_at_least_1_cell"]["mc_se"]
+        p2 = v2["joint_rule_on_null"]["p_at_least_1_cell"]
+        s2 = v2["joint_rule_on_null"]["p_at_least_1_se"]
+        f3 = nul["cpr_only"]["at_N13p72"]["p_at_least_1_pixel"]
+        ok = (not same_l) or (abs(p3 - p2) <= 3 * np.hypot(s3, s2)
+                              and abs(f3["rate"] - v2["fwe_at_1p895"]["rate"])
+                              <= 3 * np.hypot(f3["mc_se"], v2["fwe_at_1p895"]["mc_se"]))
+        v3["gate"] = {"reproduces_v2_on_the_null": bool(ok), "same_looks_as_v2": bool(same_l),
+                      "v2_joint_ge1": p2, "v3_joint_ge1": p3,
+                      "v2_fwe_1p895": v2["fwe_at_1p895"]["rate"], "v3_fwe_1p895": f3["rate"],
+                      "verdict": "PASS" if ok else "FAIL"}
+        doc["complex_field_v3"] = v3
+        doc["run_info_v3"] = run_info()
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  v3 gate (delivered-lag null reproduces v2): {v3['gate']['verdict']}")
+        print(f"  merged complex_field_v3 into {OUT.relative_to(BASE_DIR)}")
+        return 0 if ok else 1
     if args.only_v2:
         doc = json.loads(OUT.read_text(encoding="utf-8"))
         doc["complex_field_v2"] = complex_field_v2(amp, args.trials, doc["complex_field"]["looks"])

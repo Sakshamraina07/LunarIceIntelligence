@@ -1,5 +1,5 @@
 {
-  "generated_utc": "2026-09-23T13:38:12.725278+00:00",
+  "generated_utc": "2026-09-23T15:56:08.240774+00:00",
   "generator": "backend/scripts/verify_all.py",
   "gates": [
     {
@@ -16,7 +16,7 @@
       "gate": "validate_psr_vs_lola.py \u2014 against the LOLA team's own published mask",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 36.3
+      "seconds": 31.1
     },
     {
       "id": "G3",
@@ -24,7 +24,7 @@
       "gate": "search_landing_sites.py \u2014 plus the interpolation guard",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 27.7
+      "seconds": 35.7
     },
     {
       "id": "G4",
@@ -32,7 +32,7 @@
       "gate": "plan_traverse.py \u2014 connectivity reported before any distance",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 33.5
+      "seconds": 38.4
     },
     {
       "id": "G5",
@@ -40,7 +40,7 @@
       "gate": "detection_statistics.py \u2014 the critical value, the table, and the withdrawn interval",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 4.3
+      "seconds": 4.5
     },
     {
       "id": "G6",
@@ -48,7 +48,7 @@
       "gate": "hillshade_histogram.py + composite_contrast.py",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 3.1
+      "seconds": 3.3
     },
     {
       "id": "G6b",
@@ -56,7 +56,7 @@
       "gate": "composite_contrast.py \u2014 retention AND correlation with the base",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 49.1
+      "seconds": 51.4
     },
     {
       "id": "G7",
@@ -64,15 +64,15 @@
       "gate": "assert_paths_agree.py \u2014 in-process, needs no server",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 34.7
+      "seconds": 27.6
     },
     {
       "id": "G8",
       "statement": "Every measured figure quoted in METHODS.md still matches the artifact it was transcribed from",
-      "gate": "stamp_methods.py --check \u2014 54 artifacts",
+      "gate": "stamp_methods.py --check \u2014 57 artifacts",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 1.0
+      "seconds": 1.1
     },
     {
       "id": "G9",
@@ -112,7 +112,7 @@
       "gate": "verify_production.mjs --all-states \u2014 the built bundle, all three backend states",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 100.8
+      "seconds": 114.9
     },
     {
       "id": "G16",
@@ -120,7 +120,7 @@
       "gate": "assert_pdf_refuses_without_rasters.py \u2014 the loader, the 409, the rendered bytes",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.8
+      "seconds": 1.4
     },
     {
       "id": "G17",
@@ -128,7 +128,7 @@
       "gate": "assert_sweep_grid_discriminates.py - agreement, measured axes, it moves, the crossing",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.8
+      "seconds": 1.1
     },
     {
       "id": "G18",
@@ -136,7 +136,7 @@
       "gate": "assert_report_state_is_its_own.py - independent, not derived, honest doc, probe works",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 25.9
+      "seconds": 24.7
     },
     {
       "id": "G19",
@@ -144,7 +144,7 @@
       "gate": "assert_withdrawn_claims_absent.py --list prints each term with the sentence it forbids",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 10.4
+      "seconds": 12.2
     },
     {
       "id": "G20",
@@ -152,7 +152,7 @@
       "gate": "assert_degeneracy_replicates.py \u2014 2020-03-05, a different orbit, look angle, PRF and grid",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 2.9
+      "seconds": 3.2
     },
     {
       "id": "G23",
@@ -184,7 +184,7 @@
       "gate": "verify_data_provenance.py - 7 checks, emits docs/data_provenance.json",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 67.3
+      "seconds": 57.1
     },
     {
       "id": "G28",
@@ -192,7 +192,7 @@
       "gate": "check_repo_complete.py - C1-C7, C7 scans every path ever committed",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 14.5
+      "seconds": 17.3
     },
     {
       "id": "G26",
@@ -200,7 +200,7 @@
       "gate": "paper/assert_figures_embed_fonts.py - rebuilt, then read from the PDF itself",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 14.8
+      "seconds": 22.9
     },
     {
       "id": "G30",
@@ -216,7 +216,7 @@
       "gate": "robustness_gate.py - nine corruptions, crossing within 1e-4, zero passing",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 9.1
+      "seconds": 9.5
     },
     {
       "id": "G21",
@@ -224,7 +224,7 @@
       "gate": "assert_artifact_matches_repro_command.py - the artifact is the run METHODS names",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.2
+      "seconds": 0.3
     },
     {
       "id": "G22",
@@ -232,7 +232,7 @@
       "gate": "assert_ceilings_have_own_label.py - no ceiling borrowed from another product",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.2
+      "seconds": 0.3
     },
     {
       "id": "G29",
@@ -240,7 +240,7 @@
       "gate": "literature_search_gate.py - counts read from the screening CSV",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 0.2
+      "seconds": 0.3
     },
     {
       "id": "G32",
@@ -248,7 +248,7 @@
       "gate": "recompute_manuscript_tables.py - Tables II, III and IV, cell by cell",
       "verdict": "PASS",
       "returncode": 0,
-      "seconds": 2.5
+      "seconds": 3.5
     },
     {
       "id": "G33",

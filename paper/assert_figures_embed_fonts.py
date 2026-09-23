@@ -33,11 +33,19 @@ import zlib
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-FIGURES = ["fig1_degeneracy.pdf", "fig2_enl.pdf",
-           "fig3_detection.pdf", "fig4_external.pdf",
-           # council work order, Task 7: built by make_figures_council.py
-           "fig_cpr_dop.pdf", "fig_joint_power.pdf"]
-SCRIPTS = ["make_figures.py", "make_figures_council.py"]
+#: The three figures manuscript v14 includes, and the scripts that make them:
+#: Fig. 1 by make_figures.py, Figs. 2 and 3 by make_figures_v12.py (both
+#: byte-synced from Claude outputs/grsl/, the v12 copy with its data path
+#: resolved inside the repository).
+FIGURES = ["fig1_degeneracy.pdf", "fig_cpr_dop.pdf", "fig_joint_power.pdf"]
+SCRIPTS = ["make_figures.py", "make_figures_v12.py"]
+#: Built by make_figures.py but no longer in the manuscript; retired from the
+#: gate 2026-09-23 (final pass). A retired figure is not inspected.
+RETIRED_FIGURES = {
+    "fig3_detection.pdf": "v14 replaced it with fig_joint_power.pdf (the order's A1c)",
+    "fig2_enl.pdf": "unused since the third review (C9)",
+    "fig4_external.pdf": "unused since the 10-page draft",
+}
 
 for _s in (sys.stdout, sys.stderr):
     try:

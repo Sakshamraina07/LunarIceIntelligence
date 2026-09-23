@@ -118,8 +118,12 @@ def main():
     # already said "(Raney et al.)". Blaming the stale copy would name the
     # wrong file; scanning only the shipped one would hide that a stale copy
     # exists. Both are scanned and every hit is named with its path.
+    # every figure script the manuscript's figures come from: make_figures.py
+    # (Fig. 1) and make_figures_v12.py (Figs. 2-3), in paper/ and beside the tex
     figscripts = [q for q in (Path(__file__).parent / "make_figures.py",
-                              tex.parent / "make_figures.py") if q.exists()]
+                              Path(__file__).parent / "make_figures_v12.py",
+                              tex.parent / "make_figures.py",
+                              tex.parent / "v12fig" / "make_figures_v12.py") if q.exists()]
     hard = []
     for q in figscripts:
         code = chr(10).join(l.split("#")[0] for l in

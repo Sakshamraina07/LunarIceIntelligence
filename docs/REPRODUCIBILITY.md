@@ -335,16 +335,35 @@ Sec. V-A, and the ENL-bars figure was removed (C9); `fig2_enl.pdf` and
 `fig4_external.pdf` are still built by the script and are not used by the
 paper. Order below is the order they appear.
 
-Figures — `cd paper && python make_figures.py`, which reads
-`paper/fig1_density.npz` from the working directory and writes all four PDFs
-there. The script is byte-identical to `Claude outputs/grsl/make_figures.py`.
-Font embedding and the absence of Type 3 fonts are checked by
-`python paper/assert_figures_embed_fonts.py` (G26).
+Figures — two scripts, both run from `paper/` (v14, 2026-09-23):
+
+* **Fig. 1** — `cd paper && python make_figures.py`, which reads
+  `paper/fig1_density.npz` and writes `fig1_degeneracy.pdf` (and three PDFs the
+  manuscript no longer uses). The script is byte-identical to
+  `Claude outputs/grsl/make_figures.py` (v14 changed only the Fig. 1 labels to
+  $\mathrm{DOP}_a<0.13$).
+* **Figs. 2 and 3** — `cd paper && python make_figures_v12.py`, which reads
+  `paper/fig_cpr_dop_density.npz` and `docs/joint_power_curve.json` (and, for
+  Fig. 3's thin curve, `docs/np_power_bound.json`) and writes `fig_cpr_dop.pdf`
+  and `fig_joint_power.pdf`. It is `Claude outputs/grsl/v12fig/make_figures_v12.py`
+  with the copy's hard-coded `/mnt/user-data/...` path replaced by the
+  repository's `docs/`, and the bound curve added. It supersedes
+  `make_figures_council.py` (removed).
+
+Rebuilt from the repository, `fig1_degeneracy.pdf` and `fig_cpr_dop.pdf` match
+the grsl copies' page boxes to 0.000 pt with the same text operators (the
+embedded font-subset streams differ by build); `fig_joint_power.pdf` has the
+same page box (231.18 x 156.66 pt, 2.37 in tall at \columnwidth) and one more
+legend entry, "upper bound, any level-5 % test". Font embedding and the absence
+of Type 3 fonts are checked by `python paper/assert_figures_embed_fonts.py`
+(G26), which builds both scripts and checks exactly these three PDFs.
 
 | # | figure (file) | artifact behind it | command |
 |---|---|---|---|
-| 1 | every measured pixel on the analytic curve (`fig1_degeneracy.pdf`) | `paper/fig1_density.npz`, cross-checked by `docs/dop_exclusion.json` | `python backend/scripts/dop_exclusion.py` |
-| 2 | the look count decides the significance (`fig3_detection.pdf` — the file keeps its old name) | `docs/detection_statistics.json::sampling_statistics` | `python backend/scripts/detection_statistics.py` |
+| 1 | every measured pixel on the analytic curve (`fig1_degeneracy.pdf`) | `paper/fig1_density.npz`, cross-checked by `docs/dop_exclusion.json` | `python backend/scripts/dop_exclusion.py`; `cd paper && python make_figures.py` |
+| 2 | every complex-product cell in sample DOP and CPR (`fig_cpr_dop.pdf`) | `paper/fig_cpr_dop_density.npz`, `docs/enl_logratio.json` (39.4) | `python backend/scripts/stokes_from_slc.py`; `cd paper && python make_figures_v12.py` |
+| 3 | the joint rule as a test across N, and the NP bound (`fig_joint_power.pdf`) | `docs/joint_power_curve.json`, `docs/np_power_bound.json` | `python backend/scripts/dop_sampling_bias.py --curve`; `python backend/scripts/np_power_bound.py`; `cd paper && python make_figures_v12.py` |
+| — | `fig3_detection.pdf` — **retired from the gates in v14** (replaced by Fig. 3 above), still built by `make_figures.py` | `docs/detection_statistics.json::sampling_statistics` | `python backend/scripts/detection_statistics.py` |
 | — | measured ENL for four products (`fig2_enl.pdf`) — **removed from the paper (C9), still built** | `docs/slc_multilook_control.json`, `docs/slepian_ceiling.json`, `docs/bootstrap_enl.json` | `python backend/scripts/slc_multilook_control.py --windows 9`; `python backend/scripts/slepian_ceiling.py` |
 | — | external check (`fig4_external.pdf`) — **not used by the manuscript** | `docs/cpr_dispersion.json` | `python backend/scripts/cpr_dispersion.py --window 15 --top 20` |
 
@@ -435,3 +454,31 @@ New gate: G33 (`assert_council_anchors.py`) — the joint rule's size at N = 14
 and no significant joint selection below N = 79.6 in any arm (Task 1), and the
 F2 null's 86.3 % and 7.76 % (Task 4). G32 now parses v11's two-cell V-A
 sentence; G26 builds `make_figures_council.py` beside `make_figures.py`.
+
+## 19 · Final pass on v14 (2026-09-23)
+
+The analyses of METHODS §16. Every artifact records its seed (or states that it
+draws none), generator and `run_info`; every simulated rate carries its Monte
+Carlo standard error. No raster is read from outside `data/`, and none is
+committed. `build_coherency` gains `smooth=False` (the coherency before the
+boxcar, for lag correlations measured where the delivered product's were).
+`complex_grid.py` writes two artifacts in one run and must precede
+`decision_rule.py` (its W_complex) and `f2_maximum.py --only-v3` (its SC / OC
+lags).
+
+| item | artifact | command | seed | trials | wall (s) | peak (MB) |
+|---|---|---|---|---|---|---|
+| A2 | `joint_power_curve.json (strict-band summaries)` | `python backend/scripts/dop_sampling_bias.py --strict-summary` | — (no draws: recomputed from the stored cells) | — | 0 | 92 |
+| B1, B5 | `decision_rule.json` | `python backend/scripts/decision_rule.py` | 20261002; W_complex 20261007 | 2 × 10⁴ tested + 4 × 10⁴ pool per population | 780 | 2725 |
+| B2 | `f2_maximum.json::complex_field_v3` | `python backend/scripts/f2_maximum.py --only-v3` | 20261006 | 10⁴ per (lag set, look count, population), 20 runs | 1090 | 189 |
+| B3 | `np_power_bound.json` | `python backend/scripts/np_power_bound.py` | 20261005 (MC check only) | exact; MC check 10 × 10⁵ per N | 1688 | 51 |
+| B4 | `complex_cell_ceiling.json` | `python backend/scripts/complex_grid.py` | — (spectral) | — | 398 | 1670 |
+| B5, B2(c) | `complex_grid_correlation.json` | `python backend/scripts/complex_grid.py` | — (no draws) | — | 195 | 2270 |
+| B6 | `enl_logratio.json::random_like_for_like` | `python backend/scripts/enl_logratio.py --only-random` | 20260931 (the same random draw) | — | 179 | 2733 |
+
+Order: `complex_grid.py` → `decision_rule.py` → `np_power_bound.py` (reads
+decision_rule.json's populations) → `f2_maximum.py --only-v3` →
+`enl_logratio.py --only-random` → `dop_sampling_bias.py --strict-summary` →
+`cd paper && python make_figures_v12.py`. The existing rows of
+decision_rule.json reproduce draw for draw (the new window draws from its own
+generator), which was checked against the previous file before commit.

@@ -100,7 +100,7 @@ def fig_degeneracy(path):
         n, nb = int(z["n"]), int(z["n_band"])
         ax.plot([], [], color=ACC1, lw=3, alpha=0.85,
                 label=f"{n:,} measured pixels (density)")
-        ax.text(0.98, 2.2e-4, f"{100*nb/n:.0f}% of pixels lie inside DOP < 0.13",
+        ax.text(0.98, 2.2e-4, f"{100*nb/n:.0f}% of pixels lie inside " + r"$\mathrm{DOP}_a<0.13$",
                 fontsize=6.2, color=MUTED, ha="right", va="bottom")
     except FileNotFoundError:
         pass
@@ -114,7 +114,7 @@ def fig_degeneracy(path):
     ax.annotate(r"ceiling $4.261\times10^{-3}$", xy=(d_th, ceiling), xytext=(0.22, 6e-3),
                 fontsize=7, color=INK, arrowprops=dict(arrowstyle="-", lw=0.5, color=INK))
     ax.text(0.135, 1.35, r"threshold $\mathrm{CPR}>1$", fontsize=7, color=ACC1)
-    ax.text(0.04, 1.2e-3, "DOP < 0.13", fontsize=7, color=ACC2, rotation=90, va="bottom", ha="center")
+    ax.text(0.04, 1.2e-3, r"$\mathrm{DOP}_a<0.13$", fontsize=7, color=ACC2, rotation=90, va="bottom", ha="center")
 
     ax.set_yscale("log")
     ax.set_xlim(0, 1.0)

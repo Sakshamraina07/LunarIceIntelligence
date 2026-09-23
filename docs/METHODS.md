@@ -4123,6 +4123,168 @@ quantile of its law at population DOP 0.13 (0.1238 at N = 14, 0.0850 at 38,
   rule 26 462) and 0 of 896 972 on the second (0; 593; 24). Local N̂ over the
   frame: median 17.4 (first pass), 21.0 (second).
 
+## 16 · Final pass on v14 (2026-09-23)
+
+The v14 work order (`Claude outputs/hygiene/CLAUDE_CODE_V14_TO_9.md`): figure
+sync and re-audit (A), six analyses (B). Every artifact records its seed or
+states that it draws none, its generator and `run_info`; every simulated rate
+carries its Monte Carlo standard error. Where a result bears on a v14 sentence
+it is said so here and flagged in the report.
+
+### 16.1 Figures and the v14 audit (A1, A2)
+
+`paper/make_figures.py` is the grsl copy (Fig. 1 labels now
+$\mathrm{DOP}_a<0.13$); `paper/make_figures_v12.py` is the grsl `v12fig` copy
+with its hard-coded `/mnt/user-data/...` path replaced by the repository's
+`docs/` and the Neyman–Pearson bound added to Fig. 3. G26 builds both and
+checks exactly `fig1_degeneracy.pdf`, `fig_cpr_dop.pdf`, `fig_joint_power.pdf`;
+`fig3_detection.pdf` is retired from the gate (v14 replaced it).
+
+The strict band of `joint_power_curve.json` — in-band populations with
+population DOP < 0.13 only — is now a stored key
+(`python backend/scripts/dop_sampling_bias.py --strict-summary`, recomputed from
+the stored cells, no draws): arm A 3.496–3.598 % at N = 14 against a size of
+3.626 %, 12.784–14.264 % at N = 38 against 13.153 %, largest excess over CPR 1.00
+at the same DOP 40.8 %; the texture arm's size is within two standard errors of
+5 % from N = 20 and above it from N = 21.
+
+The audit (`audit_manuscript_numbers.py`, submission and master): 381 PASS,
+0 MISMATCH, 0 ABSENT, 4 NO SOURCE (the DERIVED closed forms). 32 rows retired
+with reasons (`RETIRED_V14`), among them `tex_f_4`, whose "22.5" had been passing
+on IV-B's unrelated bootstrap range "10.7--22.5"; 85 rows added for the v14
+literals, four DERIVED closed forms (1.452 and 5.8 % at N = 39.4, 0.053, 79.6),
+eight quantified rows. The quantifier scan: 48 quantified sentences, 29
+checked element-wise, 19 exempt with a reason, 0 unchecked; the flagged v11
+sentence "All results come from one pass" is gone from v14. The texture
+oracle's lower figure is a tie: 1190 of 20 000 = 5.95 %, printed 5.9 (the stored
+float reads 5.9499…). G32 was retargeted: v14 removed the bootstrap-range
+sentence, and the gate now recomputes V-A's four closed-form cells (the
+critical value and the 0.7-background exceedance at N = 13.72 and 39.4).
+
+### 16.2 N̂ at the IUT onset (B1)
+
+`decision_rule.py`'s `apply_to_product` adds the maximum and 99th percentile of
+the frame-wide N̂ (31 × 31 windows) and the counts at 79.6, 218 and 254, over all
+cells and over the cells the published rule selects; `iut_onset` records the
+q₀.₀₅ grid bracket (218, 254). First pass: max 137.2, p99 70.1; 18 342 cells
+≥ 79.6, 0 ≥ 218; among the rule's 26 462 cells, 573 ≥ 79.6, max 105.9, p99 84.6.
+Second pass: max **229.3**, p99 86.0; 14 827 ≥ 79.6, **3 ≥ 218**, 0 ≥ 254; the
+rule's 24 cells all below 38.1. Every existing row of the artifact reproduces
+draw for draw.
+
+### 16.3 The F2 null at the complex product's look count, and on ice-free terrain (B2)
+
+`python backend/scripts/f2_maximum.py --only-v3` →
+`f2_maximum.json::complex_field_v3` (seed 20261006, 10⁴ trials per run, 20
+runs). Same 260-pixel mask, zero-fill and 5 × 5 boxcar as v2. Per look,
+OC = √b w_OC and SC = √a (γ_c w_OC + √(1 − γ_c²) w_SC), a = CPR/(1+CPR),
+b = 1/(1+CPR), γ_c from DOP² = q² + γ_c²(1 − q²); w are separable AR(1)
+complex fields, now exactly stationary (the first row and column are the
+innovation; v1/v2 discarded 64 burn-in samples, a 0.3 % transient). Two lag
+sets: the delivered LH's (0.838 / 0.576, both channels) and the complex
+product's SC / OC before the boxcar (0.579 / 0.625, 0.738 / 0.769;
+`complex_grid_correlation.json`). Looks per channel from the boxcar'd
+patch-mode ENL on 3 × (1024 × 512) fields per L (L = 2–16); the delivered-lag
+arm at 13.72 is pinned to v2's L = 4 so it is v2's model. The calibration reads
+L = 4 as **15.98** (15.04 with the complex lags) and L = 3 as 11.54, against the
+first run's 14.50 (whose three fields read 14.03–15.18). The estimator is
+noisy field to field — the v3 curve is not even monotone above L = 12 (48.5,
+49.2, 49.1, 62.3, 58.6) — so the printed "14.5 against 13.72" is one draw of
+it, and the L = 4 field is more likely near 15–16. Near 39: L = 11 → 40.54 (delivered lags), L = 10 → 38.00 (complex).
+
+Delivered lags, rates over 10⁴ realizations (SE ≤ 0.5 points):
+
+| population | ENL | joint ≥ 1 cell | ≥ 5 | mean cells | CPR-only ≥ 1 px at crit(ENL) | at 1.895 |
+|---|---|---|---|---|---|---|
+| null CPR 1.00, DOP 0 | 16.0 (L 4) | 87.9 % | 48.9 % | 5.5 | 89.9 % (1.805) | 86.0 % |
+| null CPR 1.00, DOP 0 | 40.5 (L 11) | **99.1 %** | 94.2 % | 22.3 | 88.1 % (1.444) | 31.1 % |
+| CPR 0.7, DOP 0.176 | 16.0 | 72.8 % | 30.2 % | 3.5 | 46.6 % | 39.5 % |
+| CPR 0.7, DOP 0.176 | 40.5 | 71.7 % | 45.6 % | 6.6 | 17.1 % | 1.2 % |
+| CPR 0.7, DOP 0.20 | 16.0 | 68.6 % | 27.3 % | 3.2 | 45.4 % | 39.0 % |
+| CPR 0.7, DOP 0.20 | 40.5 | 65.7 % | 38.7 % | 5.3 | 16.9 % | 1.0 % |
+| CPR 0.9, DOP 0.053 | 16.0 | 85.8 % | 45.7 % | 5.1 | 80.3 % | 75.0 % |
+| CPR 0.9, DOP 0.053 | 40.5 | 97.2 % | 87.8 % | 18.5 | 68.7 % | 15.1 % |
+| CPR 0.9, DOP 0.20 | 16.0 | 74.2 % | 31.3 % | 3.7 | 79.0 % | 73.0 % |
+| CPR 0.9, DOP 0.20 | 40.5 | 79.9 % | 54.4 % | 8.0 | 67.7 % | 13.6 % |
+
+With the complex product's SC / OC lags every joint-rule rate is 1–6 points
+higher (null 91.4 % at L 4, 99.2 % at L 10; CPR 0.7 DOP 0.20 74.5 / 69.0 %). The
+delivered-lag null at L = 4 reproduces v2 (87.9 against 88.2 %, 86.0 against
+85.2 % at 1.895; G33). V-C's "at a higher count the CPR-only rate at 1.895 falls
+and the joint rule's rises" holds: 86.0 → 31.1 % and 87.9 → 99.1 %.
+
+### 16.4 An upper bound on any level-5 % per-cell test (B3)
+
+`python backend/scripts/np_power_bound.py` → `docs/np_power_bound.json` (exact;
+Monte Carlo check seed 20261005). Any level-5 % test of H0 = {CPR ≤ 1} ∪
+{DOP ≥ 0.13} is level 5 % against every simple Σ0 in H0, so its power at an
+alternative Σ1 is at most the Neyman–Pearson power of Σ0 against Σ1, for every
+Σ0: the minimum over any subset of the null is a valid bound. The NP statistic
+tr((Σ0⁻¹ − Σ1⁻¹)S) of an N-look complex Wishart is λ₁X + λ₂Y, X, Y independent
+Gamma(N, 1/N), λ the eigenvalues of AΣ (true for real N); its tails are computed
+by Gauss–Legendre quadrature (64 nodes in the search, 256 final, 1024 as a check,
+agreement ≤ 0.001 points), the null quantile by safeguarded Newton to 1e-10.
+Grids: 838 alternatives (CPR 1.005–1.295 step 0.01; DOP from |q| to 0.1299
+step 0.005; phase 0 and 90°; plus decision_rule.json's four in-band
+populations); null boundary CPR = 1 at DOP 0–0.13 and DOP = 0.13 at CPR
+1–1.2989, all phases — 360 coarse points, then six zoom rounds from the two best
+per segment; the final bound at every N is the minimum over the union of the
+nulls found at all N.
+
+| N | 14 | 21 | 39.4 | 80 | 218 | 500 |
+|---|---|---|---|---|---|---|
+| bound (%) | 9.72 | 11.06 | 14.17 | 20.17 | 37.59 | 64.12 |
+| MC check (%) | 9.70 ± 0.05 | 11.10 ± 0.07 | 14.22 ± 0.06 | 20.19 ± 0.10 | 37.55 ± 0.05 | 64.04 ± 0.09 |
+
+Every N is maximized at CPR 1.145, DOP 0.068 (γ_c = 0, phase-free) and
+limited by the diagonal null at the band's corner (CPR 1.2989, DOP 0.13;
+at N = 2 by CPR 1.00, DOP 0): the alternative sits between two unpolarized
+nulls. Lower than the sketch's 12 / 20 / 31 / 60 / 89 % because the search
+reaches the corner, which the sketch never tried. Gates: ≥ 5 % at all 16 N,
+non-decreasing in N, above every calibrated-IUT power in decision_rule.json —
+PASS (G33 re-checks all three and the MC agreement). Fig. 3 draws it as a thin
+curve. Above N ≈ 40 the joint rule's in-band rate exceeds the bound: it can,
+because its size is 13 % at N = 38 and rising — it is not a level-5 % test.
+
+### 16.5 The spectral ceiling on N for one complex-product cell (B4)
+
+`python backend/scripts/complex_grid.py` → `docs/complex_cell_ceiling.json` (no
+draws). A complex-product cell is the equal-weight intensity average of 105
+azimuth × 5 range SLC samples (21 lines, then the 5 × 5 boxcar). Its ENL under
+circular-Gaussian speckle is the participation ratio of their 525 × 525
+covariance, built from each window's measured 2-D autocovariance (zero-padded,
+overlap-normalized) in mechanism_spec.py's nine windows. LH: median **69.7**,
+range 67.3–86.1; LV 69.9, SC 71.0 (69.0–122.7; window 0's weak SC channel is
+noise-flattened), OC 69.6. Check: the 21 × 1 ratio is 7.132 against
+mechanism_spec's 7.134. The ceiling is below 79.6 in the median and in seven of
+nine windows (80.2 and 86.1 in the other two); the block log-ratio 39.4 is 57 %
+of it.
+
+### 16.6 The correlation area on the complex grid, and W (B5)
+
+Same run → `docs/complex_grid_correlation.json`. The Stokes CPR (physical sign)
+after the boxcar, over the 109 homogeneous 64 × 64 blocks, with
+cpr_significance.py's estimator: A = **99.6 px** median (IQR 49.3–207.6), 155.6
+from the block-pooled ACF, against 61.42 on the delivered grid. A 31 × 31 window
+on the complex grid therefore holds 961 / 99.6 = 9.6 independent samples;
+decision_rule.py adds `plugin_Wcomplex` with W = 10 (its own generator, seed
+20261007). Arm A: CPR-component size 6.77 / 6.97 / 7.08 % and IUT size 0.000 /
+0.005 / 0.070 % (± 0.019) at N = 14 / 38 / 100, against W = 16's 6.21 / 6.39 /
+6.50 % and 0.015 %. Before the boxcar the complex product's SC and OC intensity
+lag-one correlations are 0.579 / 0.625 and 0.738 / 0.769 (azimuth / range),
+against the delivered LH's 0.838 / 0.576.
+
+### 16.7 The random cells like for like (B6)
+
+`python backend/scripts/enl_logratio.py --only-random` →
+`enl_logratio.json::random_like_for_like` (the same random draw, seed
+20260931). product() already dropped every selected cell from every window;
+a selected cell was also absent from its own window and a random cell was not.
+Dropping the random cells too, so every tested cell is estimated from
+neighbours only: first pass median **17.5** (IQR 9.8–31.5; 107 ≥ 79.6), against
+17.5 before and 41.8 at the selected cells; second pass 22.6 (11.9–36.8) against
+32.5. The gap between selected and random cells is not the exclusion mask.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -4140,7 +4302,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `43d370a`.
+Stamped at commit `70db1a9`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -4149,10 +4311,12 @@ Stamped at commit `43d370a`.
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/bootstrap_enl.json` | `5f4239f07f372c3f…` | §7.3.1 |
 | `docs/calibration_example.json` | `5f0753e6e92fd192…` | §14.1 |
+| `docs/complex_cell_ceiling.json` | `4f0f922c67d0768c…` | §16.5 |
+| `docs/complex_grid_correlation.json` | `c49e76f838772719…` | §16.3, §16.6 |
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
 | `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
-| `docs/decision_rule.json` | `18a77ceb68ba7ea1…` | §15.8 |
+| `docs/decision_rule.json` | `19cc84e41695299c…` | §15.8, §16.2, §16.6 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `16707f02b03be20c…` | §11.1, §11.2, §11.3 |
 | `docs/dop_sampling_bias.json` | `14f3432c0344881e…` | §14.2 |
@@ -4162,21 +4326,22 @@ Stamped at commit `43d370a`.
 | `docs/enl_estimator_spec.json` | `95577a403a4d57be…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
 | `docs/enl_interval_validation.json` | `ad9514471b8885a6…` | §14.5 |
-| `docs/enl_logratio.json` | `4f9c37c71c8c0841…` | §15.3 |
+| `docs/enl_logratio.json` | `aa4d23a9aef3f878…` | §15.3, §16.7 |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
-| `docs/f2_maximum.json` | `964e307b8d3130d1…` | §6.2a, §14.6, §15.4 |
+| `docs/f2_maximum.json` | `f4f9b96de7c5861f…` | §6.2a, §14.6, §15.4, §16.3 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/joint_calibration.json` | `69091c8284d96fb1…` | §14.2, §15.1 |
 | `docs/joint_criterion.json` | `984eb95dc9497a0d…` | §7.9.4 |
-| `docs/joint_power_curve.json` | `e1bae208236a5d89…` | §15.2, §15.7 |
+| `docs/joint_power_curve.json` | `3d878a38901d6e12…` | §15.2, §15.7, §16.1 |
 | `docs/kclutter.json` | `ae285515e3abdb5d…` | §7.13 |
 | `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
 | `docs/literature_screen.json` | `d5ff73f7ec44aea2…` | §13.1 |
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
 | `docs/mechanism_spec.json` | `14bc6ef44f9ff8e2…` | §14.3 |
+| `docs/np_power_bound.json` | `13a8fc0a9d84b453…` | §16.4 |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
 | `docs/phase_gain_perturbation.json` | `07604f8f0c4c864e…` | §1.11 |
 | `docs/propagation_percentiles.json` | `847af0a883190b4b…` | §12.6 |

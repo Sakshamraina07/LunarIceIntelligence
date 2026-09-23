@@ -1,0 +1,263 @@
+{
+  "schema": "lunar-ice/tail-calibration-ci/1",
+  "generated_utc": "2026-09-23T12:49:33.911689+00:00",
+  "generator": "backend/scripts/tail_calibration_ci.py",
+  "seed": 20261004,
+  "bootstrap_B": 10000,
+  "unit": "block, resampled with replacement",
+  "effective_count": "n_test / the block's integrated autocorrelation area of ln CPR",
+  "results": {
+    "20200808_64px": {
+      "source": "docs/stokes_from_slc.json",
+      "blocks": 109,
+      "n_test_total": 446464,
+      "corr_area_px": {
+        "median": 67.41192177900547,
+        "iqr": [
+          56.428041376814164,
+          98.21484038207188
+        ]
+      },
+      "n_eff_per_block": {
+        "median": 60.76076592843321,
+        "iqr": [
+          41.704491745502885,
+          72.58802361485142
+        ]
+      },
+      "levels": {
+        "1pct": {
+          "nominal": 0.01,
+          "median_over_blocks": 0.0009765625,
+          "median_ci95": [
+            0.00048828125,
+            0.001953125
+          ],
+          "pooled": 0.004407970183486238,
+          "pooled_ci95": [
+            0.002878171588302752,
+            0.006350064058916282
+          ],
+          "blocks_above_nominal": 13,
+          "expected_above_if_exactly_calibrated": 46.628116998135056,
+          "p_value_this_few_or_fewer": 7.886313679299367e-13,
+          "p_value_this_many_or_more": 0.99999999999987,
+          "pooled_vs_nominal_z": -4.526510934754447,
+          "pooled_vs_nominal_p_two_sided": 5.9965497889733805e-06,
+          "verdict": "fewer blocks above nominal than exact calibration predicts: the model is conservative here"
+        },
+        "5pct": {
+          "nominal": 0.05,
+          "median_over_blocks": 0.013916015625,
+          "median_ci95": [
+            0.01220703125,
+            0.020263671875
+          ],
+          "pooled": 0.023126164707568807,
+          "pooled_ci95": [
+            0.019224114374283258,
+            0.02748502678827408
+          ],
+          "blocks_above_nominal": 11,
+          "expected_above_if_exactly_calibrated": 48.7371361665532,
+          "p_value_this_few_or_fewer": 2.0352364697788375e-15,
+          "p_value_this_many_or_more": 0.9999999999999998,
+          "pooled_vs_nominal_z": -9.931035606864857,
+          "pooled_vs_nominal_p_two_sided": 3.0507045273022425e-23,
+          "verdict": "fewer blocks above nominal than exact calibration predicts: the model is conservative here"
+        },
+        "10pct": {
+          "nominal": 0.1,
+          "median_over_blocks": 0.044189453125,
+          "median_ci95": [
+            0.041015625,
+            0.05224609375
+          ],
+          "pooled": 0.05473229644495413,
+          "pooled_ci95": [
+            0.04900725478426032,
+            0.06083816388331422
+          ],
+          "blocks_above_nominal": 11,
+          "expected_above_if_exactly_calibrated": 50.70506406266098,
+          "p_value_this_few_or_fewer": 1.6766373357716439e-16,
+          "p_value_this_many_or_more": 1.0,
+          "pooled_vs_nominal_z": -12.15287136934377,
+          "pooled_vs_nominal_p_two_sided": 5.538563676973097e-34,
+          "verdict": "fewer blocks above nominal than exact calibration predicts: the model is conservative here"
+        }
+      }
+    },
+    "20200808_32px": {
+      "source": "docs/stokes_from_slc_block32.json",
+      "blocks": 501,
+      "n_test_total": 513024,
+      "corr_area_px": {
+        "median": 45.35117049181063,
+        "iqr": [
+          34.64453598864553,
+          58.590193872359286
+        ]
+      },
+      "n_eff_per_block": {
+        "median": 22.579351070661136,
+        "iqr": [
+          17.477327387426275,
+          29.55733049320123
+        ]
+      },
+      "levels": {
+        "1pct": {
+          "nominal": 0.01,
+          "median_over_blocks": 0.00390625,
+          "median_ci95": [
+            0.0029296875,
+            0.0048828125
+          ],
+          "pooled": 0.008902117639720559,
+          "pooled_ci95": [
+            0.0077071930358033934,
+            0.010223741969186627
+          ],
+          "blocks_above_nominal": 144,
+          "expected_above_if_exactly_calibrated": 103.6542042010986,
+          "p_value_this_few_or_fewer": 0.9999944022108933,
+          "p_value_this_many_or_more": 8.97166495050783e-06,
+          "pooled_vs_nominal_z": -1.1951148239421419,
+          "pooled_vs_nominal_p_two_sided": 0.23204217096713065,
+          "verdict": "more blocks above nominal than exact calibration predicts: the model is anti-conservative here"
+        },
+        "5pct": {
+          "nominal": 0.05,
+          "median_over_blocks": 0.033203125,
+          "median_ci95": [
+            0.03125,
+            0.0361328125
+          ],
+          "pooled": 0.040758327095808386,
+          "pooled_ci95": [
+            0.038009917664670656,
+            0.04357890663984531
+          ],
+          "blocks_above_nominal": 141,
+          "expected_above_if_exactly_calibrated": 224.17938718917156,
+          "p_value_this_few_or_fewer": 3.919403036414082e-15,
+          "p_value_this_many_or_more": 0.9999999999999982,
+          "pooled_vs_nominal_z": -4.592775442746203,
+          "pooled_vs_nominal_p_two_sided": 4.373896379928647e-06,
+          "verdict": "fewer blocks above nominal than exact calibration predicts: the model is conservative here"
+        },
+        "10pct": {
+          "nominal": 0.1,
+          "median_over_blocks": 0.076171875,
+          "median_ci95": [
+            0.0712890625,
+            0.0810546875
+          ],
+          "pooled": 0.0836042758233533,
+          "pooled_ci95": [
+            0.08004498814870259,
+            0.08721619261477045
+          ],
+          "blocks_above_nominal": 146,
+          "expected_above_if_exactly_calibrated": 225.3207300871074,
+          "p_value_this_few_or_fewer": 1.2269650962999663e-13,
+          "p_value_this_many_or_more": 0.9999999999999402,
+          "pooled_vs_nominal_z": -5.9194420355767425,
+          "pooled_vs_nominal_p_two_sided": 3.2303566309151472e-09,
+          "verdict": "fewer blocks above nominal than exact calibration predicts: the model is conservative here"
+        }
+      }
+    },
+    "20200305_32px": {
+      "source": "docs/stokes_from_slc_20200305_block32.json",
+      "blocks": 53,
+      "n_test_total": 54272,
+      "corr_area_px": {
+        "median": 54.26999597088087,
+        "iqr": [
+          46.63688778438339,
+          81.28241291489938
+        ]
+      },
+      "n_eff_per_block": {
+        "median": 18.868621264490933,
+        "iqr": [
+          12.598051205395464,
+          21.95686823559637
+        ]
+      },
+      "levels": {
+        "1pct": {
+          "nominal": 0.01,
+          "median_over_blocks": 0.001953125,
+          "median_ci95": [
+            0.0,
+            0.00390625
+          ],
+          "pooled": 0.013100678066037735,
+          "pooled_ci95": [
+            0.006098909198113208,
+            0.0224609375
+          ],
+          "blocks_above_nominal": 15,
+          "expected_above_if_exactly_calibrated": 8.769981145699326,
+          "p_value_this_few_or_fewer": 0.9908542117373305,
+          "p_value_this_many_or_more": 0.02099792526961375,
+          "pooled_vs_nominal_z": 0.9666482643271663,
+          "pooled_vs_nominal_p_two_sided": 0.33371989822457737,
+          "verdict": "more blocks above nominal than exact calibration predicts: the model is anti-conservative here"
+        },
+        "5pct": {
+          "nominal": 0.05,
+          "median_over_blocks": 0.0244140625,
+          "median_ci95": [
+            0.015625,
+            0.041015625
+          ],
+          "pooled": 0.04081294221698113,
+          "pooled_ci95": [
+            0.02914946933962264,
+            0.05507490050117924
+          ],
+          "blocks_above_nominal": 16,
+          "expected_above_if_exactly_calibrated": 22.301943032309183,
+          "p_value_this_few_or_fewer": 0.047193547770304295,
+          "p_value_this_many_or_more": 0.9755581839239933,
+          "pooled_vs_nominal_z": -1.307552209125554,
+          "pooled_vs_nominal_p_two_sided": 0.19102523562735307,
+          "verdict": "consistent with exact calibration"
+        },
+        "10pct": {
+          "nominal": 0.1,
+          "median_over_blocks": 0.05859375,
+          "median_ci95": [
+            0.05078125,
+            0.0771484375
+          ],
+          "pooled": 0.07948850235849056,
+          "pooled_ci95": [
+            0.06426840728183963,
+            0.09697449882075472
+          ],
+          "blocks_above_nominal": 12,
+          "expected_above_if_exactly_calibrated": 22.438210075370783,
+          "p_value_this_few_or_fewer": 0.0018265979444632035,
+          "p_value_this_many_or_more": 0.9993524322984805,
+          "pooled_vs_nominal_z": -2.12082831198261,
+          "pooled_vs_nominal_p_two_sided": 0.033936253216063667,
+          "verdict": "fewer blocks above nominal than exact calibration predicts: the model is conservative here"
+        }
+      }
+    }
+  },
+  "run_info": {
+    "wall_s": 5.1,
+    "peak_rss_mb": 244,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

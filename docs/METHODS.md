@@ -3936,6 +3936,193 @@ correlated-F figure (`q_half_realizations`, checked against 0.519).
 In §1.11: circular coherence by gate, the two-channel tail models, the held-out
 tail calibration, and the phase/gain perturbation of the screen.
 
+## 15 · Council work order on v11 (2026-09-23): the analyses scored on
+
+Each subsection names its artifact and command; every rate carries its Monte
+Carlo standard error in the artifact, every simulation its seed. Where a result
+bears against a v11 sentence it is said so here and flagged in the report.
+
+### 15.1 The v11 audit (Task 0)
+
+`python backend/scripts/audit_manuscript_numbers.py` against
+`Claude outputs/grsl/dfsar_detection_limits_submission.tex` (v11) and its master:
+328 PASS, 0 MISMATCH, 0 ABSENT, 4 NO SOURCE (the DERIVED closed forms) on both.
+35 rows retired with their reasons (`RETIRED_V11`), about 70 added. The joint
+rule's printed figures resolve to `joint_calibration.json::summaries` (size
+3.575 / 6.20 / 13.27 % at N = 14 / 21 / 38; the in-band/null ratio 1.127 and
+1.308 at the same DOP; the DOP gate's pass rates), the mean-sample-DOP crossings
+to `dop_sampling_bias.json::mean_sample_dop_unpolarized` (0.13 at N = 75.09,
+0.10 at 127.07, E[m̂] = B(2, N−1)/B(3/2, N−1)), the held-out figures to the new
+`tail_calibration` keys (pooled 0.44 / 2.31 / 5.47 %, 13 / 11 / 11 blocks above
+nominal, worst 7.1 / 12.4 %). The "20.3 and 22.5 %" of V-C is the F model at
+the textured cells' PRINTED moment ENLs 11.2 and 9.3; at the unrounded 9.337
+the second is 22.41 % (both in `detection_statistics.json::derived`).
+`calibration_example.json` was regenerated with K = 10^(70.308868/10), G_LH =
+1.018442, G_LV = 1.000923 and sin θ once: −20.45 dB (amplitude reading) and
+−47.79 dB (intensity reading), which print as v11's −20.4 and −47.8, 11 and
+16 dB from the −31.5 dB floor. The quantifier scan classifies all 45
+quantified sentences (28 checked element-wise, 17 exempt with a reason); one
+is flagged: "All results come from one pass" — Sections III-B and IV-C already
+use the 2020-03-05 pass, and §15.5 replicates the Stokes analysis on it.
+G32 was retargeted: v11 keeps only the V-A sentence "the critical value runs
+from 2.07 to 1.64" over the bootstrap range 10.7–22.5, two cells.
+
+### 15.2 The joint rule as a test across N (Task 1)
+
+`python backend/scripts/dop_sampling_bias.py --curve` →
+`docs/joint_power_curve.json` (seed 20261001, 10⁵ trials per cell, 16 look
+counts from 5 to 200, 20 populations: four nulls at CPR 1.00, nine in the band,
+seven ice-free; 2395 s). Three arms: (A) independent equal-weight looks; (B)
+per-look gamma texture of shape 8 common to both channels; (C) looks correlated
+at the product's azimuth lags — field correlations √0.838, √0.565, √0.363 at
+lags 1–3, continued geometrically at their decay (truncation at lag 3 is not a
+valid covariance), which makes N looks worth 1.5 (N = 5), 2.9 (14), 6.9 (38)
+and 34.7 (200) independent ones.
+
+* Size (max over the nulls of P(joint)): arm A 0.71 / 3.63 / 6.14 / 13.15 /
+  33.19 % at N = 5 / 14 / 21 / 38 / 100; arm B 0.63 / 3.10 / 5.35 / 11.62 /
+  30.51 %; arm C 0.05 / 0.29 / 0.53 / 1.27 / 4.93 %. The size first exceeds
+  5 % at N = 19 (A), 21 (B) and 150 (C).
+* In-band power stays within a factor of the size: at N = 14 the in-band
+  selection is 2.87–3.60 % in arm A; the largest in-band/null ratio at the same
+  DOP is 1.23 (CPR 1.299 at its minimum DOP), 1.45 at N = 38 and 1.80 at
+  N = 100. Over CPR 1.1–1.2 alone the coarser grid of `joint_calibration.json`
+  gives the 1.13 and 1.31 that v11 prints; including CPR 1.25 and 1.299 the
+  ratio is larger.
+* P(joint AND R > crit₉₅) is exactly 0 in every arm for every N below 79.6,
+  as the sample identity requires; it first becomes non-zero at N = 80 (A, B;
+  2 and 4 of 2 × 10⁶ draws) and N = 100 (C).
+* Gate (G33): arm A at N = 14 gives 3.626 ± 0.059 %, against 3.575 % in
+  `joint_calibration.json` (z = 0.86).
+
+### 15.3 The look count at the selected cells (Task 2)
+
+`python backend/scripts/enl_logratio.py` → `docs/enl_logratio.json`. Common
+texture cancels in R = SC/OC, and for independent gamma channels
+Var(ln R) = ψ₁(N_SC) + ψ₁(N_OC); with N_SC = N_OC = N, N solves 2ψ₁(N) =
+Var(ln R). Validated first on synthetic fields at the product's lags (N = 5,
+14, 21, 38, 80, 120; texture off and gamma texture of shape 8 shared by both
+channels; 31 × 31 windows, 640 per configuration): the estimator reads
++3.4 to +5.0 % high at every N, texture or not, and a 95 % moving-block
+bootstrap inside the window (10 × 10 px blocks, B = 200) covers the true N
+66–72 % of the time — a precision statement, not a confidence interval.
+
+On the complex product (first pass, physical sign), for each of the 26 462
+joint-selected cells, N from Var(ln R) over the non-selected cells of its
+31 × 31 neighbourhood: median 41.8 (IQR 23.0–55.0, p95 73.6); 709 selected
+cells (2.68 %) have local N ≥ 79.6, and **2 have R above F⁻¹₀.₉₅(2N, 2N) at
+their local N**. For 26 462 random non-selected cells: median 17.5 (IQR
+9.8–31.5), 108 (0.41 %) at N ≥ 79.6, 10 above their local critical value. The
+109 homogeneous 64 × 64 blocks give median 39.4 (IQR 28.5–46.0), against block
+moment ENLs of 14.8 (SC) and 25.6 (OC): the ratio's own look count on
+homogeneous terrain is roughly three times the 13.72 Section V uses, the
+moment ENLs being depressed by texture that cancels in the ratio. Local γ_c at
+the selected cells has median 0.077 per cell (0.136 as the window mean, the
+same as for random cells); the Spearman correlation of local N with the window
+coherence is 0.19 at selected cells and 0.10 at random ones, so coherence does
+not explain the look count; across the 20 windows the DOP gate's pass rate
+follows coherence (Spearman −0.88, `stokes_from_slc.json`). Biases: terrain
+CPR variation in the window lowers N̂, channel correlation raises it. Second
+pass: 24 selected cells, local N median 32.5, none at N ≥ 79.6.
+
+### 15.4 The F2 null, per cell (Task 4)
+
+`python backend/scripts/f2_maximum.py --only-v2` →
+`docs/f2_maximum.json::complex_field_v2` (10⁴ trials, seed 20261003,
+independent channels, 4 looks, production boxcar with zero-fill, the sample
+DOP formed per cell from the boxcar'd covariance). Gate: the crater-level rate
+at 1.895 is 85.2 ± 0.4 % against 86.3 ± 0.3 %, and the per-pixel rate
+7.63 ± 0.08 % against 7.76 % — both within three combined standard errors.
+
+* **The per-pixel excess is not an edge effect.** Cells whose 5 × 5 window
+  holds all 25 valid pixels fire at 6.87 %; 20–24 valid, 7.28 %; 15–19, 8.04 %;
+  10–14, 8.82 %; 1–9, 10.24 %. The fragmented mask raises the rate, but the
+  interior already exceeds 5 %: the boxcar'd field's F-model N is not the
+  mode-estimated 14.5 the looks were matched to.
+* **Calibrated per-pixel threshold** (5 % per pixel on this mask): 2.087; its
+  crater-level FWE is 75.2 ± 0.4 %.
+* **Crater-level threshold** (5 % FWE at CPR 1.00): 4.117.
+* **Sinha's joint rule on the same null** (CPR 1.00, DOP 0): selects at least
+  one cell of the 260 in 88.2 ± 0.3 % of realizations and at least five in
+  49.3 ± 0.5 % (mean 5.5 cells; per cell 2.1 %, DOP gate alone 4.2 %).
+
+### 15.5 The second pass (Task 5)
+
+`python backend/scripts/stokes_from_slc.py --product 20200305` →
+`docs/stokes_from_slc_20200305.json` (and `phase_gain_perturbation_20200305.json`).
+The same script, its geometry read from that pass's sli label (330 044 × 128
+at offset 2 673 220) and its azimuth average from its sri label (39 looks);
+896 972 matched cells. The invariants hold: Eq. (1)'s band at every cell at
+both signs, the coupling band at every DOP < 0.13 cell, DOP² = q² +
+γ_c²(1 − q²) to 5.6 × 10⁻¹⁶, no gated cell with γ_c ≥ 0.13. The physical sign
+is again 180° (medians 6.87 and 0.146); the phase clusters at −89.4° with
+resultant 0.990. The terrain is far more polarized: H–V coherence median 0.751
+(0.658 on the first pass), DOP < 0.13 on 0.045 % of cells (406), the joint rule
+on 0.0027 % (24), conditional rate 5.9 ± 1.2 %. γ_c median 0.068 inside the
+gate, 0.148 outside. Moment ENLs N_SC 9.68, N_OC 17.50 (physical sign). The
+20 lowest-CV 15 × 15 windows give tail ratios 0.98 (p95) and 0.94 (p99) to
+unequal-look F. **No 64 × 64 block fits the 128-bin swath** (0 tiles wholly
+inside the mask), so the held-out calibration cannot be run at the prescribed
+size. At 32 × 32, a declared deviation (`--block 32`,
+`docs/stokes_from_slc_20200305_block32.json`), 53 blocks give pooled held-out
+rejection 1.31 / 4.08 / 7.95 % at nominal 1 / 5 / 10 %, with 15 / 16 / 12
+blocks above nominal. The first pass at 32 × 32 (`stokes_from_slc_block32.json`,
+501 blocks) gives 0.89 / 4.08 / 8.36 %: smaller blocks are less conservative on
+both passes.
+
+### 15.6 Intervals on the held-out calibration (Task 6)
+
+`python backend/scripts/tail_calibration_ci.py` → `docs/tail_calibration_ci.json`.
+Block bootstrap (B = 10⁴) on the first pass's 109 blocks: pooled rejection
+0.44 % [0.29, 0.64], 2.31 % [1.92, 2.75], 5.47 % [4.90, 6.08] at nominal 1, 5,
+10 %; medians over blocks 0.10 % [0.05, 0.20], 1.39 % [1.22, 2.03], 4.42 %
+[4.10, 5.22]. Each block's effective count is its held-out cells over its own
+integrated autocorrelation area of ln CPR (median area 67 px). Under exact
+calibration the number of blocks above nominal is Poisson-binomial with
+expectation 46.6 / 48.7 / 50.7; the observed 13 / 11 / 11 have p ≤ 10⁻¹² in the
+lower tail: **11 of 109 at 5 % is not consistent with exact calibration — it
+is far too few, the model is conservative on these blocks.** At 32 × 32 the
+1 % tail turns anti-conservative on both passes (144 of 501 above nominal
+against 103.7 expected, p = 9 × 10⁻⁶; 15 of 53 against 8.8, p = 0.021), while
+the 5 and 10 % tails stay conservative or consistent.
+
+### 15.7 Figures (Task 7)
+
+`cd paper && python make_figures_council.py` (kept apart from
+`make_figures.py`, which is byte-identical to the manuscript's copy; G26 now
+builds and inspects both). `fig_cpr_dop.pdf`: the log density of the sample
+(DOP, CPR) over all 5 883 594 cells (`paper/fig_cpr_dop_density.npz`, written by
+`stokes_from_slc.py`), with the coupling curve, DOP = 0.13, CPR = 1, 1.2989 and
+1.895. `fig_joint_power.pdf`: Task 1's size and maximum in-band power against
+N for the three arms.
+
+### 15.8 A calibrated replacement rule (Task 3)
+
+`python backend/scripts/decision_rule.py` → `docs/decision_rule.json` (seed
+20261002; 2 × 10⁴ tested cells and a 4 × 10⁴-cell window pool per population;
+the q₀.₀₅ table from 2 × 10⁵ draws at each of 36 look counts). (a) CPR test:
+R > F⁻¹₀.₉₅(2N̂, 2N̂), N̂ from Var(ln R) over a window of W cells of the same
+population — W = 960 (a 31 × 31 window of independent cells) and W = 16 (the
+product's 61.42 px per independent sample). (b) DOP test: m̂ below the 5 %
+quantile of its law at population DOP 0.13 (0.1238 at N = 14, 0.0850 at 38,
+0.0713 at 100); the law depends on the population only through its DOP.
+(c) Intersection–union of the two.
+
+* Plug-in inflation of (a), arm A: size 4.98 / 5.27 / 5.17 % with the true N,
+  5.11 / 5.32 / 5.25 % with W = 960, 6.21 / 6.39 / 6.50 % with W = 16, at
+  N = 14 / 38 / 100. In arm C the nominal N badly overstates the looks and the
+  oracle test's size is 22–25 %; the plug-in's 6.3 % corrects it.
+* (b) has size 5.3 % (A) and power at DOP 0 of 6.2 / 9.5 / 20.4 % at
+  N = 14 / 38 / 100: the gate barely separates DOP 0 from DOP 0.13 below N ~ 40.
+* (c) has size and power **0.00 %** at N = 14 and 38 in every arm, and 0.01 % at
+  N = 100: m̂ below its 5 % quantile at DOP 0.13 implies R < 1.2989 by the
+  sample identity, below the critical value whenever N < 80. A calibrated joint
+  test of "CPR > 1 and DOP < 0.13" cannot reject at these look counts.
+* On the complex product it selects **0** of 5 883 594 cells on the first pass
+  (the plug-in CPR test alone rejects 3 703, the DOP test alone 66 025; Sinha's
+  rule 26 462) and 0 of 896 972 on the second (0; 593; 24). Local N̂ over the
+  frame: median 17.4 (first pass), 21.0 (second).
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -3953,7 +4140,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `8633a95`.
+Stamped at commit `43d370a`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -3961,26 +4148,29 @@ Stamped at commit `8633a95`.
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
 | `docs/bootstrap_enl.json` | `5f4239f07f372c3f…` | §7.3.1 |
-| `docs/calibration_example.json` | `38df1586f396f66e…` | §14.1 |
+| `docs/calibration_example.json` | `5f0753e6e92fd192…` | §14.1 |
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
 | `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
+| `docs/decision_rule.json` | `18a77ceb68ba7ea1…` | §15.8 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
-| `docs/detection_statistics.json` | `5973a71e51d0bd1f…` | §11.1, §11.2, §11.3 |
-| `docs/dop_sampling_bias.json` | `980897a538b2e97c…` | §14.2 |
+| `docs/detection_statistics.json` | `16707f02b03be20c…` | §11.1, §11.2, §11.3 |
+| `docs/dop_sampling_bias.json` | `14f3432c0344881e…` | §14.2 |
 | `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
 | `docs/enl_L_20200305_full.json` | `bf7bc6f1bdf4219a…` | §14.4 |
 | `docs/enl_benchmark.json` | `aad47ad4c52def4c…` | §7.3.2 |
 | `docs/enl_estimator_spec.json` | `95577a403a4d57be…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
 | `docs/enl_interval_validation.json` | `ad9514471b8885a6…` | §14.5 |
+| `docs/enl_logratio.json` | `4f9c37c71c8c0841…` | §15.3 |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
-| `docs/f2_maximum.json` | `1383d23ece072c67…` | §6.2a, §14.6 |
+| `docs/f2_maximum.json` | `964e307b8d3130d1…` | §6.2a, §14.6, §15.4 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
-| `docs/joint_calibration.json` | `8025123b3691d726…` | §14.2 |
+| `docs/joint_calibration.json` | `69091c8284d96fb1…` | §14.2, §15.1 |
 | `docs/joint_criterion.json` | `984eb95dc9497a0d…` | §7.9.4 |
+| `docs/joint_power_curve.json` | `e1bae208236a5d89…` | §15.2, §15.7 |
 | `docs/kclutter.json` | `ae285515e3abdb5d…` | §7.13 |
 | `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
@@ -3988,7 +4178,7 @@ Stamped at commit `8633a95`.
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
 | `docs/mechanism_spec.json` | `14bc6ef44f9ff8e2…` | §14.3 |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
-| `docs/phase_gain_perturbation.json` | `875e2386c733a46e…` | §1.11 |
+| `docs/phase_gain_perturbation.json` | `07604f8f0c4c864e…` | §1.11 |
 | `docs/propagation_percentiles.json` | `847af0a883190b4b…` | §12.6 |
 | `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
@@ -3999,7 +4189,11 @@ Stamped at commit `8633a95`.
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/stationarity.json` | `4d72eb5cd1877932…` | §7.3.3 |
-| `docs/stokes_from_slc.json` | `bf21a08a276631fe…` | §1.11, §14.7 |
+| `docs/stokes_from_slc.json` | `cf47bccb7fa4c245…` | §1.11, §14.7, §15.7 |
+| `docs/stokes_from_slc_20200305.json` | `e5eca2c112a2a157…` | §15.5 |
+| `docs/stokes_from_slc_20200305_block32.json` | `a3b893d7f7c5399d…` | §15.5 |
+| `docs/stokes_from_slc_block32.json` | `453a44d7e23d5df6…` | §15.5 |
+| `docs/tail_calibration_ci.json` | `bfa7f5c6402bcaf9…` | §15.6 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |

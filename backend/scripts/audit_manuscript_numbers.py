@@ -84,6 +84,12 @@ def _split_path(path: str) -> list:
     return parts
 
 
+def _match_all(elem, cond: str) -> bool:
+    """`a=x&b=y`: every condition must hold (the grid artifacts are indexed by
+    more than one field, e.g. population CPR and look count)."""
+    return all(_match(elem, *c.split("=", 1)) for c in cond.split("&"))
+
+
 def _match(elem, key: str, want: str) -> bool:
     if not isinstance(elem, dict) or key not in elem:
         return False
@@ -133,8 +139,7 @@ def resolve(rel: str, path: str):
                     nxt.extend(c[int(lo) if lo else None:int(hi) if hi else None])
                     fanned = True
                 elif b.startswith("?"):
-                    k, v = b[1:].split("=", 1)
-                    nxt.extend(e for e in c if _match(e, k, v))
+                    nxt.extend(e for e in c if _match_all(e, b[1:]))
                     fanned = True
                 else:
                     try:

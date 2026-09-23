@@ -318,6 +318,11 @@ GATES = [
      "recompute_manuscript_tables.py - Tables II, III and IV, cell by cell",
      [sys.executable, str(SCRIPTS / "recompute_manuscript_tables.py"),
       "--assert-none-differ"], False),
+    ("G33", "The council analyses reproduce their anchors: the joint rule's size at "
+            "N = 14, no significant joint selection below N = 79.6, and the F2 null's "
+            "86.3 % and 7.76 %",
+     "assert_council_anchors.py - recomputed from the stored cells, every arm",
+     [sys.executable, str(SCRIPTS / "assert_council_anchors.py")], False),
 ]
 
 # WHY THE SEQUENCE SKIPS G11 AND G14.

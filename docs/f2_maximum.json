@@ -411,5 +411,89 @@
       "effective": 1.274842529247089
     }
   },
-  "paper_convention": "f2_peak_cpr is the expected maximum of independent F(2N,2N) draws at TRUE CPR 0.7 over 1520 pixels (raw) or 24.7 effective samples: its N = 5 rows, 7.38 and 2.52, are reproduced here by independent_max_true_cpr_0p7 at 1521 and 25 samples (7.377, 2.528). independent_max_true_cpr_1p0_over_disc is the same quantity at true CPR 1 and is NOT the paper's convention"
+  "paper_convention": "f2_peak_cpr is the expected maximum of independent F(2N,2N) draws at TRUE CPR 0.7 over 1520 pixels (raw) or 24.7 effective samples: its N = 5 rows, 7.38 and 2.52, are reproduced here by independent_max_true_cpr_0p7 at 1521 and 25 samples (7.377, 2.528). independent_max_true_cpr_1p0_over_disc is the same quantity at true CPR 1 and is NOT the paper's convention",
+  "complex_field_v2": {
+    "model": "independent circular channels (gamma_c = 0), CPR 1.00, DOP 0; 4 looks per channel as the first complex run chose; the cross product is kept so the sample DOP can be formed per cell from the boxcar'd covariance, with the production zero-fill",
+    "seed": 20261003,
+    "trials": 10000,
+    "looks": 4,
+    "crit_95": 1.8946236969971033,
+    "per_pixel": {
+      "exceedance_rate": 0.0762753846153846,
+      "mc_se": 0.0008014598952768643,
+      "by_valid_pixels_in_window": [
+        {
+          "valid_pixels_in_window": "25 (interior)",
+          "cells": 66,
+          "exceedance_percent": 6.868181818181817,
+          "share_of_exceedances_percent": 22.85745981161379
+        },
+        {
+          "valid_pixels_in_window": "20-24",
+          "cells": 85,
+          "exceedance_percent": 7.278000000000001,
+          "share_of_exceedances_percent": 31.19415478327518
+        },
+        {
+          "valid_pixels_in_window": "15-19",
+          "cells": 73,
+          "exceedance_percent": 8.037808219178082,
+          "share_of_exceedances_percent": 29.587123580548212
+        },
+        {
+          "valid_pixels_in_window": "10-14",
+          "cells": 31,
+          "exceedance_percent": 8.8158064516129,
+          "share_of_exceedances_percent": 13.780532080114567
+        },
+        {
+          "valid_pixels_in_window": "1-9",
+          "cells": 5,
+          "exceedance_percent": 10.236,
+          "share_of_exceedances_percent": 2.5807297444482544
+        }
+      ],
+      "interior_cells_rate": 0.06868181818181818,
+      "verdict": "the per-pixel excess is NOT confined to the edge cells: interior cells exceed 5 % too"
+    },
+    "calibrated_per_pixel_threshold": {
+      "threshold": 2.087394534474784,
+      "per_pixel_rate": 0.05,
+      "fwe_at_threshold": 0.7524,
+      "fwe_mc_se": 0.004316181645853196
+    },
+    "crater_level_threshold": {
+      "threshold_for_5pct_fwe": 4.117249415549223,
+      "max_median": 2.5047834926872374,
+      "max_p95": 4.117249415549223
+    },
+    "fwe_at_1p895": {
+      "rate": 0.852,
+      "mc_se": 0.0035509998591945905
+    },
+    "joint_rule_on_null": {
+      "rule": "sample CPR > 1 AND sample DOP < 0.13, per cell",
+      "p_at_least_1_cell": 0.8824,
+      "p_at_least_1_se": 0.0032213388520924034,
+      "p_at_least_5_cells": 0.4931,
+      "p_at_least_5_se": 0.004999523877330721,
+      "mean_cells_selected": 5.5035,
+      "per_cell_rate": 0.02116730769230769,
+      "per_cell_dop_below_rate": 0.04211
+    },
+    "gate": {
+      "fwe_reproduces_0p863": true,
+      "per_pixel_reproduces_7p76pct": true,
+      "verdict": "PASS"
+    }
+  },
+  "run_info_v2": {
+    "wall_s": 424.8,
+    "peak_rss_mb": 313,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
 }

@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/joint-calibration/1",
-  "generated_utc": "2026-09-23T11:14:50.109556+00:00",
+  "generated_utc": "2026-09-23T12:56:58.494926+00:00",
   "generator": "backend/scripts/dop_sampling_bias.py",
   "model": "N independent equal-weight circular complex Gaussian looks of a 2x2 circular-basis covariance; sample covariance = mean over looks; R = a_hat/b_hat, m_hat = sqrt((a_hat-b_hat)^2 + 4|c_hat|^2)/(a_hat+b_hat). Speckle only.",
   "dop_threshold": 0.13,
@@ -2304,9 +2304,243 @@
     }
   ],
   "joint_and_significant_nonzero_cells": 0,
+  "summaries": {
+    "N5": {
+      "size_percent": 0.734,
+      "null_selection_range_percent": [
+        0.67,
+        0.734
+      ],
+      "band_1p1_1p2_selection_range_percent": [
+        0.641,
+        0.688
+      ],
+      "max_band_over_null_same_dop": 1.026865671641791,
+      "max_band_over_null_same_dop_excess_percent": 2.686567164179099,
+      "band_over_null_rows": [
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.05,
+          "ratio": 0.9168937329700273
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.1,
+          "ratio": 1.0044776119402985
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.1,
+          "ratio": 1.026865671641791
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.13,
+          "ratio": 0.9510385756676557
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.13,
+          "ratio": 0.9525222551928783
+        }
+      ],
+      "dop_gate_pass_qualifying_range_percent": [
+        1.2349999999999999,
+        1.405
+      ],
+      "dop_gate_pass_at_dop_0p20_range_percent": [
+        1.1320000000000001,
+        1.207
+      ],
+      "dop_gate_pass_at_dop_0p30_range_percent": [
+        0.8699999999999999,
+        0.9570000000000001
+      ],
+      "cpr0p7_joint_at_dop_0p20_percent": 0.525,
+      "cpr0p7_joint_at_dop_0p30_percent": 0.402,
+      "gate_effect_cpr1p1_dop0p10": {
+        "p_cpr_gt_1_percent": 55.754999999999995,
+        "p_joint_percent": 0.673
+      }
+    },
+    "N14": {
+      "size_percent": 3.5749999999999997,
+      "null_selection_range_percent": [
+        2.864,
+        3.5749999999999997
+      ],
+      "band_1p1_1p2_selection_range_percent": [
+        3.0380000000000003,
+        3.639
+      ],
+      "max_band_over_null_same_dop": 1.126865671641791,
+      "max_band_over_null_same_dop_excess_percent": 12.686567164179108,
+      "band_over_null_rows": [
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.05,
+          "ratio": 1.0529513888888888
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.1,
+          "ratio": 1.0957170668397147
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.1,
+          "ratio": 1.126865671641791
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.13,
+          "ratio": 1.0607541899441342
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.13,
+          "ratio": 1.1183659217877095
+        }
+      ],
+      "dop_gate_pass_qualifying_range_percent": [
+        5.669,
+        7.106999999999999
+      ],
+      "dop_gate_pass_at_dop_0p20_range_percent": [
+        4.088,
+        4.3020000000000005
+      ],
+      "dop_gate_pass_at_dop_0p30_range_percent": [
+        2.06,
+        2.1319999999999997
+      ],
+      "cpr0p7_joint_at_dop_0p20_percent": 1.6099999999999999,
+      "cpr0p7_joint_at_dop_0p30_percent": 0.822,
+      "gate_effect_cpr1p1_dop0p10": {
+        "p_cpr_gt_1_percent": 60.184000000000005,
+        "p_joint_percent": 3.3770000000000002
+      }
+    },
+    "N21": {
+      "size_percent": 6.2,
+      "null_selection_range_percent": [
+        4.54,
+        6.2
+      ],
+      "band_1p1_1p2_selection_range_percent": [
+        4.9959999999999996,
+        6.35
+      ],
+      "max_band_over_null_same_dop": 1.1834801762114537,
+      "max_band_over_null_same_dop_excess_percent": 18.348017621145374,
+      "band_over_null_rows": [
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.05,
+          "ratio": 1.0731789758323473
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.1,
+          "ratio": 1.0901344442340466
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.1,
+          "ratio": 1.1681499715962886
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.13,
+          "ratio": 1.100440528634361
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.13,
+          "ratio": 1.1834801762114537
+        }
+      ],
+      "dop_gate_pass_qualifying_range_percent": [
+        9.118,
+        12.399000000000001
+      ],
+      "dop_gate_pass_at_dop_0p20_range_percent": [
+        5.852,
+        5.946
+      ],
+      "dop_gate_pass_at_dop_0p30_range_percent": [
+        2.199,
+        2.271
+      ],
+      "cpr0p7_joint_at_dop_0p20_percent": 1.9109999999999998,
+      "cpr0p7_joint_at_dop_0p30_percent": 0.764,
+      "gate_effect_cpr1p1_dop0p10": {
+        "p_cpr_gt_1_percent": 62.516000000000005,
+        "p_joint_percent": 5.757000000000001
+      }
+    },
+    "N38": {
+      "size_percent": 13.272,
+      "null_selection_range_percent": [
+        8.116,
+        13.272
+      ],
+      "band_1p1_1p2_selection_range_percent": [
+        9.414,
+        14.518
+      ],
+      "max_band_over_null_same_dop": 1.3090192212912766,
+      "max_band_over_null_same_dop_excess_percent": 30.901922129127655,
+      "band_over_null_rows": [
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.05,
+          "ratio": 1.1914649158801807
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.1,
+          "ratio": 1.158664929337476
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.1,
+          "ratio": 1.286258394306906
+        },
+        {
+          "pop_cpr": 1.1,
+          "pop_dop": 0.13,
+          "ratio": 1.1599310004928536
+        },
+        {
+          "pop_cpr": 1.2,
+          "pop_dop": 0.13,
+          "ratio": 1.3090192212912766
+        }
+      ],
+      "dop_gate_pass_qualifying_range_percent": [
+        16.043,
+        26.371
+      ],
+      "dop_gate_pass_at_dop_0p20_range_percent": [
+        7.959,
+        8.07
+      ],
+      "dop_gate_pass_at_dop_0p30_range_percent": [
+        1.536,
+        1.598
+      ],
+      "cpr0p7_joint_at_dop_0p20_percent": 1.7840000000000003,
+      "cpr0p7_joint_at_dop_0p30_percent": 0.382,
+      "gate_effect_cpr1p1_dop0p10": {
+        "p_cpr_gt_1_percent": 66.208,
+        "p_joint_percent": 11.559999999999999
+      }
+    }
+  },
   "run_info": {
-    "wall_s": 45.7,
-    "peak_rss_mb": 209,
+    "wall_s": 162.8,
+    "peak_rss_mb": 210,
     "python": "3.13.1",
     "numpy": "2.2.2",
     "scipy": "1.17.1",

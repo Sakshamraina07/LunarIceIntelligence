@@ -176,6 +176,22 @@ def wilson(k: int, n: int, z: float = 1.959964):
     return max(0.0, c - h), min(1.0, c + h)
 
 
+def _textured_rows() -> list:
+    base = Path(__file__).resolve().parents[2]
+    k = json.loads((base / "docs" / "kclutter_within_cell.json").read_text(encoding="utf-8"))
+    out = []
+    for i in (1, 4):
+        n = float(k["rows"][i]["enl_of_textured_intensity"])
+        out.append({"row": i, "moment_enl": n,
+                    "p_exceed_true_cpr_0p7_percent": exceedance(n, 0.7, 1.0),
+                    # the manuscript prints the ENL to one decimal (11.2, 9.3);
+                    # at that printed value the tail differs in the third digit
+                    "moment_enl_printed": round(n, 1),
+                    "p_exceed_true_cpr_0p7_percent_at_printed_enl": exceedance(round(n, 1), 0.7, 1.0),
+                    "simulated_exceed_percent": float(k["rows"][i]["exceed_percent"])})
+    return out
+
+
 def derived_closed_forms(area_px: float) -> dict:
     """Closed forms Section V prints in running text, computed here so each
     literal resolves to a key rather than to arithmetic done in the prose.
@@ -216,6 +232,9 @@ def derived_closed_forms(area_px: float) -> dict:
                      "they round alike"),
             "rows": sens},
         "f_exceedance_N14_cpr0p7_percent": exceedance(14.0, 0.7, 1.0),
+        # V-C: the F model evaluated at the textured fields' OWN moment ENLs, as
+        # the pipeline evaluates it (kclutter_within_cell.json rows 1 and 4)
+        "f_exceedance_at_textured_enl": _textured_rows(),
         "effective_samples_f2_disc": {
             "disc_pixels": disc, "pixels_per_independent_sample": area_px,
             "effective_samples": disc / area_px,

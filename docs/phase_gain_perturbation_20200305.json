@@ -1,0 +1,155 @@
+{
+  "schema": "lunar-ice/phase-gain-perturbation/1",
+  "generated_utc": "2026-09-23T12:41:37.833900+00:00",
+  "generator": "backend/scripts/stokes_from_slc.py",
+  "review_item": "M12",
+  "grid": "SLC slant-range grid, 21 azimuth looks + 5x5 boxcar, 896,972 matched cells",
+  "sign": "S3 = -2 Im<E_H E_V*> (physical)",
+  "perturbations": {
+    "phase": "relative-phase rotation delta applied to <E_H E_V*>: hv -> hv exp(i delta); moves magnitude between S2 and S3",
+    "gain": "relative-gain error g dB applied to the V channel: l_V -> l_V 10^(g/10), <E_H E_V*> -> <E_H E_V*> 10^(g/20)"
+  },
+  "s2_magnitude": {
+    "frame": {
+      "abs_S2_over_abs_S3": {
+        "n": 896972,
+        "median": 0.061311440450788,
+        "iqr": [
+          0.028609773279501413,
+          0.11320894111100299
+        ],
+        "p95": 0.3104455264098915,
+        "max": 294.70321932162045
+      },
+      "abs_S2_over_S0": {
+        "n": 896972,
+        "median": 0.04480032826452146,
+        "iqr": [
+          0.021221993554337994,
+          0.07757396206112827
+        ],
+        "p95": 0.14884274077153425,
+        "max": 0.4028430561417196
+      }
+    },
+    "inside_gate": {
+      "abs_S2_over_abs_S3": {
+        "n": 406,
+        "median": 0.6553584739003209,
+        "iqr": [
+          0.2784748967377202,
+          1.3982211281104697
+        ],
+        "p95": 4.940595304853193,
+        "max": 117.93957538707846
+      },
+      "abs_S2_over_S0": {
+        "n": 406,
+        "median": 0.03623017048077644,
+        "iqr": [
+          0.01831021406306675,
+          0.06626777834871089
+        ],
+        "p95": 0.09353000019253799,
+        "max": 0.1233644606965159
+      }
+    }
+  },
+  "baseline": {
+    "dop_below_percent": 0.04526339729668262,
+    "joint_percent": 0.0026756688057152284
+  },
+  "phase_rows": [
+    {
+      "delta_deg": -5.0,
+      "dop_below_percent": 0.04526339729668262,
+      "joint_percent": 0.002341210205000825,
+      "dop_change_pp": 0.0,
+      "joint_change_pp": -0.0003344586007144035,
+      "joint_relative_change": -0.12499999999999999
+    },
+    {
+      "delta_deg": -2.0,
+      "dop_below_percent": 0.04526339729668262,
+      "joint_percent": 0.0024526964052389594,
+      "dop_change_pp": 0.0,
+      "joint_change_pp": -0.0002229724004762689,
+      "joint_relative_change": -0.08333333333333329
+    },
+    {
+      "delta_deg": -1.0,
+      "dop_below_percent": 0.04526339729668262,
+      "joint_percent": 0.0025641826054770937,
+      "dop_change_pp": 0.0,
+      "joint_change_pp": -0.00011148620023813462,
+      "joint_relative_change": -0.041666666666666706
+    },
+    {
+      "delta_deg": 1.0,
+      "dop_below_percent": 0.04526339729668262,
+      "joint_percent": 0.002787155005953363,
+      "dop_change_pp": 0.0,
+      "joint_change_pp": 0.00011148620023813462,
+      "joint_relative_change": 0.041666666666666706
+    },
+    {
+      "delta_deg": 2.0,
+      "dop_below_percent": 0.04526339729668262,
+      "joint_percent": 0.003121613606667767,
+      "dop_change_pp": 0.0,
+      "joint_change_pp": 0.00044594480095253816,
+      "joint_relative_change": 0.16666666666666669
+    },
+    {
+      "delta_deg": 5.0,
+      "dop_below_percent": 0.04526339729668262,
+      "joint_percent": 0.003344586007144036,
+      "dop_change_pp": 0.0,
+      "joint_change_pp": 0.0006689172014288074,
+      "joint_relative_change": 0.2500000000000001
+    }
+  ],
+  "gain_rows": [
+    {
+      "gain_error_db": -1.0,
+      "dop_below_percent": 0.02619925705596161,
+      "joint_percent": 0.0014493206030957487,
+      "dop_change_pp": -0.019064140240721006,
+      "joint_change_pp": -0.0012263482026194797,
+      "joint_relative_change": -0.45833333333333337
+    },
+    {
+      "gain_error_db": -0.5,
+      "dop_below_percent": 0.03768233568048947,
+      "joint_percent": 0.0025641826054770937,
+      "dop_change_pp": -0.007581061616193148,
+      "joint_change_pp": -0.00011148620023813462,
+      "joint_relative_change": -0.041666666666666706
+    },
+    {
+      "gain_error_db": 0.5,
+      "dop_below_percent": 0.04504042489620635,
+      "joint_percent": 0.0026756688057152284,
+      "dop_change_pp": -0.00022297240047626857,
+      "joint_change_pp": 0.0,
+      "joint_relative_change": 0.0
+    },
+    {
+      "gain_error_db": 1.0,
+      "dop_below_percent": 0.03601004267691745,
+      "joint_percent": 0.0025641826054770937,
+      "dop_change_pp": -0.009253354619765168,
+      "joint_change_pp": -0.00011148620023813462,
+      "joint_relative_change": -0.041666666666666706
+    }
+  ],
+  "run_info": {
+    "wall_s": 5.9,
+    "peak_rss_mb": 902,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

@@ -176,57 +176,33 @@ def main() -> int:
     report["tables"]["II_sampling_statistics"] = {"cells": rows2, "differ": bad2}
     total_bad += bad2
 
-    # ---------------- the sensitivity block, now in V-A's text -------------
-    # "across the LH estimates (2.64 and 5.30 at ..., i.e. N=6.21, 12.47, 13.72
-    # and 14.64 after the boxcar) the critical value runs 2.638, 1.957, 1.895
-    # and 1.855 and P_{0.7} 26.9, 19.0, 17.8 and 17.0 %". Parsed from the
-    # comment-stripped text joined into one line, because the sentence wraps.
-    print("\n  V-A TEXT — sensitivity to the raw ENL estimate (was Table III)")
+    # ---------------- the sensitivity sentence of V-A --------------------------
+    # v11 (2026-09-23 18:00) keeps ONE sentence of the old sensitivity block:
+    # "Across the block-bootstrap range of the smoothed ENL (10.7--22.5) the
+    # critical value runs from 2.07 to 1.64". The four-estimate sentence the
+    # third revision had moved here from Table III is gone, so the parser now
+    # reads this one: two critical values, each recomputed at its N.
+    print("\n  V-A TEXT — the critical value across the bootstrap range of the ENL")
     rows3, bad3 = [], 0
-    scale = 13.72 / 5.83
     flat_all = re.sub(r"\s+", " ", " ".join(raw_lines))
-    ms = re.search(r"across the LH estimates \((.*?)\) the critical value runs (.*?) "
-                   r"and \$P_\{0\.7\}\$ (.*?)\\,\\%", flat_all)
+    ms = re.search(r"smoothed ENL \((\d+\.\d+)--(\d+\.\d+)\) the critical value runs "
+                   r"from (\d+\.\d+) to (\d+\.\d+)", flat_all)
     if ms:
-        paren, crit_s, p_s = ms.groups()
-        raws = [float(x) for x in re.findall(r"(\d+\.\d+)", paren.split("i.e.")[0])]
-        n_s = re.findall(r"(\d+\.\d+)", paren.split("i.e.")[1]) if "i.e." in paren else []
-        crits = re.findall(r"(\d+\.\d+)", crit_s)
-        ps = re.findall(r"(\d+\.\d+)", p_s)
-        # the raw estimates are printed in the order 32x32, 16x16, screening
-        # mask, amplitude-domain; the N, crit and P lists follow that order
-        for i, raw in enumerate(raws):
-            n = raw * scale
-            for label, lst, fn in (("N", n_s, lambda n: n),
-                                   ("crit", crits, DS.floor_95),
-                                   ("P_0.7", ps, lambda n: DS.exceedance(n, 0.7))):
-                if i >= len(lst):
-                    continue
-                printed = lst[i]
-                d = dec(printed)
-                val = fn(n)
-                # N is printed rounded; the figures derived from it are
-                # checked at the unrounded N AND at the printed one, as in
-                # Table II, and the row says which reproduces the digit
-                val_p = fn(round(n, 2)) if label != "N" else val
-                ok_u = round(val, d) == round(float(printed), d)
-                ok_p = round(val_p, d) == round(float(printed), d)
-                ok = ok_u or ok_p
-                if not ok:
-                    bad3 += 1
-                    print(f"    raw {raw}: {label} printed {printed}, computed "
-                          f"{round(val, d + 2)} / {round(val_p, d + 2)}  DIFFERS")
-                rows3.append({"raw_enl": raw, "cell": label, "printed": float(printed),
-                              "computed_at_unrounded_N": round(val, d + 2),
-                              "computed_at_printed_N": round(val_p, d + 2),
-                              "reproduces_at": ("both" if ok_u and ok_p else
-                                                "unrounded N" if ok_u else
-                                                "printed N" if ok_p else "neither"),
-                              "verdict": "MATCH" if ok else "DIFFERS"})
+        n_lo, n_hi, c_lo, c_hi = ms.groups()
+        for n_s, c_s in ((n_lo, c_lo), (n_hi, c_hi)):
+            val = DS.floor_95(float(n_s))
+            d = dec(c_s)
+            ok = round(val, d) == round(float(c_s), d)
+            if not ok:
+                bad3 += 1
+                print(f"    N {n_s}: crit printed {c_s}, computed {round(val, d + 2)}  DIFFERS")
+            rows3.append({"N": float(n_s), "cell": "crit", "printed": float(c_s),
+                          "computed": round(val, d + 2), "verdict": "MATCH" if ok else "DIFFERS"})
     print(f"    {len(rows3)} cells; {len(rows3) - bad3} match, {bad3} differ")
     report["tables"]["V-A_sensitivity_in_text"] = {
-        "cells": rows3, "differ": bad3, "scaling": "N = raw x 13.72 / 5.83",
-        "was": "Table III until the third revision (2026-09-23)"}
+        "cells": rows3, "differ": bad3,
+        "was": ("Table III until the third revision; a four-estimate sentence of V-A until "
+                "v11; now the bootstrap-range sentence")}
     total_bad += bad3
 
     # ---------------- Table III (Mini-RF inversions; was Table IV) --------
@@ -284,7 +260,8 @@ def main() -> int:
     # check is most exposed to: a wrapped row or a LaTeX spacing macro silently
     # removes cells from the comparison and the summary still reads "0 differ".
     # Both have happened here. So the expected counts are asserted too.
-    EXPECT = {"II_sampling_statistics": 35, "V-A_sensitivity_in_text": 12,
+    # v11: the V-A block is the bootstrap-range sentence, two cells (was 12)
+    EXPECT = {"II_sampling_statistics": 35, "V-A_sensitivity_in_text": 2,
               "III_published_moments": 27}
     short = {k: (len(report["tables"][k]["cells"]), v) for k, v in EXPECT.items()
              if len(report["tables"][k]["cells"]) != v}

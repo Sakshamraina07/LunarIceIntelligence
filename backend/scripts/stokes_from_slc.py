@@ -96,6 +96,42 @@ PIT_BINS = 10
 
 LINES, SAMPLES, OFFSET = 355768, 759, 5725302
 AZIMUTH_LOOKS = 21
+PRODUCT = "20200808"
+#: the passes this script runs on. The first is the screened pass; the second
+#: (council work order Task 5) is read in place from data/generality/ and never
+#: ingested. For the second, the SLC geometry is READ from its sli label and the
+#: azimuth average is its sri label's declared looks -- the same rule that gave
+#: 21 for the first pass.
+PRODUCTS = {
+    "20200808": {"raw": "data/pradan/raw/data/calibrated/20200808",
+                 "stem": "ch2_sar_ncxl_20200808t201154198",
+                 "out": "docs/stokes_from_slc.json",
+                 "out_perturb": "docs/phase_gain_perturbation.json",
+                 "density": "paper/fig_cpr_dop_density.npz"},
+    "20200305": {"raw": "data/generality/20200305/data/calibrated/20200305",
+                 "stem": "ch2_sar_ncxl_20200305t114902885",
+                 "out": "docs/stokes_from_slc_20200305.json",
+                 "out_perturb": "docs/phase_gain_perturbation_20200305.json",
+                 "density": None},
+}
+
+
+def configure(product: str) -> dict:
+    """Point the module at one pass. Geometry and looks are read, not typed."""
+    global RAW, STEM, OUT, OUT_PERTURB, LINES, SAMPLES, OFFSET, AZIMUTH_LOOKS, PRODUCT
+    cfg = PRODUCTS[product]
+    PRODUCT = product
+    RAW = BASE_DIR / cfg["raw"]
+    STEM = cfg["stem"]
+    OUT = BASE_DIR / cfg["out"]
+    OUT_PERTURB = BASE_DIR / cfg["out_perturb"]
+    sli = (RAW / f"{STEM}_d_sli_xx_cp_xx_d18.xml").read_text(encoding="utf-8", errors="replace")
+    sri = (RAW / f"{STEM}_d_sri_xx_cp_xx_d18.xml").read_text(encoding="utf-8", errors="replace")
+    elems = [int(v) for v in re.findall(r"<elements>(\d+)</elements>", sli)[:2]]
+    LINES, SAMPLES = elems[0], elems[1]
+    OFFSET = int(re.findall(r'<offset unit="byte">(\d+)</offset>', sli)[0])
+    AZIMUTH_LOOKS = int(float(re.search(r"<isda:azimuth_looks>([^<]+)<", sri).group(1)))
+    return cfg
 BOXCAR = 5
 DOP_THRESHOLD = 0.13
 CPR_THRESHOLD = 1.0
@@ -209,6 +245,10 @@ def low_cv_tiles(s0, mask, k, *, top=None, percentile=None):
     S, nbw = tile(s0, k)
     M, _ = tile(mask, k)
     idx = np.flatnonzero(M.all(axis=1))
+    if idx.size == 0:
+        # a pass whose mask holds no k x k tile anchored on the grid (the
+        # 2020-03-05 SLC is 128 range bins wide): recorded as none, not faked
+        return []
     mu = S[idx].mean(axis=1)
     sd = S[idx].std(axis=1, ddof=1)
     cv = np.where(mu > 0, sd / mu, np.inf)
@@ -361,7 +401,20 @@ def held_out_tail(block_cpr: np.ndarray, block_sc: np.ndarray, block_oc: np.ndar
         n_test += int(c_te.size)
     if n_test == 0:
         return {"n_test": 0}
-    return {"n_test": n_test,
+    # the block's own correlation area: the integrated 2-D autocorrelation of
+    # ln CPR over the block, lags |dy|, |dx| <= 8, negative lags clipped. It
+    # turns n_test cells into an effective count for tail_calibration_ci.py.
+    c_all = block_cpr[block_m]
+    lc = np.where(block_m & np.isfinite(block_cpr) & (block_cpr > 0),
+                  np.log(np.where(block_cpr > 0, block_cpr, 1.0)), np.nan)
+    f = np.nan_to_num(lc - np.nanmean(lc))
+    F = np.fft.fft2(f, s=(2 * k, 2 * k))
+    acf = np.fft.ifft2(np.abs(F) ** 2).real
+    acf /= acf[0, 0]
+    lags = np.r_[0:9, -8:0]
+    area = float(np.clip(acf[np.ix_(lags, lags)], 0, None).sum())
+    return {"n_test": n_test, "corr_area_px": area,
+            "n_eff_test": float(n_test / max(area, 1.0)),
             "rejection": {f"{int(100 * a)}pct": sum(rej[a]) / n_test for a in NOMINAL_ALPHAS},
             "pit_counts": pit.tolist()}
 
@@ -378,6 +431,8 @@ def coherence_predicts(ws: list) -> dict:
             "predicted": "(1 - rho)/(1 + rho), rho = the window's median H-V coherence",
             "observed": "the window's median Stokes CPR (physical sign)",
             "spearman": float(spearmanr(p, o).statistic),
+            "dop_gate_vs_coherence_spearman": float(spearmanr(
+                c, [w["dop_below_frac"] for w in ws]).statistic),
             "pearson": float(pearsonr(p, o).statistic),
             "predicted_median": float(np.median(p)),
             "observed_median": float(np.median(o)),
@@ -421,7 +476,19 @@ def tail_calibration(blocks: list) -> dict:
         pooled[key] = {"nominal": a, "median_over_blocks": float(np.median(v)),
                        "iqr": [float(np.percentile(v, 25)), float(np.percentile(v, 75))]}
     pit = np.sum([p["pit_counts"] for p in per], axis=0)
+    n_tot = sum(p["n_test"] for p in per)
+    pooled_all, above, worst = {}, {}, {}
+    for a in NOMINAL_ALPHAS:
+        key = f"{int(100 * a)}pct"
+        rej = np.array([p["rejection"][key] for p in per])
+        pooled_all[key] = float(sum(p["rejection"][key] * p["n_test"] for p in per) / n_tot)
+        above[key] = int((rej > a).sum())
+        worst[key] = float(rej.max())
     return {"n_blocks": len(per),
+            "held_out_rejection_pooled": pooled_all,
+            "blocks_above_nominal": above,
+            "worst_block_rejection": worst,
+            "n_test_total": int(n_tot),
             "estimation": ("median CPR and N_SC, N_OC (moment ENL, ddof = 1) are "
                            "estimated on one half of each 64x64 block and the tail "
                            "is read on the other half, two folds pooled; the "
@@ -465,23 +532,20 @@ def summarise(group, label):
                                  max(g["cpr_median"] for g in group)]}
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--max-lines", type=int, default=0,
-                    help="SLC lines to process (default: the whole swath)")
-    args = ap.parse_args()
-
+def build_coherency(max_lines: int = 0):
+    """The calibrated, 5x5-boxcar'd coherency elements <|E_H|^2>, <|E_V|^2>,
+    <E_H E_V*> on the SLC grid, for the pass `configure()` selected. Shared by
+    enl_logratio.py and decision_rule.py so every script forms the Stokes
+    vector the same way."""
     lab = label_fields()
     k_lin = 10.0 ** (lab["calibration_constant_db"] / 10.0)
     g_lh, g_lv = lab["gain_imbalance"]["LH"], lab["gain_imbalance"]["LV"]
     sin_t = float(np.sin(np.deg2rad(lab["incidence_angle_deg"])))
-
-    hr("P1 — STOKES VECTOR FROM THE SINGLE-LOOK COMPLEX (amended after adjudication)")
     print(f"  K = {lab['calibration_constant_db']:g} dB (sli label)   "
-          f"G_LH {g_lh:.6f}  G_LV {g_lv:.6f}   sin(theta) {sin_t:.6f}")
-
+          f"G_LH {g_lh:.6f}  G_LV {g_lv:.6f}   sin(theta) {sin_t:.6f}   "
+          f"{LINES:,} x {SAMPLES} at offset {OFFSET:,}, {AZIMUTH_LOOKS} azimuth looks")
     eh, ev = open_slc("lh"), open_slc("lv")
-    n_lines = args.max_lines or LINES
+    n_lines = max_lines or LINES
     n_out = n_lines // AZIMUTH_LOOKS
     hh = np.empty((n_out, SAMPLES)); vv = np.empty((n_out, SAMPLES))
     hv = np.empty((n_out, SAMPLES), dtype=np.complex128)
@@ -509,7 +573,32 @@ def main() -> int:
     # could silently fail.
     hh, vv = boxcar2d(hh), boxcar2d(vv)
     hv = boxcar2d(hv.real) + 1j * boxcar2d(hv.imag)
+    return hh, vv, hv, {"lab": lab, "k_lin": k_lin, "g_lh": g_lh, "g_lv": g_lv,
+                        "sin_t": sin_t, "n_lines": n_lines, "n_out": n_out}
 
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--max-lines", type=int, default=0,
+                    help="SLC lines to process (default: the whole swath)")
+    ap.add_argument("--product", choices=sorted(PRODUCTS), default="20200808",
+                    help="which pass (default: the screened 2020-08-08 pass)")
+    ap.add_argument("--block", type=int, default=64,
+                    help=("block size for the low-CV tail blocks (default 64). A "
+                          "non-default size writes to <out>_block<k>.json and is a "
+                          "declared deviation, used where no 64 x 64 tile fits"))
+    args = ap.parse_args()
+
+    global BLOCK, OUT
+    cfg = configure(args.product)
+    if args.block != 64:
+        BLOCK = args.block
+        OUT = OUT.with_name(OUT.stem + f"_block{BLOCK}.json")
+    hr(f"P1 — STOKES VECTOR FROM THE SINGLE-LOOK COMPLEX — pass {PRODUCT}")
+    hh, vv, hv, info = build_coherency(args.max_lines)
+    lab, k_lin, g_lh, g_lv, sin_t = (info["lab"], info["k_lin"], info["g_lh"],
+                                     info["g_lv"], info["sin_t"])
+    n_lines, n_out = info["n_lines"], info["n_out"]
     s0, s1 = hh + vv, hh - vv
     s2, s3 = 2.0 * hv.real, 2.0 * hv.imag     # 0 deg reading: S3 = +2 Im<E_H E_V*>
     m = (hh > 0) & (vv > 0) & (s0 > 0)
@@ -770,6 +859,19 @@ def main() -> int:
         "run_info": run_info()}, indent=2), encoding="utf-8")
     beat(f"wrote {OUT_PERTURB.relative_to(BASE_DIR)}")
 
+    # ---- the (DOP, CPR) density over every matched cell (fig_cpr_dop) -------
+    dens_path = PRODUCTS[PRODUCT]["density"]
+    if dens_path:
+        dd, cc = dop_s[m], cpr_p[m]
+        ok = np.isfinite(dd) & np.isfinite(cc) & (cc > 0)
+        H, xe, ye = np.histogram2d(dd[ok], np.log10(cc[ok]), bins=(300, 300),
+                                   range=((0.0, 1.0), (-3.0, 1.5)))
+        np.savez_compressed(BASE_DIR / dens_path, H=H, xe=xe, ye=ye, n=int(ok.sum()),
+                            below_log10=int((np.log10(cc[ok]) < -3.0).sum()),
+                            above_log10=int((np.log10(cc[ok]) > 1.5).sum()))
+        beat(f"wrote {dens_path} ({int(ok.sum()):,} cells)")
+        del dd, cc, ok
+
     # ---- the measured joint rate, at the physical sign -----------------------
     hr("MEASURED JOINT RATE — CPR > 1 among Stokes DOP < 0.13, physical sign")
     j = float((v_b > CPR_THRESHOLD).mean())
@@ -819,7 +921,13 @@ def main() -> int:
                              "quantiles were the first version's error: they "
                              "include terrain."),
                   "blocks_64x64": {"cv_percentile": BLOCK_CV_PERCENTILE,
-                                   "n_selected": len(blocks)}}
+                                   "block_px": BLOCK,
+                                   "key_name_note": ("the key keeps its 64x64 name so "
+                                                     "consumers address one path; "
+                                                     "block_px is the size used"),
+                                   "n_selected": len(blocks),
+                                   "n_tiles_wholly_inside_mask": int(
+                                       tile(m, BLOCK)[0].all(axis=1).sum())}}
     for deg in (0, 180):
         s3v = s3 if deg == 0 else -s3
         sc_, oc_ = 0.5 * (s0 - s3v), 0.5 * (s0 + s3v)
@@ -888,6 +996,8 @@ def main() -> int:
         "schema": "lunar-ice/stokes-from-slc/2",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "generator": "backend/scripts/stokes_from_slc.py",
+        "product": {"pass": PRODUCT, "stem": STEM,
+                    "command": f"python backend/scripts/stokes_from_slc.py --product {PRODUCT}"},
         "seed": SEED,
         "slc": {"lines": LINES, "samples": SAMPLES, "offset": OFFSET,
                 "lines_processed": n_lines, "azimuth_looks": AZIMUTH_LOOKS,

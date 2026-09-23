@@ -111,7 +111,7 @@ bytes and fails the build on any figure that is not in the artifacts.
 
 ## Verification
 
-`verify_all.py` runs thirty-one gates and maps each to a statement in PRD section 6.
+`verify_all.py` runs thirty-two gates and maps each to a statement in PRD section 6.
 One of them loads the **production build** in a browser, in all three backend
 states, and fails on a blank page.
 Five of them also run on every rebuild, and any non-zero exit stops the build.

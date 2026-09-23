@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/phase-gain-perturbation/1",
-  "generated_utc": "2026-09-23T11:13:47.451618+00:00",
+  "generated_utc": "2026-09-23T12:43:02.205230+00:00",
   "generator": "backend/scripts/stokes_from_slc.py",
   "review_item": "M12",
   "grid": "SLC slant-range grid, 21 azimuth looks + 5x5 boxcar, 5,883,594 matched cells",
@@ -144,8 +144,8 @@
     }
   ],
   "run_info": {
-    "wall_s": 57.4,
-    "peak_rss_mb": 2896,
+    "wall_s": 62.5,
+    "peak_rss_mb": 3064,
     "python": "3.13.1",
     "numpy": "2.2.2",
     "scipy": "1.17.1",

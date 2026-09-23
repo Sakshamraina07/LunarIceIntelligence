@@ -403,3 +403,35 @@ Full verification: `python backend/scripts/verify_all.py` (every gate),
 `python backend/scripts/audit_manuscript_numbers.py` (read-only audit of the
 `.tex` against the artifacts). METHODS is stamped against its artifacts by
 `python backend/scripts/stamp_methods.py --check`.
+
+## 18 · Council work order on v11 (2026-09-23)
+
+The analyses of METHODS §15. Every artifact records its seed, generator and
+`run_info` (wall time and peak working set from `runinfo.py`); every simulated
+rate carries a binomial Monte Carlo standard error. The second pass is read in
+place from `data/generality/20200305/` and never ingested; no raster is
+committed. `stokes_from_slc.py` takes `--product` (geometry read from that
+pass's sli label, azimuth average from its sri label) and `--block` (a
+declared deviation from the 64 × 64 tail blocks, writing `<out>_block<k>.json`).
+
+| task | artifact | command | seed | trials | wall (s) | peak (MB) |
+|---|---|---|---|---|---|---|
+| 0 | `calibration_example.json` | `python backend/scripts/calibration_example.py` | — | — | 24 | 1248 |
+| 1 | `joint_power_curve.json` | `python backend/scripts/dop_sampling_bias.py --curve` | 20261001 | 10⁵ per cell, 960 cells | 2395 | 510 |
+| 0 | `dop_sampling_bias.json, joint_calibration.json (summaries)` | `python backend/scripts/dop_sampling_bias.py` | 20260923 / 20260924 | 4 × 10⁵ / 10⁵ | 163 | 210 |
+| 2 | `enl_logratio.json` | `python backend/scripts/enl_logratio.py` | 20260930 / 20260931 | 10 scenes × 64 windows per configuration, B = 200 | 990 | 2513 |
+| 3 | `decision_rule.json` | `python backend/scripts/decision_rule.py` | 20261002 | 2 × 10⁴ tested + 4 × 10⁴ pool per population; q table 2 × 10⁵ per N | 927 | 2422 |
+| 4 | `f2_maximum.json::complex_field_v2` | `python backend/scripts/f2_maximum.py --only-v2` | 20261003 | 10⁴ | 425 | 313 |
+| 5 | `stokes_from_slc_20200305.json` | `python backend/scripts/stokes_from_slc.py --product 20200305` | 7 | — | 6 | 902 |
+| 5 | `stokes_from_slc_20200305_block32.json` | `python backend/scripts/stokes_from_slc.py --product 20200305 --block 32` | 7 | — | 8 | 902 |
+| 5 | `stokes_from_slc_block32.json` | `python backend/scripts/stokes_from_slc.py --block 32` | 7 | — | 81 | 3064 |
+| 6 | `tail_calibration_ci.json` | `python backend/scripts/tail_calibration_ci.py` | 20261004 | B = 10⁴ | 5 | 244 |
+| 7 | `paper/fig_cpr_dop.pdf, paper/fig_joint_power.pdf` | `cd paper && python make_figures_council.py` | — | — | — | — |
+
+Figures at \columnwidth (252 pt, IEEEtran journal): `fig_cpr_dop.pdf` renders
+175.6 pt (2.44 in) tall, `fig_joint_power.pdf` 175.7 pt (2.44 in); both vector
+(the density is rasterized inside the vector frame), STIX, no Type 3 (G26).
+New gate: G33 (`assert_council_anchors.py`) — the joint rule's size at N = 14
+and no significant joint selection below N = 79.6 in any arm (Task 1), and the
+F2 null's 86.3 % and 7.76 % (Task 4). G32 now parses v11's two-cell V-A
+sentence; G26 builds `make_figures_council.py` beside `make_figures.py`.

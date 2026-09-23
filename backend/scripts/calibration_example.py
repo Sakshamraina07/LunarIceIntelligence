@@ -111,15 +111,22 @@ def main() -> int:
     scene["nesz_LV_db"] = db(nesz["LV"])
     for k, v in scene.items():
         print(f"    {k:<40} {v:+.2f} dB")
-    printed = {"amplitude_reading_db": -20.3, "intensity_reading_db": -47.6, "nesz_db": -31.5}
+    # v11 (2026-09-23 18:00) prints the values WITH the gain, as its own III-A
+    # equation requires; the third-review draft printed -20.3 / -47.6 (without G)
+    printed = {"amplitude_reading_db": -20.4, "intensity_reading_db": -47.8, "nesz_db": -31.5,
+               "margin_above_floor_db": 11, "margin_below_floor_db": 16,
+               "earlier_draft": {"amplitude_reading_db": -20.3, "intensity_reading_db": -47.6}}
     reproduces = {
-        "amplitude": {"without_G": round(scene["amplitude_reading_without_G_db"], 1) == -20.3,
-                      "with_G": round(scene["amplitude_reading_with_G_db"], 1) == -20.3},
-        "intensity": {"without_G": round(scene["intensity_reading_without_G_db"], 1) == -47.6,
-                      "with_G": round(scene["intensity_reading_with_G_db"], 1) == -47.6}}
-    print(f"  the manuscript prints -20.3 / -47.6 dB: reproduced WITHOUT G "
-          f"({reproduces['amplitude']['without_G']}/{reproduces['intensity']['without_G']}), "
-          f"WITH G ({reproduces['amplitude']['with_G']}/{reproduces['intensity']['with_G']})")
+        "amplitude_with_G_is_-20.4": round(scene["amplitude_reading_with_G_db"], 1) == -20.4,
+        "intensity_with_G_is_-47.8": round(scene["intensity_reading_with_G_db"], 1) == -47.8,
+        "margin_above_floor_is_11": round(scene["amplitude_reading_with_G_db"] - scene["nesz_LH_db"]) == 11,
+        "margin_below_floor_is_16": round(scene["nesz_LH_db"] - scene["intensity_reading_with_G_db"]) == 16,
+        "earlier_draft_values_need_G_omitted": (
+            round(scene["amplitude_reading_without_G_db"], 1) == -20.3
+            and round(scene["intensity_reading_without_G_db"], 1) == -47.6)}
+    scene["margin_above_floor_db"] = scene["amplitude_reading_with_G_db"] - scene["nesz_LH_db"]
+    scene["margin_below_floor_db"] = scene["nesz_LH_db"] - scene["intensity_reading_with_G_db"]
+    print(f"  v11 prints -20.4 / -47.8 dB with G, 11 / 16 dB from the floor: {reproduces}")
 
     # ---- 2. one pixel through the production equation ------------------------
     ys, xs = np.nonzero(amp & (lh == med["LH"]))
@@ -220,11 +227,11 @@ def main() -> int:
                            "incidence, as Section III-A's NESZ comparison states it"),
             **scene, "manuscript_prints": printed,
             "reproduced_by": reproduces,
-            "note": ("the printed -20.3 and -47.6 dB are reproduced WITHOUT the gain "
-                     "G_LH = 1.018442; with it the amplitude reading is "
+            "note": ("K = 10^(70.308868/10), G_LH = 1.018442 applied, sin(theta) "
+                     "applied once: the amplitude reading is "
                      f"{scene['amplitude_reading_with_G_db']:.2f} dB and the intensity "
-                     f"reading {scene['intensity_reading_with_G_db']:.2f} dB. The "
-                     "0.16 dB changes neither margin to the -31.5 dB floor.")},
+                     f"reading {scene['intensity_reading_with_G_db']:.2f} dB, as v11 "
+                     "prints. An earlier draft's -20.3 / -47.6 omitted G.")},
         "pixel_example": pix,
         "incidence_applied_once": {
             "method": ("recompute the pipeline's stored rasters from the raw DN with "

@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/table-recompute/1",
-  "generated_utc": "2026-09-23T11:34:21.142824+00:00",
+  "generated_utc": "2026-09-23T13:38:57.771099+00:00",
   "generator": "backend/scripts/recompute_manuscript_tables.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "recomputed_from": [
@@ -331,117 +331,22 @@
     "V-A_sensitivity_in_text": {
       "cells": [
         {
-          "raw_enl": 2.64,
-          "cell": "N",
-          "printed": 6.21,
-          "computed_at_unrounded_N": 6.2128,
-          "computed_at_printed_N": 6.2128,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 2.64,
+          "N": 10.7,
           "cell": "crit",
-          "printed": 2.638,
-          "computed_at_unrounded_N": 2.63764,
-          "computed_at_printed_N": 2.63826,
-          "reproduces_at": "both",
+          "printed": 2.07,
+          "computed": 2.0692,
           "verdict": "MATCH"
         },
         {
-          "raw_enl": 2.64,
-          "cell": "P_0.7",
-          "printed": 26.9,
-          "computed_at_unrounded_N": 26.943,
-          "computed_at_printed_N": 26.948,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 5.3,
-          "cell": "N",
-          "printed": 12.47,
-          "computed_at_unrounded_N": 12.4727,
-          "computed_at_printed_N": 12.4727,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 5.3,
+          "N": 22.5,
           "cell": "crit",
-          "printed": 1.957,
-          "computed_at_unrounded_N": 1.95694,
-          "computed_at_printed_N": 1.95708,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 5.3,
-          "cell": "P_0.7",
-          "printed": 19.0,
-          "computed_at_unrounded_N": 18.955,
-          "computed_at_printed_N": 18.958,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 5.83,
-          "cell": "N",
-          "printed": 13.72,
-          "computed_at_unrounded_N": 13.72,
-          "computed_at_printed_N": 13.72,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 5.83,
-          "cell": "crit",
-          "printed": 1.895,
-          "computed_at_unrounded_N": 1.89462,
-          "computed_at_printed_N": 1.89462,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 5.83,
-          "cell": "P_0.7",
-          "printed": 17.8,
-          "computed_at_unrounded_N": 17.792,
-          "computed_at_printed_N": 17.792,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 6.22,
-          "cell": "N",
-          "printed": 14.64,
-          "computed_at_unrounded_N": 14.6378,
-          "computed_at_printed_N": 14.6378,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 6.22,
-          "cell": "crit",
-          "printed": 1.855,
-          "computed_at_unrounded_N": 1.85519,
-          "computed_at_printed_N": 1.8551,
-          "reproduces_at": "both",
-          "verdict": "MATCH"
-        },
-        {
-          "raw_enl": 6.22,
-          "cell": "P_0.7",
-          "printed": 17.0,
-          "computed_at_unrounded_N": 16.998,
-          "computed_at_printed_N": 16.997,
-          "reproduces_at": "both",
+          "printed": 1.64,
+          "computed": 1.6415,
           "verdict": "MATCH"
         }
       ],
       "differ": 0,
-      "scaling": "N = raw x 13.72 / 5.83",
-      "was": "Table III until the third revision (2026-09-23)"
+      "was": "Table III until the third revision; a four-estimate sentence of V-A until v11; now the bootstrap-range sentence"
     },
     "III_published_moments": {
       "cells": [
@@ -639,11 +544,11 @@
       "craters": 8
     }
   },
-  "total_cells": 74,
+  "total_cells": 64,
   "total_differ": 0,
   "expected_cells": {
     "II_sampling_statistics": 35,
-    "V-A_sensitivity_in_text": 12,
+    "V-A_sensitivity_in_text": 2,
     "III_published_moments": 27
   },
   "tables_parsed_short": {}

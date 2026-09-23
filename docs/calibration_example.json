@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/calibration-example/1",
-  "generated_utc": "2026-09-23T09:40:01.809762+00:00",
+  "generated_utc": "2026-09-23T12:55:12.774460+00:00",
   "generator": "backend/scripts/calibration_example.py",
   "review_item": "M3",
   "product": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
@@ -33,22 +33,27 @@
     "intensity_reading_with_G_db": -47.78751771339061,
     "nesz_LH_db": -31.52531670429348,
     "nesz_LV_db": -32.171609601078906,
+    "margin_above_floor_db": 11.07779185628673,
+    "margin_below_floor_db": 16.262201009097133,
     "manuscript_prints": {
-      "amplitude_reading_db": -20.3,
-      "intensity_reading_db": -47.6,
-      "nesz_db": -31.5
-    },
-    "reproduced_by": {
-      "amplitude": {
-        "without_G": true,
-        "with_G": false
-      },
-      "intensity": {
-        "without_G": true,
-        "with_G": false
+      "amplitude_reading_db": -20.4,
+      "intensity_reading_db": -47.8,
+      "nesz_db": -31.5,
+      "margin_above_floor_db": 11,
+      "margin_below_floor_db": 16,
+      "earlier_draft": {
+        "amplitude_reading_db": -20.3,
+        "intensity_reading_db": -47.6
       }
     },
-    "note": "the printed -20.3 and -47.6 dB are reproduced WITHOUT the gain G_LH = 1.018442; with it the amplitude reading is -20.45 dB and the intensity reading -47.79 dB. The 0.16 dB changes neither margin to the -31.5 dB floor."
+    "reproduced_by": {
+      "amplitude_with_G_is_-20.4": true,
+      "intensity_with_G_is_-47.8": true,
+      "margin_above_floor_is_11": true,
+      "margin_below_floor_is_16": true,
+      "earlier_draft_values_need_G_omitted": true
+    },
+    "note": "K = 10^(70.308868/10), G_LH = 1.018442 applied, sin(theta) applied once: the amplitude reading is -20.45 dB and the intensity reading -47.79 dB, as v11 prints. An earlier draft's -20.3 / -47.6 omitted G."
   },
   "pixel_example": {
     "line": 1116,
@@ -164,7 +169,7 @@
       },
       {
         "file": "backend/scripts/stokes_from_slc.py",
-        "line": 477,
+        "line": 543,
         "code": "sin_t = float(np.sin(np.deg2rad(lab[\"incidence_angle_deg\"])))",
         "role": "SLC calibration at the label's theta; common, cancels in ratios"
       }
@@ -178,8 +183,8 @@
   },
   "not_decidable": "whether ISRO applied an incidence normalization before writing the DN: the label declares none (no sigma0/beta0/gamma0 or normalization field) and no layer records one; terrain backscatter's own incidence dependence cannot be separated from a normalization in the data",
   "run_info": {
-    "wall_s": 4.1,
-    "peak_rss_mb": 1308,
+    "wall_s": 23.8,
+    "peak_rss_mb": 1248,
     "python": "3.13.1",
     "numpy": "2.2.2",
     "scipy": "1.17.1",

@@ -85,6 +85,11 @@ THRESHOLD = 1.0
 N_VALUES = (5.0, 13.72)
 #: M13 complex-field null
 SEED_COMPLEX = 20260926
+SEED_COMPLEX_V2 = 20261003
+#: council work order Task 4 anchors: the first complex-field run's crater-level
+#: rate at CPR 1.00 and its per-pixel rate (area > crit / 260)
+V2_ANCHOR_FWE, V2_ANCHOR_FWE_SE = 0.8631, 0.0034
+V2_ANCHOR_PER_PIXEL = 20.1654 / 260
 ENL_JSON = BASE_DIR / "docs" / "enl.json"
 OPERATING_N = 13.72
 BOXCAR = 5
@@ -267,9 +272,134 @@ def complex_field(box_amp: np.ndarray, trials: int) -> dict:
     return out
 
 
+def complex_pair(rng, n_looks: int, shape, rho_f_az: float, rho_f_rg: float,
+                 batch: int, cpr: float):
+    """SC and OC intensities AND their cross product, (batch, H, W) each, from
+    n_looks equal-weight looks of two independent AR(1) complex fields (the
+    independent-channel null, gamma_c = 0). SC carries the population CPR."""
+    H, W = shape
+    sc = np.zeros((batch, H, W))
+    oc = np.zeros((batch, H, W))
+    x = np.zeros((batch, H, W), dtype=np.complex128)
+    for _ in range(n_looks):
+        z = []
+        for _ch in range(2):
+            w = (rng.standard_normal((batch, H + BURN, W + BURN))
+                 + 1j * rng.standard_normal((batch, H + BURN, W + BURN))) / np.sqrt(2.0)
+            f = lfilter([np.sqrt(1 - rho_f_az ** 2)], [1.0, -rho_f_az], w, axis=1)
+            f = lfilter([np.sqrt(1 - rho_f_rg ** 2)], [1.0, -rho_f_rg], f, axis=2)
+            z.append(f[:, BURN:, BURN:])
+        z1, z2 = np.sqrt(cpr) * z[0], z[1]
+        sc += np.abs(z1) ** 2
+        oc += np.abs(z2) ** 2
+        x += z1 * np.conj(z2)
+    return sc / n_looks, oc / n_looks, x / n_looks
+
+
+def complex_field_v2(box_amp: np.ndarray, trials: int, n_looks: int) -> dict:
+    """Task 4: per-cell exceedance, calibrated thresholds, and the joint rule
+    on the same null fields (CPR 1.00, DOP 0: independent channels)."""
+    rng = np.random.default_rng(SEED_COMPLEX_V2)
+    lc = json.loads(ENL_JSON.read_text(encoding="utf-8"))["lag_correlation"]["LH"]
+    rho_f = (np.sqrt(float(lc["azimuth_lines"][0])), np.sqrt(float(lc["range_samples"][0])))
+    crit = crit95(OPERATING_N)
+    H, W = box_amp.shape
+    valid_n = np.rint(uniform_filter(box_amp.astype(float), size=BOXCAR, mode="constant")
+                      * BOXCAR * BOXCAR).astype(int)[box_amp]
+    cprs, mx, sel_counts, dops = [], [], [], []
+    batch = 100
+    for _ in range(0, trials, batch):
+        sc, oc, x = complex_pair(rng, n_looks, (H, W), *rho_f, batch, 1.0)
+        sc[:, ~box_amp] = 0.0
+        oc[:, ~box_amp] = 0.0
+        x[:, ~box_amp] = 0.0
+        bs = uniform_filter(sc, size=(1, BOXCAR, BOXCAR), mode="constant")
+        bo = uniform_filter(oc, size=(1, BOXCAR, BOXCAR), mode="constant")
+        bx = (uniform_filter(x.real, size=(1, BOXCAR, BOXCAR), mode="constant")
+              + 1j * uniform_filter(x.imag, size=(1, BOXCAR, BOXCAR), mode="constant"))
+        r = (bs / bo)[:, box_amp]
+        m = (np.sqrt((bs - bo) ** 2 + 4 * np.abs(bx) ** 2) / (bs + bo))[:, box_amp]
+        cprs.append(r)
+        mx.append(r.max(axis=1))
+        sel_counts.append(((r > 1.0) & (m < 0.13)).sum(axis=1))
+        dops.append(m)
+    cpr = np.concatenate(cprs)          # (trials, 260)
+    mx = np.concatenate(mx)
+    selc = np.concatenate(sel_counts)
+    dop = np.concatenate(dops)
+    t = cpr.shape[0]
+
+    # (b) per-cell exceedance against the number of valid pixels in its window
+    exc = (cpr > crit)
+    per_cell = exc.mean(axis=0)
+    per_trial_rate = exc.mean(axis=1)
+    pp = float(per_trial_rate.mean())
+    pp_se = float(per_trial_rate.std(ddof=1) / np.sqrt(t))
+    by_count = []
+    for lo, hi, lab in ((25, 25, "25 (interior)"), (20, 24, "20-24"), (15, 19, "15-19"),
+                        (10, 14, "10-14"), (1, 9, "1-9")):
+        sel = (valid_n >= lo) & (valid_n <= hi)
+        if sel.any():
+            by_count.append({"valid_pixels_in_window": lab, "cells": int(sel.sum()),
+                             "exceedance_percent": 100 * float(per_cell[sel].mean()),
+                             "share_of_exceedances_percent": 100 * float(exc[:, sel].sum() / exc.sum())})
+    interior = next(b for b in by_count if b["valid_pixels_in_window"].startswith("25"))
+    # (c) the per-pixel threshold with a 5 % per-pixel rate on this mask
+    t_pix = float(np.quantile(cpr.ravel(), 0.95))
+    fwe_tpix = float((mx > t_pix).mean())
+    # (d) the crater-level threshold with 5 % family-wise error
+    t_max = float(np.quantile(mx, 0.95))
+    # the gate: this is the gamma_c = 0 arm of the first complex run
+    fwe = float((mx > crit).mean())
+    fwe_se = float(np.sqrt(fwe * (1 - fwe) / t))
+    g_fwe = abs(fwe - V2_ANCHOR_FWE) <= 3 * np.hypot(fwe_se, V2_ANCHOR_FWE_SE)
+    g_pp = abs(pp - V2_ANCHOR_PER_PIXEL) <= 3 * np.hypot(pp_se, pp_se)
+    out = {"model": ("independent circular channels (gamma_c = 0), CPR 1.00, DOP 0; "
+                     f"{n_looks} looks per channel as the first complex run chose; the "
+                     "cross product is kept so the sample DOP can be formed per cell "
+                     "from the boxcar'd covariance, with the production zero-fill"),
+           "seed": SEED_COMPLEX_V2, "trials": t, "looks": n_looks, "crit_95": crit,
+           "per_pixel": {"exceedance_rate": pp, "mc_se": pp_se,
+                         "by_valid_pixels_in_window": by_count,
+                         "interior_cells_rate": interior["exceedance_percent"] / 100,
+                         "verdict": ("the per-pixel excess comes from the edge cells"
+                                     if interior["exceedance_percent"] / 100 <= 0.055 else
+                                     "the per-pixel excess is NOT confined to the edge cells: "
+                                     "interior cells exceed 5 % too")},
+           "calibrated_per_pixel_threshold": {"threshold": t_pix,
+                                              "per_pixel_rate": 0.05,
+                                              "fwe_at_threshold": fwe_tpix,
+                                              "fwe_mc_se": float(np.sqrt(fwe_tpix * (1 - fwe_tpix) / t))},
+           "crater_level_threshold": {"threshold_for_5pct_fwe": t_max,
+                                      "max_median": float(np.median(mx)),
+                                      "max_p95": t_max},
+           "fwe_at_1p895": {"rate": fwe, "mc_se": fwe_se},
+           "joint_rule_on_null": {
+               "rule": "sample CPR > 1 AND sample DOP < 0.13, per cell",
+               "p_at_least_1_cell": float((selc >= 1).mean()),
+               "p_at_least_1_se": float(np.sqrt((selc >= 1).mean() * (1 - (selc >= 1).mean()) / t)),
+               "p_at_least_5_cells": float((selc >= 5).mean()),
+               "p_at_least_5_se": float(np.sqrt((selc >= 5).mean() * (1 - (selc >= 5).mean()) / t)),
+               "mean_cells_selected": float(selc.mean()),
+               "per_cell_rate": float(selc.mean() / box_amp.sum()),
+               "per_cell_dop_below_rate": float((dop < 0.13).mean())},
+           "gate": {"fwe_reproduces_0p863": bool(g_fwe),
+                    "per_pixel_reproduces_7p76pct": bool(g_pp),
+                    "verdict": "PASS" if (g_fwe and g_pp) else "FAIL"}}
+    print(f"  v2: FWE at {crit:.3f} = {fwe:.4f} +/- {fwe_se:.4f}; per-pixel {100 * pp:.2f} +/- "
+          f"{100 * pp_se:.2f} %; interior cells {interior['exceedance_percent']:.2f} %; "
+          f"t_pix {t_pix:.3f} (FWE {fwe_tpix:.3f}); t_max {t_max:.3f}; joint rule >=1 "
+          f"{out['joint_rule_on_null']['p_at_least_1_cell']:.4f}, >=5 "
+          f"{out['joint_rule_on_null']['p_at_least_5_cells']:.4f}; gate {out['gate']['verdict']}",
+          flush=True)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--trials", type=int, default=10_000)
+    ap.add_argument("--only-v2", action="store_true",
+                    help="compute complex_field_v2 only and merge it into the artifact")
     args = ap.parse_args()
     rng = np.random.default_rng(SEED)
     from app.ingestion.sar_geometry import read_geotiff_frame
@@ -311,6 +441,13 @@ def main() -> int:
     C = f_az(py[:, None] - py[None, :]) * f_rg(px[:, None] - px[None, :])
     L = np.linalg.cholesky(C + 1e-9 * np.eye(n_disc))
     amp_idx = amp[disc]
+    if args.only_v2:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        doc["complex_field_v2"] = complex_field_v2(amp, args.trials, doc["complex_field"]["looks"])
+        doc["run_info_v2"] = run_info()
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  merged complex_field_v2 into {OUT.relative_to(BASE_DIR)}")
+        return 0 if doc["complex_field_v2"]["gate"]["verdict"] == "PASS" else 1
     print(f"  Cholesky of {n_disc}x{n_disc}: ok;  {args.trials:,} trials, seed {SEED}")
 
     def gamma_field(n_looks, z):
@@ -417,6 +554,7 @@ def main() -> int:
                                  "CPR = 0.7 X / Y"},
         "results": results,
         "complex_field": cf,
+        "complex_field_v2": complex_field_v2(amp, args.trials, cf["looks"]),
         "run_info": run_info(),
         "paper_f2_peak_cpr_verbatim": paper,
         "paper_convention": "f2_peak_cpr is the expected maximum of independent F(2N,2N) "

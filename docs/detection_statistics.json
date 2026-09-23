@@ -1,6 +1,6 @@
 {
   "schema": "detection_statistics/1",
-  "generated_utc": "2026-09-23T11:28:39.459614+00:00",
+  "generated_utc": "2026-09-23T13:32:30.914727+00:00",
   "generator": "backend/scripts/detection_statistics.py",
   "effective_looks": {
     "screened_field": {
@@ -428,6 +428,24 @@
       ]
     },
     "f_exceedance_N14_cpr0p7_percent": 17.544925186078576,
+    "f_exceedance_at_textured_enl": [
+      {
+        "row": 1,
+        "moment_enl": 11.200177054653416,
+        "p_exceed_true_cpr_0p7_percent": 20.255845201741508,
+        "moment_enl_printed": 11.2,
+        "p_exceed_true_cpr_0p7_percent_at_printed_enl": 20.256034963690894,
+        "simulated_exceed_percent": 18.8115
+      },
+      {
+        "row": 4,
+        "moment_enl": 9.336560189570907,
+        "p_exceed_true_cpr_0p7_percent": 22.409929271265995,
+        "moment_enl_printed": 9.3,
+        "p_exceed_true_cpr_0p7_percent_at_printed_enl": 22.455619630204783,
+        "simulated_exceed_percent": 19.6878
+      }
+    ],
     "effective_samples_f2_disc": {
       "disc_pixels": 1521,
       "pixels_per_independent_sample": 61.420749918170166,

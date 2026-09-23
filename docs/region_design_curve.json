@@ -1,0 +1,2497 @@
+{
+  "schema": "lunar-ice/region-design-curve/1",
+  "generated_utc": "2026-09-23T19:15:51.547540+00:00",
+  "generator": "backend/scripts/region_design_curve.py",
+  "seed": 20261008,
+  "alpha": 0.05,
+  "trials_per_cell": 200000,
+  "q05_trials": 1000000,
+  "test": "the single-cell IUT of decision_rule.py on a region's pooled Stokes vector: R > F^-1_0.95(2N, 2N) AND m_hat < q05(N), N = N_eff",
+  "sampler": "exact complex-Wishart Bartlett decomposition, real N: W = L A A^H L^H, |a11|^2 ~ Gamma(N, 1), |a22|^2 ~ Gamma(N - 1, 1), a21 ~ CN(0, 1)",
+  "bartlett_check": {
+    "rows": [
+      {
+        "cpr": 1.0,
+        "dop": 0.0,
+        "R_quantiles_looksum": [
+          0.5288592225120475,
+          0.997955972398925,
+          1.8800001222718388
+        ],
+        "R_quantiles_bartlett": [
+          0.5312889381307477,
+          1.001216107779539,
+          1.8857246524014997
+        ],
+        "m_quantiles_looksum": [
+          0.11384793256188258,
+          0.2922422494953165,
+          0.5064153168565348
+        ],
+        "m_quantiles_bartlett": [
+          0.11425127455620886,
+          0.29198808780988483,
+          0.5057337399508344
+        ]
+      },
+      {
+        "cpr": 1.2,
+        "dop": 0.09090909090909088,
+        "R_quantiles_looksum": [
+          0.634968220772478,
+          1.1999879950801007,
+          2.257498077054648
+        ],
+        "R_quantiles_bartlett": [
+          0.6399452337846442,
+          1.2006945879417716,
+          2.2488707130769043
+        ],
+        "m_quantiles_looksum": [
+          0.11938371225860157,
+          0.30259263239030265,
+          0.5204208762855145
+        ],
+        "m_quantiles_bartlett": [
+          0.12026610176104259,
+          0.30273526065312895,
+          0.5183690860041402
+        ]
+      },
+      {
+        "cpr": 1.0,
+        "dop": 0.13,
+        "R_quantiles_looksum": [
+          0.5363576519082329,
+          1.001253241193421,
+          1.8671074766011946
+        ],
+        "R_quantiles_bartlett": [
+          0.5333902113161635,
+          0.9990086558343356,
+          1.8691410090003153
+        ],
+        "m_quantiles_looksum": [
+          0.12441705858562138,
+          0.3125321165884189,
+          0.5319243155532922
+        ],
+        "m_quantiles_bartlett": [
+          0.12388664312734607,
+          0.31280007270571775,
+          0.533098370447068
+        ]
+      }
+    ],
+    "max_relative_quantile_gap_R": 0.00777724834785004,
+    "N": 14,
+    "trials": 100000
+  },
+  "q05_table": {
+    "157.6": 0.07248809923092232,
+    "218.0": 0.07550720966936006,
+    "254.0": 0.07786639647275957,
+    "400.0": 0.08443551522709951,
+    "600.0": 0.0906971877359538,
+    "985.0": 0.0978998918715978,
+    "1000.0": 0.09809023634917031,
+    "1500.0": 0.10323632522056178,
+    "2500.0": 0.10873672035477731,
+    "4000.0": 0.11292672555005934,
+    "6000.0": 0.11587269439861882,
+    "10000.0": 0.11893632611623424
+  },
+  "q05_check_against_decision_rule": {
+    "218": {
+      "bartlett": 0.07550720966936006,
+      "decision_rule": 0.07569155490298847
+    },
+    "254": {
+      "bartlett": 0.07786639647275957,
+      "decision_rule": 0.07738330662245965
+    }
+  },
+  "pooling": {
+    "rows": [
+      {
+        "K": 4,
+        "N": 39.4,
+        "N_eff": 157.6,
+        "population": "null CPR 1.00 DOP 0",
+        "pooled": {
+          "R_q": [
+            0.8309175523640265,
+            0.999792068868214,
+            1.2037038132683833
+          ],
+          "m_q": [
+            0.033574796992366394,
+            0.08664085014255157,
+            0.15692634690070328
+          ],
+          "iut": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 200000
+          }
+        },
+        "single_at_KN": {
+          "R_q": [
+            0.8305057965778327,
+            1.0003687958808767,
+            1.2030523754223268
+          ],
+          "m_q": [
+            0.03315617937901233,
+            0.08646213142910536,
+            0.15666733080800704
+          ],
+          "iut": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 200000
+          }
+        },
+        "iut_z": 0.0
+      },
+      {
+        "K": 4,
+        "N": 39.4,
+        "N_eff": 157.6,
+        "population": "band CPR 1.2 DOP min",
+        "pooled": {
+          "R_q": [
+            0.9971323691445947,
+            1.1999636601284274,
+            1.4438686736599808
+          ],
+          "m_q": [
+            0.05086293658935431,
+            0.12210924945687526,
+            0.2043763913361699
+          ],
+          "iut": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 200000
+          }
+        },
+        "single_at_KN": {
+          "R_q": [
+            0.9961262318085268,
+            1.1991500645227027,
+            1.4449147036048404
+          ],
+          "m_q": [
+            0.05041800612220841,
+            0.12189923046868248,
+            0.20464874464147448
+          ],
+          "iut": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 200000
+          }
+        },
+        "iut_z": 0.0
+      },
+      {
+        "K": 4,
+        "N": 39.4,
+        "N_eff": 157.6,
+        "population": "band CPR 1.1 DOP mid",
+        "pooled": {
+          "R_q": [
+            0.9144128893381737,
+            1.1004450205557212,
+            1.324245719909591
+          ],
+          "m_q": [
+            0.04999306251340781,
+            0.12062745586585542,
+            0.20298719673391896
+          ],
+          "iut": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 200000
+          }
+        },
+        "single_at_KN": {
+          "R_q": [
+            0.914589147209301,
+            1.0997037645893797,
+            1.3233663297625957
+          ],
+          "m_q": [
+            0.04954807614895822,
+            0.12058402003071976,
+            0.20266482241478376
+          ],
+          "iut": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 200000
+          }
+        },
+        "iut_z": 0.0
+      },
+      {
+        "K": 25,
+        "N": 39.4,
+        "N_eff": 985.0,
+        "population": "null CPR 1.00 DOP 0",
+        "pooled": {
+          "R_q": [
+            0.92844753742475,
+            1.000026191252052,
+            1.0767377987159783
+          ],
+          "m_q": [
+            0.013381266732447605,
+            0.03469498158789904,
+            0.06296275590187017
+          ],
+          "iut": {
+            "percent": 4.9505,
+            "mc_se_percent": 0.048504770371067624,
+            "trials": 200000
+          }
+        },
+        "single_at_KN": {
+          "R_q": [
+            0.9285299002644826,
+            1.0000902630192616,
+            1.0774709927268007
+          ],
+          "m_q": [
+            0.013347780022901124,
+            0.034704581709669925,
+            0.06292248115364917
+          ],
+          "iut": {
+            "percent": 5.0985000000000005,
+            "mc_se_percent": 0.049186141226467445,
+            "trials": 200000
+          }
+        },
+        "iut_z": -2.1424563755844246
+      },
+      {
+        "K": 25,
+        "N": 39.4,
+        "N_eff": 985.0,
+        "population": "band CPR 1.2 DOP min",
+        "pooled": {
+          "R_q": [
+            1.1143813688006883,
+            1.1998721316556609,
+            1.2921375782112416
+          ],
+          "m_q": [
+            0.06094026089981905,
+            0.09629302020487564,
+            0.13200522208987214
+          ],
+          "iut": {
+            "percent": 52.1095,
+            "mc_se_percent": 0.11170384974901267,
+            "trials": 200000
+          }
+        },
+        "single_at_KN": {
+          "R_q": [
+            1.1146494931857585,
+            1.1999914525826176,
+            1.2920545511277595
+          ],
+          "m_q": [
+            0.061176620647480105,
+            0.09629038438140901,
+            0.13210252618810497
+          ],
+          "iut": {
+            "percent": 52.057500000000005,
+            "mc_se_percent": 0.11170869916327017,
+            "trials": 200000
+          }
+        },
+        "iut_z": 0.32916282269775016
+      },
+      {
+        "K": 25,
+        "N": 39.4,
+        "N_eff": 985.0,
+        "population": "band CPR 1.1 DOP mid",
+        "pooled": {
+          "R_q": [
+            1.021137498182248,
+            1.1000215387049663,
+            1.184683701091832
+          ],
+          "m_q": [
+            0.05910899370710069,
+            0.09441363959917887,
+            0.13018224009997575
+          ],
+          "iut": {
+            "percent": 31.8,
+            "mc_se_percent": 0.10413356807485279,
+            "trials": 200000
+          }
+        },
+        "single_at_KN": {
+          "R_q": [
+            1.0215527144868424,
+            1.1000455051084799,
+            1.184112147459994
+          ],
+          "m_q": [
+            0.05898450399498134,
+            0.09446508873527124,
+            0.13010585858296186
+          ],
+          "iut": {
+            "percent": 31.961000000000002,
+            "mc_se_percent": 0.10427354599801429,
+            "trials": 200000
+          }
+        },
+        "iut_z": -1.0925170822376966
+      }
+    ],
+    "trials": 200000,
+    "all_within_3se": true
+  },
+  "correlated_cells": {
+    "model": "CORR_LOOKS equal-weight looks per channel of exactly stationary separable AR(1) complex fields (f2_maximum.ar1_stationary) at the complex product's SC and OC lag-one field correlations; SC = sqrt(a)(g w_OC + sqrt(1-g^2) w_SC); 5 x 5 boxcar on SC, OC and the cross product; regions = contiguous blocks of cells, pooled by averaging the boxcar'd covariance",
+    "looks_per_channel": 10,
+    "field": [
+      256,
+      256
+    ],
+    "fields": 24,
+    "lags_intensity": {
+      "SC": [
+        0.5788821720843366,
+        0.6251740396818406
+      ],
+      "OC": [
+        0.7383901900520211,
+        0.76853613404464
+      ]
+    },
+    "by_population": {
+      "null CPR 1.00 DOP 0": {
+        "1": {
+          "regions": 1476096,
+          "N_eff_log_ratio": 28.61152700788623,
+          "N_eff_mean_dop": 29.141460138321104
+        },
+        "4": {
+          "regions": 369024,
+          "N_eff_log_ratio": 30.274341388427693,
+          "N_eff_mean_dop": 30.910832423192513,
+          "ratio_to_K_times_single": 0.2645292348437322,
+          "looks_per_cell": 7.568585347106923
+        },
+        "25": {
+          "regions": 57624,
+          "N_eff_log_ratio": 39.76712134591203,
+          "N_eff_mean_dop": 41.19294352605574,
+          "ratio_to_K_times_single": 0.05559594401927723,
+          "looks_per_cell": 1.5906848538364813
+        },
+        "100": {
+          "regions": 13824,
+          "N_eff_log_ratio": 71.19870908603555,
+          "N_eff_mean_dop": 76.03189657187087,
+          "ratio_to_K_times_single": 0.024884623972153238,
+          "looks_per_cell": 0.7119870908603555
+        },
+        "400": {
+          "regions": 3456,
+          "N_eff_log_ratio": 179.5172536306915,
+          "N_eff_mean_dop": 201.18651519648455,
+          "ratio_to_K_times_single": 0.015685745607112382,
+          "looks_per_cell": 0.4487931340767288
+        },
+        "1600": {
+          "regions": 864,
+          "N_eff_log_ratio": 583.5705053266048,
+          "N_eff_mean_dop": 675.2222923855304,
+          "ratio_to_K_times_single": 0.012747714084906988,
+          "looks_per_cell": 0.364731565829128
+        }
+      },
+      "band CPR 1.2 DOP min": {
+        "1": {
+          "regions": 1476096,
+          "N_eff_log_ratio": 28.378195548719862,
+          "iut_at_N_eff_log_ratio": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 1476096
+          }
+        },
+        "4": {
+          "regions": 369024,
+          "N_eff_log_ratio": 30.02844632627813,
+          "iut_at_N_eff_log_ratio": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 369024
+          }
+        },
+        "25": {
+          "regions": 57624,
+          "N_eff_log_ratio": 39.59424379540059,
+          "iut_at_N_eff_log_ratio": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 57624
+          }
+        },
+        "100": {
+          "regions": 13824,
+          "N_eff_log_ratio": 71.47215475388441,
+          "iut_at_N_eff_log_ratio": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 13824
+          }
+        },
+        "400": {
+          "regions": 3456,
+          "N_eff_log_ratio": 183.04280378551167,
+          "iut_at_N_eff_log_ratio": {
+            "percent": 0.0,
+            "mc_se_percent": 0.0,
+            "trials": 3456
+          }
+        },
+        "1600": {
+          "regions": 864,
+          "N_eff_log_ratio": 538.4606507476437,
+          "iut_at_N_eff_log_ratio": {
+            "percent": 26.15740740740741,
+            "mc_se_percent": 1.4951816045648847,
+            "trials": 864
+          }
+        }
+      }
+    },
+    "looks_per_cell_at_1600": 0.364731565829128
+  },
+  "N_eff_grid": [
+    254,
+    400,
+    600,
+    1000,
+    1500,
+    2500,
+    4000,
+    6000,
+    10000
+  ],
+  "alternatives": [
+    {
+      "label": "CPR 1.05 DOP min",
+      "cpr": 1.05,
+      "dop": 0.02439024390243905
+    },
+    {
+      "label": "CPR 1.1 DOP min",
+      "cpr": 1.1,
+      "dop": 0.04761904761904766
+    },
+    {
+      "label": "CPR 1.2 DOP min",
+      "cpr": 1.2,
+      "dop": 0.09090909090909088
+    },
+    {
+      "label": "CPR 1.25 DOP min",
+      "cpr": 1.25,
+      "dop": 0.1111111111111111
+    },
+    {
+      "label": "CPR 1.1 DOP mid",
+      "cpr": 1.1,
+      "dop": 0.08880952380952384
+    },
+    {
+      "label": "CPR 1.2 DOP mid",
+      "cpr": 1.2,
+      "dop": 0.11045454545454544
+    }
+  ],
+  "iut_power": {
+    "CPR 1.05 DOP min": [
+      {
+        "percent": 0.2195,
+        "mc_se_percent": 0.010464659514289033,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.22224643947212938,
+          "mc_se_percent": 0.010520589785589236,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 13.658284033071935,
+          "conditioning_draws": 26979
+        }
+      },
+      {
+        "percent": 6.9925,
+        "mc_se_percent": 0.057024334443726746,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 6.994411173758861,
+          "mc_se_percent": 0.04534475520586622,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 16.96763628751828,
+          "conditioning_draws": 33926
+        }
+      },
+      {
+        "percent": 17.782999999999998,
+        "mc_se_percent": 0.08550043599304041,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 17.682640342625373,
+          "mc_se_percent": 0.038095565787107974,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 21.178797540211317,
+          "conditioning_draws": 42598
+        }
+      },
+      {
+        "percent": 29.078,
+        "mc_se_percent": 0.10154481562344776,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 28.779049655680517,
+          "mc_se_percent": 0.009752483857080335,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 28.972539724037542,
+          "conditioning_draws": 58547
+        }
+      },
+      {
+        "percent": 37.9225,
+        "mc_se_percent": 0.10849271850566747,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 37.86684695856959,
+          "mc_se_percent": 0.0011163564249180098,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 37.86934328970273,
+          "conditioning_draws": 75850
+        }
+      },
+      {
+        "percent": 53.126,
+        "mc_se_percent": 0.11158467914548127,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 53.18729171599813,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 53.18729171599813,
+          "conditioning_draws": 106252
+        }
+      },
+      {
+        "percent": 70.604,
+        "mc_se_percent": 0.10186940620225486,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 70.43636685259331,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 70.43636685259331,
+          "conditioning_draws": 141208
+        }
+      },
+      {
+        "percent": 84.7225,
+        "mc_se_percent": 0.08044712529823549,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 84.78838332575314,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 84.78838332575314,
+          "conditioning_draws": 169445
+        }
+      },
+      {
+        "percent": 96.5415,
+        "mc_se_percent": 0.040858828773595535,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 96.44662418579453,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 96.44662418579453,
+          "conditioning_draws": 193083
+        }
+      }
+    ],
+    "CPR 1.1 DOP min": [
+      {
+        "percent": 0.345,
+        "mc_se_percent": 0.013111249940413766,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.34643396487769507,
+          "mc_se_percent": 0.013107733750089551,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 28.366414706753645,
+          "conditioning_draws": 56498
+        }
+      },
+      {
+        "percent": 12.717999999999998,
+        "mc_se_percent": 0.07450008308720199,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 12.69446974551534,
+          "mc_se_percent": 0.06507773368499566,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 38.29102440458087,
+          "conditioning_draws": 76724
+        }
+      },
+      {
+        "percent": 36.1965,
+        "mc_se_percent": 0.10745844284536232,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 36.20659576126395,
+          "mc_se_percent": 0.07106953620955155,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 50.212000995232344,
+          "conditioning_draws": 100396
+        }
+      },
+      {
+        "percent": 65.95299999999999,
+        "mc_se_percent": 0.10595994033124029,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 66.0643920360997,
+          "mc_se_percent": 0.035286951075117326,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 68.6477478661772,
+          "conditioning_draws": 137064
+        }
+      },
+      {
+        "percent": 83.0605,
+        "mc_se_percent": 0.08387500640089394,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 83.01083976137485,
+          "mc_se_percent": 0.011398934358025768,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 83.27168371461038,
+          "conditioning_draws": 166643
+        }
+      },
+      {
+        "percent": 95.798,
+        "mc_se_percent": 0.04486330326670115,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 95.7679978548473,
+          "mc_se_percent": 0.0008657474029074123,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 95.7694973850753,
+          "conditioning_draws": 191599
+        }
+      },
+      {
+        "percent": 99.5555,
+        "mc_se_percent": 0.014874881470116043,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 99.55670328256676,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.55670328256676,
+          "conditioning_draws": 199111
+        }
+      },
+      {
+        "percent": 99.9805,
+        "mc_se_percent": 0.0031221945407032634,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 99.98249147850942,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.98249147850942,
+          "conditioning_draws": 199961
+        }
+      },
+      {
+        "percent": 100.0,
+        "mc_se_percent": 0.0,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 99.99998246513468,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.99998246513468,
+          "conditioning_draws": 200000
+        }
+      }
+    ],
+    "CPR 1.2 DOP min": [
+      {
+        "percent": 0.393,
+        "mc_se_percent": 0.013990273585602248,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.39270640389947126,
+          "mc_se_percent": 0.013965536083787883,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 65.8382778293293,
+          "conditioning_draws": 131775
+        }
+      },
+      {
+        "percent": 12.0125,
+        "mc_se_percent": 0.07269628063903957,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 12.00006415035164,
+          "mc_se_percent": 0.07156352280927902,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 82.43856765399532,
+          "conditioning_draws": 165048
+        }
+      },
+      {
+        "percent": 30.61,
+        "mc_se_percent": 0.10305406105535093,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 30.63943242756519,
+          "mc_se_percent": 0.10152777856975298,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 93.4712890961999,
+          "conditioning_draws": 186763
+        }
+      },
+      {
+        "percent": 52.64,
+        "mc_se_percent": 0.11164744511183405,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 52.6365464013119,
+          "mc_se_percent": 0.11117218836191459,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.24648822130338,
+          "conditioning_draws": 198506
+        }
+      },
+      {
+        "percent": 68.8545,
+        "mc_se_percent": 0.10354969410263848,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 68.85388165773932,
+          "mc_se_percent": 0.10350295191724715,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.95910231731582,
+          "conditioning_draws": 199920
+        }
+      },
+      {
+        "percent": 87.11449999999999,
+        "mc_se_percent": 0.0749170838243855,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 87.11443052568978,
+          "mc_se_percent": 0.07491702407758419,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.9999202494301,
+          "conditioning_draws": 200000
+        }
+      },
+      {
+        "percent": 96.99799999999999,
+        "mc_se_percent": 0.038156781572873805,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 96.99799999624805,
+          "mc_se_percent": 0.03815678157139788,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.99999999613195,
+          "conditioning_draws": 200000
+        }
+      },
+      {
+        "percent": 99.62349999999999,
+        "mc_se_percent": 0.013694569681081653,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 99.62349999999999,
+          "mc_se_percent": 0.013694569681081653,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 100.0,
+          "conditioning_draws": 200000
+        }
+      },
+      {
+        "percent": 99.997,
+        "mc_se_percent": 0.0012247265000802116,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 99.997,
+          "mc_se_percent": 0.0012247265000802116,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 100.0,
+          "conditioning_draws": 200000
+        }
+      }
+    ],
+    "CPR 1.25 DOP min": [
+      {
+        "percent": 0.27999999999999997,
+        "mc_se_percent": 0.011815582931027989,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.2800261159842845,
+          "mc_se_percent": 0.011812720948612018,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 80.72402853873393,
+          "conditioning_draws": 161433
+        }
+      },
+      {
+        "percent": 7.117999999999999,
+        "mc_se_percent": 0.057494959605168865,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 7.122794198971474,
+          "mc_se_percent": 0.057377007007777314,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 93.43588967976446,
+          "conditioning_draws": 186746
+        }
+      },
+      {
+        "percent": 14.312,
+        "mc_se_percent": 0.07830602326768994,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 14.306788201960236,
+          "mc_se_percent": 0.0781919627631421,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 98.67305454355038,
+          "conditioning_draws": 197418
+        }
+      },
+      {
+        "percent": 21.1035,
+        "mc_se_percent": 0.0912412266398803,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 21.10360022534838,
+          "mc_se_percent": 0.09123653248658829,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.9584747234048,
+          "conditioning_draws": 199916
+        }
+      },
+      {
+        "percent": 27.211999999999996,
+        "mc_se_percent": 0.09951650757537667,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 27.21189007795052,
+          "mc_se_percent": 0.09951610558145967,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.99959605303,
+          "conditioning_draws": 200000
+        }
+      },
+      {
+        "percent": 38.361000000000004,
+        "mc_se_percent": 0.10873209459492629,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 38.36099999160413,
+          "mc_se_percent": 0.10873209457112866,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 99.99999997811352,
+          "conditioning_draws": 200000
+        }
+      },
+      {
+        "percent": 52.7715,
+        "mc_se_percent": 0.11163150961422139,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 52.7715,
+          "mc_se_percent": 0.11163150961422139,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 100.0,
+          "conditioning_draws": 200000
+        }
+      },
+      {
+        "percent": 67.225,
+        "mc_se_percent": 0.10495950111828849,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 67.225,
+          "mc_se_percent": 0.10495950111828849,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 100.0,
+          "conditioning_draws": 200000
+        }
+      },
+      {
+        "percent": 85.42450000000001,
+        "mc_se_percent": 0.07890198982757025,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 85.42450000000001,
+          "mc_se_percent": 0.07890198982757025,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 100.0,
+          "conditioning_draws": 200000
+        }
+      }
+    ],
+    "CPR 1.1 DOP mid": [
+      {
+        "percent": 0.0985,
+        "mc_se_percent": 0.007014377288826143,
+        "trials": 200000
+      },
+      {
+        "percent": 3.125,
+        "mc_se_percent": 0.03890593624371479,
+        "trials": 200000
+      },
+      {
+        "percent": 11.2165,
+        "mc_se_percent": 0.07056345115390827,
+        "trials": 200000
+      },
+      {
+        "percent": 32.924,
+        "mc_se_percent": 0.10508116443968443,
+        "trials": 200000
+      },
+      {
+        "percent": 57.678,
+        "mc_se_percent": 0.11047733514164795,
+        "trials": 200000
+      },
+      {
+        "percent": 85.745,
+        "mc_se_percent": 0.0781759226040857,
+        "trials": 200000
+      },
+      {
+        "percent": 97.6715,
+        "mc_se_percent": 0.03372151299615722,
+        "trials": 200000
+      },
+      {
+        "percent": 99.80250000000001,
+        "mc_se_percent": 0.009927485520009457,
+        "trials": 200000
+      },
+      {
+        "percent": 99.99749999999999,
+        "mc_se_percent": 0.0011180200132388676,
+        "trials": 200000
+      }
+    ],
+    "CPR 1.2 DOP mid": [
+      {
+        "percent": 0.1545,
+        "mc_se_percent": 0.008782405635701417,
+        "trials": 200000
+      },
+      {
+        "percent": 4.3895,
+        "mc_se_percent": 0.04580842115539456,
+        "trials": 200000
+      },
+      {
+        "percent": 11.8025,
+        "mc_se_percent": 0.07214398775192567,
+        "trials": 200000
+      },
+      {
+        "percent": 21.122,
+        "mc_se_percent": 0.0912705077229222,
+        "trials": 200000
+      },
+      {
+        "percent": 28.4365,
+        "mc_se_percent": 0.10087158836238279,
+        "trials": 200000
+      },
+      {
+        "percent": 39.961999999999996,
+        "mc_se_percent": 0.10952713262018686,
+        "trials": 200000
+      },
+      {
+        "percent": 54.851499999999994,
+        "mc_se_percent": 0.11127584975523665,
+        "trials": 200000
+      },
+      {
+        "percent": 69.8755,
+        "mc_se_percent": 0.102590557551609,
+        "trials": 200000
+      },
+      {
+        "percent": 87.631,
+        "mc_se_percent": 0.07361751961999262,
+        "trials": 200000
+      }
+    ]
+  },
+  "iut_size_at_nulls": {
+    "CPR 1.00 DOP 0": [
+      {
+        "percent": 0.1055,
+        "mc_se_percent": 0.007259087322108751,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.10583868378812211,
+          "mc_se_percent": 0.007208706446449347,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 5.000000000000006,
+          "conditioning_draws": 9968
+        }
+      },
+      {
+        "percent": 2.466,
+        "mc_se_percent": 0.03467844027634461,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 2.4596050269299803,
+          "mc_se_percent": 0.024964303751844334,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 4.9999999999999964,
+          "conditioning_draws": 10026
+        }
+      },
+      {
+        "percent": 4.4905,
+        "mc_se_percent": 0.04630795880569559,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.501754385964919,
+          "mc_se_percent": 0.014995335542999436,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 5.000000000000007,
+          "conditioning_draws": 9975
+        }
+      },
+      {
+        "percent": 5.1025,
+        "mc_se_percent": 0.04920439481133774,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.988268647961618,
+          "mc_se_percent": 0.0023918413066806882,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 4.9999999999999405,
+          "conditioning_draws": 10229
+        }
+      },
+      {
+        "percent": 4.9799999999999995,
+        "mc_se_percent": 0.048641525469499826,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.999999999999934,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 4.999999999999934,
+          "conditioning_draws": 9960
+        }
+      },
+      {
+        "percent": 5.027,
+        "mc_se_percent": 0.048858431769757,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.999999999999966,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 4.999999999999966,
+          "conditioning_draws": 10054
+        }
+      },
+      {
+        "percent": 5.008,
+        "mc_se_percent": 0.04877088967816765,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.999999999999933,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 4.999999999999933,
+          "conditioning_draws": 10016
+        }
+      },
+      {
+        "percent": 5.007000000000001,
+        "mc_se_percent": 0.04876627682118043,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.999999999999822,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 4.999999999999822,
+          "conditioning_draws": 10014
+        }
+      },
+      {
+        "percent": 4.9075,
+        "mc_se_percent": 0.04830457761692985,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.999999999999982,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(R > crit) = F.sf(crit / CPR, 2N, 2N)",
+          "exact_component_percent": 4.999999999999982,
+          "conditioning_draws": 9815
+        }
+      }
+    ],
+    "CPR 1.00 DOP 0.065": [
+      {
+        "percent": 0.034,
+        "mc_se_percent": 0.004122404638072299,
+        "trials": 200000
+      },
+      {
+        "percent": 0.8869999999999999,
+        "mc_se_percent": 0.020965833038541538,
+        "trials": 200000
+      },
+      {
+        "percent": 2.204,
+        "mc_se_percent": 0.03282852296403236,
+        "trials": 200000
+      },
+      {
+        "percent": 3.8609999999999998,
+        "mc_se_percent": 0.043080893618865426,
+        "trials": 200000
+      },
+      {
+        "percent": 4.515000000000001,
+        "mc_se_percent": 0.0464281582124469,
+        "trials": 200000
+      },
+      {
+        "percent": 4.9205,
+        "mc_se_percent": 0.048365208556874845,
+        "trials": 200000
+      },
+      {
+        "percent": 4.9475,
+        "mc_se_percent": 0.04849083644102254,
+        "trials": 200000
+      },
+      {
+        "percent": 4.9205,
+        "mc_se_percent": 0.048365208556874845,
+        "trials": 200000
+      },
+      {
+        "percent": 4.9535,
+        "mc_se_percent": 0.04851869937199471,
+        "trials": 200000
+      }
+    ],
+    "CPR 1.00 DOP 0.13": [
+      {
+        "percent": 0.0,
+        "mc_se_percent": 0.0,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.0,
+          "mc_se_percent": 0.0,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9997
+        }
+      },
+      {
+        "percent": 0.0315,
+        "mc_se_percent": 0.003968001858618516,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.0313713773528533,
+          "mc_se_percent": 0.0039423755000354,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10041
+        }
+      },
+      {
+        "percent": 0.059000000000000004,
+        "mc_se_percent": 0.005429787749074544,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.0598984771573604,
+          "mc_se_percent": 0.0054871887724372995,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9850
+        }
+      },
+      {
+        "percent": 0.092,
+        "mc_se_percent": 0.0067792093934322456,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.09320230979637321,
+          "mc_se_percent": 0.006818738407976843,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9871
+        }
+      },
+      {
+        "percent": 0.1245,
+        "mc_se_percent": 0.007884953947233935,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.12428870919436957,
+          "mc_se_percent": 0.007796810103767672,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10017
+        }
+      },
+      {
+        "percent": 0.153,
+        "mc_se_percent": 0.008739734263694747,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.1522994226557834,
+          "mc_se_percent": 0.00859842097460016,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10046
+        }
+      },
+      {
+        "percent": 0.1685,
+        "mc_se_percent": 0.00917104349297287,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.16836530775379696,
+          "mc_se_percent": 0.009045525440778407,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10008
+        }
+      },
+      {
+        "percent": 0.20500000000000002,
+        "mc_se_percent": 0.010113845707741442,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.2048156659006894,
+          "mc_se_percent": 0.00994593458735072,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10009
+        }
+      },
+      {
+        "percent": 0.216,
+        "mc_se_percent": 0.010381075088833526,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.2176761060163257,
+          "mc_se_percent": 0.010286293176088998,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9923
+        }
+      }
+    ],
+    "CPR 1.1 DOP 0.13": [
+      {
+        "percent": 0.0105,
+        "mc_se_percent": 0.0022911675517080805,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.010477996207963277,
+          "mc_se_percent": 0.0022845457776132865,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10021
+        }
+      },
+      {
+        "percent": 0.262,
+        "mc_se_percent": 0.011430519673225711,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.2618428942634419,
+          "mc_se_percent": 0.011193460358569171,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10006
+        }
+      },
+      {
+        "percent": 0.796,
+        "mc_se_percent": 0.019870377953124095,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.8046093197210148,
+          "mc_se_percent": 0.018802036669226117,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9893
+        }
+      },
+      {
+        "percent": 1.9465,
+        "mc_se_percent": 0.0308918385459655,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 1.9383588926508664,
+          "mc_se_percent": 0.02573638096698428,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10042
+        }
+      },
+      {
+        "percent": 3.145,
+        "mc_se_percent": 0.03902620754057458,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 3.1113969133359713,
+          "mc_se_percent": 0.0276636209490618,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10108
+        }
+      },
+      {
+        "percent": 4.38,
+        "mc_se_percent": 0.04576109701482253,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.393620222690339,
+          "mc_se_percent": 0.02517980918922156,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9969
+        }
+      },
+      {
+        "percent": 4.962,
+        "mc_se_percent": 0.048558138143878625,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.9216425312438,
+          "mc_se_percent": 0.02232666175410113,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10082
+        }
+      },
+      {
+        "percent": 4.9959999999999996,
+        "mc_se_percent": 0.0487154997921606,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.993004197481511,
+          "mc_se_percent": 0.021844052737340126,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10006
+        }
+      },
+      {
+        "percent": 5.021,
+        "mc_se_percent": 0.04883080784709587,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10042
+        }
+      }
+    ],
+    "CPR 1.2 DOP 0.13": [
+      {
+        "percent": 0.0435,
+        "mc_se_percent": 0.004662675063737554,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.04368347057642097,
+          "mc_se_percent": 0.004666742413337387,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9958
+        }
+      },
+      {
+        "percent": 1.317,
+        "mc_se_percent": 0.025491715418935617,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 1.3056409239615347,
+          "mc_se_percent": 0.022596009595433057,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10087
+        }
+      },
+      {
+        "percent": 3.0525,
+        "mc_se_percent": 0.03846636477170672,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 3.061992175744809,
+          "mc_se_percent": 0.02781010457719215,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9969
+        }
+      },
+      {
+        "percent": 4.667000000000001,
+        "mc_se_percent": 0.047165618357019344,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.652577011265079,
+          "mc_se_percent": 0.02392539792590478,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10031
+        }
+      },
+      {
+        "percent": 4.981,
+        "mc_se_percent": 0.04864615293114143,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.978510744627686,
+          "mc_se_percent": 0.021945817774201116,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10005
+        }
+      },
+      {
+        "percent": 5.08,
+        "mc_se_percent": 0.04910160893494225,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.9995079224485774,
+          "mc_se_percent": 0.02179790417338664,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10161
+        }
+      },
+      {
+        "percent": 5.049,
+        "mc_se_percent": 0.048959554685474825,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10098
+        }
+      },
+      {
+        "percent": 4.9565,
+        "mc_se_percent": 0.04853262344804781,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9913
+        }
+      },
+      {
+        "percent": 4.926,
+        "mc_se_percent": 0.04839083198292834,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9852
+        }
+      }
+    ],
+    "CPR 1.2989 DOP 0.13": [
+      {
+        "percent": 0.1785,
+        "mc_se_percent": 0.009438786402393052,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 0.17584474436016156,
+          "mc_se_percent": 0.009173650241399071,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10151
+        }
+      },
+      {
+        "percent": 3.3390000000000004,
+        "mc_se_percent": 0.040171574465036844,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 3.27000293800803,
+          "mc_se_percent": 0.027516998315482356,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10211
+        }
+      },
+      {
+        "percent": 4.7755,
+        "mc_se_percent": 0.04768357158131089,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.797086891009544,
+          "mc_se_percent": 0.02313023990404337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9955
+        }
+      },
+      {
+        "percent": 4.9915,
+        "mc_se_percent": 0.04869470852926425,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 4.998497897055878,
+          "mc_se_percent": 0.02180519483474438,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9986
+        }
+      },
+      {
+        "percent": 5.012,
+        "mc_se_percent": 0.0487893357200116,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10024
+        }
+      },
+      {
+        "percent": 5.0235,
+        "mc_se_percent": 0.048842320161413294,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10047
+        }
+      },
+      {
+        "percent": 5.047,
+        "mc_se_percent": 0.048950372368348746,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10094
+        }
+      },
+      {
+        "percent": 5.0,
+        "mc_se_percent": 0.04873397172404482,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 10000
+        }
+      },
+      {
+        "percent": 4.961,
+        "mc_se_percent": 0.04855350033725684,
+        "trials": 200000,
+        "conditioned": {
+          "percent": 5.0,
+          "mc_se_percent": 0.02179449471770337,
+          "exact_component": "P(m_hat < q05) = 0.05 by construction of q05",
+          "exact_component_percent": 5.0,
+          "conditioning_draws": 9922
+        }
+      }
+    ]
+  },
+  "iut_size_max_percent": [
+    0.17584474436016156,
+    3.27000293800803,
+    4.797086891009544,
+    4.998497897055878,
+    5.0,
+    5.0,
+    5.0,
+    5.0,
+    5.0
+  ],
+  "np_bound_percent": {
+    "CPR 1.05 DOP min": [
+      13.67249981871072,
+      16.977590229687525,
+      21.18533894591635,
+      28.97542288538449,
+      37.870172739943776,
+      53.18735936528902,
+      70.4377465431888,
+      84.79116458795212,
+      96.44883550834183
+    ],
+    "CPR 1.1 DOP min": [
+      28.37813496948739,
+      38.293897245455035,
+      50.21202822318729,
+      68.65223156141143,
+      83.28184396681438,
+      95.7785388041886,
+      99.55911946246361,
+      99.98275487738228,
+      99.9999858730732
+    ],
+    "CPR 1.2 DOP min": [
+      22.902607486029105,
+      30.36631541843034,
+      39.68919519029386,
+      55.52961942061263,
+      70.48407203537315,
+      87.93297369704808,
+      97.23136873736706,
+      99.66835663395015,
+      99.99659606015203
+    ],
+    "CPR 1.25 DOP min": [
+      11.386115084801677,
+      13.664654863904325,
+      16.528488617388316,
+      21.810356022445355,
+      27.93371431734382,
+      39.07102509328716,
+      53.337584499654,
+      68.1325368609862,
+      86.129163898337
+    ],
+    "CPR 1.1 DOP mid": [
+      24.38189045104673,
+      32.50033444285676,
+      42.55128929865196,
+      59.249801050993035,
+      74.36267568964568,
+      90.68440781963807,
+      98.23768804424711,
+      99.83951997965448,
+      99.99908169550723
+    ],
+    "CPR 1.2 DOP mid": [
+      11.681014546854275,
+      14.084816355218418,
+      17.112407274012718,
+      22.703273407277994,
+      29.179580568005946,
+      40.898079957129575,
+      55.70757197376474,
+      70.69934971721659,
+      88.11245891772622
+    ]
+  },
+  "np_bound_null": {
+    "254": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "400": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "600": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "1000": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "1500": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "2500": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "4000": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "6000": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        180.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ],
+    "10000": [
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2988505747126435,
+        0.13,
+        15.0
+      ],
+      [
+        1.0,
+        1.15,
+        0.13,
+        0.0
+      ],
+      [
+        1.0,
+        1.2396875,
+        0.13,
+        0.0
+      ]
+    ]
+  },
+  "design": {
+    "CPR 1.05 DOP min": {
+      "cpr": 1.05,
+      "dop": 0.02439024390243905,
+      "iut": {
+        "50pct": {
+          "N": 2247.9477508019927,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 57.05451144167495,
+          "complex_pixels_at_99p6": 5682.629339590824
+        },
+        "80pct": {
+          "N": 5240.834561248174,
+          "bracket": [
+            4000,
+            6000
+          ],
+          "cells_at_39p4": 133.0161056154359,
+          "complex_pixels_at_99p6": 13248.404119297415
+        },
+        "90pct": {
+          "N": 7539.194192418459,
+          "bracket": [
+            6000,
+            10000
+          ],
+          "cells_at_39p4": 191.3501064065599,
+          "complex_pixels_at_99p6": 19058.470598093365
+        }
+      },
+      "np_bound": {
+        "50pct": {
+          "N": 2247.8918640900274,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 57.05309299720882,
+          "complex_pixels_at_99p6": 5682.4880625219985
+        },
+        "80pct": {
+          "N": 5240.492045161956,
+          "bracket": [
+            4000,
+            6000
+          ],
+          "cells_at_39p4": 133.00741231375525,
+          "complex_pixels_at_99p6": 13247.538266450023
+        },
+        "90pct": {
+          "N": 7538.359593697686,
+          "bracket": [
+            6000,
+            10000
+          ],
+          "cells_at_39p4": 191.32892369791082,
+          "complex_pixels_at_99p6": 19056.360800311915
+        }
+      }
+    },
+    "CPR 1.1 DOP min": {
+      "cpr": 1.1,
+      "dop": 0.04761904761904766,
+      "iut": {
+        "50pct": {
+          "N": 759.6940116907326,
+          "bracket": [
+            600,
+            1000
+          ],
+          "cells_at_39p4": 19.281573900780018,
+          "complex_pixels_at_99p6": 1920.4447605176897
+        },
+        "80pct": {
+          "N": 1395.7431176575349,
+          "bracket": [
+            1000,
+            1500
+          ],
+          "cells_at_39p4": 35.42495222481053,
+          "complex_pixels_at_99p6": 3528.325241591129
+        },
+        "90pct": {
+          "N": 1984.4205944465355,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 50.366004935191256,
+          "complex_pixels_at_99p6": 5016.454091545049
+        }
+      },
+      "np_bound": {
+        "50pct": {
+          "N": 595.6875424501123,
+          "bracket": [
+            400,
+            600
+          ],
+          "cells_at_39p4": 15.118973158632294,
+          "complex_pixels_at_99p6": 1505.8497265997764
+        },
+        "80pct": {
+          "N": 1369.5847492071136,
+          "bracket": [
+            1000,
+            1500
+          ],
+          "cells_at_39p4": 34.761034243835375,
+          "complex_pixels_at_99p6": 3462.199010686003
+        },
+        "90pct": {
+          "N": 1974.0400314101514,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 50.102538868277954,
+          "complex_pixels_at_99p6": 4990.212871280484
+        }
+      }
+    },
+    "CPR 1.2 DOP min": {
+      "cpr": 1.2,
+      "dop": 0.09090909090909088,
+      "iut": {
+        "50pct": {
+          "N": 940.6097756997448,
+          "bracket": [
+            600,
+            1000
+          ],
+          "cells_at_39p4": 23.873344560907228,
+          "complex_pixels_at_99p6": 2377.78511826636
+        },
+        "80pct": {
+          "N": 2048.8316272167926,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 52.000802721238394,
+          "complex_pixels_at_99p6": 5179.279951035343
+        },
+        "90pct": {
+          "N": 2867.7025664305015,
+          "bracket": [
+            2500,
+            4000
+          ],
+          "cells_at_39p4": 72.78432909722085,
+          "complex_pixels_at_99p6": 7249.319178083196
+        }
+      },
+      "np_bound": {
+        "50pct": {
+          "N": 836.674283427195,
+          "bracket": [
+            600,
+            1000
+          ],
+          "cells_at_39p4": 21.235387904243527,
+          "complex_pixels_at_99p6": 2115.044635262655
+        },
+        "80pct": {
+          "N": 1981.8858136599858,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 50.30167039746157,
+          "complex_pixels_at_99p6": 5010.046371587172
+        },
+        "90pct": {
+          "N": 2775.3370218780196,
+          "bracket": [
+            2500,
+            4000
+          ],
+          "cells_at_39p4": 70.44002593599035,
+          "complex_pixels_at_99p6": 7015.826583224638
+        }
+      }
+    },
+    "CPR 1.25 DOP min": {
+      "cpr": 1.25,
+      "dop": 0.1111111111111111,
+      "iut": {
+        "50pct": {
+          "N": 3654.286616605574,
+          "bracket": [
+            2500,
+            4000
+          ],
+          "cells_at_39p4": 92.74839128440544,
+          "complex_pixels_at_99p6": 9237.739771926781
+        },
+        "80pct": {
+          "N": 8587.688550187759,
+          "bracket": [
+            6000,
+            10000
+          ],
+          "cells_at_39p4": 217.96163832963856,
+          "complex_pixels_at_99p6": 21708.979177631998
+        },
+        "90pct": {
+          "N": null,
+          "bracket": [
+            10000,
+            null
+          ],
+          "note": "not reached by N = 10000"
+        }
+      },
+      "np_bound": {
+        "50pct": {
+          "N": 3583.4984761069013,
+          "bracket": [
+            2500,
+            4000
+          ],
+          "cells_at_39p4": 90.95173797225638,
+          "complex_pixels_at_99p6": 9058.793102036736
+        },
+        "80pct": {
+          "N": 8403.192695898215,
+          "bracket": [
+            6000,
+            10000
+          ],
+          "cells_at_39p4": 213.27900243396485,
+          "complex_pixels_at_99p6": 21242.5886424229
+        },
+        "90pct": {
+          "N": null,
+          "bracket": [
+            10000,
+            null
+          ],
+          "note": "not reached by N = 10000"
+        }
+      }
+    },
+    "CPR 1.1 DOP mid": {
+      "cpr": 1.1,
+      "dop": 0.08880952380952384,
+      "iut": {
+        "50pct": {
+          "N": 1322.7344497417178,
+          "bracket": [
+            1000,
+            1500
+          ],
+          "cells_at_39p4": 33.57194034877456,
+          "complex_pixels_at_99p6": 3343.765258737946
+        },
+        "80pct": {
+          "N": 2251.8012645035797,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 57.152316357958874,
+          "complex_pixels_at_99p6": 5692.370709252704
+        },
+        "90pct": {
+          "N": 2956.402746051385,
+          "bracket": [
+            2500,
+            4000
+          ],
+          "cells_at_39p4": 75.03560269165952,
+          "complex_pixels_at_99p6": 7473.546028089288
+        }
+      },
+      "np_bound": {
+        "50pct": {
+          "N": 753.5488233717709,
+          "bracket": [
+            600,
+            1000
+          ],
+          "cells_at_39p4": 19.125604654105864,
+          "complex_pixels_at_99p6": 1904.910223548944
+        },
+        "80pct": {
+          "N": 1789.4314747482133,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 45.41704250629983,
+          "complex_pixels_at_99p6": 4523.537433627463
+        },
+        "90pct": {
+          "N": 2447.019215143272,
+          "bracket": [
+            1500,
+            2500
+          ],
+          "cells_at_39p4": 62.10708667876325,
+          "complex_pixels_at_99p6": 6185.86583320482
+        }
+      }
+    },
+    "CPR 1.2 DOP mid": {
+      "cpr": 1.2,
+      "dop": 0.11045454545454544,
+      "iut": {
+        "50pct": {
+          "N": 3432.0280931637035,
+          "bracket": [
+            2500,
+            4000
+          ],
+          "cells_at_39p4": 87.10731200923105,
+          "complex_pixels_at_99p6": 8675.888276119413
+        },
+        "80pct": {
+          "N": 8028.849727413906,
+          "bracket": [
+            6000,
+            10000
+          ],
+          "cells_at_39p4": 203.77791186329713,
+          "complex_pixels_at_99p6": 20296.280021584393
+        },
+        "90pct": {
+          "N": null,
+          "bracket": [
+            10000,
+            null
+          ],
+          "note": "not reached by N = 10000"
+        }
+      },
+      "np_bound": {
+        "50pct": {
+          "N": 3337.2768522601446,
+          "bracket": [
+            2500,
+            4000
+          ],
+          "cells_at_39p4": 84.7024581791915,
+          "complex_pixels_at_99p6": 8436.364834647473
+        },
+        "80pct": {
+          "N": 7882.148268342131,
+          "bracket": [
+            6000,
+            10000
+          ],
+          "cells_at_39p4": 200.05452457721145,
+          "complex_pixels_at_99p6": 19925.430647890258
+        },
+        "90pct": {
+          "N": null,
+          "bracket": [
+            10000,
+            null
+          ],
+          "note": "not reached by N = 10000"
+        }
+      }
+    }
+  },
+  "translation": {
+    "looks_per_independent_cell": 39.4,
+    "complex_pixels_per_independent_sample": 99.6,
+    "crater_F2": {
+      "delivered_grid": {
+        "disc_pixels": 1521,
+        "area_px": 61.42,
+        "independent_samples": 24.763920547053075,
+        "N_eff_at_39p4": 975.6984695538912
+      },
+      "complex_product": {
+        "cells_with_signal": 663,
+        "area_px": 99.6,
+        "independent_samples": 6.656626506024097,
+        "N_eff_at_39p4": 262.2710843373494
+      }
+    }
+  },
+  "gate": {
+    "power_monotone_in_N_eff": true,
+    "np_bound_monotone": true,
+    "iut_never_exceeds_np_bound": true,
+    "iut_size_le_5pct_plus_2se": true,
+    "pooling_equals_K_times_N": true,
+    "verdict": "PASS",
+    "plain_mc_versions": {
+      "iut_never_exceeds_np_bound": false,
+      "iut_size_le_5pct_plus_2se": false,
+      "why_not_the_gate": "at CPR 1.00 DOP 0 the IUT's size is 5 % x P(m_hat < q05) ~ 5 %, and for an alternative at its minimum DOP the least-favourable null is CPR 1.00 DOP 0, where the NP test IS the F test: the IUT sits ON the boundary, and a 2-SE test of a quantity equal to its limit fails by chance about 2.3 % of the time per point. The conditioned estimate removes the exactly known component's noise; both are reported"
+    }
+  },
+  "run_info": {
+    "wall_s": 42.6,
+    "peak_rss_mb": 256,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

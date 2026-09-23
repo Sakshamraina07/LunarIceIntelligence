@@ -599,7 +599,49 @@ def main() -> int:
     ap.add_argument("--only-v3", action="store_true",
                     help="compute complex_field_v3 (final pass B2) only and merge it")
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--v3-summary", action="store_true",
+                    help=("v17a: read complex_field_v3's stored results and merge a summary "
+                          "with dot-free keys (the audit addresses artifacts by dotted path); "
+                          "no simulation"))
     args = ap.parse_args()
+    if args.v3_summary:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        v3, v2 = doc["complex_field_v3"], doc["complex_field_v2"]
+        res = v3["results"]
+
+        def j1(ls, k, pop):
+            return 100 * res[ls][k][pop]["joint_rule"]["p_at_least_1_cell"]["rate"]
+        pops07 = ("ice-free CPR 0.7 DOP min 0.1765", "ice-free CPR 0.7 DOP 0.20")
+        pops09 = ("ice-free CPR 0.9 DOP min 0.0526", "ice-free CPR 0.9 DOP 0.20")
+        nul = "null CPR 1.00 DOP 0"
+        d = res["delivered_LH"]
+        lift = [j1("complex_SC_OC", k, pop) - j1("delivered_LH", k, pop)
+                for k in ("N13p72", "N39") for pop in res["delivered_LH"][k] if isinstance(res["delivered_LH"][k][pop], dict)]
+        summ = {
+            "delivered_N39_looks": d["N39"]["looks"], "delivered_N39_achieved_enl": d["N39"]["achieved_enl"],
+            "delivered_N13p72_achieved_enl": d["N13p72"]["achieved_enl"],
+            "first_run_L4_enl": doc["complex_field"]["look_calibration"]["4"]["boxcar_mode_enl"],
+            "null_N39_rule_ge1_percent": j1("delivered_LH", "N39", nul),
+            "null_N39_rule_ge5_percent": 100 * d["N39"][nul]["joint_rule"]["p_at_least_5_cells"]["rate"],
+            "null_N39_crit_at_achieved": d["N39"][nul]["cpr_only"]["at_achieved_enl"]["crit"],
+            "null_N39_cpr_only_ge1_percent": 100 * d["N39"][nul]["cpr_only"]["at_achieved_enl"]["p_at_least_1_pixel"]["rate"],
+            "null_N39_cpr_only_at_1p895_percent": 100 * d["N39"][nul]["cpr_only"]["at_1p895"]["p_at_least_1_pixel"]["rate"],
+            "null_N13p72_rule_ge1_percent": j1("delivered_LH", "N13p72", nul),
+            "null_N13p72_rule_ge5_percent": 100 * d["N13p72"][nul]["joint_rule"]["p_at_least_5_cells"]["rate"],
+            "v2_rule_ge1_percent": 100 * v2["joint_rule_on_null"]["p_at_least_1_cell"],
+            "v2_rule_ge5_percent": 100 * v2["joint_rule_on_null"]["p_at_least_5_cells"],
+            "cpr0p7_rule_ge1_percent": {"min": min(j1("delivered_LH", k, p_) for k in ("N13p72", "N39") for p_ in pops07),
+                                        "max": max(j1("delivered_LH", k, p_) for k in ("N13p72", "N39") for p_ in pops07)},
+            "cpr0p9_rule_ge1_percent": {"min": min(j1("delivered_LH", k, p_) for k in ("N13p72", "N39") for p_ in pops09),
+                                        "max": max(j1("delivered_LH", k, p_) for k in ("N13p72", "N39") for p_ in pops09)},
+            "null_rule_ge1_percent_both_counts": {"min": min(j1("delivered_LH", k, nul) for k in ("N13p72", "N39")),
+                                                  "max": max(j1("delivered_LH", k, nul) for k in ("N13p72", "N39"))},
+            "complex_lags_lift_points": {"min": min(lift), "max": max(lift)},
+            "populations_and_counts": "delivered lags; ice-free rows over both look counts (13.72 and ~39)"}
+        doc["complex_field_v3_summary"] = summ
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(json.dumps(summ, indent=1))
+        return 0
     rng = np.random.default_rng(SEED)
     from app.ingestion.sar_geometry import read_geotiff_frame
 

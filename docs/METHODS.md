@@ -4285,6 +4285,222 @@ neighbours only: first pass median **17.5** (IQR 9.8–31.5; 107 ≥ 79.6), agai
 17.5 before and 41.8 at the selected cells; second pass 22.6 (11.9–36.8) against
 32.5. The gap between selected and random cells is not the exclusion mask.
 
+## 17 · Pre-submission pass on v17a (2026-09-24)
+
+The referee report on v16.1 (Major Revision) found no equation or arithmetic
+error and asked for real-data results. Every artifact below records its seed
+(or states that it draws none), generator and `run_info`; every simulated rate
+carries its Monte Carlo standard error. The simulation specifications are
+transcribed for Supplement S-III in `Claude outputs/hygiene/SUPPLEMENT_S3_SPECS.md`.
+
+### 17.1 A region-level design curve (P1)
+
+`python backend/scripts/region_design_curve.py` → `docs/region_design_curve.json`
+(seed 20261008). The region test is the single-cell IUT on a region's pooled
+covariance. Samples come from the exact complex-Wishart Bartlett decomposition,
+valid for real N; its R quantiles match the look sum at N = 14 within 0.0078
+relative. q05 at 218 / 254 is 0.0755 / 0.0779, against decision_rule.json's
+0.0757 / 0.0774.
+
+**Pooling.** K independent cells of 39.4 looks pool to the single cell at K N.
+At K = 25 the pooled IUT rate matches the single-cell rate: z = −2.14 at the
+null, 0.33 and −1.09 at the band points. At K = 4 both rates are 0.
+
+**Correlated cells** (complex-product SC / OC lags, 10 looks, 5 × 5 boxcar):
+
+| region (cells) | 1 | 4 | 25 | 100 | 400 | 1600 |
+|---|---|---|---|---|---|---|
+| N_eff (log-ratio) | 28.6 | 30.3 | 39.8 | 71.2 | 179.5 | 583.6 |
+
+At 1600 cells this is 0.365 looks per cell, against the 39.4 / 99.6 = 0.396 the
+translation below assumes.
+
+**IUT power (%)** at N_eff = 254 / 1000 / 2500 / 4000 / 10 000:
+
+| alternative | 254 | 1000 | 2500 | 4000 | 10 000 |
+|---|---|---|---|---|---|
+| CPR 1.05, min DOP | 0.2 | 28.8 | 53.2 | 70.4 | 96.4 |
+| CPR 1.1, min DOP | 0.3 | 66.1 | 95.8 | 99.6 | 100 |
+| CPR 1.2, min DOP | 0.4 | 52.6 | 87.1 | 97.0 | 100 |
+| CPR 1.25, min DOP | 0.3 | 21.1 | 38.4 | 52.8 | 85.4 |
+| CPR 1.1, mid DOP | 0.1 | 32.9 | 85.7 | 97.7 | 100 |
+| CPR 1.2, mid DOP | 0.2 | 21.1 | 40.0 | 54.9 | 87.6 |
+
+**N_eff for 50 / 80 / 90 % IUT power** (NP bound in brackets):
+
+| alternative | 50 % | 80 % | 90 % |
+|---|---|---|---|
+| CPR 1.05, min DOP | 2248 (2248) | 5241 (5240) | 7539 (7538) |
+| CPR 1.1, min DOP | 760 (596) | 1396 (1370) | 1984 (1974) |
+| CPR 1.2, min DOP | 941 (837) | 2049 (1982) | 2868 (2775) |
+| CPR 1.25, min DOP | 3654 (3583) | 8588 (8403) | > 10 000 |
+| CPR 1.1, mid DOP | 1323 (754) | 2252 (1789) | 2956 (2447) |
+| CPR 1.2, mid DOP | 3432 (3337) | 8029 (7882) | > 10 000 |
+
+At minimum DOP the least-favourable null is CPR 1.00, DOP 0, where the NP test
+is the F test, so the IUT meets the bound in the limit.
+
+**Translation.** For 80 % power at CPR 1.1 (minimum DOP) a region needs 35.4
+independent cells of 39.4 looks, about 3528 complex-product pixels. Crater F2
+has about 25 independent samples on the delivered grid (N_eff 976 at 39.4
+looks). On the complex product its 663 cells with signal are 6.66 independent
+samples (N_eff 262), where every alternative's IUT power is below 0.5 %.
+
+**Gates:**
+* Power is monotone.
+* The IUT never exceeds the bound.
+* The size is at most 5 % + 2 SE.
+* Pooling holds.
+
+All four PASS, read through the conditioned estimator. That estimator
+multiplies an exactly known component, P(R > crit) at γ_c = 0 or
+P(m̂ < q05) = 0.05 at DOP 0.13, by the simulated conditional. The plain
+frequencies fail the bound check and the size check by about 2 SE at those
+equality boundaries; both are in the artifact with the reason.
+
+### 17.2 The published rule on F2 in the complex product (P2)
+
+`python backend/scripts/f2_complex_product.py` → `docs/f2_complex_product.json`
+(P2 draws nothing).
+
+**Geolocation.** Each bundle ships SLI geolocation: `geometry/…/*_g_sli_xx_cp_xx_d18.csv`
+gives latitude, longitude, slant range and incidence at every 32nd line and
+sample, 11 119 × 25 nodes on this pass and 10 315 × 6 on the second. The nodes
+are terrain-corrected.
+* **Hold-out closure** (odd nodes predicted from the even lattice, twice the
+  native spacing): rms 427.6 m, median 11.2 m, 95th percentile 201.8 m. In SLC
+  pixels that is rms 5.7 lines and 4.38 samples, with medians 0.12 and 0.55.
+  In complex-product rows the rms is 0.27. On the second pass the rms is
+  97.0 m, 0.4 lines and 2.14 samples.
+* **Image closure near F2:** the complex product's LH intensity, geolocated
+  this way and binned to the delivered 25 m map, correlates with the delivered
+  LH at r = 0.748 with its peak at zero offset.
+
+The tie grid registers the complex product to the delivered map to within one
+25 m pixel at F2.
+
+**F2** (the delivered disc's centre and 550 m radius):
+* 3647 complex-product cells, 663 with signal in both channels (18.2 %), 461
+  non-zero before the boxcar, 276 with a full 5 × 5 window; all inside the
+  LOLA PSR.
+* The published rule selects **50** cells, 28 of them with a full window.
+  Their R is 1.00008–1.266 and their N̂ 25.1–76.1; none exceeds F crit(N̂).
+* The IUT selects **0**.
+* Median over the signal cells: CPR 0.872, DOP 0.176, coherence 0.140, N̂ 50.3.
+
+F2 is not on the second pass. F3, H3 and S1 of Sinha et al. could not be
+evaluated: their coordinates are not in the repository, and the publisher's
+page redirects to a sign-in flow.
+
+### 17.3 Crater-scale selections on real data (P3)
+
+Same run → `docs/crater_level_real.json` (seed 20261009).
+
+**Tiling.** Both passes are tiled into non-overlapping 550 m discs on a
+1100 m lattice. Each disc keeps its 663 signal cells nearest the centre, which
+gives 1888 discs: 1303 on this pass and 585 on the second. Discs are classed
+by the LOLA PSR mask.
+
+| class | discs | ≥ 1 selection (Wilson 95 %) | ≥ 5 | mean selections | IUT ≥ 1 |
+|---|---|---|---|---|---|
+| outside PSR (sunlit) | 1331 | 5.7 % (4.6–7.1) | 4.0 % | 1.53 | 0 |
+| inside PSR | 281 | 14.2 % (10.6–18.8) | 8.2 % | 1.67 | 0 |
+| mixed | 276 | 6.2 % (3.9–9.6) | 5.1 % | 1.26 | 0 |
+
+Median over discs:
+
+| class | coherence | CPR | N̂ |
+|---|---|---|---|
+| outside PSR (sunlit) | 0.736 | 0.155 | 16.3 |
+| inside PSR | 0.595 | 0.262 | 27.5 |
+| mixed | 0.750 | 0.147 | 10.6 |
+
+With only full-window cells the sunlit rate is 5.4 %.
+
+**Simulation at the sunlit median population.** Sunlit terrain is where the
+criterion's proponents do not claim ice. It is not a proven ice-free null, and
+these are real-data comparisons, not false-positive rates.
+* The median population is CPR 0.155 and γ_c 0.128, so DOP 0.737, with 6 looks
+  matched to N̂ 16.3. On F2's layout it gives **0.000** at ≥ 1 selection.
+* The real 5.7 % differs by more than 3 MC SE plus the Wilson half-width
+  (flagged).
+* **Per-disc mixture:** each sunlit disc simulated at its own median
+  population, 40 trials per disc. It predicts **7.0 ± 0.1 %** at ≥ 1 and
+  2.9 % at ≥ 5, inside the real interval.
+
+A homogeneous speckle population at the median never fires the rule; the
+selections come from the less-polarized minority of discs. The discs that
+select have a median CPR of 0.62, and 79 discs have a predicted probability
+above 0.5.
+
+### 17.4 The data figure (P4)
+
+`cd paper && python make_fig_scene.py` → `paper/fig_scene.pdf`: 2.09 in tall
+at \columnwidth, STIX, fonttype 42, fonts 7 pt, images rasterized at 300 dpi.
+* **(a)** The frame's sample CPR at 100 m bins, with the PSR outline and all
+  26 462 selected cells.
+* **(b)** 12 × 3.8 km around F2 at 25 m bins.
+* **Legend:** "PSR (LOLA)", "F2 disc", "published rule selects".
+
+The cache it reads, `data/derived/fig_scene/fig_scene_cache.npz`, stays under
+the gitignored `data/`.
+
+### 17.5 Log-cumulant ENL (P6)
+
+`python backend/scripts/measure_enl.py --log-cumulant-only` →
+`docs/enl.json::log_cumulant_enl`. It uses Anfinsen et al. 2009,
+L = ψ₁⁻¹(Var ln I), on the headline's 16 × 16 patches (8337, same mask).
+
+| channel | median | IQR | mode | moment mode |
+|---|---|---|---|---|
+| LH | 5.72 | 4.22–7.43 | 5.73 | 5.83 |
+| LV | 5.76 | 4.26–7.47 | 6.16 | 5.14 |
+
+### 17.6 Transmit handedness (P7)
+
+`python backend/scripts/handedness.py` → `docs/handedness.json`.
+* **Search:** 22 text files and 2 zips were scanned (one zip,
+  `…154539649…`, is not a valid archive).
+* **Result:** no transmit or handedness statement exists. The only hit is the
+  instrument description "Data is acquired in various modes i.e.
+  Circular/Dual/Quad(Full Polarimetric)." The polarization fields name the
+  receive channels LH and LV.
+* **Physical check:**
+
+  | pass | 0° median CPR | 0°: CPR < 1 | 180° median CPR | 180°: CPR < 1 |
+  |---|---|---|---|---|
+  | this pass | 4.727 | 1.51 % | 0.212 | 98.49 % |
+  | second pass | 6.868 | 0.01 % | 0.146 | 99.99 % |
+
+### 17.7 The v17a audit (P8)
+
+The audit now takes the supplement, which has its own row set
+(`SUPPLEMENT_AUDIT`, 68 rows including every Table S1 cell), and G32 reads the
+Mini-RF table from it.
+
+| file | PASS | MISMATCH | ABSENT | NO SOURCE | quantified sentences |
+|---|---|---|---|---|---|
+| submission | 374 | 0 | 0 | 4 | 51: 29 checked, 22 exempt, 0 unchecked |
+| master | 374 | 0 | 0 | 4 | as submission |
+| supplement | 68 | 0 | 0 | 0 | 5: 3 checked, 2 exempt |
+
+Cross-check: 295 / 295 (submission and master), 61 / 61 (supplement).
+
+Row changes: 52 rows retired with reasons (`RETIRED_V17A`), 19 of them moved
+to the supplement; 44 new main rows. The new literals and their sources:
+* 0.08 dB: DERIVED, 10 log₁₀(1.018442 / 1.000923) = 0.075.
+* 0.139: `propagation_percentiles.json`.
+* 1.7°: DERIVED, 90 − |−88.33|.
+* "within 0.4 points": QUANTIFIED, largest strict-band gap 0.346 at N = 17.
+* CPR step 0.01, DOP step 0.005, 3.1e-4: `np_power_bound.json::grids.numeric`.
+* "binomial, at each block's effective sample count":
+  `tail_calibration_ci.json::reference_distribution`.
+* 8.75 / 9.08 / 9.17: main and supplement.
+
+Three merge-only modes store printed figures under addressable keys:
+`dop_sampling_bias.py --strict-summary`, `f2_maximum.py --v3-summary` and
+`np_power_bound.py --grid-keys`.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -4302,7 +4518,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `70db1a9`.
+Stamped at commit `a66fd71`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -4316,11 +4532,12 @@ Stamped at commit `70db1a9`.
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
 | `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
+| `docs/crater_level_real.json` | `561ff0b2be2603b3…` | §17.3 |
 | `docs/decision_rule.json` | `19cc84e41695299c…` | §15.8, §16.2, §16.6 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `16707f02b03be20c…` | §11.1, §11.2, §11.3 |
 | `docs/dop_sampling_bias.json` | `14f3432c0344881e…` | §14.2 |
-| `docs/enl.json` | `6057bd5d8ae62908…` | §7.1, §7.3, §7.5, §7.6 |
+| `docs/enl.json` | `1358b0ea2e97a05d…` | §7.1, §7.3, §7.5, §7.6, §17.5 |
 | `docs/enl_L_20200305_full.json` | `bf7bc6f1bdf4219a…` | §14.4 |
 | `docs/enl_benchmark.json` | `aad47ad4c52def4c…` | §7.3.2 |
 | `docs/enl_estimator_spec.json` | `95577a403a4d57be…` | §7.3.1 |
@@ -4328,26 +4545,29 @@ Stamped at commit `70db1a9`.
 | `docs/enl_interval_validation.json` | `ad9514471b8885a6…` | §14.5 |
 | `docs/enl_logratio.json` | `aa4d23a9aef3f878…` | §15.3, §16.7 |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
+| `docs/f2_complex_product.json` | `55a6fd2483c2bd5e…` | §17.2 |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
-| `docs/f2_maximum.json` | `f4f9b96de7c5861f…` | §6.2a, §14.6, §15.4, §16.3 |
+| `docs/f2_maximum.json` | `4208438d42b4b442…` | §6.2a, §14.6, §15.4, §16.3 |
+| `docs/handedness.json` | `9cf8202020599875…` | §17.6 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
 | `docs/joint_calibration.json` | `69091c8284d96fb1…` | §14.2, §15.1 |
 | `docs/joint_criterion.json` | `984eb95dc9497a0d…` | §7.9.4 |
-| `docs/joint_power_curve.json` | `3d878a38901d6e12…` | §15.2, §15.7, §16.1 |
+| `docs/joint_power_curve.json` | `4bc131519cb2149e…` | §15.2, §15.7, §16.1 |
 | `docs/kclutter.json` | `ae285515e3abdb5d…` | §7.13 |
 | `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
 | `docs/literature_screen.json` | `d5ff73f7ec44aea2…` | §13.1 |
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
 | `docs/mechanism_spec.json` | `14bc6ef44f9ff8e2…` | §14.3 |
-| `docs/np_power_bound.json` | `13a8fc0a9d84b453…` | §16.4 |
+| `docs/np_power_bound.json` | `983f28d045a91c2f…` | §16.4 |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
 | `docs/phase_gain_perturbation.json` | `07604f8f0c4c864e…` | §1.11 |
 | `docs/propagation_percentiles.json` | `847af0a883190b4b…` | §12.6 |
 | `docs/psr_domains.json` | `72855458be8227eb…` | §5.8, §5.9, §5.11 |
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
 | `docs/published_moments.json` | `5bfe5549f64bc236…` | §13.3 |
+| `docs/region_design_curve.json` | `0ec011e84f985791…` | §17.1 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
@@ -4358,7 +4578,7 @@ Stamped at commit `70db1a9`.
 | `docs/stokes_from_slc_20200305.json` | `e5eca2c112a2a157…` | §15.5 |
 | `docs/stokes_from_slc_20200305_block32.json` | `a3b893d7f7c5399d…` | §15.5 |
 | `docs/stokes_from_slc_block32.json` | `453a44d7e23d5df6…` | §15.5 |
-| `docs/tail_calibration_ci.json` | `bfa7f5c6402bcaf9…` | §15.6 |
+| `docs/tail_calibration_ci.json` | `047b83a5364006e6…` | §15.6 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |

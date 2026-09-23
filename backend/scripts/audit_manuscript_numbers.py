@@ -205,7 +205,8 @@ def artifact_value(rel: str, path: str):
 # reviewer argues with, so it is a file they can read without reading this one.
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from manuscript_audit_table import (AUDIT, APPROX, DERIVED, QUANTIFIED,  # noqa: E402
-                                    QUANTIFIER_EXEMPT, STRINGS)
+                                    QUANTIFIER_EXEMPT, STRINGS, SUPPLEMENT_AUDIT,
+                                    SUPPLEMENT_QUANTIFIED, SUPPLEMENT_QUANTIFIER_EXEMPT)
 
 #: The words that make a sentence a claim about every element of something.
 QUANTIFIER = re.compile(r"\b(?:all|every|each|identical(?:ly)?|uniformly|none)\b", re.I)
@@ -236,7 +237,7 @@ def sentence_at(flat: str, pos: int):
     return lo + 1, hi + 1
 
 
-def quantified_scan(tex: str):
+def quantified_scan(tex: str, quantified=None, exempt=None):
     """Every quantifier in a sentence that carries a number, and whether a
     QUANTIFIED row or a QUANTIFIER_EXEMPT entry claims it. Unclaimed ones are
     the finding: a new 'all'/'every' claim nobody has checked element-wise."""
@@ -250,12 +251,12 @@ def quantified_scan(tex: str):
         if not NUMBERISH.search(clean):
             continue
         claimed_by = None
-        for rid, anchor, *_ in QUANTIFIED:
+        for rid, anchor, *_ in (QUANTIFIED if quantified is None else quantified):
             for am in re.finditer(anchor, sent):
                 if abs((a + am.start()) - m.start()) <= 120 or a + am.start() <= m.start() <= a + am.end():
                     claimed_by = ("QUANTIFIED", rid)
         if claimed_by is None:
-            for anchor, why in QUANTIFIER_EXEMPT:
+            for anchor, why in (QUANTIFIER_EXEMPT if exempt is None else exempt):
                 for am in re.finditer(anchor, sent):
                     if abs((a + am.start()) - m.start()) <= 120 or a + am.start() <= m.start() <= a + am.end():
                         claimed_by = ("EXEMPT", why)
@@ -385,6 +386,16 @@ def main() -> int:
         print(f"  MANUSCRIPT NOT FOUND: {tex_path}")
         return 1
     tex = tex_path.read_text(encoding="utf-8", errors="replace")
+    # v17a: the Supplementary Material (S-I Mini-RF, S-II literature search)
+    # is audited against its own rows; the main text's closed forms, "about"
+    # rows and identifiers do not apply to it.
+    supplement = "supplement" in tex_path.name
+    audit_rows = SUPPLEMENT_AUDIT if supplement else AUDIT
+    derived_rows = [] if supplement else DERIVED
+    approx_rows = [] if supplement else APPROX
+    string_rows = [] if supplement else STRINGS
+    quant_rows = SUPPLEMENT_QUANTIFIED if supplement else QUANTIFIED
+    exempt_rows = SUPPLEMENT_QUANTIFIER_EXEMPT if supplement else QUANTIFIER_EXEMPT
 
     print("=" * 100)
     print(f"MANUSCRIPT NUMBER AUDIT — {args.tex} (READ-ONLY)")
@@ -393,7 +404,7 @@ def main() -> int:
     print("  " + "-" * 96)
 
     rows, mismatch, nosource, absent = [], [], [], []
-    for cid, lit, rel, key, section, note in AUDIT:
+    for cid, lit, rel, key, section, note in audit_rows:
         lines = appears(tex, lit)
         val = artifact_value(rel, key) if rel and key else None
         if not lines:
@@ -445,7 +456,7 @@ def main() -> int:
 
     print("\n  DERIVED arithmetic:")
     derived_bad = []
-    for cid, printed, fn, tol in DERIVED:
+    for cid, printed, fn, tol in derived_rows:
         got = fn()
         ok = abs(got - printed) <= tol
         print(f"    {cid:<16} printed {printed:<14g} computed {got:<20.10g} "
@@ -455,7 +466,7 @@ def main() -> int:
 
     # ---- "about X" rows ----------------------------------------------------
     print("\n  APPROXIMATE ('about X'), at the stated relative tolerance:")
-    for cid, lit, rel, key, tol, section, note in APPROX:
+    for cid, lit, rel, key, tol, section, note in approx_rows:
         lines = appears(tex, lit)
         val = artifact_value(rel, key)
         if not lines:
@@ -478,7 +489,7 @@ def main() -> int:
     # ---- identifiers printed verbatim ---------------------------------------
     print("\n  STRINGS, printed verbatim:")
     tex_plain = tex.replace("\\_", "_")
-    for cid, lit, rel, key, section, note in STRINGS:
+    for cid, lit, rel, key, section, note in string_rows:
         lines = [i for i, ln in enumerate(tex_plain.split("\n"), 1) if lit in ln]
         vals, _ = resolve(rel, key)
         val = vals[0] if vals and len(vals) == 1 and isinstance(vals[0], str) else None
@@ -503,7 +514,7 @@ def main() -> int:
     qrows, qfail = [], []
     flat_, _ = flat_body(tex)
     flat_one = re.sub(r"\s+", " ", flat_)
-    for cid, anchor, checks, section, note in QUANTIFIED:
+    for cid, anchor, checks, section, note in quant_rows:
         present = re.search(anchor, flat_one) is not None
         details, ok_all = [], True
         if not present:
@@ -529,7 +540,7 @@ def main() -> int:
         qrows.append({"id": cid, "anchor": anchor, "verdict": verdict, "section": section,
                       "note": note, "details": details})
 
-    scan = quantified_scan(tex)
+    scan = quantified_scan(tex, quant_rows, exempt_rows)
     unchecked = [h for h in scan if h["claimed_by"] is None]
     print(f"\n  QUANTIFIER SCAN: {len(scan)} quantifier(s) in sentences that carry a number; "
           f"{sum(1 for h in scan if h['claimed_by'] and h['claimed_by'][0] == 'QUANTIFIED')} "
@@ -544,6 +555,7 @@ def main() -> int:
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "computed_by": "backend/scripts/audit_manuscript_numbers.py",
         "manuscript": args.tex,
+        "row_set": "SUPPLEMENT_AUDIT" if supplement else "AUDIT",
         "manuscript_is_read_only": True,
         "n_audited": len(rows),
         "counts": {"PASS": sum(1 for r in rows if r["verdict"] == "PASS"),
@@ -568,8 +580,8 @@ def main() -> int:
         caught = q["verdict"] == "FAIL"
         print(f"  {'INJECTION CAUGHT' if caught else 'INJECTION MISSED'} -- nothing written")
         return 0 if caught else 1
-    (BASE_DIR / "docs" / "manuscript_number_audit.json").write_text(
-        json.dumps(out, indent=2), encoding="utf-8")
+    out_name = "manuscript_number_audit_supplement.json" if supplement else "manuscript_number_audit.json"
+    (BASE_DIR / "docs" / out_name).write_text(json.dumps(out, indent=2), encoding="utf-8")
 
     print(f"\n  {out['counts']}")
     if mismatch:
@@ -590,7 +602,7 @@ def main() -> int:
             print(f"    {cid}: {v}")
         if unchecked:
             print(f"    {len(unchecked)} quantified sentence(s) claimed by no row")
-    print("\n  wrote docs/manuscript_number_audit.json")
+    print(f"\n  wrote docs/{out_name}")
     print("  This is a REPORT. The manuscript is not edited here.")
     # A non-zero exit on anything a reader would have to be told: a printed
     # figure its artifact contradicts or cannot find, and a quantified claim

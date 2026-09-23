@@ -60,7 +60,7 @@ END = "<!-- END GENERATED STAMP -->"
 #: artifact -> the METHODS sections whose figures were transcribed from it.
 #: When an artifact's digest changes, these are the sections to re-read.
 ARTIFACTS: dict[str, list[str]] = {
-    "docs/enl.json": ["7.1", "7.3", "7.5", "7.6"],
+    "docs/enl.json": ["7.1", "7.3", "7.5", "7.6", "17.5"],
     "docs/enl_estimator_spec.json": ["7.3.1"],
     "docs/bootstrap_enl.json": ["7.3.1"],
     "docs/enl_benchmark.json": ["7.3.2"],
@@ -94,6 +94,11 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/np_power_bound.json": ["16.4"],
     "docs/complex_cell_ceiling.json": ["16.5"],
     "docs/complex_grid_correlation.json": ["16.3", "16.6"],
+    # pre-submission pass on v17a (METHODS 17)
+    "docs/region_design_curve.json": ["17.1"],
+    "docs/f2_complex_product.json": ["17.2"],
+    "docs/crater_level_real.json": ["17.3"],
+    "docs/handedness.json": ["17.6"],
     "docs/propagation_percentiles.json": ["12.6"],
     "docs/literature_screen.json": ["13.1"],
     "docs/published_moments.json": ["13.3"],
@@ -424,6 +429,13 @@ def check_labelled_figures(text: str) -> list:
 #: An entry here is a STATED DECISION that a section's numbers need no artifact.
 #: It is not a way to silence a section that does.
 SECTIONS_WITHOUT_ARTIFACTS: dict = {
+    "17": "the pass's preamble; no measured figure of its own.",
+    "17.4": ("the data figure: its rendered height and legend text are properties of the "
+             "PDF (G26 builds and inspects it), not of an artifact."),
+    "17.7": ("the audit's own counts, written by audit_manuscript_numbers.py and "
+             "number_crosscheck.py to docs/manuscript_number_audit*.json and "
+             "docs/number_crosscheck*.json on every run; its source list names the "
+             "artifact behind each new literal, each audited on its own row."),
     "0": "the defect register. Its numbers are counts of instances and quotations "
          "of figures that are checked where they are computed.",
     "13.2": "a pointer to docs/REPRODUCIBILITY.md; its only figure is the 256 of "

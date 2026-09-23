@@ -1,0 +1,145 @@
+{
+  "schema": "lunar-ice/handedness/1",
+  "generated_utc": "2026-09-23T19:15:12.081057+00:00",
+  "generator": "backend/scripts/handedness.py",
+  "seed": null,
+  "seed_note": "no random draws",
+  "search": {
+    "roots": [
+      "data\\pradan\\raw",
+      "data\\generality\\20200305"
+    ],
+    "text_files_scanned": 22,
+    "files": [
+      "data\\pradan\\raw\\browse\\calibrated\\20200808\\ch2_sar_ncls_20200808t201154198_b_brw_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_d_gri_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_d_gri_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_d_sli_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_d_sri_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_g_oat_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_g_xxx_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_g_oat_xx_cp_xx_d18.xml",
+      "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_g_xxx_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\browse\\calibrated\\20200305\\ch2_sar_ncls_20200305t114902885_b_brw_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_d_gri_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_d_sli_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_d_gri_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_d_sli_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_d_sri_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_g_oat_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_g_xxx_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_g_oat_xx_cp_xx_d18.xml",
+      "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_g_xxx_xx_cp_xx_d18.xml"
+    ],
+    "zips": [
+      {
+        "zip": "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip",
+        "text_members_scanned": 11
+      },
+      {
+        "zip": "data\\generality\\20200305\\ch2_sar_ncls_20200305t154539649_d_cp_d18.zip",
+        "error": "not a valid zip archive"
+      }
+    ],
+    "pattern": "transmit|handed|right[\\s_-]*circular|left[\\s_-]*circular|\\bRHC\\b|\\bLHC\\b|\\bRCP\\b|\\bLCP\\b|circular"
+  },
+  "transmit_or_handedness_statement_found": false,
+  "statements_verbatim": [],
+  "all_hits_distinct": [
+    {
+      "text": "Data is acquired in various modes i.e. Circular/Dual/Quad(Full Polarimetric).",
+      "occurrences": [
+        "data\\pradan\\raw\\browse\\calibrated\\20200808\\ch2_sar_ncls_20200808t201154198_b_brw_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_d_gri_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_d_sli_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_d_gri_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_d_sli_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\data\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_d_sri_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_g_oat_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxl_20200808t201154198_g_xxx_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_g_oat_xx_cp_xx_d18.xml:44",
+        "data\\pradan\\raw\\geometry\\calibrated\\20200808\\ch2_sar_ncxs_20200808t201154198_g_xxx_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\browse\\calibrated\\20200305\\ch2_sar_ncls_20200305t114902885_b_brw_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::data/calibrated/20200305/ch2_sar_ncxs_20200305t114902885_d_gri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::data/calibrated/20200305/ch2_sar_ncxs_20200305t114902885_d_sli_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::data/calibrated/20200305/ch2_sar_ncxs_20200305t114902885_d_sri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::geometry/calibrated/20200305/ch2_sar_ncxs_20200305t114902885_g_oat_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::geometry/calibrated/20200305/ch2_sar_ncxs_20200305t114902885_g_xxx_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::browse/calibrated/20200305/ch2_sar_ncls_20200305t114902885_b_brw_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::data/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_d_gri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::data/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_d_sli_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::data/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::geometry/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_g_oat_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\ch2_sar_ncls_20200305t114902885_d_cp_d18.zip::geometry/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_g_xxx_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_d_gri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_d_sli_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_d_gri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_d_sli_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\data\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_d_sri_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_g_oat_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxl_20200305t114902885_g_xxx_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_g_oat_xx_cp_xx_d18.xml:44",
+        "data\\generality\\20200305\\geometry\\calibrated\\20200305\\ch2_sar_ncxs_20200305t114902885_g_xxx_xx_cp_xx_d18.xml:44"
+      ]
+    }
+  ],
+  "label_polarization_fields": {
+    "num_polarizations": [
+      "2"
+    ],
+    "polarization": [
+      "LH",
+      "LV"
+    ],
+    "imaging_mode": [
+      "STRIPMAP"
+    ]
+  },
+  "physical_check": {
+    "20200808": {
+      "0_deg": {
+        "convention": "S3 = +2 Im<E_H E_V*>",
+        "cells": 5883594,
+        "median_cpr": 4.7272773833765065,
+        "fraction_cpr_lt_1": 0.015106072920735182
+      },
+      "180_deg": {
+        "convention": "S3 = -2 Im<E_H E_V*>",
+        "cells": 5883594,
+        "median_cpr": 0.21153825318506417,
+        "fraction_cpr_lt_1": 0.9848939270792648
+      },
+      "physical_reading": "180_deg"
+    },
+    "20200305": {
+      "0_deg": {
+        "convention": "S3 = +2 Im<E_H E_V*>",
+        "cells": 896972,
+        "median_cpr": 6.867762001026672,
+        "fraction_cpr_lt_1": 7.469575415955013e-05
+      },
+      "180_deg": {
+        "convention": "S3 = -2 Im<E_H E_V*>",
+        "cells": 896972,
+        "median_cpr": 0.14560784136839303,
+        "fraction_cpr_lt_1": 0.9999253042458405
+      },
+      "physical_reading": "180_deg"
+    }
+  },
+  "verdict": "NO LABEL OR DOCUMENT IN EITHER BUNDLE STATES THE TRANSMIT POLARIZATION OR ITS HANDEDNESS; the physical check decides the sign",
+  "run_info": {
+    "wall_s": 42.6,
+    "peak_rss_mb": 2924,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

@@ -37,8 +37,11 @@ HERE = Path(__file__).resolve().parent
 #: Fig. 1 by make_figures.py, Figs. 2 and 3 by make_figures_v12.py (both
 #: byte-synced from Claude outputs/grsl/, the v12 copy with its data path
 #: resolved inside the repository).
-FIGURES = ["fig1_degeneracy.pdf", "fig_cpr_dop.pdf", "fig_joint_power.pdf"]
-SCRIPTS = ["make_figures.py", "make_figures_v12.py"]
+FIGURES = ["fig1_degeneracy.pdf", "fig_cpr_dop.pdf", "fig_joint_power.pdf", "fig_scene.pdf"]
+SCRIPTS = ["make_figures.py", "make_figures_v12.py", "make_fig_scene.py"]
+#: fig_scene.pdf (v17a referee report, P4): the data figure, from
+#: make_fig_scene.py, which reads the gitignored cache written by
+#: backend/scripts/f2_complex_product.py.
 #: Built by make_figures.py but no longer in the manuscript; retired from the
 #: gate 2026-09-23 (final pass). A retired figure is not inspected.
 RETIRED_FIGURES = {

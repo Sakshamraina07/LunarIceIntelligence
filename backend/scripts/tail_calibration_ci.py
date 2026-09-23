@@ -130,6 +130,9 @@ def main() -> int:
         "generator": "backend/scripts/tail_calibration_ci.py",
         "seed": SEED, "bootstrap_B": B, "unit": "block, resampled with replacement",
         "effective_count": "n_test / the block's integrated autocorrelation area of ln CPR",
+        "reference_distribution": ("binomial, at each block's effective sample count: "
+                                   "P(block above nominal) = P(Bin(n_eff, alpha) > alpha n_eff); "
+                                   "the count of blocks above nominal is Poisson-binomial"),
         "results": res, "run_info": run_info()}, indent=2), encoding="utf-8")
     print(f"\n  wrote {OUT.relative_to(BASE_DIR)}")
     return 0

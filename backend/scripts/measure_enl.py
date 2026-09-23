@@ -206,6 +206,25 @@ def lag_correlation(a: np.ndarray, valid: np.ndarray, p: int, max_lag: int = 3) 
     return out
 
 
+def log_cumulant_looks(i: np.ndarray, valid: np.ndarray, p: int) -> np.ndarray:
+    """Per-patch log-cumulant ENL (Anfinsen, Doulgeris and Eltoft, IEEE TGRS
+    47(11), 2009): for single-channel intensity the second sample
+    log-cumulant kappa_2 = Var(ln I) equals psi_1(L) for an L-look gamma
+    intensity, so L = psi_1^-1(kappa_2). Over every p x p patch ENTIRELY
+    inside `valid` (the same patches patch_ratios uses), Var with ddof = 1.
+    Texture adds variance to ln I, so it biases L low, as it does the moment
+    ratio; common scale factors (K, G, sin theta) cancel in Var(ln I)."""
+    from scipy.special import polygamma
+    h, w = (i.shape[0] // p) * p, (i.shape[1] // p) * p
+    blk = i[:h, :w].reshape(h // p, p, w // p, p).swapaxes(1, 2).reshape(-1, p * p)
+    vb = valid[:h, :w].reshape(h // p, p, w // p, p).swapaxes(1, 2).reshape(-1, p * p)
+    blk = blk[vb.all(axis=1)].astype(np.float64)
+    k2 = np.log(blk).var(axis=1, ddof=1)
+    ng = np.exp(np.linspace(np.log(0.05), np.log(1e5), 6000))
+    vg = polygamma(1, ng)
+    return np.interp(k2, vg[::-1], ng[::-1])
+
+
 def describe(name: str, r: np.ndarray) -> dict:
     q = np.percentile(r, [5, 25, 50, 75, 95]) if r.size else [float("nan")] * 5
     return {"statistic": name, "n_patches": int(r.size), "mode": mode_of(r),
@@ -219,6 +238,10 @@ def main() -> int:
     ap.add_argument("--band", default="L", choices=["L", "S"])
     ap.add_argument("--patches", default="16,32,64")
     ap.add_argument("--out", default="docs/enl.json")
+    ap.add_argument("--log-cumulant-only", action="store_true",
+                    help=("v17a P6: compute the log-cumulant ENL on the headline patches "
+                          "(16 x 16, the boxcar-eroded both-channel mask) and merge it into "
+                          "the artifact under log_cumulant_enl; nothing else is rewritten"))
     ap.add_argument("--dir", default=DEFAULT_DIR,
                     help="directory holding the sri rasters and their label, "
                          "relative to the repo root or absolute")
@@ -259,6 +282,31 @@ def main() -> int:
           f"({valid.mean() * 100:.2f} % of the raster)")
     print(f"  LH DN over that mask: min {lh[valid].min():.0f}  median "
           f"{np.median(lh[valid]):.0f}  max {lh[valid].max():.0f}")
+
+    if args.log_cumulant_only:
+        from scipy.ndimage import binary_erosion
+        p0 = int(args.patches.split(",")[0])
+        inner = binary_erosion(valid, np.ones((5, 5), dtype=bool))
+        out_p = ROOT / args.out
+        doc = json.loads(out_p.read_text(encoding="utf-8"))
+        lc = {"method": ("Anfinsen et al. 2009 log-cumulant: L = psi_1^-1(Var(ln I)) per patch, "
+                         "I = DN^2; the same 16 x 16 patches and mask as boxcar_gain.enl_raw (both "
+                         "channels DN > 0, eroded by the 5 x 5 boxcar half-width)"),
+              "patch_px": p0, "mask_pixels": int(inner.sum())}
+        for ch_name, dn in (("LH", lh), ("LV", lv)):
+            lk = log_cumulant_looks(dn * dn, inner, p0)
+            lc[ch_name] = {"patches": int(lk.size), "median": float(np.median(lk)),
+                           "iqr": [float(np.percentile(lk, 25)), float(np.percentile(lk, 75))],
+                           "mode": mode_of(lk),
+                           "moment_mode_for_comparison": doc["boxcar_gain"][ch_name]["enl_raw"]}
+            print(f"  {ch_name}: log-cumulant ENL median {lc[ch_name]['median']:.2f} "
+                  f"(IQR {lc[ch_name]['iqr'][0]:.2f}-{lc[ch_name]['iqr'][1]:.2f}, mode "
+                  f"{lc[ch_name]['mode']:.2f}) on {lk.size:,} patches; moment mode "
+                  f"{doc['boxcar_gain'][ch_name]['enl_raw']:.2f}")
+        doc["log_cumulant_enl"] = lc
+        out_p.write_text(json.dumps(doc, indent=2), encoding="utf-8")
+        print("merged log_cumulant_enl into " + args.out)
+        return 0
 
     results = {"label": lab, "patch_sizes": {}}
     for p in [int(x) for x in args.patches.split(",")]:

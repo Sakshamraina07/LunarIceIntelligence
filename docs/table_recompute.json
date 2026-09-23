@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/table-recompute/1",
-  "generated_utc": "2026-09-23T15:56:07.593937+00:00",
+  "generated_utc": "2026-09-23T19:33:12.930408+00:00",
   "generator": "backend/scripts/recompute_manuscript_tables.py",
   "manuscript": "Claude outputs/grsl/dfsar_detection_limits_submission.tex",
   "recomputed_from": [
@@ -555,7 +555,8 @@
         }
       ],
       "differ": 0,
-      "craters": 8
+      "craters": 8,
+      "parsed_from": "Claude outputs/grsl/dfsar_detection_limits_supplement.tex"
     }
   },
   "total_cells": 66,

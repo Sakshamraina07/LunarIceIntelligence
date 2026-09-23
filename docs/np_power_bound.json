@@ -31,7 +31,19 @@
       "points": 360
     },
     "null_refinement": "two best coarse points per segment, six rounds of a 5 x 5 grid, spacing halved each round (final spacing DOP 1.6e-4, CPR 3.1e-4, phase 0.47 deg)",
-    "final": "minimum over the union of refined nulls found at all N, 256 quadrature nodes (search 64)"
+    "final": "minimum over the union of refined nulls found at all N, 256 quadrature nodes (search 64)",
+    "numeric": {
+      "alternative_cpr_step": 0.01,
+      "alternative_dop_step": 0.005,
+      "alternatives": 838,
+      "null_coarse_dop_step": 0.01,
+      "null_coarse_cpr_step": 0.02,
+      "null_coarse_phase_step_deg": 30.0,
+      "zoom_rounds": 6,
+      "null_final_spacing_dop": 0.00015625,
+      "null_final_spacing_cpr": 0.0003125,
+      "null_final_spacing_phase_deg": 0.46875
+    }
   },
   "bound_percent_at": {
     "14.0": 9.718595146075733,

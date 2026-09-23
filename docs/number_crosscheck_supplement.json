@@ -1,0 +1,454 @@
+{
+  "schema": "lunar-ice/number-crosscheck/1",
+  "generated_utc": "2026-09-23T19:00:58.439173+00:00",
+  "generator": "backend/scripts/number_crosscheck.py",
+  "manuscript": "Claude outputs/grsl/dfsar_detection_limits_supplement.tex",
+  "artifact_numbers_loaded": 126001,
+  "artifact_trees": [
+    "docs",
+    "frontend/public/analysis",
+    "data/pradan/dfsar"
+  ],
+  "rule": "a literal matches if some artifact value rounds to it at the printed precision, or agrees to 0.5 % relative with >= 3 significant digits. Deliberately loose: this is a net for literals nobody mapped, not a check on any one figure",
+  "not_a_gate": "a match here is weak evidence; audit_manuscript_numbers.py is the strong check, and this only catches what that table has not been told about",
+  "distinct_literals": 61,
+  "matched": 61,
+  "unmatched": 0,
+  "unmatched_rows": [],
+  "matched_rows": [
+    {
+      "literal": "0.97",
+      "lines": [
+        55
+      ],
+      "example_key": "background_cpr_sweep.json.rows[1].fp_percent"
+    },
+    {
+      "literal": "0.50",
+      "lines": [
+        55,
+        56,
+        58
+      ],
+      "example_key": "antialias_sigma.json.sigmas[9]"
+    },
+    {
+      "literal": "1.75",
+      "lines": [
+        55
+      ],
+      "example_key": "crater_level_real.json.per_disc[511].median_cpr"
+    },
+    {
+      "literal": "6.12",
+      "lines": [
+        55
+      ],
+      "example_key": "bootstrap_enl.json.LH.enl_raw_ci_simple[1]"
+    },
+    {
+      "literal": "9.11",
+      "lines": [
+        55
+      ],
+      "example_key": "crater_level_real.json.per_disc[51].median_N_hat"
+    },
+    {
+      "literal": "9.65",
+      "lines": [
+        55
+      ],
+      "example_key": "complex_grid_correlation.json.window_31x31.independent_samples_at_median_A"
+    },
+    {
+      "literal": "9.94",
+      "lines": [
+        55
+      ],
+      "example_key": "crater_level_real.json.per_disc[44].median_N_hat"
+    },
+    {
+      "literal": "0.93",
+      "lines": [
+        56
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.200 m[2]"
+    },
+    {
+      "literal": "1.83",
+      "lines": [
+        56
+      ],
+      "example_key": "decision_rule.json.rows.C[46].oracle.dop_test.percent"
+    },
+    {
+      "literal": "7.66",
+      "lines": [
+        56
+      ],
+      "example_key": "crater_level_real.json.per_disc[541].median_N_hat"
+    },
+    {
+      "literal": "8.51",
+      "lines": [
+        56
+      ],
+      "example_key": "crater_level_real.json.per_disc[67].median_N_hat"
+    },
+    {
+      "literal": "9.14",
+      "lines": [
+        56
+      ],
+      "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
+    },
+    {
+      "literal": "8.84",
+      "lines": [
+        56
+      ],
+      "example_key": "crater_level_real.json.per_disc[269].median_N_hat"
+    },
+    {
+      "literal": "0.92",
+      "lines": [
+        57
+      ],
+      "example_key": "complex_grid_correlation.json.correlation_area.pooled_lag1.range"
+    },
+    {
+      "literal": "0.48",
+      "lines": [
+        57
+      ],
+      "example_key": "complex_grid_correlation.json.lag_correlation_before_boxcar.delivered_LH_enl_json.range_samples[1]"
+    },
+    {
+      "literal": "1.82",
+      "lines": [
+        57
+      ],
+      "example_key": "cpr_significance.json.joint_criterion.headline_at_cpr_0p7.joint_fp_percent"
+    },
+    {
+      "literal": "7.06",
+      "lines": [
+        57
+      ],
+      "example_key": "complex_cell_ceiling.json.per_window[2].SC.21x1"
+    },
+    {
+      "literal": "8.94",
+      "lines": [
+        57
+      ],
+      "example_key": "crater_level_real.json.per_disc[123].median_N_hat"
+    },
+    {
+      "literal": "9.20",
+      "lines": [
+        57
+      ],
+      "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
+    },
+    {
+      "literal": "9.21",
+      "lines": [
+        57
+      ],
+      "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
+    },
+    {
+      "literal": "0.99",
+      "lines": [
+        58
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[9]"
+    },
+    {
+      "literal": "1.77",
+      "lines": [
+        58
+      ],
+      "example_key": "cpr_significance.json.f2_peak_cpr.9.effective"
+    },
+    {
+      "literal": "6.51",
+      "lines": [
+        58
+      ],
+      "example_key": "crater_level_real.json.per_disc[701].median_N_hat"
+    },
+    {
+      "literal": "9.42",
+      "lines": [
+        58
+      ],
+      "example_key": "crater_level_real.json.per_disc[93].median_N_hat"
+    },
+    {
+      "literal": "9.51",
+      "lines": [
+        58
+      ],
+      "example_key": "crater_level_real.json.per_disc[217].median_N_hat"
+    },
+    {
+      "literal": "9.61",
+      "lines": [
+        58
+      ],
+      "example_key": "complex_grid_correlation.json.window_31x31.independent_samples_at_median_A"
+    },
+    {
+      "literal": "0.83",
+      "lines": [
+        59
+      ],
+      "example_key": "complex_cell_ceiling.json.summary.LH.acf_lag1_rg_abs.range[1]"
+    },
+    {
+      "literal": "0.46",
+      "lines": [
+        59
+      ],
+      "example_key": "composite_contrast.json.layers.dop_heatmap.correlation[0]"
+    },
+    {
+      "literal": "2.19",
+      "lines": [
+        59
+      ],
+      "example_key": "calibration_example.json.run_info.numpy:str"
+    },
+    {
+      "literal": "7.19",
+      "lines": [
+        59
+      ],
+      "example_key": "complex_cell_ceiling.json.check_21x1_vs_mechanism_spec.mechanism_spec_range[1]"
+    },
+    {
+      "literal": "8.11",
+      "lines": [
+        59
+      ],
+      "example_key": "crater_level_real.json.per_disc[326].median_N_hat"
+    },
+    {
+      "literal": "7.49",
+      "lines": [
+        59,
+        84
+      ],
+      "example_key": "crater_level_real.json.per_disc[281].median_N_hat"
+    },
+    {
+      "literal": "9.12",
+      "lines": [
+        59,
+        84
+      ],
+      "example_key": "crater_level_real.json.per_disc[51].median_N_hat"
+    },
+    {
+      "literal": "1.12",
+      "lines": [
+        60
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[6]"
+    },
+    {
+      "literal": "0.59",
+      "lines": [
+        60
+      ],
+      "example_key": "composite_contrast.json.layers.dem_elevation.retention[0]"
+    },
+    {
+      "literal": "1.88",
+      "lines": [
+        60
+      ],
+      "example_key": "composite_contrast.json.layers.cpr_heatmap.retention[0]"
+    },
+    {
+      "literal": "7.33",
+      "lines": [
+        60
+      ],
+      "example_key": "crater_level_real.json.per_disc[9].median_N_hat"
+    },
+    {
+      "literal": "8.80",
+      "lines": [
+        60
+      ],
+      "example_key": "crater_level_real.json.per_disc[514].median_N_hat"
+    },
+    {
+      "literal": "8.85",
+      "lines": [
+        60
+      ],
+      "example_key": "crater_level_real.json.per_disc[269].median_N_hat"
+    },
+    {
+      "literal": "9.03",
+      "lines": [
+        60
+      ],
+      "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
+    },
+    {
+      "literal": "1.00",
+      "lines": [
+        61
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[0]"
+    },
+    {
+      "literal": "0.53",
+      "lines": [
+        61
+      ],
+      "example_key": "composite_contrast.json.layers.dem_elevation.retention[2]"
+    },
+    {
+      "literal": "1.85",
+      "lines": [
+        61
+      ],
+      "example_key": "crater_level_real.json.per_disc[559].median_N_hat"
+    },
+    {
+      "literal": "7.00",
+      "lines": [
+        61
+      ],
+      "example_key": "complex_cell_ceiling.json.per_window[1].SC.21x1"
+    },
+    {
+      "literal": "8.71",
+      "lines": [
+        61
+      ],
+      "example_key": "crater_level_real.json.per_disc[1491].median_N_hat"
+    },
+    {
+      "literal": "9.02",
+      "lines": [
+        61
+      ],
+      "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
+    },
+    {
+      "literal": "9.25",
+      "lines": [
+        61
+      ],
+      "example_key": "crater_level_real.json.per_disc[244].median_N_hat"
+    },
+    {
+      "literal": "1.04",
+      "lines": [
+        62
+      ],
+      "example_key": "enl_interval_validation.json.rows[10].coverage.parametric_neyman.90.median_width"
+    },
+    {
+      "literal": "0.56",
+      "lines": [
+        62
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[2]"
+    },
+    {
+      "literal": "1.93",
+      "lines": [
+        62
+      ],
+      "example_key": "decision_rule.json.rows.A[19].oracle.dop_test.percent"
+    },
+    {
+      "literal": "7.95",
+      "lines": [
+        62
+      ],
+      "example_key": "crater_level_real.json.per_disc[589].median_N_hat"
+    },
+    {
+      "literal": "8.49",
+      "lines": [
+        62
+      ],
+      "example_key": "crater_level_real.json.per_disc[303].median_N_hat"
+    },
+    {
+      "literal": "8.59",
+      "lines": [
+        62
+      ],
+      "example_key": "crater_level_real.json.per_disc[67].median_N_hat"
+    },
+    {
+      "literal": "8.67",
+      "lines": [
+        62
+      ],
+      "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[34]"
+    },
+    {
+      "literal": "8.75",
+      "lines": [
+        64,
+        70
+      ],
+      "example_key": "crater_level_real.json.per_disc[514].median_N_hat"
+    },
+    {
+      "literal": "9.08",
+      "lines": [
+        64,
+        70
+      ],
+      "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
+    },
+    {
+      "literal": "9.17",
+      "lines": [
+        64,
+        70
+      ],
+      "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
+    },
+    {
+      "literal": "3.8",
+      "lines": [
+        80
+      ],
+      "example_key": "crater_level_real.json.per_disc[960].median_N_hat"
+    },
+    {
+      "literal": "0.15",
+      "lines": [
+        81
+      ],
+      "example_key": "antialias_sigma.json.sigmas[3]"
+    },
+    {
+      "literal": "6.7",
+      "lines": [
+        97
+      ],
+      "example_key": "crater_level_real.json.per_disc[8].median_N_hat"
+    },
+    {
+      "literal": "14.8",
+      "lines": [
+        98
+      ],
+      "example_key": "complex_cell_ceiling.json.summary.LV.21x5.median"
+    }
+  ]
+}

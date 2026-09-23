@@ -435,6 +435,34 @@ def main() -> int:
                           f"{sb['max_ratio_to_null_same_dop']:.4f}")
             print(f"  arm {arm}: size first > 5 % at N = {new['first_N_size_exceeds_5pct']}, "
                   f"within 2 SE of 5 % at N = {new['first_N_size_within_2se_of_5pct']}")
+        # v17a: below the N where the size passes 5 %, how far the strict-band
+        # rate strays from the size; and where the strict-band maximum first
+        # passes the NP bound (np_power_bound.json), on the grid both share
+        a = doc["summary"]["A"]
+        for r in a["by_N"]:
+            sb = r["strict_band"]
+            sb["max_abs_diff_to_size_points"] = max(abs(sb["power_max_percent"] - r["size_percent"]),
+                                                    abs(sb["power_min_percent"] - r["size_percent"]))
+        below = [r for r in a["by_N"] if r["N"] < a["first_N_size_exceeds_5pct"]]
+        a["strict_band_max_abs_diff_to_size_below_first_5pct"] = {
+            "N_max": max(r["N"] for r in below),
+            "points": max(r["strict_band"]["max_abs_diff_to_size_points"] for r in below)}
+        nbp = BASE_DIR / "docs" / "np_power_bound.json"
+        if nbp.is_file():
+            bc = {c["N"]: c["bound_percent"] for c in json.loads(nbp.read_text(encoding="utf-8"))["curve"]}
+            shared = [r for r in a["by_N"] if float(r["N"]) in bc]
+            first = next((i for i, r in enumerate(shared)
+                          if r["strict_band"]["power_max_percent"] > bc[float(r["N"])]), None)
+            a["strict_band_max_first_exceeds_np_bound"] = (
+                {"between_N": [shared[first - 1]["N"], shared[first]["N"]],
+                 "at_lower": {"rule": shared[first - 1]["strict_band"]["power_max_percent"],
+                              "bound": bc[float(shared[first - 1]["N"])]},
+                 "at_upper": {"rule": shared[first]["strict_band"]["power_max_percent"],
+                              "bound": bc[float(shared[first]["N"])]}}
+                if first else None)
+        print(f"  arm A: strict band within {a['strict_band_max_abs_diff_to_size_below_first_5pct']['points']:.3f} "
+              f"points of the size below N = {a['first_N_size_exceeds_5pct']}; first above the NP bound "
+              f"between N = {(a.get('strict_band_max_first_exceeds_np_bound') or {}).get('between_N')}")
         doc["definitions"]["strict_band"] = ("in-band populations with population DOP < 0.13 only "
                                              "(drops 'DOP 0.13' and 'CPR 1.299 DOP min 0.1301')")
         doc["run_info_strict_summary"] = run_info()

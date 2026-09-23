@@ -217,10 +217,29 @@ def main() -> int:
     total_bad += bad3
 
     # ---------------- Table III (Mini-RF inversions; was Table IV) --------
-    print("\n  TABLE III — 24 Mini-RF inversions and three medians (was Table IV)")
+    # v17a moved the Mini-RF check to the Supplementary Material (Table S1):
+    # when the manuscript holds no Mini-RF row, the supplement beside it is
+    # parsed instead, and which file was read is recorded.
+    def mini_rf_rows(lns):
+        return [ln for ln in lns if len(cells(ln)) == 8 and num(cells(ln)[1]) is not None
+                and cells(ln)[0] and not cells(ln)[0].startswith("Crater")]
+    lines4, table_source = lines, args.tex
+    if not mini_rf_rows(lines):
+        supp = (BASE_DIR / args.tex).with_name("dfsar_detection_limits_supplement.tex")
+        if supp.is_file():
+            raw_s = [re.sub(r"(?<!\\)%.*", "", ln) for ln in supp.read_text(
+                encoding="utf-8", errors="replace").splitlines()]
+            lines4, buf = [], ""
+            for ln in raw_s:
+                buf = (buf + " " + ln).strip() if buf else ln
+                if r"\\" in buf or "&" not in buf:
+                    lines4.append(buf)
+                    buf = ""
+            table_source = supp.relative_to(BASE_DIR).as_posix()
+    print(f"\n  TABLE III / S1 — 24 Mini-RF inversions and three medians, from {table_source}")
     rows4, bad4 = [], 0
     n_sd, n_sk, n_ku = [], [], []
-    for ln in lines:
+    for ln in lines4:
         c = cells(ln)
         if len(c) != 8 or num(c[1]) is None or not c[0] or c[0].startswith("Crater"):
             continue
@@ -246,7 +265,7 @@ def main() -> int:
     meds = {"N_sigma": statistics.median(n_sd), "N_gamma1": statistics.median(n_sk),
             "N_gamma2": statistics.median(n_ku)}
     printed_meds = None
-    for ln in lines:
+    for ln in lines4:
         if ln.strip().startswith("median"):
             got = [num(x) for x in cells(ln) if num(x) is not None]
             if len(got) == 3:
@@ -262,7 +281,7 @@ def main() -> int:
     print(f"    {len(rows4)} cells ({len(n_sd)} craters x 3 + 3 medians); "
           f"{len(rows4) - bad4} match, {bad4} differ")
     report["tables"]["III_published_moments"] = {"cells": rows4, "differ": bad4,
-                                                "craters": len(n_sd)}
+                                                "craters": len(n_sd), "parsed_from": table_source}
     total_bad += bad4
 
     report["total_cells"] = len(rows2) + len(rows3) + len(rows4)

@@ -3,7 +3,8 @@ assert_council_anchors.py -- G33. The council work order's analyses reproduce
 the anchors they were built on.
 
     python backend/scripts/assert_council_anchors.py
-        [--inject size|significant|fwe|perpixel|bound|monotone|iut|mc|v3|ceiling]
+        [--inject size|significant|fwe|perpixel|bound|monotone|iut|mc|v3|ceiling|
+                  design_bound|design_size|design_pool]
 
 The work order named two gates, and each is checked here from its artifact
 rather than trusted from the run that wrote it:
@@ -37,6 +38,17 @@ The final pass (v14 work order) adds:
     * the 21 x 1 participation ratio from the 2-D spectrum reproduces
       mechanism_spec.json's 1-D 7.13 within 0.1: the same spectrum, read twice.
 
+The v17a pre-submission pass adds:
+
+  P1 (region_design_curve.json)
+    * the IUT's power is non-decreasing in N_eff (within two combined SEs)
+      and never exceeds the NP bound at the same alternative and N_eff (by
+      more than two SEs); its size at every null point and N_eff is at most
+      5 % + 2 SE; pooled cells reproduce the single cell at K N within 3 SE.
+      Each reads the conditioned estimate where the artifact has one (an
+      exactly known component times a simulated conditional), else the
+      plain frequency.
+
 Each check is recomputed from the stored cells, not read from the artifact's
 own gate verdict.
 """
@@ -67,7 +79,8 @@ def load(rel):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--inject", choices=("size", "significant", "fwe", "perpixel", "bound",
-                                         "monotone", "iut", "mc", "v3", "ceiling"))
+                                         "monotone", "iut", "mc", "v3", "ceiling", "design_bound",
+                                         "design_size", "design_pool"))
     args = ap.parse_args()
     print("=" * 78)
     print("G33 — the council analyses reproduce their anchors")
@@ -214,6 +227,45 @@ def main() -> int:
         if not ok:
             bad.append("the 2-D spectrum does not reproduce mechanism_spec's 21-sample ratio")
 
+    # ---- P1: the region-level design curve --------------------------------
+    rd = load("docs/region_design_curve.json")
+    if rd is None:
+        bad.append("region_design_curve.json is absent")
+    else:
+        def best(x):
+            return x.get("conditioned", x)
+        ns = rd["N_eff_grid"]
+        mono_bad, over, big = [], [], []
+        for lab, rows in rd["iut_power"].items():
+            b = [best(r) for r in rows]
+            for i in range(len(b) - 1):
+                if b[i + 1]["percent"] < b[i]["percent"] - 2 * np.hypot(b[i + 1]["mc_se_percent"],
+                                                                        b[i]["mc_se_percent"]):
+                    mono_bad.append((lab, ns[i + 1]))
+            for j, r in enumerate(b):
+                pw = r["percent"] + (50.0 if args.inject == "design_bound" and j == 0 else 0.0)
+                if pw - 2 * r["mc_se_percent"] > rd["np_bound_percent"][lab][j] + 1e-6:
+                    over.append((lab, ns[j], pw, rd["np_bound_percent"][lab][j]))
+        for lab, rows in rd["iut_size_at_nulls"].items():
+            for j, r in enumerate(rows):
+                sz = best(r)["percent"] + (1.0 if args.inject == "design_size" else 0.0)
+                if sz > 5.0 + 2 * best(r)["mc_se_percent"]:
+                    big.append((lab, ns[j], sz))
+        zs = [abs(r["iut_z"]) + (10.0 if args.inject == "design_pool" else 0.0)
+              for r in rd["pooling"]["rows"]]
+        print(f"  P1: power non-decreasing -> {'ok' if not mono_bad else 'FAIL'}; IUT above the NP "
+              f"bound: {len(over)} -> {'ok' if not over else 'FAIL'}; size above 5 % + 2 SE: {len(big)} "
+              f"-> {'ok' if not big else 'FAIL'}; pooled vs K N max |z| {max(zs):.2f} -> "
+              f"{'ok' if max(zs) < 3 else 'FAIL'}")
+        if mono_bad:
+            bad.append(f"design-curve power decreases at {mono_bad[:2]}")
+        if over:
+            bad.append(f"design-curve IUT power exceeds the NP bound at {over[:2]}")
+        if big:
+            bad.append(f"design-curve IUT size exceeds 5 % + 2 SE at {big[:2]}")
+        if max(zs) >= 3:
+            bad.append("pooled cells do not reproduce the single cell at K N")
+
     if bad:
         print("\n  GATE FAIL —")
         for b in bad:
@@ -222,7 +274,8 @@ def main() -> int:
     print("\n  GATE PASS — Task 1 reproduces the size at N = 14 and has no significant joint")
     print("  selection below N = 79.6 in any arm; Task 4 reproduces 86.3 % and 7.76 %;")
     print("  the NP bound is >= 5 %, monotone, above every IUT power and matches its MC")
-    print("  check; complex_field_v3 reproduces v2; the 2-D spectrum reproduces 7.13.")
+    print("  check; complex_field_v3 reproduces v2; the 2-D spectrum reproduces 7.13;")
+    print("  the region design curve is monotone, under the NP bound, and of size 5 %.")
     return 0
 
 

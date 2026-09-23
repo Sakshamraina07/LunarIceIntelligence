@@ -103,6 +103,10 @@ def main() -> int:
                 print(f"  skip {f}: {exc}", file=sys.stderr)
 
     tex_path = BASE_DIR / args.tex
+    global OUT
+    if "supplement" in tex_path.name:
+        # v17a: the supplement's cross-check is written beside the main one
+        OUT = OUT.with_name("number_crosscheck_supplement.json")
     if not tex_path.is_file():
         print(f"  MANUSCRIPT NOT FOUND: {tex_path}")
         return 1

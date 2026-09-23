@@ -200,5 +200,30 @@
       "enl_boxcar5": 19.76772534356128,
       "gain": 3.844904630548288
     }
+  },
+  "log_cumulant_enl": {
+    "method": "Anfinsen et al. 2009 log-cumulant: L = psi_1^-1(Var(ln I)) per patch, I = DN^2; the same 16 x 16 patches and mask as boxcar_gain.enl_raw (both channels DN > 0, eroded by the 5 x 5 boxcar half-width)",
+    "patch_px": 16,
+    "mask_pixels": 2294084,
+    "LH": {
+      "patches": 8337,
+      "median": 5.720272188024125,
+      "iqr": [
+        4.220464085856675,
+        7.429113945612166
+      ],
+      "mode": 5.73046275113494,
+      "moment_mode_for_comparison": 5.827582742508031
+    },
+    "LV": {
+      "patches": 8337,
+      "median": 5.757342822151366,
+      "iqr": [
+        4.263442427301068,
+        7.471962652906204
+      ],
+      "mode": 6.164538252330698,
+      "moment_mode_for_comparison": 5.141278456298767
+    }
   }
 }

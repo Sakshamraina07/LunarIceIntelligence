@@ -1713,5 +1713,37 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "complex_field_v3_summary": {
+    "delivered_N39_looks": 11,
+    "delivered_N39_achieved_enl": 40.53783198875904,
+    "delivered_N13p72_achieved_enl": 15.983061958083857,
+    "first_run_L4_enl": 14.501081761670315,
+    "null_N39_rule_ge1_percent": 99.08,
+    "null_N39_rule_ge5_percent": 94.24,
+    "null_N39_crit_at_achieved": 1.4441252960040367,
+    "null_N39_cpr_only_ge1_percent": 88.06,
+    "null_N39_cpr_only_at_1p895_percent": 31.05,
+    "null_N13p72_rule_ge1_percent": 87.88,
+    "null_N13p72_rule_ge5_percent": 48.86,
+    "v2_rule_ge1_percent": 88.24,
+    "v2_rule_ge5_percent": 49.309999999999995,
+    "cpr0p7_rule_ge1_percent": {
+      "min": 65.74,
+      "max": 72.77
+    },
+    "cpr0p9_rule_ge1_percent": {
+      "min": 74.22999999999999,
+      "max": 97.15
+    },
+    "null_rule_ge1_percent_both_counts": {
+      "min": 87.88,
+      "max": 99.08
+    },
+    "complex_lags_lift_points": {
+      "min": 0.10999999999999943,
+      "max": 5.940000000000012
+    },
+    "populations_and_counts": "delivered lags; ice-free rows over both look counts (13.72 and ~39)"
   }
 }

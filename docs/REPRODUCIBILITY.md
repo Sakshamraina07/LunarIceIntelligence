@@ -482,3 +482,34 @@ decision_rule.json's populations) → `f2_maximum.py --only-v3` →
 `cd paper && python make_figures_v12.py`. The existing rows of
 decision_rule.json reproduce draw for draw (the new window draws from its own
 generator), which was checked against the previous file before commit.
+
+## 20 · Pre-submission pass on v17a (2026-09-24)
+
+The analyses of METHODS §17, answering the referee report on v16.1. Every
+artifact records its seed (or that it draws none), generator and `run_info`;
+every simulated rate carries its Monte Carlo standard error. The SLI bundles'
+geolocation tie-point grids (`geometry/…/*_g_sli_xx_cp_xx_d18.csv`) and the
+LOLA PSR mask are read in place; nothing under `data/` is committed. The figure
+cache `data/derived/fig_scene/fig_scene_cache.npz` is derived from ISRO rasters
+and stays under the gitignored `data/`; only `paper/fig_scene.pdf` is committed.
+
+| item | artifact | command | seed | trials | wall (s) | peak (MB) |
+|---|---|---|---|---|---|---|
+| P1 | `region_design_curve.json` | `python backend/scripts/region_design_curve.py` | 20261008 | 2 x 10^5 per (N_eff, population); q05 10^6 per N | 43 | 256 |
+| P2 | `f2_complex_product.json` | `python backend/scripts/f2_complex_product.py` | none (P2 draws nothing) | - | 2157 | 3140 |
+| P3 | `crater_level_real.json` | `(same run)` | 20261009 | 10^4 (median population); 40 per disc x 1331 discs (mixture) | 2157 | 3140 |
+| P4 | `paper/fig_scene.pdf` | `cd paper && python make_fig_scene.py` | - | - | - | - |
+| P6 | `enl.json::log_cumulant_enl` | `python backend/scripts/measure_enl.py --log-cumulant-only` | - | - | - | - |
+| P7 | `handedness.json` | `python backend/scripts/handedness.py` | none | - | 43 | 2924 |
+| P8 | `joint_power_curve.json (strict-band keys)` | `python backend/scripts/dop_sampling_bias.py --strict-summary` | - (no draws) | - | - | - |
+| P8 | `f2_maximum.json::complex_field_v3_summary` | `python backend/scripts/f2_maximum.py --v3-summary` | - (no draws) | - | - | - |
+| P8 | `np_power_bound.json::grids.numeric` | `python backend/scripts/np_power_bound.py --grid-keys` | - (no draws) | - | - | - |
+| P8 | `tail_calibration_ci.json (reference_distribution)` | `python backend/scripts/tail_calibration_ci.py` | 20261004 | B = 10^4 (results unchanged) | 3 | 245 |
+
+Order: `f2_complex_product.py` (P2, P3 and the figure cache) → `region_design_curve.py`
+(reads F2's cell count from P2 for its translation) → `cd paper && python make_fig_scene.py`.
+The audit now takes the supplement: `python backend/scripts/audit_manuscript_numbers.py --tex
+"Claude outputs/grsl/dfsar_detection_limits_supplement.tex"` writes
+`docs/manuscript_number_audit_supplement.json` (row set `SUPPLEMENT_AUDIT`), and
+`number_crosscheck.py` writes `docs/number_crosscheck_supplement.json`. G32 reads the
+Mini-RF table from the supplement when the manuscript no longer carries it.

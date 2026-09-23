@@ -1,0 +1,1031 @@
+{
+  "schema": "lunar-ice/manuscript-audit/1",
+  "generated_utc": "2026-09-23T19:00:20.816946+00:00",
+  "computed_by": "backend/scripts/audit_manuscript_numbers.py",
+  "manuscript": "Claude outputs/grsl/dfsar_detection_limits_supplement.tex",
+  "row_set": "SUPPLEMENT_AUDIT",
+  "manuscript_is_read_only": true,
+  "n_audited": 68,
+  "counts": {
+    "PASS": 68,
+    "MISMATCH": 0,
+    "NO SOURCE": 0,
+    "ABSENT": 0
+  },
+  "rows": [
+    {
+      "id": "g2_hermite",
+      "printed": "6.12",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].excess_kurtosis",
+      "artifact_value": 6.12,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "transcribed from Fa & Cai Table 1",
+      "tex_lines": [
+        55
+      ]
+    },
+    {
+      "id": "g2_rozh",
+      "printed": "7.66",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].excess_kurtosis",
+      "artifact_value": 7.66,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        56
+      ]
+    },
+    {
+      "id": "g2_main",
+      "printed": "7.06",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].excess_kurtosis",
+      "artifact_value": 7.06,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        57
+      ]
+    },
+    {
+      "id": "g2_schom",
+      "printed": "6.51",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].excess_kurtosis",
+      "artifact_value": 6.51,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        58
+      ]
+    },
+    {
+      "id": "g2_card",
+      "printed": "7.19",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].excess_kurtosis",
+      "artifact_value": 7.19,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        59
+      ]
+    },
+    {
+      "id": "g2_byrg",
+      "printed": "7.33",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].excess_kurtosis",
+      "artifact_value": 7.33,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        60
+      ]
+    },
+    {
+      "id": "g2_doll",
+      "printed": "7.00",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].excess_kurtosis",
+      "artifact_value": 7.0,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        61
+      ]
+    },
+    {
+      "id": "g2_stev",
+      "printed": "7.95",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].excess_kurtosis",
+      "artifact_value": 7.95,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        62
+      ]
+    },
+    {
+      "id": "n_hermite_sd",
+      "printed": "9.11",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].N_from_dispersion",
+      "artifact_value": 9.114264887117828,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        55
+      ]
+    },
+    {
+      "id": "n_hermite_g1",
+      "printed": "9.65",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].N_from_skewness",
+      "artifact_value": 9.647089771188682,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        55
+      ]
+    },
+    {
+      "id": "n_hermite_g2",
+      "printed": "9.94",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].N_from_kurtosis",
+      "artifact_value": 9.944362801050335,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        55
+      ]
+    },
+    {
+      "id": "n_card_g1",
+      "printed": "7.49",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].N_from_skewness",
+      "artifact_value": 7.489350335857476,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "the widest per-crater spread",
+      "tex_lines": [
+        59,
+        84
+      ]
+    },
+    {
+      "id": "n_card_g2",
+      "printed": "9.12",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].N_from_kurtosis",
+      "artifact_value": 9.124595928335898,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        59,
+        84
+      ]
+    },
+    {
+      "id": "pm_spread",
+      "printed": "3.8",
+      "artifact": "docs/published_moments.json",
+      "key": "agreement_sd_vs_skew_percent_from_printed_medians",
+      "artifact_value": 3.7714285714285722,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "from the printed medians; from the unrounded ones it is 3.7",
+      "tex_lines": [
+        80
+      ]
+    },
+    {
+      "id": "lit_unique",
+      "printed": "34",
+      "artifact": "docs/literature_search.json",
+      "key": "counts.unique",
+      "artifact_value": 34.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        110
+      ]
+    },
+    {
+      "id": "minirf_zoom_cdr",
+      "printed": "14.8",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.zoom.cdr_pixel_spacing_m",
+      "artifact_value": 14.8,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "the product Fa & Cai analysed",
+      "tex_lines": [
+        98
+      ]
+    },
+    {
+      "id": "lit_excluded",
+      "printed": "9",
+      "artifact": "docs/literature_search.json",
+      "key": "counts.excluded",
+      "artifact_value": 9.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        64,
+        70,
+        84,
+        110,
+        121
+      ]
+    },
+    {
+      "id": "lit_fulltext",
+      "printed": "14",
+      "artifact": "docs/literature_screen.json",
+      "key": "counts.access.full_text",
+      "artifact_value": 14.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "after the 2026-09-16 re-screen",
+      "tex_lines": [
+        98,
+        111
+      ]
+    },
+    {
+      "id": "lit_abstract",
+      "printed": "11",
+      "artifact": "docs/literature_screen.json",
+      "key": "counts.access.abstract_only",
+      "artifact_value": 11.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": null,
+      "tex_lines": [
+        112,
+        116
+      ]
+    },
+    {
+      "id": "pm_med_sigma",
+      "printed": "8.75",
+      "artifact": "docs/published_moments.json",
+      "key": "median_N_from_dispersion",
+      "artifact_value": 8.754410943745066,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        64,
+        70
+      ]
+    },
+    {
+      "id": "pm_med_skew",
+      "printed": "9.08",
+      "artifact": "docs/published_moments.json",
+      "key": "median_N_from_skewness",
+      "artifact_value": 9.080159732247314,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        64,
+        70
+      ]
+    },
+    {
+      "id": "pm_med_kurt",
+      "printed": "9.17",
+      "artifact": "docs/published_moments.json",
+      "key": "median_N_from_kurtosis",
+      "artifact_value": 9.167870398335886,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": null,
+      "tex_lines": [
+        64,
+        70
+      ]
+    },
+    {
+      "id": "minirf_zoom_looks",
+      "printed": "8",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.zoom.nominal_looks",
+      "artifact_value": 8.0,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        37,
+        46,
+        56,
+        57,
+        59,
+        60,
+        61,
+        62,
+        64,
+        70,
+        71,
+        125
+      ]
+    },
+    {
+      "id": "minirf_effective",
+      "printed": "6.7",
+      "artifact": "docs/published_moments.json",
+      "key": "mode_table.effective_looks_reported.value",
+      "artifact_value": 6.7,
+      "verdict": "PASS",
+      "section": "VI",
+      "note": "Spudis et al. 2013, attributed to unpublished analysis",
+      "tex_lines": [
+        97
+      ]
+    },
+    {
+      "id": "lit_relevant",
+      "printed": "25",
+      "artifact": "docs/literature_search.json",
+      "key": "counts.relevant",
+      "artifact_value": 25.0,
+      "verdict": "PASS",
+      "section": "VIII",
+      "note": "presence check only; small integer",
+      "tex_lines": [
+        111,
+        112,
+        117
+      ]
+    },
+    {
+      "id": "s1_0_mu",
+      "printed": "0.97",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].mu",
+      "artifact_value": 0.97,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Hermite B",
+      "tex_lines": [
+        55
+      ]
+    },
+    {
+      "id": "s1_0_sd",
+      "printed": "0.50",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].sigma",
+      "artifact_value": 0.5,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Hermite B",
+      "tex_lines": [
+        55,
+        56,
+        58
+      ]
+    },
+    {
+      "id": "s1_0_g1",
+      "printed": "1.75",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[0].skewness",
+      "artifact_value": 1.75,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Hermite B",
+      "tex_lines": [
+        55
+      ]
+    },
+    {
+      "id": "s1_1_mu",
+      "printed": "0.93",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].mu",
+      "artifact_value": 0.93,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Rozhdestvenskiy N",
+      "tex_lines": [
+        56
+      ]
+    },
+    {
+      "id": "s1_1_sd",
+      "printed": "0.50",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].sigma",
+      "artifact_value": 0.5,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Rozhdestvenskiy N",
+      "tex_lines": [
+        55,
+        56,
+        58
+      ]
+    },
+    {
+      "id": "s1_1_g1",
+      "printed": "1.83",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].skewness",
+      "artifact_value": 1.83,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Rozhdestvenskiy N",
+      "tex_lines": [
+        56
+      ]
+    },
+    {
+      "id": "s1_1_nsd",
+      "printed": "8.51",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].N_from_dispersion",
+      "artifact_value": 8.51280023684989,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Rozhdestvenskiy N",
+      "tex_lines": [
+        56
+      ]
+    },
+    {
+      "id": "s1_1_ng1",
+      "printed": "9.14",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].N_from_skewness",
+      "artifact_value": 9.138683896433891,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Rozhdestvenskiy N",
+      "tex_lines": [
+        56
+      ]
+    },
+    {
+      "id": "s1_1_ng2",
+      "printed": "8.84",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[1].N_from_kurtosis",
+      "artifact_value": 8.835770471097803,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Rozhdestvenskiy N",
+      "tex_lines": [
+        56
+      ]
+    },
+    {
+      "id": "s1_2_mu",
+      "printed": "0.92",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].mu",
+      "artifact_value": 0.92,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Main L",
+      "tex_lines": [
+        57
+      ]
+    },
+    {
+      "id": "s1_2_sd",
+      "printed": "0.48",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].sigma",
+      "artifact_value": 0.48,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Main L",
+      "tex_lines": [
+        57
+      ]
+    },
+    {
+      "id": "s1_2_g1",
+      "printed": "1.82",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].skewness",
+      "artifact_value": 1.82,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Main L",
+      "tex_lines": [
+        57
+      ]
+    },
+    {
+      "id": "s1_2_nsd",
+      "printed": "8.94",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].N_from_dispersion",
+      "artifact_value": 8.936125592821424,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Main L",
+      "tex_lines": [
+        57
+      ]
+    },
+    {
+      "id": "s1_2_ng1",
+      "printed": "9.20",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].N_from_skewness",
+      "artifact_value": 9.198638756170414,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Main L",
+      "tex_lines": [
+        57
+      ]
+    },
+    {
+      "id": "s1_2_ng2",
+      "printed": "9.21",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[2].N_from_kurtosis",
+      "artifact_value": 9.211144868335872,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Main L",
+      "tex_lines": [
+        57
+      ]
+    },
+    {
+      "id": "s1_3_mu",
+      "printed": "0.99",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].mu",
+      "artifact_value": 0.99,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Schomberger A",
+      "tex_lines": [
+        58
+      ]
+    },
+    {
+      "id": "s1_3_sd",
+      "printed": "0.50",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].sigma",
+      "artifact_value": 0.5,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Schomberger A",
+      "tex_lines": [
+        55,
+        56,
+        58
+      ]
+    },
+    {
+      "id": "s1_3_g1",
+      "printed": "1.77",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].skewness",
+      "artifact_value": 1.77,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Schomberger A",
+      "tex_lines": [
+        58
+      ]
+    },
+    {
+      "id": "s1_3_nsd",
+      "printed": "9.42",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].N_from_dispersion",
+      "artifact_value": 9.424835165478576,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Schomberger A",
+      "tex_lines": [
+        58
+      ]
+    },
+    {
+      "id": "s1_3_ng1",
+      "printed": "9.51",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].N_from_skewness",
+      "artifact_value": 9.513590607376054,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Schomberger A",
+      "tex_lines": [
+        58
+      ]
+    },
+    {
+      "id": "s1_3_ng2",
+      "printed": "9.61",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[3].N_from_kurtosis",
+      "artifact_value": 9.614867491485715,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Schomberger A",
+      "tex_lines": [
+        58
+      ]
+    },
+    {
+      "id": "s1_4_mu",
+      "printed": "0.83",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].mu",
+      "artifact_value": 0.83,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Cardanus E",
+      "tex_lines": [
+        59
+      ]
+    },
+    {
+      "id": "s1_4_sd",
+      "printed": "0.46",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].sigma",
+      "artifact_value": 0.46,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Cardanus E",
+      "tex_lines": [
+        59
+      ]
+    },
+    {
+      "id": "s1_4_g1",
+      "printed": "2.19",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].skewness",
+      "artifact_value": 2.19,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Cardanus E",
+      "tex_lines": [
+        59
+      ]
+    },
+    {
+      "id": "s1_4_nsd",
+      "printed": "8.11",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[4].N_from_dispersion",
+      "artifact_value": 8.109898009381661,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Cardanus E",
+      "tex_lines": [
+        59
+      ]
+    },
+    {
+      "id": "s1_5_mu",
+      "printed": "1.12",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].mu",
+      "artifact_value": 1.12,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Byrgius C",
+      "tex_lines": [
+        60
+      ]
+    },
+    {
+      "id": "s1_5_sd",
+      "printed": "0.59",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].sigma",
+      "artifact_value": 0.59,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Byrgius C",
+      "tex_lines": [
+        60
+      ]
+    },
+    {
+      "id": "s1_5_g1",
+      "printed": "1.88",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].skewness",
+      "artifact_value": 1.88,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Byrgius C",
+      "tex_lines": [
+        60
+      ]
+    },
+    {
+      "id": "s1_5_nsd",
+      "printed": "8.80",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].N_from_dispersion",
+      "artifact_value": 8.797512920085268,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Byrgius C",
+      "tex_lines": [
+        60
+      ]
+    },
+    {
+      "id": "s1_5_ng1",
+      "printed": "8.85",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].N_from_skewness",
+      "artifact_value": 8.852913832491248,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Byrgius C",
+      "tex_lines": [
+        60
+      ]
+    },
+    {
+      "id": "s1_5_ng2",
+      "printed": "9.03",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[5].N_from_kurtosis",
+      "artifact_value": 9.034762080339164,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Byrgius C",
+      "tex_lines": [
+        60
+      ]
+    },
+    {
+      "id": "s1_6_mu",
+      "printed": "1.00",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].mu",
+      "artifact_value": 1.0,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Dollond E",
+      "tex_lines": [
+        61
+      ]
+    },
+    {
+      "id": "s1_6_sd",
+      "printed": "0.53",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].sigma",
+      "artifact_value": 0.53,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Dollond E",
+      "tex_lines": [
+        61
+      ]
+    },
+    {
+      "id": "s1_6_g1",
+      "printed": "1.85",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].skewness",
+      "artifact_value": 1.85,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Dollond E",
+      "tex_lines": [
+        61
+      ]
+    },
+    {
+      "id": "s1_6_nsd",
+      "printed": "8.71",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].N_from_dispersion",
+      "artifact_value": 8.711308967404864,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Dollond E",
+      "tex_lines": [
+        61
+      ]
+    },
+    {
+      "id": "s1_6_ng1",
+      "printed": "9.02",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].N_from_skewness",
+      "artifact_value": 9.021635568060736,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Dollond E",
+      "tex_lines": [
+        61
+      ]
+    },
+    {
+      "id": "s1_6_ng2",
+      "printed": "9.25",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[6].N_from_kurtosis",
+      "artifact_value": 9.252155432026901,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Dollond E",
+      "tex_lines": [
+        61
+      ]
+    },
+    {
+      "id": "s1_7_mu",
+      "printed": "1.04",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].mu",
+      "artifact_value": 1.04,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Stevinus A",
+      "tex_lines": [
+        62
+      ]
+    },
+    {
+      "id": "s1_7_sd",
+      "printed": "0.56",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].sigma",
+      "artifact_value": 0.56,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Stevinus A",
+      "tex_lines": [
+        62
+      ]
+    },
+    {
+      "id": "s1_7_g1",
+      "printed": "1.93",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].skewness",
+      "artifact_value": 1.93,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Stevinus A",
+      "tex_lines": [
+        62
+      ]
+    },
+    {
+      "id": "s1_7_nsd",
+      "printed": "8.49",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].N_from_dispersion",
+      "artifact_value": 8.491805313623786,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Stevinus A",
+      "tex_lines": [
+        62
+      ]
+    },
+    {
+      "id": "s1_7_ng1",
+      "printed": "8.59",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].N_from_skewness",
+      "artifact_value": 8.588729353268144,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Stevinus A",
+      "tex_lines": [
+        62
+      ]
+    },
+    {
+      "id": "s1_7_ng2",
+      "printed": "8.67",
+      "artifact": "docs/published_moments.json",
+      "key": "craters[7].N_from_kurtosis",
+      "artifact_value": 8.67428317933435,
+      "verdict": "PASS",
+      "section": "S-I",
+      "note": "Stevinus A",
+      "tex_lines": [
+        62
+      ]
+    }
+  ],
+  "derived_checks_failed": [],
+  "quantified": {
+    "rows": [
+      {
+        "id": "q_lit_one_of_25",
+        "anchor": "none reports one for a DFSAR product",
+        "verdict": "PASS",
+        "section": "VIII",
+        "note": "exactly one record reports a measured ENL, and it is Spudis et al. (Mini-RF, id 2), not a DFSAR study",
+        "details": [
+          "docs/literature_screen.json::counts.claims_yes.measured_ENL_reported count: 1 elements, claim 1 -> ok",
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].measured_ENL_reported yes_only_for_id: 1 'yes' among 25 (the id is checked through counts.claims_yes) -> ok"
+        ]
+      },
+      {
+        "id": "q_lit_none_crit",
+        "anchor": "none reports a per-pixel critical value",
+        "verdict": "PASS",
+        "section": "VIII",
+        "note": null,
+        "details": [
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].critical_value_reported none_are: 25 elements; 0 are 'yes' -> ok",
+          "docs/literature_screen.json::records[?relevant_lunar_cpr_ice_study=true].exceedance_rate_reported none_are: 25 elements; 0 are 'yes' -> ok"
+        ]
+      },
+      {
+        "id": "q_cardanus_uniformly",
+        "anchor": "do not\\s+agree uniformly",
+        "verdict": "PASS",
+        "section": "VI",
+        "note": "'Cardanus E spans 7.49--9.12'",
+        "details": [
+          "docs/published_moments.json::craters[?name=Cardanus E].N_from_skewness rounds_to: 1 elements, 0 do not round to 7.49 -> ok",
+          "docs/published_moments.json::craters[?name=Cardanus E].N_from_kurtosis rounds_to: 1 elements, 0 do not round to 9.12 -> ok"
+        ]
+      }
+    ],
+    "counts": {
+      "PASS": 3,
+      "FAIL": 0,
+      "UNBACKED": 0,
+      "ABSENT": 0
+    },
+    "scan": [
+      {
+        "line": 33,
+        "word": "each",
+        "sentence": "If those distributions are speckle-dominated, the second, third and fourth moments are each invertible for $N$, although their sample estimates from the same pixels are statistically dependent: the dispersion through Eq.~(7) of the main tex",
+        "claimed_by": [
+          "EXEMPT",
+          "mathematical: F(2N,2N) moments are monotone in N"
+        ]
+      },
+      {
+        "line": 84,
+        "word": "uniformly",
+        "sentence": "The per-crater estimates do not agree uniformly (Cardanus E spans 7.49--9.12), and no uncertainty is propagated from finite samples, spatial dependence, rounded published moments or the covariance among the estimators, so the agreement carr",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_cardanus_uniformly"
+        ]
+      },
+      {
+        "line": 108,
+        "word": "all",
+        "sentence": "\\section{Literature Search} \\label{sec:litsearch} Claims of absence refer to a documented search, recorded in the repository: eight query strings combining (``circular polarization ratio'' or CPR) with lunar, radar and statistical terms, 19",
+        "claimed_by": [
+          "EXEMPT",
+          "search protocol, literature_search.json"
+        ]
+      },
+      {
+        "line": 113,
+        "word": "none",
+        "sentence": "One of the 25, \\cite{spudis2013}, reports a measured effective look count for the product it analyzes; none reports one for a DFSAR product, and none reports a per-pixel critical value at a stated look count or a noise exceedance rate for t",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_lit_none_crit"
+        ]
+      },
+      {
+        "line": 114,
+        "word": "none",
+        "sentence": "One of the 25, \\cite{spudis2013}, reports a measured effective look count for the product it analyzes; none reports one for a DFSAR product, and none reports a per-pixel critical value at a stated look count or a noise exceedance rate for t",
+        "claimed_by": [
+          "QUANTIFIED",
+          "q_lit_none_crit"
+        ]
+      }
+    ],
+    "unchecked": 0,
+    "rule": "a claim about every element is tested against every element; a median or a single row cannot pass it"
+  }
+}

@@ -28998,7 +28998,8 @@
             "power_min_percent": 0.658,
             "power_max_percent": 0.73,
             "max_ratio_to_null_same_dop": 1.1344631095981648,
-            "max_excess_over_null_same_dop_percent": 13.446310959816476
+            "max_excess_over_null_same_dop_percent": 13.446310959816476,
+            "max_abs_diff_to_size_points": 0.05599999999999994
           },
           "joint_and_significant_count": 0
         },
@@ -29085,7 +29086,8 @@
             "power_min_percent": 1.467,
             "power_max_percent": 1.585,
             "max_ratio_to_null_same_dop": 1.1031539163299882,
-            "max_excess_over_null_same_dop_percent": 10.315391632998816
+            "max_excess_over_null_same_dop_percent": 10.315391632998816,
+            "max_abs_diff_to_size_points": 0.09499999999999997
           },
           "joint_and_significant_count": 0
         },
@@ -29172,7 +29174,8 @@
             "power_min_percent": 3.496,
             "power_max_percent": 3.598,
             "max_ratio_to_null_same_dop": 1.2051940092695446,
-            "max_excess_over_null_same_dop_percent": 20.519400926954457
+            "max_excess_over_null_same_dop_percent": 20.519400926954457,
+            "max_abs_diff_to_size_points": 0.1299999999999999
           },
           "joint_and_significant_count": 0
         },
@@ -29259,7 +29262,8 @@
             "power_min_percent": 4.115,
             "power_max_percent": 4.441,
             "max_ratio_to_null_same_dop": 1.1800623655394138,
-            "max_excess_over_null_same_dop_percent": 18.006236553941378
+            "max_excess_over_null_same_dop_percent": 18.006236553941378,
+            "max_abs_diff_to_size_points": 0.20099999999999962
           },
           "joint_and_significant_count": 0
         },
@@ -29346,7 +29350,8 @@
             "power_min_percent": 4.58,
             "power_max_percent": 4.923,
             "max_ratio_to_null_same_dop": 1.2005708682439975,
-            "max_excess_over_null_same_dop_percent": 20.05708682439975
+            "max_excess_over_null_same_dop_percent": 20.05708682439975,
+            "max_abs_diff_to_size_points": 0.3460000000000001
           },
           "joint_and_significant_count": 0
         },
@@ -29433,7 +29438,8 @@
             "power_min_percent": 4.97,
             "power_max_percent": 5.216,
             "max_ratio_to_null_same_dop": 1.228643630170851,
-            "max_excess_over_null_same_dop_percent": 22.864363017085097
+            "max_excess_over_null_same_dop_percent": 22.864363017085097,
+            "max_abs_diff_to_size_points": 0.2270000000000003
           },
           "joint_and_significant_count": 0
         },
@@ -29520,7 +29526,8 @@
             "power_min_percent": 5.382,
             "power_max_percent": 5.716,
             "max_ratio_to_null_same_dop": 1.2205106668906431,
-            "max_excess_over_null_same_dop_percent": 22.051066689064314
+            "max_excess_over_null_same_dop_percent": 22.051066689064314,
+            "max_abs_diff_to_size_points": 0.23800000000000043
           },
           "joint_and_significant_count": 0
         },
@@ -29607,7 +29614,8 @@
             "power_min_percent": 5.778,
             "power_max_percent": 6.104,
             "max_ratio_to_null_same_dop": 1.2285484785484784,
-            "max_excess_over_null_same_dop_percent": 22.854847854847836
+            "max_excess_over_null_same_dop_percent": 22.854847854847836,
+            "max_abs_diff_to_size_points": 0.2370000000000001
           },
           "joint_and_significant_count": 0
         },
@@ -29694,7 +29702,8 @@
             "power_min_percent": 6.043,
             "power_max_percent": 6.612,
             "max_ratio_to_null_same_dop": 1.2485251509756692,
-            "max_excess_over_null_same_dop_percent": 24.85251509756692
+            "max_excess_over_null_same_dop_percent": 24.85251509756692,
+            "max_abs_diff_to_size_points": 0.4690000000000003
           },
           "joint_and_significant_count": 0
         },
@@ -29781,7 +29790,8 @@
             "power_min_percent": 9.634,
             "power_max_percent": 10.664,
             "max_ratio_to_null_same_dop": 1.3116273441006066,
-            "max_excess_over_null_same_dop_percent": 31.162734410060654
+            "max_excess_over_null_same_dop_percent": 31.162734410060654,
+            "max_abs_diff_to_size_points": 0.8859999999999992
           },
           "joint_and_significant_count": 0
         },
@@ -29868,7 +29878,8 @@
             "power_min_percent": 12.784,
             "power_max_percent": 14.264,
             "max_ratio_to_null_same_dop": 1.4077629909987806,
-            "max_excess_over_null_same_dop_percent": 40.77629909987805
+            "max_excess_over_null_same_dop_percent": 40.77629909987805,
+            "max_abs_diff_to_size_points": 1.1109999999999989
           },
           "joint_and_significant_count": 0
         },
@@ -29955,7 +29966,8 @@
             "power_min_percent": 20.426,
             "power_max_percent": 24.644,
             "max_ratio_to_null_same_dop": 1.5332021150606325,
-            "max_excess_over_null_same_dop_percent": 53.32021150606325
+            "max_excess_over_null_same_dop_percent": 53.32021150606325,
+            "max_abs_diff_to_size_points": 3.1129999999999995
           },
           "joint_and_significant_count": 0
         },
@@ -30042,7 +30054,8 @@
             "power_min_percent": 26.504,
             "power_max_percent": 33.549,
             "max_ratio_to_null_same_dop": 1.6651998985440133,
-            "max_excess_over_null_same_dop_percent": 66.51998985440133
+            "max_excess_over_null_same_dop_percent": 66.51998985440133,
+            "max_abs_diff_to_size_points": 5.667999999999999
           },
           "joint_and_significant_count": 2
         },
@@ -30129,7 +30142,8 @@
             "power_min_percent": 31.713,
             "power_max_percent": 41.577999999999996,
             "max_ratio_to_null_same_dop": 1.756689774590038,
-            "max_excess_over_null_same_dop_percent": 75.6689774590038
+            "max_excess_over_null_same_dop_percent": 75.6689774590038,
+            "max_abs_diff_to_size_points": 8.387
           },
           "joint_and_significant_count": 7131
         },
@@ -30216,7 +30230,8 @@
             "power_min_percent": 40.946,
             "power_max_percent": 57.387,
             "max_ratio_to_null_same_dop": 1.8796332346655462,
-            "max_excess_over_null_same_dop_percent": 87.96332346655463
+            "max_excess_over_null_same_dop_percent": 87.96332346655463,
+            "max_abs_diff_to_size_points": 15.856000000000002
           },
           "joint_and_significant_count": 57813
         },
@@ -30303,7 +30318,8 @@
             "power_min_percent": 46.800000000000004,
             "power_max_percent": 68.447,
             "max_ratio_to_null_same_dop": 1.9416312099238926,
-            "max_excess_over_null_same_dop_percent": 94.16312099238925
+            "max_excess_over_null_same_dop_percent": 94.16312099238925,
+            "max_abs_diff_to_size_points": 22.196000000000005
           },
           "joint_and_significant_count": 119094
         }
@@ -30311,7 +30327,25 @@
       "first_N_size_exceeds_5pct": 19,
       "first_N_size_within_2se_of_5pct": 18,
       "first_N_joint_and_significant_nonzero": 80,
-      "joint_and_significant_zero_for_every_N_below_79p6": true
+      "joint_and_significant_zero_for_every_N_below_79p6": true,
+      "strict_band_max_abs_diff_to_size_below_first_5pct": {
+        "N_max": 18,
+        "points": 0.3460000000000001
+      },
+      "strict_band_max_first_exceeds_np_bound": {
+        "between_N": [
+          30,
+          38
+        ],
+        "at_lower": {
+          "rule": 10.664,
+          "bound": 12.631959677752263
+        },
+        "at_upper": {
+          "rule": 14.264,
+          "bound": 13.942651720865996
+        }
+      }
     },
     "B": {
       "by_N": [

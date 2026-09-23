@@ -1,11 +1,12 @@
 {
   "schema": "lunar-ice/tail-calibration-ci/1",
-  "generated_utc": "2026-09-23T12:49:33.911689+00:00",
+  "generated_utc": "2026-09-23T18:55:07.053474+00:00",
   "generator": "backend/scripts/tail_calibration_ci.py",
   "seed": 20261004,
   "bootstrap_B": 10000,
   "unit": "block, resampled with replacement",
   "effective_count": "n_test / the block's integrated autocorrelation area of ln CPR",
+  "reference_distribution": "binomial, at each block's effective sample count: P(block above nominal) = P(Bin(n_eff, alpha) > alpha n_eff); the count of blocks above nominal is Poisson-binomial",
   "results": {
     "20200808_64px": {
       "source": "docs/stokes_from_slc.json",
@@ -252,8 +253,8 @@
     }
   },
   "run_info": {
-    "wall_s": 5.1,
-    "peak_rss_mb": 244,
+    "wall_s": 2.6,
+    "peak_rss_mb": 245,
     "python": "3.13.1",
     "numpy": "2.2.2",
     "scipy": "1.17.1",

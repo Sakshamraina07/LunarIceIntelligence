@@ -324,7 +324,25 @@ def _search(args):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--grid-keys", action="store_true",
+                    help=("v17a: merge the grid resolution as numbers, read from this script's "
+                          "own constants (no computation)"))
     args = ap.parse_args()
+    if args.grid_keys:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        rounds = 6
+        doc["grids"]["numeric"] = {
+            "alternative_cpr_step": 0.01, "alternative_dop_step": 0.005,
+            "alternatives": doc["grids"]["alternatives"],
+            "null_coarse_dop_step": START_STEP[0], "null_coarse_cpr_step": START_STEP[1],
+            "null_coarse_phase_step_deg": float(COARSE_PHI[1] - COARSE_PHI[0]),
+            "zoom_rounds": rounds,
+            "null_final_spacing_dop": START_STEP[0] / 2 ** rounds,
+            "null_final_spacing_cpr": START_STEP[1] / 2 ** rounds,
+            "null_final_spacing_phase_deg": float(COARSE_PHI[1] - COARSE_PHI[0]) / 2 ** rounds}
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(doc["grids"]["numeric"])
+        return 0
     dr = json.loads(DECISION.read_text(encoding="utf-8"))
     band_pops = sorted({(r["population"], r["pop_cpr"], r["pop_dop"]) for r in dr["rows"]["A"]
                         if not r["null_cpr"] and not r["null_dop"]})

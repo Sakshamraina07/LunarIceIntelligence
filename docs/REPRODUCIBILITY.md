@@ -559,3 +559,7 @@ nothing new under `data/` is committed. The geometry covariates read
 Order: `gap_v20_frame.py` (writes the per-disc geometry) → `crater_ladder_v20.py`
 (reads it for model (e)). The others are independent. The audit's key resolver
 takes `{name}` for a key whose name contains dots.
+
+The G-A ladder on the S-band discs: `python backend/scripts/band_s_ladder_v20.py` →
+`docs/band_s.json::ladder_v20` (seed 20260930, B = 2000 block bootstrap; needs
+`gap_v20_frame.py` first, for the L-band geometry it compares against).

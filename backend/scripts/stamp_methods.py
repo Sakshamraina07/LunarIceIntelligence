@@ -106,7 +106,7 @@ ARTIFACTS: dict[str, list[str]] = {
     # gap pass on v19 (METHODS 19)
     "docs/kernel_sweep.json": ["19.4"],
     "docs/coherence_nhat.json": ["19.5"],
-    "docs/band_s.json": ["19.6"],
+    "docs/band_s.json": ["19.6", "19.9"],
     "docs/stokes_from_slc_20200808S.json": ["19.6"],
     "docs/propagation_percentiles.json": ["12.6"],
     "docs/literature_screen.json": ["13.1"],

@@ -5092,6 +5092,41 @@ Manuscript v19 and its supplement were re-keyed.
 * **Gates.** `G26` now builds and inspects Fig. 4; `G33` checks G-A to G-H from
   stored cells (`--inject ladder|recon|identity|coherence`).
 
+### 19.9 The G-A ladder on the S-band discs
+
+`python backend/scripts/band_s_ladder_v20.py` → `docs/band_s.json::ladder_v20`
+(seed 20260930, B = 2000, the same 5 × 5 disc-lattice blocks). The S-band
+acquisition is pass 1, so the models have no pass term. The discs are the
+published construction on the S-band signal mask: 1300 discs (843 sunlit, 271
+shadowed, 186 mixed), 96 firing. The L-band pass-1 discs are fitted the same way.
+
+| model | S-band PSR coefficient ± SE | OR (model 95 %) | OR, block bootstrap 95 % |
+|---|---|---|---|
+| (a) class | +1.076 ± 0.228 | 2.93 (1.88–4.58) | 1.22–6.47 |
+| (b) + ln N̂ | +0.484 ± 0.244 | 1.62 (1.01–2.62) | 0.72–3.36 |
+| (c) + coherence and SNR | −0.189 ± 0.448 | 0.83 (0.34–1.99) | 0.26–2.03 |
+| (d) + spatial trend | −0.241 ± 0.541 | 0.79 (0.27–2.27) | 0.23–2.47 |
+| (e) (c) + geometry | −0.701 ± 0.641 | 0.50 (0.14–1.74) | 0.08–1.61 |
+| (e0) (a) + geometry, no coherence | −0.707 ± 0.425 | 0.49 (0.21–1.14) | 0.18–1.30 |
+
+* **L-band, same discs and models without the pass term:** (a) +0.589 ± 0.210,
+  OR 1.80 (block bootstrap 0.88–3.62); (c) −0.333 ± 0.381; (e0) +0.013 ± 0.303
+  (0.50–2.47).
+* **Intervals excluding 1.** S-band: the crude (total-effect) odds ratio
+  2.93 excludes 1 on every interval, including the block bootstrap (1.22–6.47;
+  cluster-robust 1.36–6.31), and model (b) excludes it on the model-based
+  interval only. No direct-effect model, (c) to (e0), excludes 1. L-band: the
+  crude block-bootstrap interval includes 1.
+* **Mantel–Haenszel over coherence strata:** S-band 0.992 (0.56–1.77; block
+  bootstrap 0.42–2.21), L-band 0.443 (0.25–0.80; 0.23–0.78).
+* **The fired sets differ.** 40 of 271 shadowed discs fire in each band but only 26
+  fire in both (14 S-only, 14 L-only; Jaccard 0.48; 5.9 expected if independent).
+  The 271 shadowed discs are the same lattice cells but for one (270 in common).
+  Sunlit: 47 S-band against 74 L-band, 34 in both; mixed 9 against 17, 7 in both.
+* The S-band stokes pass was written by `stokes_from_slc.py --product 20200808S`
+  in the earlier (v18a) session, which added the `20200808S` entry at
+  2026-09-30 16:30 UTC and finished the run at 16:31 UTC (22:01 IST).
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -5109,14 +5144,14 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `c086be7`.
+Stamped at commit `39952e6`.
 
 | artifact | sha256 | sections |
 |---|---|---|
 | `data/pradan/lola/horizon_240m.provenance.json` | `f84a64b1ae849b27…` | §5.4, §5.6, §8.4 |
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
-| `docs/band_s.json` | `19af8674985c1ab0…` | §19.6 |
+| `docs/band_s.json` | `253964a7852c9d36…` | §19.6, §19.9 |
 | `docs/bootstrap_enl.json` | `5f4239f07f372c3f…` | §7.3.1 |
 | `docs/calibration_example.json` | `5f0753e6e92fd192…` | §14.1 |
 | `docs/coherence_nhat.json` | `4b3e4976f39b517a…` | §19.5 |

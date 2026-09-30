@@ -5934,5 +5934,3672 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "v20_reconciliation": {
+    "schema": "lunar-ice/snr-reconciliation/1",
+    "generated_utc": "2026-09-30T18:06:43.829330+00:00",
+    "generator": "backend/scripts/gap_v20_frame.py",
+    "seed": null,
+    "seed_note": "draws nothing; every rate is a count with a Wilson interval",
+    "radiometric_scales": {
+      "snr_denominator": "the channel's label nes0_coeff_0 (LH 7.038e-4, LV 6.065e-4; -31.5 / -32.2 dB), used as given: sigma0-type, no sin(theta) applied; the calibrated intensity it divides is l = DN^2 sin(theta_label) / (K G^2), i.e. sigma0-scale with the label's scalar sin(theta) = 0.342",
+      "subtracted_noise": "the same number, subtracted from C_HH and C_VV of that calibrated coherency",
+      "consistent_with_each_other": true,
+      "consistent_with_the_data": "NO at face value (reading R1): the corrected matrix is not positive semidefinite in the fraction of cells reported in alpha_scan, far above the fraction at SNR > 10 dB where the correction is negligible; the excess vanishes at alpha <= about 0.5"
+    },
+    "readings": {
+      "R1": "nes0 is sigma0 as labelled; noise in the calibrated scale = nes0 (alpha = 1)",
+      "R2": "nes0 is sigma0 at the local incidence of the geometry file; alpha = sin(20 deg) / sin(theta_local(j))",
+      "R3": "nes0 is beta0; noise in the calibrated (sigma0) scale = nes0 sin(20 deg), alpha = 0.342"
+    },
+    "decomposition_of_the_v18a_drops": {
+      "20200808": {
+        "matched_cells": 5883594,
+        "corrected_diagonal_not_positive": 11167,
+        "of_which_partial_window": 11159,
+        "corrected_matrix_not_psd_in_S0_test_(|S3|>=S0)": 274031,
+        "corrected_matrix_not_psd_total_(|C_HV|^2>C_HH'C_VV')": 306219,
+        "not_psd_but_passing_S0_test_(DOP>1_retained)": 32188,
+        "total_dropped_by_the_v18a_variant": 285198,
+        "min_snr_below_0_dB_(unnormalised)": 11167,
+        "median_observed_coherence_of_not_psd_cells": 0.810938018787421,
+        "median_observed_coherence_frame": 0.6580423728429938,
+        "violation_fraction_by_nominal_snr_bin": {
+          "< 0 dB": {
+            "cells": 11167,
+            "not_psd_or_nonpositive": 11167,
+            "fraction": 1.0
+          },
+          "0-3 dB": {
+            "cells": 37965,
+            "not_psd_or_nonpositive": 27707,
+            "fraction": 0.7298037666271566
+          },
+          "3-6 dB": {
+            "cells": 432371,
+            "not_psd_or_nonpositive": 129486,
+            "fraction": 0.2994789197240333
+          },
+          "6-10 dB": {
+            "cells": 2370962,
+            "not_psd_or_nonpositive": 129120,
+            "fraction": 0.05445890739708186
+          },
+          "> 10 dB": {
+            "cells": 3031129,
+            "not_psd_or_nonpositive": 19906,
+            "fraction": 0.006567189981026872
+          }
+        }
+      },
+      "20200305": {
+        "matched_cells": 896972,
+        "corrected_diagonal_not_positive": 586,
+        "of_which_partial_window": 586,
+        "corrected_matrix_not_psd_in_S0_test_(|S3|>=S0)": 13340,
+        "corrected_matrix_not_psd_total_(|C_HV|^2>C_HH'C_VV')": 14499,
+        "not_psd_but_passing_S0_test_(DOP>1_retained)": 1159,
+        "total_dropped_by_the_v18a_variant": 13926,
+        "min_snr_below_0_dB_(unnormalised)": 586,
+        "median_observed_coherence_of_not_psd_cells": 0.8098270596881844,
+        "median_observed_coherence_frame": 0.7507589477020725,
+        "violation_fraction_by_nominal_snr_bin": {
+          "< 0 dB": {
+            "cells": 586,
+            "not_psd_or_nonpositive": 586,
+            "fraction": 1.0
+          },
+          "0-3 dB": {
+            "cells": 3960,
+            "not_psd_or_nonpositive": 2811,
+            "fraction": 0.7098484848484848
+          },
+          "3-6 dB": {
+            "cells": 22765,
+            "not_psd_or_nonpositive": 6726,
+            "fraction": 0.29545354711179445
+          },
+          "6-10 dB": {
+            "cells": 170983,
+            "not_psd_or_nonpositive": 4596,
+            "fraction": 0.026879865249761672
+          },
+          "> 10 dB": {
+            "cells": 698678,
+            "not_psd_or_nonpositive": 366,
+            "fraction": 0.0005238464643226207
+          }
+        }
+      }
+    },
+    "alpha_scan": {
+      "20200808": {
+        "baseline_violation_fraction_at_snr_gt_10dB_nominal": 0.006567189981026872,
+        "scan": [
+          {
+            "alpha": 1.0,
+            "label": "",
+            "violating_cells": 317386,
+            "fraction": 0.05394423884448859
+          },
+          {
+            "alpha": 0.75,
+            "label": "",
+            "violating_cells": 107274,
+            "fraction": 0.018232733257937242
+          },
+          {
+            "alpha": 0.5,
+            "label": "",
+            "violating_cells": 29216,
+            "fraction": 0.0049656723424491905
+          },
+          {
+            "alpha": 0.34198601318056165,
+            "label": "sin(theta_label) = beta0 reading R3",
+            "violating_cells": 13233,
+            "fraction": 0.002249135477396979
+          },
+          {
+            "alpha": 0.25,
+            "label": "",
+            "violating_cells": 7012,
+            "fraction": 0.00119178855645036
+          },
+          {
+            "alpha": 0.1,
+            "label": "",
+            "violating_cells": 1095,
+            "fraction": 0.0001861107343572653
+          },
+          {
+            "alpha": "sin(20)/sin(theta_local(j))",
+            "label": "sigma0 at local incidence, reading R2",
+            "alpha_range": [
+              0.7045221382332816,
+              2.2171004657211344
+            ],
+            "violating_cells": 251075,
+            "fraction": 0.042673746692922725
+          }
+        ]
+      },
+      "20200305": {
+        "baseline_violation_fraction_at_snr_gt_10dB_nominal": 0.0005238464643226207,
+        "scan": [
+          {
+            "alpha": 1.0,
+            "label": "",
+            "violating_cells": 15085,
+            "fraction": 0.016817693305922594
+          },
+          {
+            "alpha": 0.75,
+            "label": "",
+            "violating_cells": 9292,
+            "fraction": 0.01035929772612746
+          },
+          {
+            "alpha": 0.5,
+            "label": "",
+            "violating_cells": 4079,
+            "fraction": 0.004547522107713507
+          },
+          {
+            "alpha": 0.4384911477841557,
+            "label": "sin(theta_label) = beta0 reading R3",
+            "violating_cells": 2871,
+            "fraction": 0.0032007688088368422
+          },
+          {
+            "alpha": 0.25,
+            "label": "",
+            "violating_cells": 137,
+            "fraction": 0.0001527360943262443
+          },
+          {
+            "alpha": 0.1,
+            "label": "",
+            "violating_cells": 0,
+            "fraction": 0.0
+          },
+          {
+            "alpha": "sin(20)/sin(theta_local(j))",
+            "label": "sigma0 at local incidence, reading R2",
+            "alpha_range": [
+              0.7930809620420989,
+              1.1521561662408775
+            ],
+            "violating_cells": 15416,
+            "fraction": 0.01718671262871082
+          }
+        ]
+      }
+    },
+    "snr_relative_statistics": {
+      "20200808": {
+        "reading_R1_nominal": {
+          "selected_median_db": 12.707163520293145,
+          "all_matched_median_db": 10.139380247618266,
+          "selected_median_db_valid_fraction_normalised": 12.726596452679512,
+          "all_matched_median_db_valid_fraction_normalised": 10.189879340958033
+        },
+        "reading_R3_beta0": {
+          "selected_median_db": 17.367080077355116,
+          "all_matched_median_db": 14.799296804680237,
+          "note": "a constant shift of -10 log10(sin theta_label) = +4.66 dB; the difference is unchanged"
+        }
+      },
+      "20200305": {
+        "reading_R1_nominal": {
+          "selected_median_db": 16.632905713308794,
+          "all_matched_median_db": 12.043913095785864,
+          "selected_median_db_valid_fraction_normalised": 19.981894617686724,
+          "all_matched_median_db_valid_fraction_normalised": 12.220155443889567
+        },
+        "reading_R3_beta0": {
+          "selected_median_db": 20.213297410342918,
+          "all_matched_median_db": 15.62430479281999,
+          "note": "a constant shift of -10 log10(sin theta_label) = +4.66 dB; the difference is unchanged"
+        }
+      }
+    },
+    "fixes": [
+      "noise scaled by the window's valid-sample fraction",
+      "non-PSD cells projected and kept (left out of the N-hat windows) instead of dropped",
+      "floors on SNR = C / (f n)"
+    ],
+    "variants_frame": {
+      "base": {
+        "20200808": {
+          "cells_matched": 5883594,
+          "joint": 26462,
+          "joint_fraction": 0.0044975910982300955,
+          "dop_below_0p13": 88421,
+          "dop_below_fraction": 0.015028399308313931,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 0
+        },
+        "20200305": {
+          "cells_matched": 896972,
+          "joint": 24,
+          "joint_fraction": 2.6756688057152286e-05,
+          "dop_below_0p13": 406,
+          "dop_below_fraction": 0.00045263397296682617,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 0
+        }
+      },
+      "legacy_v18a_noise_corrected": {
+        "20200808": {
+          "cells_matched": 5598396,
+          "joint": 23784,
+          "joint_fraction": 0.004248359708745148,
+          "dop_below_0p13": 74571,
+          "dop_below_fraction": 0.013320065247260107,
+          "unphysical_dop_gt_1": 32188,
+          "iut": 0,
+          "dropped_relative_to_base": 285198
+        },
+        "20200305": {
+          "cells_matched": 883046,
+          "joint": 22,
+          "joint_fraction": 2.491376440185449e-05,
+          "dop_below_0p13": 362,
+          "dop_below_fraction": 0.00040994466879415117,
+          "unphysical_dop_gt_1": 1159,
+          "iut": 0,
+          "dropped_relative_to_base": 13926
+        }
+      },
+      "nc_R1": {
+        "20200808": {
+          "cells_matched": 5883490,
+          "joint": 23856,
+          "joint_fraction": 0.004054736219488772,
+          "dop_below_0p13": 74834,
+          "dop_below_fraction": 0.012719321355182044,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 104,
+          "projected_non_psd": 271640,
+          "dropped_corrected_diagonal_not_positive": 104,
+          "noise_scale_alpha": 1.0,
+          "noise_model": "nes0_coeff_0"
+        },
+        "20200305": {
+          "cells_matched": 896972,
+          "joint": 23,
+          "joint_fraction": 2.564182605477094e-05,
+          "dop_below_0p13": 366,
+          "dop_below_fraction": 0.00040803949287157235,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 0,
+          "projected_non_psd": 246,
+          "dropped_corrected_diagonal_not_positive": 0,
+          "noise_scale_alpha": 1.0,
+          "noise_model": "nes0_coeff_0"
+        }
+      },
+      "nc_R1_linear": {
+        "20200808": {
+          "cells_matched": 5883461,
+          "joint": 23051,
+          "joint_fraction": 0.003917931979153087,
+          "dop_below_0p13": 72628,
+          "dop_below_fraction": 0.012344434678839547,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 133,
+          "projected_non_psd": 250513,
+          "dropped_corrected_diagonal_not_positive": 133,
+          "noise_scale_alpha": 1.0,
+          "noise_model": "nes0_coeff_0 + nes0_coeff_1 j"
+        },
+        "20200305": {
+          "cells_matched": 896972,
+          "joint": 23,
+          "joint_fraction": 2.564182605477094e-05,
+          "dop_below_0p13": 365,
+          "dop_below_fraction": 0.000406924630869191,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 0,
+          "projected_non_psd": 342,
+          "dropped_corrected_diagonal_not_positive": 0,
+          "noise_scale_alpha": 1.0,
+          "noise_model": "nes0_coeff_0 + nes0_coeff_1 j"
+        }
+      },
+      "nc_R3": {
+        "20200808": {
+          "cells_matched": 5883592,
+          "joint": 25597,
+          "joint_fraction": 0.004350573595177912,
+          "dop_below_0p13": 83571,
+          "dop_below_fraction": 0.014204078052998916,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 2,
+          "projected_non_psd": 462,
+          "dropped_corrected_diagonal_not_positive": 2,
+          "noise_scale_alpha": 0.34198601318056165,
+          "noise_model": "nes0_coeff_0"
+        },
+        "20200305": {
+          "cells_matched": 896972,
+          "joint": 24,
+          "joint_fraction": 2.6756688057152286e-05,
+          "dop_below_0p13": 386,
+          "dop_below_fraction": 0.00043033673291919926,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 0,
+          "projected_non_psd": 0,
+          "dropped_corrected_diagonal_not_positive": 0,
+          "noise_scale_alpha": 0.4384911477841557,
+          "noise_model": "nes0_coeff_0"
+        }
+      },
+      "nc_R3_linear": {
+        "20200808": {
+          "cells_matched": 5883591,
+          "joint": 25316,
+          "joint_fraction": 0.004302814386656041,
+          "dop_below_0p13": 82756,
+          "dop_below_fraction": 0.014065559621666428,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 3,
+          "projected_non_psd": 420,
+          "dropped_corrected_diagonal_not_positive": 3,
+          "noise_scale_alpha": 0.34198601318056165,
+          "noise_model": "nes0_coeff_0 + nes0_coeff_1 j"
+        },
+        "20200305": {
+          "cells_matched": 896972,
+          "joint": 24,
+          "joint_fraction": 2.6756688057152286e-05,
+          "dop_below_0p13": 386,
+          "dop_below_fraction": 0.00043033673291919926,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 0,
+          "projected_non_psd": 0,
+          "dropped_corrected_diagonal_not_positive": 0,
+          "noise_scale_alpha": 0.4384911477841557,
+          "noise_model": "nes0_coeff_0 + nes0_coeff_1 j"
+        }
+      },
+      "floor3_R1": {
+        "20200808": {
+          "cells_matched": 5867432,
+          "joint": 26456,
+          "joint_fraction": 0.004508957240578161,
+          "dop_below_0p13": 88358,
+          "dop_below_fraction": 0.015059058204679662,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 16162
+        },
+        "20200305": {
+          "cells_matched": 895920,
+          "joint": 24,
+          "joint_fraction": 2.678810608090008e-05,
+          "dop_below_0p13": 406,
+          "dop_below_fraction": 0.00045316546120189303,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 1052
+        }
+      },
+      "floor6_R1": {
+        "20200808": {
+          "cells_matched": 5455823,
+          "joint": 26363,
+          "joint_fraction": 0.004832084911845564,
+          "dop_below_0p13": 87725,
+          "dop_below_fraction": 0.016079150661595876,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 427771
+        },
+        "20200305": {
+          "cells_matched": 882458,
+          "joint": 24,
+          "joint_fraction": 2.7196761772231654e-05,
+          "dop_below_0p13": 406,
+          "dop_below_fraction": 0.0004600785533135855,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 14514
+        }
+      },
+      "floor3_R3": {
+        "20200808": {
+          "cells_matched": 5883574,
+          "joint": 26462,
+          "joint_fraction": 0.004497606386866214,
+          "dop_below_0p13": 88421,
+          "dop_below_fraction": 0.015028450394267158,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 20
+        },
+        "20200305": {
+          "cells_matched": 896972,
+          "joint": 24,
+          "joint_fraction": 2.6756688057152286e-05,
+          "dop_below_0p13": 406,
+          "dop_below_fraction": 0.00045263397296682617,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 0
+        }
+      },
+      "floor6_R3": {
+        "20200808": {
+          "cells_matched": 5882808,
+          "joint": 26462,
+          "joint_fraction": 0.0044981920198653436,
+          "dop_below_0p13": 88418,
+          "dop_below_fraction": 0.015029897287145867,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 786
+        },
+        "20200305": {
+          "cells_matched": 896637,
+          "joint": 24,
+          "joint_fraction": 2.676668484570679e-05,
+          "dop_below_0p13": 406,
+          "dop_below_fraction": 0.0004528030853065399,
+          "unphysical_dop_gt_1": 0,
+          "iut": 0,
+          "dropped_relative_to_base": 335
+        }
+      }
+    },
+    "variants_f2": {
+      "base": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 50,
+        "iut_selects": 0
+      },
+      "legacy_v18a_noise_corrected": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 48,
+        "iut_selects": 0
+      },
+      "nc_R1": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 49,
+        "iut_selects": 0
+      },
+      "nc_R1_linear": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 43,
+        "iut_selects": 0
+      },
+      "nc_R3": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 50,
+        "iut_selects": 0
+      },
+      "nc_R3_linear": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 49,
+        "iut_selects": 0
+      },
+      "floor3_R1": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 50,
+        "iut_selects": 0
+      },
+      "floor6_R1": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 50,
+        "iut_selects": 0
+      },
+      "floor3_R3": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 50,
+        "iut_selects": 0
+      },
+      "floor6_R3": {
+        "cells": 663,
+        "cells_retained": 663,
+        "published_rule_selects": 50,
+        "iut_selects": 0
+      }
+    },
+    "variants_disc_rates": {
+      "base": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 74,
+            "n": 844,
+            "rate": 0.08767772511848342,
+            "wilson95": [
+              0.07041697570381114,
+              0.10867483124986951
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 844,
+            "rate": 0.061611374407582936,
+            "wilson95": [
+              0.04729123403501394,
+              0.07990407795596834
+            ]
+          },
+          "mean": 2.3933649289099526
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 40,
+            "n": 271,
+            "rate": 0.14760147601476015,
+            "wilson95": [
+              0.11030396592434669,
+              0.1947499339587387
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 271,
+            "rate": 0.08487084870848709,
+            "wilson95": [
+              0.05721823096877164,
+              0.12412798617098865
+            ]
+          },
+          "mean": 1.7306273062730628
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.8563829787234043
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.028747433264887063
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "ge5": {
+            "k": 53,
+            "n": 1331,
+            "rate": 0.039819684447783624,
+            "wilson95": [
+              0.030571149884279086,
+              0.05171686877926464
+            ]
+          },
+          "mean": 1.5281743050338092
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 40,
+            "n": 281,
+            "rate": 0.1423487544483986,
+            "wilson95": [
+              0.10630959061933024,
+              0.188034706066202
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 281,
+            "rate": 0.08185053380782918,
+            "wilson95": [
+              0.05515855145269064,
+              0.11982109890104103
+            ]
+          },
+          "mean": 1.6690391459074734
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.2644927536231885
+        }
+      },
+      "legacy_v18a_noise_corrected": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "ge5": {
+            "k": 51,
+            "n": 844,
+            "rate": 0.06042654028436019,
+            "wilson95": [
+              0.04625627314224411,
+              0.0785801072595246
+            ]
+          },
+          "mean": 2.1943127962085307
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 37,
+            "n": 271,
+            "rate": 0.13653136531365315,
+            "wilson95": [
+              0.10070234228150196,
+              0.18252079005864372
+            ]
+          },
+          "ge5": {
+            "k": 20,
+            "n": 271,
+            "rate": 0.07380073800738007,
+            "wilson95": [
+              0.048279603106819814,
+              0.11123584649000076
+            ]
+          },
+          "mean": 1.4907749077490775
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.6861702127659575
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.024640657084188913
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 74,
+            "n": 1331,
+            "rate": 0.05559729526671676,
+            "wilson95": [
+              0.044517406871055515,
+              0.0692350225811667
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 1331,
+            "rate": 0.03906836964688205,
+            "wilson95": [
+              0.029916331313630994,
+              0.05087338207426138
+            ]
+          },
+          "mean": 1.4004507888805409
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 37,
+            "n": 281,
+            "rate": 0.13167259786476868,
+            "wilson95": [
+              0.09705928990469191,
+              0.17622065742816956
+            ]
+          },
+          "ge5": {
+            "k": 20,
+            "n": 281,
+            "rate": 0.0711743772241993,
+            "wilson95": [
+              0.046543725819049565,
+              0.10737157518201143
+            ]
+          },
+          "mean": 1.4377224199288257
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.1485507246376812
+        }
+      },
+      "nc_R1": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "ge5": {
+            "k": 51,
+            "n": 844,
+            "rate": 0.06042654028436019,
+            "wilson95": [
+              0.04625627314224411,
+              0.0785801072595246
+            ]
+          },
+          "mean": 2.2026066350710902
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 37,
+            "n": 271,
+            "rate": 0.13653136531365315,
+            "wilson95": [
+              0.10070234228150196,
+              0.18252079005864372
+            ]
+          },
+          "ge5": {
+            "k": 20,
+            "n": 271,
+            "rate": 0.07380073800738007,
+            "wilson95": [
+              0.048279603106819814,
+              0.11123584649000076
+            ]
+          },
+          "mean": 1.5055350553505535
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.702127659574468
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.026694045174537988
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 75,
+            "n": 1331,
+            "rate": 0.056348610067618335,
+            "wilson95": [
+              0.045189342131526075,
+              0.0700613925963475
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 1331,
+            "rate": 0.03906836964688205,
+            "wilson95": [
+              0.029916331313630994,
+              0.05087338207426138
+            ]
+          },
+          "mean": 1.4064613072877536
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 37,
+            "n": 281,
+            "rate": 0.13167259786476868,
+            "wilson95": [
+              0.09705928990469191,
+              0.17622065742816956
+            ]
+          },
+          "ge5": {
+            "k": 20,
+            "n": 281,
+            "rate": 0.0711743772241993,
+            "wilson95": [
+              0.046543725819049565,
+              0.10737157518201143
+            ]
+          },
+          "mean": 1.4519572953736655
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.1594202898550725
+        }
+      },
+      "nc_R1_linear": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "ge5": {
+            "k": 50,
+            "n": 844,
+            "rate": 0.05924170616113744,
+            "wilson95": [
+              0.045223011329812754,
+              0.0772544374827424
+            ]
+          },
+          "mean": 2.1528436018957344
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 39,
+            "n": 271,
+            "rate": 0.14391143911439114,
+            "wilson95": [
+              0.10709434518047775,
+              0.19068263218829437
+            ]
+          },
+          "ge5": {
+            "k": 21,
+            "n": 271,
+            "rate": 0.07749077490774908,
+            "wilson95": [
+              0.05123980223294077,
+              0.11555256987819304
+            ]
+          },
+          "mean": 1.4206642066420665
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.627659574468085
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.026694045174537988
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 75,
+            "n": 1331,
+            "rate": 0.056348610067618335,
+            "wilson95": [
+              0.045189342131526075,
+              0.0700613925963475
+            ]
+          },
+          "ge5": {
+            "k": 51,
+            "n": 1331,
+            "rate": 0.03831705484598046,
+            "wilson95": [
+              0.02926252574622721,
+              0.05002888236601379
+            ]
+          },
+          "mean": 1.3749060856498874
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 39,
+            "n": 281,
+            "rate": 0.1387900355871886,
+            "wilson95": [
+              0.10321747567029645,
+              0.18410537123101217
+            ]
+          },
+          "ge5": {
+            "k": 21,
+            "n": 281,
+            "rate": 0.07473309608540925,
+            "wilson95": [
+              0.04939675998875616,
+              0.11153999079652836
+            ]
+          },
+          "mean": 1.3701067615658362
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.108695652173913
+        }
+      },
+      "nc_R3": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 73,
+            "n": 844,
+            "rate": 0.08649289099526067,
+            "wilson95": [
+              0.06935321488750519,
+              0.10737966047696189
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 844,
+            "rate": 0.061611374407582936,
+            "wilson95": [
+              0.04729123403501394,
+              0.07990407795596834
+            ]
+          },
+          "mean": 2.3270142180094786
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 40,
+            "n": 271,
+            "rate": 0.14760147601476015,
+            "wilson95": [
+              0.11030396592434669,
+              0.1947499339587387
+            ]
+          },
+          "ge5": {
+            "k": 22,
+            "n": 271,
+            "rate": 0.08118081180811808,
+            "wilson95": [
+              0.05421973326581121,
+              0.11984956135963583
+            ]
+          },
+          "mean": 1.6605166051660516
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.8138297872340425
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.028747433264887063
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 75,
+            "n": 1331,
+            "rate": 0.056348610067618335,
+            "wilson95": [
+              0.045189342131526075,
+              0.0700613925963475
+            ]
+          },
+          "ge5": {
+            "k": 53,
+            "n": 1331,
+            "rate": 0.039819684447783624,
+            "wilson95": [
+              0.030571149884279086,
+              0.05171686877926464
+            ]
+          },
+          "mean": 1.4861006761833209
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 40,
+            "n": 281,
+            "rate": 0.1423487544483986,
+            "wilson95": [
+              0.10630959061933024,
+              0.188034706066202
+            ]
+          },
+          "ge5": {
+            "k": 22,
+            "n": 281,
+            "rate": 0.07829181494661921,
+            "wilson95": [
+              0.05226874289415907,
+              0.11568945767534901
+            ]
+          },
+          "mean": 1.601423487544484
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.2355072463768115
+        }
+      },
+      "nc_R3_linear": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 74,
+            "n": 844,
+            "rate": 0.08767772511848342,
+            "wilson95": [
+              0.07041697570381114,
+              0.10867483124986951
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 844,
+            "rate": 0.061611374407582936,
+            "wilson95": [
+              0.04729123403501394,
+              0.07990407795596834
+            ]
+          },
+          "mean": 2.308056872037915
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 39,
+            "n": 271,
+            "rate": 0.14391143911439114,
+            "wilson95": [
+              0.10709434518047775,
+              0.19068263218829437
+            ]
+          },
+          "ge5": {
+            "k": 22,
+            "n": 271,
+            "rate": 0.08118081180811808,
+            "wilson95": [
+              0.05421973326581121,
+              0.11984956135963583
+            ]
+          },
+          "mean": 1.6383763837638377
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.7872340425531914
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.028747433264887063
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "ge5": {
+            "k": 53,
+            "n": 1331,
+            "rate": 0.039819684447783624,
+            "wilson95": [
+              0.030571149884279086,
+              0.05171686877926464
+            ]
+          },
+          "mean": 1.4740796393688955
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 39,
+            "n": 281,
+            "rate": 0.1387900355871886,
+            "wilson95": [
+              0.10321747567029645,
+              0.18410537123101217
+            ]
+          },
+          "ge5": {
+            "k": 22,
+            "n": 281,
+            "rate": 0.07829181494661921,
+            "wilson95": [
+              0.05226874289415907,
+              0.11568945767534901
+            ]
+          },
+          "mean": 1.5800711743772242
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.2173913043478262
+        }
+      },
+      "floor3_R1": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 74,
+            "n": 844,
+            "rate": 0.08767772511848342,
+            "wilson95": [
+              0.07041697570381114,
+              0.10867483124986951
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 844,
+            "rate": 0.061611374407582936,
+            "wilson95": [
+              0.04729123403501394,
+              0.07990407795596834
+            ]
+          },
+          "mean": 2.3933649289099526
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 40,
+            "n": 271,
+            "rate": 0.14760147601476015,
+            "wilson95": [
+              0.11030396592434669,
+              0.1947499339587387
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 271,
+            "rate": 0.08487084870848709,
+            "wilson95": [
+              0.05721823096877164,
+              0.12412798617098865
+            ]
+          },
+          "mean": 1.7306273062730628
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.8563829787234043
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.028747433264887063
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "ge5": {
+            "k": 53,
+            "n": 1331,
+            "rate": 0.039819684447783624,
+            "wilson95": [
+              0.030571149884279086,
+              0.05171686877926464
+            ]
+          },
+          "mean": 1.5281743050338092
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 40,
+            "n": 281,
+            "rate": 0.1423487544483986,
+            "wilson95": [
+              0.10630959061933024,
+              0.188034706066202
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 281,
+            "rate": 0.08185053380782918,
+            "wilson95": [
+              0.05515855145269064,
+              0.11982109890104103
+            ]
+          },
+          "mean": 1.6690391459074734
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.2644927536231885
+        }
+      },
+      "floor6_R1": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 74,
+            "n": 844,
+            "rate": 0.08767772511848342,
+            "wilson95": [
+              0.07041697570381114,
+              0.10867483124986951
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 844,
+            "rate": 0.061611374407582936,
+            "wilson95": [
+              0.04729123403501394,
+              0.07990407795596834
+            ]
+          },
+          "mean": 2.3933649289099526
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 40,
+            "n": 271,
+            "rate": 0.14760147601476015,
+            "wilson95": [
+              0.11030396592434669,
+              0.1947499339587387
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 271,
+            "rate": 0.08487084870848709,
+            "wilson95": [
+              0.05721823096877164,
+              0.12412798617098865
+            ]
+          },
+          "mean": 1.7269372693726937
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.8563829787234043
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.028747433264887063
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "ge5": {
+            "k": 53,
+            "n": 1331,
+            "rate": 0.039819684447783624,
+            "wilson95": [
+              0.030571149884279086,
+              0.05171686877926464
+            ]
+          },
+          "mean": 1.5281743050338092
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 40,
+            "n": 281,
+            "rate": 0.1423487544483986,
+            "wilson95": [
+              0.10630959061933024,
+              0.188034706066202
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 281,
+            "rate": 0.08185053380782918,
+            "wilson95": [
+              0.05515855145269064,
+              0.11982109890104103
+            ]
+          },
+          "mean": 1.6654804270462633
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.2644927536231885
+        }
+      },
+      "floor3_R3": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 74,
+            "n": 844,
+            "rate": 0.08767772511848342,
+            "wilson95": [
+              0.07041697570381114,
+              0.10867483124986951
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 844,
+            "rate": 0.061611374407582936,
+            "wilson95": [
+              0.04729123403501394,
+              0.07990407795596834
+            ]
+          },
+          "mean": 2.3933649289099526
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 40,
+            "n": 271,
+            "rate": 0.14760147601476015,
+            "wilson95": [
+              0.11030396592434669,
+              0.1947499339587387
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 271,
+            "rate": 0.08487084870848709,
+            "wilson95": [
+              0.05721823096877164,
+              0.12412798617098865
+            ]
+          },
+          "mean": 1.7306273062730628
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.8563829787234043
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.028747433264887063
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "ge5": {
+            "k": 53,
+            "n": 1331,
+            "rate": 0.039819684447783624,
+            "wilson95": [
+              0.030571149884279086,
+              0.05171686877926464
+            ]
+          },
+          "mean": 1.5281743050338092
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 40,
+            "n": 281,
+            "rate": 0.1423487544483986,
+            "wilson95": [
+              0.10630959061933024,
+              0.188034706066202
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 281,
+            "rate": 0.08185053380782918,
+            "wilson95": [
+              0.05515855145269064,
+              0.11982109890104103
+            ]
+          },
+          "mean": 1.6690391459074734
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.2644927536231885
+        }
+      },
+      "floor6_R3": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 74,
+            "n": 844,
+            "rate": 0.08767772511848342,
+            "wilson95": [
+              0.07041697570381114,
+              0.10867483124986951
+            ]
+          },
+          "ge5": {
+            "k": 52,
+            "n": 844,
+            "rate": 0.061611374407582936,
+            "wilson95": [
+              0.04729123403501394,
+              0.07990407795596834
+            ]
+          },
+          "mean": 2.3933649289099526
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 40,
+            "n": 271,
+            "rate": 0.14760147601476015,
+            "wilson95": [
+              0.11030396592434669,
+              0.1947499339587387
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 271,
+            "rate": 0.08487084870848709,
+            "wilson95": [
+              0.05721823096877164,
+              0.12412798617098865
+            ]
+          },
+          "mean": 1.7306273062730628
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 17,
+            "n": 188,
+            "rate": 0.09042553191489362,
+            "wilson95": [
+              0.05722373490308624,
+              0.14003007614466445
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 188,
+            "rate": 0.07446808510638298,
+            "wilson95": [
+              0.044874415988744316,
+              0.12110356951541223
+            ]
+          },
+          "mean": 1.8563829787234043
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 2,
+            "n": 487,
+            "rate": 0.004106776180698152,
+            "wilson95": [
+              0.0011269495441590185,
+              0.014848593555170663
+            ]
+          },
+          "ge5": {
+            "k": 1,
+            "n": 487,
+            "rate": 0.002053388090349076,
+            "wilson95": [
+              0.00036256542283674177,
+              0.011538342244192024
+            ]
+          },
+          "mean": 0.028747433264887063
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 76,
+            "n": 1331,
+            "rate": 0.05709992486851991,
+            "wilson95": [
+              0.04586188334980999,
+              0.07088715665371495
+            ]
+          },
+          "ge5": {
+            "k": 53,
+            "n": 1331,
+            "rate": 0.039819684447783624,
+            "wilson95": [
+              0.030571149884279086,
+              0.05171686877926464
+            ]
+          },
+          "mean": 1.5281743050338092
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 40,
+            "n": 281,
+            "rate": 0.1423487544483986,
+            "wilson95": [
+              0.10630959061933024,
+              0.188034706066202
+            ]
+          },
+          "ge5": {
+            "k": 23,
+            "n": 281,
+            "rate": 0.08185053380782918,
+            "wilson95": [
+              0.05515855145269064,
+              0.11982109890104103
+            ]
+          },
+          "mean": 1.6690391459074734
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 17,
+            "n": 276,
+            "rate": 0.06159420289855073,
+            "wilson95": [
+              0.038808519960529295,
+              0.09641611413254735
+            ]
+          },
+          "ge5": {
+            "k": 14,
+            "n": 276,
+            "rate": 0.050724637681159424,
+            "wilson95": [
+              0.030452852005550125,
+              0.08333107053611519
+            ]
+          },
+          "mean": 1.2644927536231885
+        }
+      }
+    },
+    "variants_iut_disc_rates": {
+      "base": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "mean": 0.0
+        }
+      },
+      "nc_R1": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "mean": 0.0
+        }
+      },
+      "nc_R3": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "mean": 0.0
+        }
+      },
+      "floor3_R1": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "mean": 0.0
+        }
+      },
+      "floor6_R1": {
+        "20200808_outside": {
+          "discs": 844,
+          "ge1": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 844,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.004530869351877062
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_inside": {
+          "discs": 271,
+          "ge1": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 271,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.01397699931055571
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200808_mixed": {
+          "discs": 188,
+          "ge1": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 188,
+            "rate": 0.0,
+            "wilson95": [
+              -1.734723475976807e-18,
+              0.020024132967383992
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_outside": {
+          "discs": 487,
+          "ge1": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 487,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.007826272234727852
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_inside": {
+          "discs": 10,
+          "ge1": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 10,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.2775328030260577
+            ]
+          },
+          "mean": 0.0
+        },
+        "20200305_mixed": {
+          "discs": 88,
+          "ge1": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 88,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.04182706729714562
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_outside": {
+          "discs": 1331,
+          "ge1": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 1331,
+            "rate": 0.0,
+            "wilson95": [
+              -2.168404344971009e-19,
+              0.0028778390540217785
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_inside": {
+          "discs": 281,
+          "ge1": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 281,
+            "rate": 0.0,
+            "wilson95": [
+              0.0,
+              0.013486305316589741
+            ]
+          },
+          "mean": 0.0
+        },
+        "all_mixed": {
+          "discs": 276,
+          "ge1": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "ge5": {
+            "k": 0,
+            "n": 276,
+            "rate": 0.0,
+            "wilson95": [
+              8.673617379884035e-19,
+              0.013727268635079129
+            ]
+          },
+          "mean": 0.0
+        }
+      }
+    },
+    "flags": {
+      "nc_R1": {
+        "f2_selections": 49,
+        "f2_relative_change": -0.02,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": -0.11848341232227472,
+          "20200808_inside": -1.1070110701106999,
+          "all_outside": -0.07513148009015772,
+          "all_inside": -1.0676156583629914
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      },
+      "nc_R1_linear": {
+        "f2_selections": 43,
+        "f2_relative_change": -0.14,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": -0.11848341232227472,
+          "20200808_inside": -0.3690036900369009,
+          "all_outside": -0.07513148009015772,
+          "all_inside": -0.35587188612099807
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      },
+      "nc_R3": {
+        "f2_selections": 50,
+        "f2_relative_change": 0.0,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": -0.11848341232227472,
+          "20200808_inside": 0.0,
+          "all_outside": -0.07513148009015772,
+          "all_inside": 0.0
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      },
+      "nc_R3_linear": {
+        "f2_selections": 49,
+        "f2_relative_change": -0.02,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": 0.0,
+          "20200808_inside": -0.3690036900369009,
+          "all_outside": 0.0,
+          "all_inside": -0.35587188612099807
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      },
+      "floor3_R1": {
+        "f2_selections": 50,
+        "f2_relative_change": 0.0,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": 0.0,
+          "20200808_inside": 0.0,
+          "all_outside": 0.0,
+          "all_inside": 0.0
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      },
+      "floor6_R1": {
+        "f2_selections": 50,
+        "f2_relative_change": 0.0,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": 0.0,
+          "20200808_inside": 0.0,
+          "all_outside": 0.0,
+          "all_inside": 0.0
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      },
+      "floor3_R3": {
+        "f2_selections": 50,
+        "f2_relative_change": 0.0,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": 0.0,
+          "20200808_inside": 0.0,
+          "all_outside": 0.0,
+          "all_inside": 0.0
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      },
+      "floor6_R3": {
+        "f2_selections": 50,
+        "f2_relative_change": 0.0,
+        "f2_changes_by_more_than_20_percent": false,
+        "disc_rate_change_points": {
+          "20200808_outside": 0.0,
+          "20200808_inside": 0.0,
+          "all_outside": 0.0,
+          "all_inside": 0.0
+        },
+        "sunlit_or_psr_rate_changes_by_more_than_2_points": false
+      }
+    },
+    "gates": {
+      "base_discs_reproduce_crater_level_real": true,
+      "v18a_noise_corrected_reproduced": true,
+      "blocks_109": true
+    },
+    "run_info": {
+      "wall_s": 442.1,
+      "peak_rss_mb": 3333,
+      "python": "3.13.1",
+      "numpy": "2.2.2",
+      "scipy": "1.17.1",
+      "platform": "Windows-11-10.0.22631-SP0",
+      "cpu_count": 8
+    }
   }
 }

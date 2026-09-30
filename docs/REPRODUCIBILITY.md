@@ -537,3 +537,25 @@ Order: `snr_control.py` (writes the disc cache) → `region_design_curve.py
 --heterogeneous` (reads it) → `--f2-point`; the others are independent. The
 audit's key resolver takes `{name}` for a key whose name contains dots
 (`design.{CPR 1.1 DOP min}.iut.80pct.N`).
+
+## 22 · Gap pass on v19 (2026-09-30)
+
+The analyses of METHODS §19, answering the five-advisor council on v19. Every
+artifact records its seed (or that it draws none), schema, generator and
+`run_info`. The disc cache `data/derived/v18/cells_by_disc.npz` is unchanged;
+nothing new under `data/` is committed. The geometry covariates read
+`data/pradan/lola/LDEM_80S_20M.IMG` in place.
+
+| item | artifact | command | seed | trials | wall (s) | peak (MB) |
+|---|---|---|---|---|---|---|
+| G-A, G-D | `crater_level_real.json::v20_gap` | `python backend/scripts/crater_ladder_v20.py` (after G-B/D) | 20260930 | B = 2000 block bootstrap, 7 models | 45 | 45 |
+| G-B, G-D, G-E, G-F | `snr_control.json::v20_reconciliation`, `kernel_sweep.json`, `crater_level_real.json::v20_gap.per_disc_geometry` | `python backend/scripts/gap_v20_frame.py` | none (draws nothing) | - | 442 | 3333 |
+| G-G | `coherence_nhat.json` | `python backend/scripts/coherence_nhat.py` | 20260937, 20260938 | 4 x 10^5 per formula row; 10 scenes per window row | 757 | 1556 |
+| G-G | `tail_calibration_ci.json::logratio_model_coherence_aware` | `python backend/scripts/tail_calibration_ci.py --logratio-model-coherence` | 20261012 | B = 10^4 (rates), 1000 (inflation) | 186 | 3304 |
+| G-H | `stokes_from_slc_20200808S.json` | `python backend/scripts/stokes_from_slc.py --product 20200808S` | 7 | - | 56 | 2700 |
+| G-H | `band_s.json`, `enl_logratio.json::band_S_20200808` | `python backend/scripts/band_s_v20.py` | none | - | 163 | 3414 |
+| S1, S4 | `paper/fig_region_design.pdf` and the three figures | `cd paper && python make_fig_region.py && python make_figures_v12.py && python make_fig_scene.py` | - | - | - | - |
+
+Order: `gap_v20_frame.py` (writes the per-disc geometry) → `crater_ladder_v20.py`
+(reads it for model (e)). The others are independent. The audit's key resolver
+takes `{name}` for a key whose name contains dots.

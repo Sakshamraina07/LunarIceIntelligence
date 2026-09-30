@@ -82,8 +82,9 @@ def main(out="fig_scene.pdf"):
     a1.scatter((z["sel_u"] - u0) / 1000, (z["sel_v"] - v0) / 1000, s=0.04, c=SEL_C, lw=0,
                rasterized=True)
     zw = 6.0
+    # the (b) window in (a): white, not the F2-disc colour (v20 S4)
     a1.add_patch(Rectangle((fu - zw, fv + ZOOM_Y[0]), 2 * zw, ZOOM_Y[1] - ZOOM_Y[0], fill=False,
-                           ec=F2_C, lw=0.6))
+                           ec="white", lw=0.6))
     a1.set_xlabel("along track (km)", labelpad=1)
     a1.set_ylabel("across\n(km)", labelpad=1)
     a1.set_yticks([0, 10])

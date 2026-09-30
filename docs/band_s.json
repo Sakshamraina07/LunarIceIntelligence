@@ -1,0 +1,171 @@
+{
+  "schema": "lunar-ice/band-s/1",
+  "generated_utc": "2026-09-30T18:28:00.725339+00:00",
+  "generator": "backend/scripts/band_s_v20.py",
+  "seed": null,
+  "seed_note": "draws nothing",
+  "product": "ch2_sar_ncxs_20200808t201154198 (S-band SLI, same acquisition as the L-band pass)",
+  "stokes_artifact": "docs/stokes_from_slc_20200808S.json (stokes_from_slc.py --product 20200808S)",
+  "enl_logratio": "docs/enl_logratio.json::band_S_20200808",
+  "frame": {
+    "cells_matched": 5883594,
+    "joint": 24288,
+    "joint_fraction": 0.004128089055771013,
+    "dop_below_0p13": 85641,
+    "iut": 0,
+    "selected_local_N": {
+      "selected": 24288,
+      "selected_local_N": {
+        "n": 24288,
+        "median": 47.00665383423137,
+        "iqr": [
+          35.132351718815386,
+          57.366272429159125
+        ],
+        "p95": 73.76975082602131
+      },
+      "n_selected_with_local_N_ge_79p6": 638,
+      "n_selected_with_R_above_crit_at_local_N": 0,
+      "frame_local_N_median_nonselected": 26.637324492507254,
+      "frame_local_N_iqr_nonselected": [
+        15.27441106294252,
+        42.88222703385005
+      ]
+    }
+  },
+  "f2": {
+    "cells_in_disc": 3647,
+    "cells_matched": 663,
+    "cells_with_signal_S_nes0": 663,
+    "nes0_S": [
+      0.001717037,
+      0.001604746
+    ],
+    "published_rule_selects": 29,
+    "iut_selects": 0,
+    "selected_with_R_gt_crit_at_N_hat": 0,
+    "median_over_signal": {
+      "cpr": 0.7525288219783927,
+      "dop": 0.20665882459468912,
+      "coherence": 0.17103613363305414,
+      "N_hat": 35.6677977390208
+    },
+    "cpr_distribution": {
+      "cells": 663,
+      "cells_with_defined_cpr": 663,
+      "max_cpr": 1.2878083720617417,
+      "n_cpr_above_1p3": 0,
+      "n_cpr_above_band_edge_1p2989": 0,
+      "fraction_cpr_above_1": 0.09502262443438914,
+      "median_cpr": 0.7525288219783927,
+      "p95_cpr": 1.0538546687479107,
+      "joint_rule_selects": 29,
+      "max_cpr_among_selected": 1.1982542856690155,
+      "min_cpr_among_selected": 1.0011331815273141,
+      "selected_with_cpr_above_band_edge": 0
+    },
+    "selected_local_N_hat": {
+      "min": 22.362993263591402,
+      "max": 49.912175883117065
+    }
+  },
+  "discs": {
+    "signal_cells_per_disc": 663,
+    "by_class_pass_1": {
+      "outside": {
+        "discs": 843,
+        "ge1": {
+          "k": 47,
+          "n": 843,
+          "rate": 0.05575326215895611,
+          "wilson95": [
+            0.042184189647509446,
+            0.07335273624951458
+          ]
+        }
+      },
+      "inside": {
+        "discs": 271,
+        "ge1": {
+          "k": 40,
+          "n": 271,
+          "rate": 0.14760147601476015,
+          "wilson95": [
+            0.11030396592434669,
+            0.1947499339587387
+          ]
+        }
+      },
+      "mixed": {
+        "discs": 186,
+        "ge1": {
+          "k": 9,
+          "n": 186,
+          "rate": 0.04838709677419355,
+          "wilson95": [
+            0.025662513651652008,
+            0.08938853478636605
+          ]
+        }
+      }
+    }
+  },
+  "noise_scan": {
+    "nes0_S": [
+      0.001717037,
+      0.001604746
+    ],
+    "scan": [
+      {
+        "alpha": 1.0,
+        "violating_cells": 105981,
+        "fraction": 0.018012969623668797
+      },
+      {
+        "alpha": 0.75,
+        "violating_cells": 55046,
+        "fraction": 0.009355846103589065
+      },
+      {
+        "alpha": 0.5,
+        "violating_cells": 27254,
+        "fraction": 0.004632202697874802
+      },
+      {
+        "alpha": 0.34198601318056165,
+        "violating_cells": 13779,
+        "fraction": 0.0023419358983641633
+      },
+      {
+        "alpha": 0.25,
+        "violating_cells": 6228,
+        "fraction": 0.0010585366699333775
+      },
+      {
+        "alpha": 0.1,
+        "violating_cells": 1229,
+        "fraction": 0.00020888592924664756
+      }
+    ],
+    "baseline_violation_fraction_at_snr_gt_10dB_nominal": 0.00021701280802477788,
+    "median_min_snr_db_nominal": 9.800759862214857,
+    "selected_median_min_snr_db_nominal": 11.96003955451418
+  },
+  "overlap_with_L_band": {
+    "L_joint": 26462,
+    "S_joint": 24288,
+    "selected_in_both": 2495,
+    "fraction_of_L_also_in_S": 0.09428614617186909,
+    "fraction_of_S_also_in_L": 0.1027256258234519,
+    "expected_overlap_if_independent": 109.23749259381256
+  },
+  "run_info": {
+    "wall_s": 162.8,
+    "peak_rss_mb": 3414,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

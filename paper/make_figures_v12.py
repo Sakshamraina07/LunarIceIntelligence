@@ -62,9 +62,11 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     ax.axhline(EDGE, color=ACC2, lw=0.8, ls="-.", label="band edge 1.2989")
     c2 = crit(n_ratio)
     ax.axhline(c2, color=ACC1, lw=0.8, ls="--", label=f"crit. {c2:.3f}, $N={n_ratio:.1f}$")
-    ax.plot([], [], color=INK, lw=0.9, label=r"$\mathrm{DOP}=|1-\mathrm{CPR}|/(1+\mathrm{CPR})$")
+    ax.plot([], [], color=INK, lw=0.9, label="coupling curve")
     ax.text(0.145, 3.2, "DOP = 0.13", color=ACC2, fontsize=6.2, rotation=90, va="bottom")
-    ax.legend(loc="upper left", bbox_to_anchor=(0.2, 1.0), frameon=True, framealpha=1.0,
+    # v20 S4: short entries, left of the coupling curve's upper branch (DOP > 0.69,
+    # CPR > 5), clear of the "DOP = 0.13" label
+    ax.legend(loc="upper left", bbox_to_anchor=(0.19, 1.0), frameon=True, framealpha=1.0,
               facecolor="white", edgecolor="none", fontsize=5.9)
     ax.set_yscale("log")
     ax.set_xlim(0, 1)
@@ -74,7 +76,9 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     # inset: the joint criterion's corner, DOP 0-0.2 and R 0.7-1.5, the band shaded
     ia = ax.inset_axes([0.075, 0.075, 0.40, 0.42])
     ia.pcolormesh(xe, 10 ** ye, Hm, cmap="Blues", norm=norm, shading="flat", rasterized=True)
-    ia.axhspan(1.0, EDGE, color=ACC2, alpha=0.18, lw=0)
+    # v20 S4: only the admissible wedge, DOP from |q| to 0.13 with 1 < CPR < 1.2989
+    rr = np.linspace(1.0, EDGE, 60)
+    ia.fill_betweenx(rr, (rr - 1) / (rr + 1), 0.13, color=ACC2, alpha=0.30, lw=0)
     ia.plot(np.abs(1 - c) / (1 + c), c, color=INK, lw=0.8)
     ia.axvline(0.13, color=ACC2, lw=0.7, ls="--")
     ia.axhline(1.0, color=MUTED, lw=0.6, ls=":")
@@ -87,7 +91,7 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     ia.tick_params(labelsize=5.8, length=2, pad=1)
     for sp in ia.spines.values():
         sp.set_linewidth(0.5)
-    ia.text(0.004, 1.02, "band", fontsize=5.8, color=ACC2, va="bottom")
+    ia.text(0.004, 1.145, "band", fontsize=5.8, color=ACC2, va="bottom", ha="left", clip_on=False)
     cb = fig.colorbar(pc, ax=ax, pad=0.02, fraction=0.05)
     cb.set_label("cells per bin", fontsize=7)
     cb.ax.tick_params(labelsize=6.2)
@@ -113,8 +117,8 @@ def fig_joint_power(js, out="fig_joint_power.pdf"):
         ax.plot(n, [r["size_percent"] for r in rows], color=col, lw=1.1, label=lab)
         ax.plot(n, [max(v) for v in strict], color=col, lw=0.8, ls="--")
         if arm == "A":
-            ax.plot(n, [min(v) for v in strict], color=col, lw=0.7, ls=":", marker="o", ms=1.8,
-                    mfc="white", mew=0.5)
+            ax.plot(n, [min(v) for v in strict], color=col, lw=0.8, ls=":", marker="o", ms=2.8,
+                    mfc="white", mew=0.7, markevery=2)
     nb = DOCS / "np_power_bound.json"
     if nb.is_file():
         # the Neyman-Pearson bound: no level-5 % per-cell test of the criterion
@@ -124,7 +128,7 @@ def fig_joint_power(js, out="fig_joint_power.pdf"):
                 label="upper bound, any level-5 % test")
     ax.plot([], [], color=INK, lw=1.1, label="size (CPR 1.00): solid")
     ax.plot([], [], color=INK, lw=0.8, ls="--", label="in-band max: dashed")
-    ax.plot([], [], color=INK, lw=0.7, ls=":", marker="o", ms=1.8, mfc="white", mew=0.5,
+    ax.plot([], [], color=INK, lw=0.8, ls=":", marker="o", ms=2.8, mfc="white", mew=0.7,
             label="in-band min: dotted, markers")
     # the 5 % reference: a dash-dot-dot line no curve uses
     ax.axhline(5.0, color=MUTED, lw=0.6, ls=(0, (5, 1.5, 1, 1.5, 1, 1.5)))
@@ -141,7 +145,7 @@ def fig_joint_power(js, out="fig_joint_power.pdf"):
     ax.set_xlim(1.4, 300)
     ax.set_ylim(0.04, 100)
     ax.set_xlabel(r"look count $N$")
-    ax.set_ylabel(r"$P(\hat m<0.13\ \wedge\ R>1)$ (%)")
+    ax.set_ylabel("selection rate or power (%)")
     ax.legend(loc="lower right", bbox_to_anchor=(0.93, 0.0), frameon=True, framealpha=1.0, edgecolor="none", fontsize=5.8)
     fig.savefig(out)
     plt.close(fig)

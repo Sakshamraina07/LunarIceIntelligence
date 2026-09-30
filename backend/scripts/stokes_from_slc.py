@@ -108,6 +108,13 @@ PRODUCTS = {
                  "out": "docs/stokes_from_slc.json",
                  "out_perturb": "docs/phase_gain_perturbation.json",
                  "density": "paper/fig_cpr_dop_density.npz"},
+    # v20 (gap pass, G-H): the S-band SLI of the same acquisition (ncxs), same
+    # geometry files, same 355 768 x 759 grid; nothing but the stem changes
+    "20200808S": {"raw": "data/pradan/raw/data/calibrated/20200808",
+                  "stem": "ch2_sar_ncxs_20200808t201154198",
+                  "out": "docs/stokes_from_slc_20200808S.json",
+                  "out_perturb": "docs/phase_gain_perturbation_20200808S.json",
+                  "density": None},
     "20200305": {"raw": "data/generality/20200305/data/calibrated/20200305",
                  "stem": "ch2_sar_ncxl_20200305t114902885",
                  "out": "docs/stokes_from_slc_20200305.json",

@@ -4,7 +4,7 @@ the anchors they were built on.
 
     python backend/scripts/assert_council_anchors.py
         [--inject size|significant|fwe|perpixel|bound|monotone|iut|mc|v3|ceiling|
-                  design_bound|design_size|design_pool|mh|het]
+                  design_bound|design_size|design_pool|mh|het|ladder|recon|identity|coherence]
 
 The work order named two gates, and each is checked here from its artifact
 rather than trusted from the run that wrote it:
@@ -66,6 +66,25 @@ The v18a last analysis pass adds:
       reproduce dop_sampling_bias's within 1 %;
     * the split-sample run's full-sample control reproduces the 64 x 64 median.
 
+The v20 gap pass adds:
+
+  G-A / G-D (crater_level_real.json::v20_gap)
+    * ladder model (c) reproduces the published PSR coefficient and SE to 1e-6;
+      the crude pass-1 odds ratio follows from the stored per-pass counts; each
+      bootstrap accounts for all B replicates (used + non-converged).
+  G-B (snr_control.json::v20_reconciliation)
+    * the referee's drops reconcile: total = non-positive diagonal + |S3| >= S0;
+      the v18a variant is reproduced; the run's own gates passed.
+  G-E / G-F (kernel_sweep.json)
+    * the 5 x 5 row is the published frame (26 462 joint, 109 blocks, 709 cells
+      above 79.6, the 39.4 block median); no F2 selected cell exceeds the band
+      edge 1.2989 at any kernel (the identity, on the raw data).
+  G-G (coherence_nhat.json, tail_calibration_ci.json::logratio_model_coherence_aware)
+    * the Var(ln R) series matches Monte Carlo (max |z| < 3.5 for N >= 5); the
+      standard arm reproduces logratio_model's pooled rates to 1e-12.
+  G-H (band_s.json)
+    * the S-band frame's joint count equals stokes_from_slc_20200808S's.
+
 Each check is recomputed from the stored cells, not read from the artifact's
 own gate verdict.
 """
@@ -97,6 +116,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--inject", choices=("size", "significant", "fwe", "perpixel", "bound",
                                          "monotone", "iut", "mc", "v3", "ceiling", "design_bound", "mh", "het",
+                                         "ladder", "recon", "identity", "coherence",
                                          "design_size", "design_pool"))
     args = ap.parse_args()
     print("=" * 78)
@@ -369,6 +389,80 @@ def main() -> int:
             bad.append("region_mean_null's conditional crossings do not reproduce dop_sampling_bias")
         if abs(fs - ref) >= 0.01:
             bad.append("split_sample's full-sample control does not reproduce the 64 x 64 N_logratio median")
+
+    # ---- v20: the gap pass ---------------------------------------------------
+    g = (cl or {}).get("v20_gap")
+    kn, cn, bsd = load("docs/kernel_sweep.json"), load("docs/coherence_nhat.json"), load("docs/band_s.json")
+    tcd = load("docs/tail_calibration_ci.json")
+    if g is None or kn is None or sn is None or "v20_reconciliation" not in (sn or {}):
+        bad.append("v20_gap, kernel_sweep.json or snr_control.v20_reconciliation is absent")
+    else:
+        # G-A: the published logistic specification is reproduced by the ladder's model (c); the crude odds
+        # ratio of pass 1 follows from the stored per-pass counts
+        pub = cl["logistic_fires"]["coefficients"]["class_inside_psr"]
+        lc = g["ladder"]["c"]["psr"]
+        a_ok = abs(lc["coefficient"] - pub["estimate"]) < 1e-6 and abs(lc["se_model"] - pub["se"]) < 1e-6
+        pp = cl["per_pass_class"]
+        i_, o_ = pp["20200808_inside"]["ge1"], pp["20200808_outside"]["ge1"]
+        crude = ((i_["k"] / (i_["n"] - i_["k"])) / (o_["k"] / (o_["n"] - o_["k"]))) * (1.25 if args.inject == "ladder" else 1.0)
+        c_ok = abs(crude - g["unadjusted"]["pass_20200808"]["or"]) < 1e-9
+        b_ok = all(g["ladder"][k]["psr"]["block_bootstrap"]["replicates_used"] + g["ladder"][k]["psr"]["block_bootstrap"]["non_converged"]
+                   == g["bootstrap_B"] for k in g["ladder"])
+        print(f"  v20 G-A: ladder (c) reproduces the published PSR coefficient {lc['coefficient']:+.3f} +/- "
+              f"{lc['se_model']:.3f} -> {'ok' if a_ok else 'FAIL'}; crude pass-1 OR {crude:.2f} from the counts -> "
+              f"{'ok' if c_ok else 'FAIL'}; every bootstrap accounts for B -> {'ok' if b_ok else 'FAIL'}")
+        if not (a_ok and c_ok and b_ok):
+            bad.append("v20_gap: the ladder does not reproduce the published coefficient, the crude odds ratio, or B")
+        # G-B: the referee's three numbers reconcile arithmetically, and the v18a variant is reproduced
+        rc = sn["v20_reconciliation"]
+        dec = rc["decomposition_of_the_v18a_drops"]["20200808"]
+        psd_key = "corrected_matrix_not_psd_in_S0_test_(|S3|>=S0)"
+        tot_ok = dec["total_dropped_by_the_v18a_variant"] == dec["corrected_diagonal_not_positive"] + dec[psd_key] \
+            + (7 if args.inject == "recon" else 0)
+        leg_ok = rc["variants_frame"]["legacy_v18a_noise_corrected"]["20200808"]["joint"] == sn["headline"]["noise_corrected"]["frame_joint_pass1"]
+        gates_ok = all(rc["gates"].values())
+        print(f"  v20 G-B: 285 198 = {dec['corrected_diagonal_not_positive']:,} + {dec[psd_key]:,} -> "
+              f"{'ok' if tot_ok else 'FAIL'}; v18a variant reproduced -> {'ok' if leg_ok else 'FAIL'}; run gates -> "
+              f"{'ok' if gates_ok else 'FAIL'}")
+        if not (tot_ok and leg_ok and gates_ok):
+            bad.append("snr_control.v20_reconciliation: the drops do not reconcile or the v18a variant is not reproduced")
+        # G-E / G-F: the 5 x 5 row is the published frame; the identity holds on the data at every kernel
+        k5 = kn["kernel_sweep"]["20200808"]["5x5"]
+        k_ok = (k5["joint"] == sn["headline"]["base"]["frame_joint_pass1"] and k5["blocks_64x64"]["blocks"] == 109
+                and k5["n_selected_with_local_N_ge_79p6"] == el["pass_20200808"]["selected"]["n_local_N_ge_79p6"]
+                and abs(k5["blocks_64x64"]["N_logratio"]["median"] - el["pass_20200808"]["blocks_64x64"]["N_logratio"]["median"]) < 1e-9)
+        ident = [v["cells_f2_fixed_b5_signal_set"]["selected_with_cpr_above_band_edge"]
+                 for v in kn["f2_cpr_distribution"]["20200808"].values()]
+        i_ok = all(x == 0 for x in ident) and (args.inject != "identity")
+        print(f"  v20 G-E/F: the 5 x 5 row reproduces the published frame, 109 blocks and 709 cells -> "
+              f"{'ok' if k_ok else 'FAIL'}; F2 selected cells above the band edge at every kernel: {ident} -> "
+              f"{'ok' if i_ok else 'FAIL'}")
+        if not (k_ok and i_ok):
+            bad.append("kernel_sweep: the 5 x 5 row does not reproduce the published frame, or a selected cell exceeds the band edge")
+    if cn is None or tcd is None or "logratio_model_coherence_aware" not in tcd:
+        bad.append("coherence_nhat.json or tail_calibration_ci.logratio_model_coherence_aware is absent")
+    else:
+        # G-G: the formula against Monte Carlo (N >= 5); the standard arm reproduces the v18a held-out rates
+        z = cn["formula_check"]["max_abs_z_N_ge_5"] + (5.0 if args.inject == "coherence" else 0.0)
+        old = tcd["logratio_model"]["results"]
+        new = tcd["logratio_model_coherence_aware"]["results"]
+        same = all(abs(new[t]["standard"]["levels"][k]["pooled"] - old[t]["levels"][k]["pooled"]) < 1e-12
+                   for t in old for k in ("1pct", "5pct", "10pct"))
+        print(f"  v20 G-G: Var(ln R) series against Monte Carlo max |z| {z:.2f} -> {'ok' if z < 3.5 else 'FAIL'}; "
+              f"the standard arm reproduces the v18a held-out rates -> {'ok' if same else 'FAIL'}")
+        if z >= 3.5:
+            bad.append("coherence_nhat: the Var(ln R) series disagrees with Monte Carlo")
+        if not same:
+            bad.append("tail_calibration_ci: the coherence-aware run's standard arm does not reproduce logratio_model")
+    if bsd is None:
+        bad.append("band_s.json is absent")
+    else:
+        s_st = load("docs/stokes_from_slc_20200808S.json")
+        s_ok = s_st is not None and bsd["frame"]["joint"] == s_st["results"]["joint_measured"]["unconditional"]["n_both"]
+        print(f"  v20 G-H: the S-band frame's joint count {bsd['frame']['joint']:,} equals stokes_from_slc_20200808S's "
+              f"-> {'ok' if s_ok else 'FAIL'}")
+        if not s_ok:
+            bad.append("band_s: the joint count does not reproduce stokes_from_slc_20200808S")
 
     if bad:
         print("\n  GATE FAIL —")

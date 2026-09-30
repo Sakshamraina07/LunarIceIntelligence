@@ -4781,6 +4781,317 @@ any figure.
   an APPROX row. The supplement matched 229/232; the exceptions are three
   simulation grid lists.
 
+## 19 · Gap pass on v19 (2026-09-30)
+
+A five-advisor TGRS council reviewed v19 (Major Revision). This pass adds only
+what the earlier ones did not compute. Every artifact records its seed (or that
+it draws none), schema, generator and `run_info`. Every simulated rate carries
+its Monte Carlo standard error; the frame-level scripts draw nothing and report
+counts with Wilson intervals. Nothing under `data/` is committed.
+
+### 19.1 Shadow against sunlit, without the mediator and with spatial dependence (G-A)
+
+`python backend/scripts/crater_ladder_v20.py` → `docs/crater_level_real.json::v20_gap`
+(seed 20260930, B = 2000 block-bootstrap replicates, 146 blocks of 5 × 5 discs
+per pass). The outcome is "the disc has at least one published-rule selection".
+Mixed discs enter the logistic models as a class and leave every odds ratio.
+
+**Total and direct effect.** The coefficient of model (a) is a **total-effect**
+estimate of shadow. After adjusting for median coherence (model (c)) it is a
+**direct-effect** estimate. Coherence is a depolarization measure on the axis
+the rule thresholds, so (c) removes any effect of ice on polarization by
+construction.
+
+| model | PSR coefficient ± model SE | (cluster-robust SE) | OR (model 95 %) | OR, block bootstrap 95 % |
+|---|---|---|---|---|
+| (a) pass + class | +0.582 ± 0.210 | 0.337 | 1.79 (1.19–2.70) | 0.90–3.50 |
+| (b) (a) + ln N̂ | +0.256 ± 0.223 | 0.319 | 1.29 (0.83–2.00) | 0.66–2.50 |
+| (b2) (b) + min SNR | +0.165 ± 0.224 | 0.310 | 1.18 (0.76–1.83) | 0.62–2.33 |
+| (c) (b2) + coherence = published | −0.401 ± 0.378 | 0.391 | 0.67 (0.32–1.41) | 0.28–1.56 |
+| (d) (c) + spatial trend | −0.322 ± 0.395 | 0.388 | 0.72 (0.33–1.57) | 0.33–1.88 |
+| (e) (c) + geometry (§19.4) | −0.144 ± 0.467 | 0.398 | 0.87 (0.35–2.16) | 0.37–2.45 |
+| (e0) (a) + geometry, no coherence | +0.011 ± 0.302 | 0.375 | 1.01 (0.56–1.83) | 0.49–2.38 |
+
+* **Requested values.** The requester's (a)–(d) values are confirmed to three
+  decimals, and model (c) reproduces the published −0.401 ± 0.378 to 10⁻⁶.
+* **Unadjusted odds ratio.**
+  * Pass 1: 1.80 (Woolf 1.19–2.72; block bootstrap 0.90–3.57).
+  * Pass 2: 0 of 10 shadowed discs fire; with the Haldane–Anscombe correction
+    the OR is 9.2 (0.4–205), which carries no information.
+  * Pooled, Mantel–Haenszel over passes: 1.80 (1.19–2.71; block bootstrap
+    0.90–3.54). Pooling without a pass term gives 2.74 and is confounded by pass.
+* **Coherence-stratified Mantel–Haenszel.**
+  * All passes: 0.593 (Robins–Breslow–Greenland 0.34–1.05); block bootstrap
+    0.31–1.06.
+  * Pass 1: 0.443 (0.25–0.80); block bootstrap 0.23–0.79.
+* **Spatial dependence.** Under it the model-based total effect is no longer
+  significant: cluster-robust OR for (a) 1.79 (0.92–3.46), block bootstrap
+  0.90–3.50.
+* **Non-convergence.** A resample with no firing disc on pass 2 separates the
+  pass-2 dummy. The other coefficients then have a well-defined limit, the fit
+  on pass 1 with the dummy dropped, and that limit is used and counted.
+
+### 19.2 Noise control reconciled (G-B)
+
+`python backend/scripts/gap_v20_frame.py` → `docs/snr_control.json::v20_reconciliation`
+(draws nothing; 442 s).
+
+**The referee's numbers reconcile.** On pass 1, 285 198 = 11 167 + 274 031.
+* 11 167 cells have a non-positive corrected diagonal; 11 159 of them are in
+  partial windows.
+* 274 031 cells have a positive diagonal but |S₃| ≥ S₀ after correction, that is
+  |C_HV|² > (C_HH − n_H)(C_VV − n_V): not a positive semidefinite covariance.
+* 32 188 more non-PSD cells pass the S₀ test and read DOP > 1.
+
+Subtracting noise from the diagonal alone leaves the cross term untouched, so
+any cell with observed coherence above √((1 − n_H/C_HH)(1 − n_V/C_VV)) becomes
+unphysical. The median observed coherence of those cells is 0.81, against 0.66
+for the frame.
+
+**Radiometric scales.**
+* (i) The SNR denominator is the label's `nes0_coeff_0` of the channel
+  (−31.5 dB LH, −32.2 dB LV), used as given: a σ⁰-type number, no sin θ applied.
+* (ii) The subtracted noise is the same number, subtracted from C_HH and C_VV
+  of the calibrated coherency l = DN² sin θ / (K G²), which is σ⁰-scale with the
+  label's scalar sin θ = 0.342.
+* The two agree with each other. The question is whether the label's number is
+  in the scale of the calibrated intensity.
+
+**The data say not at face value.**
+* The fraction of matched cells violating the coherence bound is scanned
+  against a noise scale α (noise = α · nes0):
+
+  | α | pass 1 | pass 2 | S-band, pass 1 date |
+  |---|---|---|---|
+  | 1 (reading R1, nominal) | 5.39 % | 1.68 % | 1.80 % |
+  | 0.75 | 1.82 % | 1.04 % | 0.94 % |
+  | 0.5 | 0.50 % | 0.46 % | 0.46 % |
+  | sin θ_label (reading R3, β⁰) | 0.22 % (α = 0.342) | 0.32 % (α = 0.438) | 0.23 % (α = 0.342) |
+  | 0.25 | 0.12 % | 0.015 % | 0.11 % |
+  | 0.1 | 0.019 % | 0 | 0.021 % |
+  | baseline: cells at SNR > 10 dB, where the correction is negligible | 0.66 % | 0.05 % | 0.022 % |
+
+  Reading R2 (σ⁰ at the geometry file's local incidence,
+  α = sin 20° / sin θ_local(j), 0.73 to 1.26) gives 4.27 % on pass 1 and 1.72 %
+  on pass 2.
+* The nominal reading is rejected on both passes and in both bands. The data
+  bound the noise to α ≲ 0.5 (pass 1), ≲ 0.25 (pass 2) and ≲ 0.1 (S-band).
+* The β⁰ reading clears pass 1 but leaves a residual on pass 2 and in S-band.
+  No single scale factor is established.
+
+**The corrected variants** fix three defects of the v18a run:
+* The noise is scaled by the window's valid-sample fraction (zero SLC samples are
+  no-data).
+* Non-PSD cells are projected (coherence capped at 1) and kept, left out of the
+  N̂ windows, instead of dropped.
+* The floors use SNR = C / (f n).
+
+| variant (pass 1) | DOP < 0.13 | joint | F2 | sunlit ≥ 1 | PSR ≥ 1 | IUT |
+|---|---|---|---|---|---|---|
+| published | 1.503 % | 26 462 (0.450 %) | 50 | 5.7 % | 14.2 % | 0 |
+| v18a variant, reproduced | 1.332 % | 23 784 | 48 | 5.6 % | 13.2 % | 0 |
+| nominal noise, constant | 1.272 % | 23 856 (0.405 %) | 49 | 5.6 % | 13.2 % | 0 |
+| nominal noise, linear in range | 1.234 % | 23 051 (0.392 %) | 43 | 5.6 % | 13.9 % | 0 |
+| β⁰ noise, constant | 1.420 % | 25 597 (0.435 %) | 50 | 5.6 % | 14.2 % | 0 |
+| β⁰ noise, linear | 1.407 % | 25 316 (0.430 %) | 49 | 5.7 % | 13.9 % | 0 |
+| floors 3 and 6 dB (nominal) | 1.506 % / 1.608 % | 26 456 / 26 363 | 50 / 50 | 5.7 % | 14.2 % | 0 |
+
+* **Disc rates.** Pass-1 Wilson intervals for every variant are in
+  `variants_disc_rates`. The largest change in a sunlit or shadowed rate is 1.1
+  points (nominal constant noise, shadowed).
+* **Flags.** F2 never changes by more than 14 % (−14 % for the nominal linear
+  model), and no sunlit or shadowed rate moves by more than 2 points.
+* **Direction.** The true noise lies below the nominal, so the nominal variants
+  are upper bounds on the effect of noise.
+* **SNR statistics.** Selected-cell median SNR is 12.7 dB against 10.1 dB for
+  all matched cells on the nominal scale. Under the β⁰ reading the same numbers
+  are 17.4 and 14.8 dB; the difference is unchanged.
+
+### 19.3 Geometry covariates (G-D)
+
+Same run → `docs/crater_level_real.json::v20_gap.per_disc_geometry`,
+`::geometry_frame`.
+* **Covariates per disc (medians over its cells).**
+  * The slant-range sample: the SLC column.
+  * The slant range and incidence angle from the bundle's geometry file
+    (`Slant_Range`, `Incidence_Angle`, 15.7–33.4° across discs).
+  * The LOLA local incidence:
+    cos θ_loc = (cos θ_i − sin θ_i (p u_x + q u_y)) / √(1 + p² + q²), with (p, q)
+    the LDEM_80S_20M gradient over ±2 posts (80 m) and u the horizontal unit
+    vector towards the sensor, −d(x, y)/d(sample). It ranges 3.6–54.0° across
+    discs (median 26.0°); the slope ranges 1.1–34.1°.
+* **Model (c) plus geometry, (e).**
+  * PSR −0.144 ± 0.467, block bootstrap OR 0.37–2.45.
+  * Coherence −22.1 ± 2.3, block-bootstrap coefficient −28.7 to −19.3.
+  * Geometry terms: slant-range sample ÷ 100 −0.009 ± 0.172; geometry-file
+    incidence +0.226 ± 0.122 per degree; LOLA local incidence +0.020 ± 0.033.
+* **Geometry without coherence, (e0).**
+  * PSR +0.011 ± 0.302 (cluster 0.375): the unadjusted shadow excess
+    (+0.582) disappears.
+  * LOLA local incidence +0.117 ± 0.012 per degree (cluster 0.021; block
+    bootstrap +0.07 to +0.16).
+  * Geometry-file incidence +0.361 ± 0.076.
+  * Slant-range sample ÷ 100 −0.327 ± 0.099.
+* **Selection rate by slant-range decile, pass 1** (joint rule, cells per
+  decile about 5.9 × 10⁵): 0.39, 0.82, 0.46, 0.62, 0.48, 0.66, 0.52, 0.41, 0.076,
+  0.067 %. The rate falls by 5 to 12 times beyond sample 446; the median SNR is
+  9–12 dB throughout. Pass 2 has 7, 3 and 14 selected cells in three deciles and
+  none elsewhere.
+
+### 19.4 Kernel sweep and the F2 CPR distribution (G-E, G-F)
+
+Same run → `docs/kernel_sweep.json` (draws nothing). The boxcar is applied after
+the 21-sample azimuth mean; 5 × 5 is the published kernel.
+
+| pass 1 kernel | joint | IUT | 64 × 64 blocks' median N (109 blocks) | selected cells' median local N̂ | selected with N̂ ≥ 79.6 | of which R > crit at N̂ |
+|---|---|---|---|---|---|---|
+| 5 × 5 | 26 462 | 0 | 39.44 | 41.8 | 709 | 2 |
+| 7 × 7 | 27 973 | 0 | 59.85 | 65.5 | 10 110 | 69 |
+| 9 × 9 | 28 413 | 0 | 78.86 | 88.6 | 15 880 | 270 |
+
+* The frame's non-selected cells' median local N̂ is 17.4, 22.7 and 28.1.
+* Pass 2 (128 columns wide) has 24, 6 and 6 joint cells and no 64 × 64 block.
+* The 5 × 5 row reproduces the published frame, the 109 blocks, the 709 cells
+  and the 39.4.
+* The IUT selects none at any kernel: where R exceeds the critical value at N̂,
+  the sample DOP exceeds its 5 % quantile.
+
+**F2's 663 signal cells** (same cell set at every kernel; G-F):
+
+| kernel | max sample CPR | cells > 1.3 | fraction CPR > 1 | selected | max CPR among selected |
+|---|---|---|---|---|---|
+| 5 × 5 | 1.406 | 11 | 22.2 % | 50 | 1.266 |
+| 7 × 7 | 1.269 | 0 | 17.2 % | 53 | 1.237 |
+| 9 × 9 | 1.186 | 0 | 14.9 % | 32 | 1.141 |
+
+No selected cell exceeds the band edge 1.2989 at any kernel, so the raw data
+agree with the identity. The 11 cells above 1.3 at 5 × 5 have DOP ≥ 0.13.
+
+### 19.5 A coherence-aware look count (G-G)
+
+`python backend/scripts/coherence_nhat.py` → `docs/coherence_nhat.json` (seeds
+20260937 and 20260938); `python backend/scripts/tail_calibration_ci.py
+--logratio-model-coherence` → `tail_calibration_ci.json::logratio_model_coherence_aware`
+(seed 20261012, B = 10⁴ for the rates, 1000 for the inflation).
+
+* **Estimator.** N solves
+  Var(ln R) = 2ψ₁(N) − 2 Σ_k κᵏ (k−1)! / (k (N)ₖ), κ = |γ|² from the mean
+  squared circular coherence, mean g² = κ + (1 − κ)² / N. The law of R for
+  κ > 0 replaces F(2N, 2N) in the test.
+* **Formula check.** Against Monte Carlo the series agrees to max |z| = 2.55
+  (N ≥ 5); the density integrates to 1 within 2.5 × 10⁻⁴.
+* **Simulation rows** (the rows of `enl_logratio.validation`, 10 scenes each,
+  median bias of N̂; the MC SE of each bias is ≤ 0.75 points):
+
+  | κ | standard | coherence-aware |
+  |---|---|---|
+  | 0 | +3.1 to +6.0 % | +1.9 to +5.9 % |
+  | 0.05 | +8.7 to +11.3 % | +2.6 to +5.4 % |
+  | 0.15 | +18.8 to +24.7 % | +2.1 to +5.7 % |
+  | 0.30 | +39.7 to +49.3 % | +0.6 to +5.2 % |
+
+  The residual +2–6 % is the spatial correlation of the looks, which the
+  coherence term does not touch.
+* **On the data.** The measured κ̂ is small: median 0.003 (IQR 0–0.016) on the 109
+  blocks; 61 % of folds have κ̂ > 0. The coherence-aware N̂ is 39.2 against 40.0.
+* **The held-out size does not fall to nominal.**
+
+  | blocks | 1 % | 5 % | 10 % | blocks above nominal at 5 % (expected) |
+  |---|---|---|---|---|
+  | 64 × 64 pass 1, standard | 1.80 % | 6.38 % | 11.50 % | 84 (48.7) |
+  | 64 × 64 pass 1, aware | 1.80 % | 6.38 % | 11.51 % | 84 (48.7) |
+  | 32 × 32 pass 1, standard / aware | 2.29 % / 2.28 % | 7.40 % / 7.40 % | 12.73 % / 12.74 % | 390 (224.2) |
+  | 32 × 32 pass 2, standard / aware | 3.73 % | 9.56 % | 14.78 % | 48 (22.3) |
+
+* **Inflation that does make it nominal** (coherence-aware arm; critical value
+  c × the F quantile, block-bootstrap 95 %; equivalent look-count deflation ν,
+  N̂/ν in the test):
+
+  | blocks | 1 % | 5 % | 10 % |
+  |---|---|---|---|
+  | 64 × 64 pass 1, c | 1.066 (1.042–1.096) | 1.032 (1.022–1.044) | 1.021 (1.013–1.029) |
+  | 64 × 64 pass 1, ν | 1.25 | 1.17 | 1.14 |
+  | 32 × 32 pass 1, c | 1.092 | 1.050 | 1.036 |
+  | 32 × 32 pass 2, c | 1.188 | 1.095 | 1.066 |
+
+### 19.6 The S-band product (G-H)
+
+The bundle holds an S-band SLI for the same acquisition.
+`python backend/scripts/stokes_from_slc.py --product 20200808S` →
+`docs/stokes_from_slc_20200808S.json`; `python backend/scripts/band_s_v20.py` →
+`docs/band_s.json` and `docs/enl_logratio.json::band_S_20200808`.
+* **Frame.** 24 288 joint-rule cells (0.413 %; DOP < 0.13 in 1.456 %), IUT 0.
+  The 64 × 64 blocks' median N is 46.5 (IQR 37.3–53.3; 109 blocks); the selected
+  cells' median local N̂ is 47.0, with 638 at or above 79.6 and none above the
+  critical value at its estimate.
+* **F2.** 663 signal cells; 29 selected, IUT 0, none significant. Median
+  CPR 0.75, DOP 0.21, coherence 0.17. Maximum sample CPR 1.288; none above 1.3;
+  9.5 % above 1; maximum CPR among the selected 1.198.
+* **Discs, pass 1.** Sunlit 47/843 = 5.6 % (4.2–7.3); shadowed 40/271 = 14.8 %
+  (11.0–19.5); mixed 9/186 = 4.8 %.
+* **Overlap with L-band.** 2495 cells are selected in both bands: 9.4 % of the
+  L-band selections, 10.3 % of the S-band ones, against about 109 expected if
+  independent.
+* **Noise scan.** The nominal S-band `nes0` (−27.7 / −28.0 dB) violates the
+  coherence bound in 1.80 % of cells against a 0.022 % baseline; see §19.2.
+
+### 19.7 Figures (G-C, S1 and S4)
+
+* **Fig. 4.** `paper/make_fig_region.py` (copied from `Claude outputs/grsl/`,
+  reading `docs/region_design_curve.json`) → `paper/fig_region_design.pdf`.
+  13 of its 14 PDF streams are byte-identical to the reference copy; the 14th
+  holds the creation date. The page is 228.707 × 175.121 pt in both. It is in
+  G26.
+* **fig_cpr_dop.** The legend moved left and its last entry is now "coupling
+  curve", so it no longer covers the curve's upper branch (DOP > 0.69, CPR > 5)
+  and clears the "DOP = 0.13" label. **The inset's shading changed:** only the
+  admissible wedge is shaded (DOP from |q| to 0.13 with 1 < CPR < 1.2989), so
+  the caption "with the band 1 < CPR < 1.2989 shaded" should read "with the
+  admissible band shaded". The "band" label is no longer clipped.
+* **fig_joint_power.** The in-band minimum is open-marked every other point
+  (2.8 pt, 0.7 pt edge); the y-label is "selection rate or power (%)".
+* **fig_scene.** The (b) window in (a) is white instead of the F2-disc red.
+* **Heights at \columnwidth (3.5 in).**
+
+  | figure | height |
+  |---|---|
+  | `fig_scene.pdf` | 2.12 in |
+  | `fig_cpr_dop.pdf` | 2.21 in |
+  | `fig_joint_power.pdf` | 2.38 in |
+  | `fig_region_design.pdf` | 2.68 in |
+
+  There is no Type 3 font in any figure.
+
+### 19.8 The v20 audit (S2)
+
+Manuscript v19 and its supplement were re-keyed.
+
+| file | PASS | MISMATCH | ABSENT | NO SOURCE | quantified |
+|---|---|---|---|---|---|
+| submission | 389 | 0 | 0 | 4 | 50: 30 checked, 20 exempt, 0 unchecked |
+| master | 389 | 0 | 0 | 4 | as submission |
+| supplement | 197 | 0 | 0 | 1 | 34: 11 checked, 23 exempt, 0 unchecked |
+
+* **Baseline before the pass.** The submission had 347 PASS, 1 MISMATCH
+  (`v18_f2_pow`, the "below 0.5 %" that v19 corrected to "about 0.6 %"),
+  3 NO SOURCE, 2 ABSENT and 4 unchecked quantified sentences.
+* **Retired, with reasons.** 5 rows and 2 quantified rows (`RETIRED_V20`). One of
+  them, `v18_in_lo`, had turned into a coincidental match with the mixed discs'
+  10.6 %. No row keyed the noise-corrected counts (26 462 → 23 784; F2 48 and
+  39), which the v19 text had already withdrawn.
+* **New rows.** 44 AUDIT, 10 DERIVED, 1 STRING and 3 QUANTIFIED rows, 14 supplement
+  rows, and 3 main and 3 supplement exemptions.
+* **NO SOURCE.** `floor38` and `floor6` are closed forms; `v18_stacy` and
+  `v20_sinha_47` are literature values (the 47 % of F2's interior from Sinha et
+  al.); the supplement's `x_bound` is a closed form.
+* **Half-up tie.** 9.05 % (181 of 2000 regions) is printed 9.1, so its row is a
+  DERIVED one with a 0.051 tolerance. The supplement's Table S2 cell that v18a
+  printed as 1.3 is now printed as 1.25, and its row follows.
+* **Cross-check.** 341/342 (submission and master; the exception, 3500, is an
+  APPROX row) and 248/250 (supplement; two grid lists).
+* **Gates.** `G26` now builds and inspects Fig. 4; `G33` checks G-A to G-H from
+  stored cells (`--inject ladder|recon|identity|coherence`).
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -4798,21 +5109,23 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `37d8624`.
+Stamped at commit `c086be7`.
 
 | artifact | sha256 | sections |
 |---|---|---|
 | `data/pradan/lola/horizon_240m.provenance.json` | `f84a64b1ae849b27…` | §5.4, §5.6, §8.4 |
 | `data/pradan/lola/ldem_frame_25m.provenance.json` | `3cca8d4243ef625b…` | §8.1, §8.2, §8.4 |
 | `docs/antialias_sigma.json` | `f6a2ee114aaf9a56…` | §8.1 |
+| `docs/band_s.json` | `19af8674985c1ab0…` | §19.6 |
 | `docs/bootstrap_enl.json` | `5f4239f07f372c3f…` | §7.3.1 |
 | `docs/calibration_example.json` | `5f0753e6e92fd192…` | §14.1 |
+| `docs/coherence_nhat.json` | `4b3e4976f39b517a…` | §19.5 |
 | `docs/complex_cell_ceiling.json` | `4f0f922c67d0768c…` | §16.5 |
 | `docs/complex_grid_correlation.json` | `c49e76f838772719…` | §16.3, §16.6 |
 | `docs/composite_contrast.json` | `994f951f2a1acd84…` | §8.7 |
 | `docs/cpr_dispersion.json` | `b966a379b1af3cba…` | §7.10 |
 | `docs/cpr_significance.json` | `1343f1198d3c67bf…` | §7.7, §7.9.1, §7.9.2, §7.9.3, §7.9.4 |
-| `docs/crater_level_real.json` | `7e67812c389f4f4f…` | §17.3, §18.2 |
+| `docs/crater_level_real.json` | `7b96b994c60465ee…` | §17.3, §18.2, §19.1, §19.3 |
 | `docs/decision_rule.json` | `19cc84e41695299c…` | §15.8, §16.2, §16.6 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `16707f02b03be20c…` | §11.1, §11.2, §11.3 |
@@ -4823,7 +5136,7 @@ Stamped at commit `37d8624`.
 | `docs/enl_estimator_spec.json` | `95577a403a4d57be…` | §7.3.1 |
 | `docs/enl_generality.json` | `3c9ae9ed9dc17e7e…` | §7.4a |
 | `docs/enl_interval_validation.json` | `ad9514471b8885a6…` | §14.5 |
-| `docs/enl_logratio.json` | `dcfbf30d8879d4ae…` | §15.3, §16.7, §18.6 |
+| `docs/enl_logratio.json` | `fb3061435323f54b…` | §15.3, §16.7, §18.6, §19.6 |
 | `docs/enl_predictions.json` | `a593830d7c84b2de…` | §7.4a |
 | `docs/f2_complex_product.json` | `55a6fd2483c2bd5e…` | §17.2 |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
@@ -4836,6 +5149,7 @@ Stamped at commit `37d8624`.
 | `docs/joint_power_curve.json` | `4bc131519cb2149e…` | §15.2, §15.7, §16.1 |
 | `docs/kclutter.json` | `ae285515e3abdb5d…` | §7.13 |
 | `docs/kclutter_within_cell.json` | `93d4c0a800dd55be…` | §7.13 |
+| `docs/kernel_sweep.json` | `a6c38bb8c8e4185a…` | §19.4 |
 | `docs/landing_sites.json` | `68b77ca3e47eeefc…` | §9.6, §9.7 |
 | `docs/literature_screen.json` | `d5ff73f7ec44aea2…` | §13.1 |
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
@@ -4854,14 +5168,15 @@ Stamped at commit `37d8624`.
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_chain.json` | `c404ef43393174b6…` | §18.7 |
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
-| `docs/snr_control.json` | `98f2a3cc114c382d…` | §18.1, §18.7 |
+| `docs/snr_control.json` | `08956a7a8b0710dc…` | §18.1, §18.7, §19.2 |
 | `docs/solar_model_ab.json` | `c8c57b02601626d1…` | §5.3, §5.10 |
 | `docs/stationarity.json` | `4d72eb5cd1877932…` | §7.3.3 |
 | `docs/stokes_from_slc.json` | `cf47bccb7fa4c245…` | §1.11, §14.7, §15.7 |
 | `docs/stokes_from_slc_20200305.json` | `e5eca2c112a2a157…` | §15.5 |
 | `docs/stokes_from_slc_20200305_block32.json` | `a3b893d7f7c5399d…` | §15.5 |
+| `docs/stokes_from_slc_20200808S.json` | `47810e0b83fd58dc…` | §19.6 |
 | `docs/stokes_from_slc_block32.json` | `453a44d7e23d5df6…` | §15.5 |
-| `docs/tail_calibration_ci.json` | `1afd6cb1446dd34e…` | §15.6, §18.5 |
+| `docs/tail_calibration_ci.json` | `5df59d5bd6459153…` | §15.6, §18.5, §19.5 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |

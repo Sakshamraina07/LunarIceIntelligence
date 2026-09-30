@@ -831,19 +831,13 @@ AUDIT = [
     ('v18_f2_indep', '6.7', 'docs/region_design_curve.json',
      'translation.crater_F2.complex_product.independent_samples', 'VI', '663 cells / 99.6 px'),
     ('v18_f2_262', '262', 'docs/region_design_curve.json', 'translation.crater_F2.complex_product.N_eff_at_39p4', 'VI', None),
-    ('v18_f2_pow', '0.5', 'docs/region_design_curve.json', 'f2_point.iut_power.{CPR 1.1 DOP min}.conditioned.percent', 'VI',
-     "'where the IUT's power is below 0.5 %': the computed power at N = 262.3 is 0.578 +/- 0.017 % "
-     "(region_design_curve --f2-point). A MISMATCH here is a finding, not an audit error"),
     # VI-C: the 1888 discs
     ('v18_out_n', '1331', 'docs/crater_level_real.json', 'summary.outside.discs', 'VI', None),
     ('v18_in_n', '281', 'docs/crater_level_real.json', 'summary.inside.discs', 'VI', None),
     ('v18_mix_n', '276', 'docs/crater_level_real.json', 'summary.mixed.discs', 'VI', None),
     ('v18_out_rate', '5.7', 'docs/crater_level_real.json', 'summary.outside.rule.p_ge_1', 'VI', 'fraction stored'),
-    ('v18_out_lo', '4.6', 'docs/crater_level_real.json', 'summary.outside.rule.p_ge_1_wilson95[0]', 'VI', 'Wilson'),
     ('v18_out_hi', '7.1', 'docs/crater_level_real.json', 'summary.outside.rule.p_ge_1_wilson95[1]', 'VI', None),
     ('v18_in_rate', '14.2', 'docs/crater_level_real.json', 'summary.inside.rule.p_ge_1', 'VI', 'VI-C and VIII'),
-    ('v18_in_lo', '10.6', 'docs/crater_level_real.json', 'summary.inside.rule.p_ge_1_wilson95[0]', 'VI', None),
-    ('v18_in_hi', '18.8', 'docs/crater_level_real.json', 'summary.inside.rule.p_ge_1_wilson95[1]', 'VI', None),
     ('v18_mix_rate', '6.2', 'docs/crater_level_real.json', 'summary.mixed.rule.p_ge_1', 'VI', None),
     ('v18_p1_out', '8.8', 'docs/crater_level_real.json', 'per_pass_class.20200808_outside.ge1.rate', 'VI', 'pass 1, sunlit'),
     ('v18_p1_out_lo', '7.0', 'docs/crater_level_real.json', 'per_pass_class.20200808_outside.ge1.wilson95[0]', 'VI', None),
@@ -865,12 +859,89 @@ AUDIT = [
     ('v18_sun_dop', '0.74', 'docs/crater_level_real.json', 'simulation_sunlit.population.dop', 'VI', None),
     ('v18_mix_pred', '7.0', 'docs/crater_level_real.json', 'simulation_per_disc_mixture.predicted_p_ge_1', 'VI',
      'the v17a run (seed 20261009): 6.99 %; the v18a rerun of the same design gives 7.18 +/- 0.07 %'),
-    ('v18_mix_se', '0.1', 'docs/crater_level_real.json', 'simulation_per_disc_mixture.predicted_p_ge_1_se', 'VI', None),
     # VII / VIII
     ('v18_dopfrac_concl', '1.5', 'docs/stokes_from_slc.json', 'results.invariant.dop_below_threshold.fraction', 'VIII',
      "conclusion table '1.5 %' (III prints 1.50, row dop_frac)"),
     ('v18_stacy', '2.4', None, None, 'VII',
      "literature value: Stacy et al. 1997 feature F, 'CPR of 2.4 +- 0.14', verified verbatim (master log OPEN-34)"),
+
+    # ---- v20 (2026-09-30): manuscript v19 -------------------------------------
+    # I / IV: the region-mean statistic
+    ('v20_rm_34', '34', 'docs/region_mean_null.json',
+     'results.{CPR 0.7 DOP 0.176}.{N39.4}.cells260.correlated.p_mean_dop_lt_0p13', 'IV',
+     "'34 % of the 260-cell regions that contain such pixels': P(mean DOP < 0.13) over the regions with a CPR >= 1 cell"),
+    ('v20_rm_76', '7.6', 'docs/region_mean_null.json',
+     'results.{CPR 0.7 DOP 0.176}.{N39.4}.cells260.independent.p_mean_dop_lt_0p13', 'IV', '(7.6 % with independent cells)'),
+    ('v20_rm_27', '2.7', 'docs/region_mean_null.json',
+     'results.{CPR 0.7 DOP 0.176}.{N39.4}.cells3647.correlated.p_mean_dop_lt_0p13', 'IV', 'in 2.7 % of 3647-cell ones'),
+    # I / IV: NP bound at 55 and 573
+    ('v20_np55', '16.6', 'docs/np_power_bound.json', 'curve[?N=55].bound_percent', 'V', 'the bound at N = 55'),
+    ('v20_573', '573', 'docs/decision_rule.json',
+     'product.20200808.published_rule_cells.local_N_hat_counts.n_ge_79p6166', 'V',
+     "'573 of the rule's selections above 79.6 by that estimator' (N-hat from all cells of the window)"),
+    # V-A: the selected cells
+    ('v20_selR', '1.07', 'docs/enl_logratio.json', 'pass_20200808.selected.R.median', 'V', "'the selected cells' median R is 1.07'"),
+    ('v20_sel_crit2', '2', 'docs/enl_logratio.json', 'pass_20200808.selected.n_R_above_crit_at_local_N', 'V',
+     "'the 2 of those that exceed the critical value at their estimate' (small integer: presence check only)"),
+    ('v20_split_a', '39.7', 'docs/enl_logratio.json', 'split_sample.select_even_estimate_odd.N_logratio.median', 'V',
+     'blocks chosen on the even rows, N estimated on the odd'),
+    ('v20_split_b', '39.6', 'docs/enl_logratio.json', 'split_sample.select_odd_estimate_even.N_logratio.median', 'V', 'the swap'),
+    # V-B: regions
+    ('v20_28p6', '28.6', 'docs/region_design_curve.json',
+     'correlated_cells.by_population.{null CPR 1.00 DOP 0}.1.N_eff_log_ratio', 'V', 'looks per cell of the correlated cells'),
+    # V-C: F2
+    ('v20_f2_461', '461', 'docs/f2_complex_product.json', 'passes.20200808.craters.F2.cells_nonzero_both_channels', 'V',
+     '461 non-zero in both channels before the boxcar'),
+    ('v20_f2_pow', '0.6', 'docs/region_design_curve.json', 'f2_point.iut_power.{CPR 1.1 DOP min}.conditioned.percent', 'V',
+     "'about 0.6 %': the computed power at N = 262.3 is 0.578 +/- 0.017 %"),
+    ('v20_snr_sel', '12.7', 'docs/snr_control.json', 'snr_distributions.selected_20200808.quantiles_db.50', 'V',
+     "median min SNR of the selected cells, dB above the label's nes0 (nominal reading)"),
+    ('v20_snr_all', '10.1', 'docs/snr_control.json', 'snr_distributions.all_matched_20200808.quantiles_db.50', 'V', 'all matched cells'),
+    ('v20_bs_out_lo', '3.6', 'docs/crater_level_real.json', 'spatial.block_bootstrap.outside.block_bootstrap95[0]', 'V',
+     'sunlit discs, 5 x 5 block bootstrap'),
+    ('v20_bs_out_hi', '8.1', 'docs/crater_level_real.json', 'spatial.block_bootstrap.outside.block_bootstrap95[1]', 'V', None),
+    ('v20_bs_in_lo', '7.6', 'docs/crater_level_real.json', 'spatial.block_bootstrap.inside.block_bootstrap95[0]', 'V',
+     'shadowed discs'),
+    ('v20_bs_in_hi', '22.5', 'docs/crater_level_real.json', 'spatial.block_bootstrap.inside.block_bootstrap95[1]', 'V', None),
+    ('v20_mh_all_lo', '0.34', 'docs/crater_level_real.json', 'mantel_haenszel_inside_vs_outside.all.ci95[0]', 'V', None),
+    ('v20_mh_all_hi', '1.05', 'docs/crater_level_real.json', 'mantel_haenszel_inside_vs_outside.all.ci95[1]', 'V', None),
+    ('v20_mh_p1', '0.44', 'docs/crater_level_real.json', 'mantel_haenszel_inside_vs_outside.20200808.or', 'V', 'this pass alone'),
+    ('v20_mh_p1_lo', '0.25', 'docs/crater_level_real.json', 'mantel_haenszel_inside_vs_outside.20200808.ci95[0]', 'V', None),
+    ('v20_mh_p1_hi', '0.80', 'docs/crater_level_real.json', 'mantel_haenszel_inside_vs_outside.20200808.ci95[1]', 'V', None),
+    ('v20_lg_coh', '-22.5', 'docs/crater_level_real.json', 'logistic_fires.coefficients.median_coherence.estimate', 'V', None),
+    ('v20_lg_coh_se', '2.0', 'docs/crater_level_real.json', 'logistic_fires.coefficients.median_coherence.se', 'V', None),
+    ('v20_lg_psr', '-0.40', 'docs/crater_level_real.json', 'logistic_fires.coefficients.class_inside_psr.estimate', 'V', None),
+    ('v20_lg_psr_se', '0.38', 'docs/crater_level_real.json', 'logistic_fires.coefficients.class_inside_psr.se', 'V', None),
+    ('v20_lg_snr', '-0.08', 'docs/crater_level_real.json', 'logistic_fires.coefficients.median_min_snr_db.estimate', 'V', 'per dB'),
+    ('v20_lg_snr_se', '0.06', 'docs/crater_level_real.json', 'logistic_fires.coefficients.median_min_snr_db.se', 'V', None),
+    ('v20_mix_pred_sunlit', '7.2', 'docs/crater_level_real.json',
+     'simulation_per_disc_mixture_all_classes.by_pass_class.all_outside.predicted_p_ge_1', 'V', 'second seed'),
+    ('v20_mix_pred_inside', '12.6', 'docs/crater_level_real.json',
+     'simulation_per_disc_mixture_all_classes.by_pass_class.all_inside.predicted_p_ge_1', 'V', 'the shadowed discs'),
+    ('v20_mix_pred_mixed', '10.6', 'docs/crater_level_real.json',
+     'simulation_per_disc_mixture_all_classes.by_pass_class.all_mixed.predicted_p_ge_1', 'V', 'the mixed discs (against 6.2 %)'),
+    ('v20_mix_pred_p2', '1.8', 'docs/crater_level_real.json',
+     'simulation_per_disc_mixture_all_classes.by_pass_class.20200305_outside.predicted_p_ge_1', 'V',
+     "the second pass's sunlit discs (against 0.4 %)"),
+    # V-D: the log-ratio model, held out
+    ('v20_lr_1', '1.80', 'docs/tail_calibration_ci.json', 'logratio_model.results.{20200808_64px}.levels.1pct.pooled', 'V', None),
+    ('v20_lr_5', '6.38', 'docs/tail_calibration_ci.json', 'logratio_model.results.{20200808_64px}.levels.5pct.pooled', 'V', None),
+    ('v20_lr_10', '11.50', 'docs/tail_calibration_ci.json', 'logratio_model.results.{20200808_64px}.levels.10pct.pooled', 'V', None),
+    ('v20_lr_84', '84', 'docs/tail_calibration_ci.json', 'logratio_model.results.{20200808_64px}.levels.5pct.blocks_above_nominal', 'V', None),
+    ('v20_lr_487', '48.7', 'docs/tail_calibration_ci.json',
+     'logratio_model.results.{20200808_64px}.levels.5pct.expected_above_if_exactly_calibrated', 'V', None),
+    ('v20_lr_32a', '7.40', 'docs/tail_calibration_ci.json', 'logratio_model.results.{20200808_32px}.levels.5pct.pooled', 'V', '32 x 32, this pass'),
+    ('v20_lr_32b', '9.56', 'docs/tail_calibration_ci.json', 'logratio_model.results.{20200305_32px}.levels.5pct.pooled', 'V', '32 x 32, second pass'),
+    # III / IV: handedness and the instrument paper
+    ('v20_hand_1p51', '1.51', 'docs/handedness.json', 'physical_check.20200808.0_deg.fraction_cpr_lt_1', 'IV',
+     'the other sign: fraction of cells with CPR < 1 on this pass, stored as a fraction'),
+    ('v20_hand_ar', '0.4', 'docs/slc_chain.json', 'instrument_paper.axial_ratio.spec_L_hybrid_db', 'IV',
+     "the specified L-band hybrid-pol transmit axial ratio, dB (Bhiravarasu et al. 2021, Table 1)"),
+    ('v20_hand_99', '99.99', 'docs/handedness.json', 'physical_check.20200305.180_deg.fraction_cpr_lt_1', 'IV',
+     'the second pass, adopted sign'),
+    ('v20_sinha_47', '47', None, None, 'IV',
+     "LITERATURE: Sinha et al. 2026 (Nature), 'about 47% and 42% of their interiors' (F2, F3), fetched from nature.com "
+     "and transcribed in the master log OPEN-35; no repository artifact holds it, so the audit reports NO SOURCE by design"),
 ]
 
 #: Arithmetic checked here, with the inputs audited on their own rows.
@@ -968,6 +1039,37 @@ DERIVED = [
     # VI-C: 'never fired in 10^4 trials' (crater_level_real.simulation_sunlit)
     ("v18_never_trials", 10000.0, lambda: _j("docs/crater_level_real.json")["simulation_sunlit"]["trials"], 0.0),
     ("v18_never_fired", 0.0, lambda: _j("docs/crater_level_real.json")["simulation_sunlit"]["rule"]["p_ge_1"], 0.0),
+
+    # ---- v20 (manuscript v19) ------------------------------------------------
+    # abstract: 'in 28 % of simulated 260-cell regions at a CPR of 0.7' -- the
+    # unconditional fraction: P(mean DOP < 0.13 | a CPR >= 1 cell) x the fraction of regions with one
+    ("v20_rm_28", 28.0, lambda: 100 * _j("docs/region_mean_null.json")["results"]["CPR 0.7 DOP 0.176"]["N39.4"]["cells260"]
+     ["correlated"]["p_mean_dop_lt_0p13"] * _j("docs/region_mean_null.json")["results"]["CPR 0.7 DOP 0.176"]["N39.4"]
+     ["cells260"]["correlated"]["regions_evaluated"] / _j("docs/region_mean_null.json")["trials"]["correlated"]["260"], 0.5),
+    # IV: 'at most 41 %, at one look' -- P(F(2,2) > 1/0.7) = 0.7 / 1.7
+    # an exact tie (181 / 2000 = 9.05 %) printed half-up as 9.1: a DERIVED row, tolerance 0.051 points
+    ("v20_rm_91", 9.1, lambda: 100 * _j("docs/region_mean_null.json")["results"]["CPR 1.00 DOP 0"]["N39.4"]["cells260"]
+     ["correlated"]["p_mean_dop_lt_0p13"], 0.051),
+    ("v20_f22_41", 41.0, lambda: 100 * 0.7 / 1.7, 0.5),
+    # IV: 'a population CPR of at least 0.89 at one look or 0.98 at 39.4': CPR c with P(F(2N,2N) > 1/c) = 0.47
+    ("v20_cpr47_n1", 0.89, lambda: __import__("scipy.optimize", fromlist=["brentq"]).brentq(
+        lambda c: __import__("scipy.stats", fromlist=["f"]).f.sf(1 / c, 2, 2) - 0.47, 0.1, 1.0), 5e-3),
+    ("v20_cpr47_n394", 0.98, lambda: __import__("scipy.optimize", fromlist=["brentq"]).brentq(
+        lambda c: __import__("scipy.stats", fromlist=["f"]).f.sf(1 / c, 78.8, 78.8) - 0.47, 0.5, 1.5), 5e-3),
+    # abstract / V-A: 'about 19 % at the 70 looks their averaging supports': the NP bound interpolated on log N
+    # between its grid points 55 and 80
+    ("v20_np70", 19.0, lambda: (lambda c: float(__import__("numpy").interp(__import__("math").log(70.0),
+        [__import__("math").log(x["N"]) for x in c], [x["bound_percent"] for x in c])))(
+        sorted(_j("docs/np_power_bound.json")["curve"], key=lambda x: x["N"])), 0.5),
+    # IV: the specified 0.4 dB transmit axial ratio over the four phases: DOP < 0.13 fraction and joint fraction, %
+    ("v20_ell04_dop_lo", 1.13, lambda: 100 * min(_j("docs/snr_control.json")["headline"][f"ellipticity_0.4dB_phi{p}"]
+        ["frame_dop_fraction_pass1"] for p in (0, 90, 180, 270)), 5e-3),
+    ("v20_ell04_dop_hi", 1.72, lambda: 100 * max(_j("docs/snr_control.json")["headline"][f"ellipticity_0.4dB_phi{p}"]
+        ["frame_dop_fraction_pass1"] for p in (0, 90, 180, 270)), 5e-3),
+    ("v20_ell04_joint_lo", 0.33, lambda: 100 * min(_j("docs/snr_control.json")["headline"][f"ellipticity_0.4dB_phi{p}"]
+        ["frame_joint_fraction_pass1"] for p in (0, 90, 180, 270)), 5e-3),
+    ("v20_ell04_joint_hi", 0.52, lambda: 100 * max(_j("docs/snr_control.json")["headline"][f"ellipticity_0.4dB_phi{p}"]
+        ["frame_joint_fraction_pass1"] for p in (0, 90, 180, 270)), 5e-3),
 ]
 
 #: "about X": compared at a stated RELATIVE tolerance, because the manuscript
@@ -998,6 +1100,9 @@ STRINGS = [
 
     ("v18_gen_product", "ch2_sar_ncxl_20200305t114902885", "docs/enl_L_20200305.json", "label.source", "II",
      "the second acquisition, printed without its suffix"),
+
+    ("v20_lhcp", "left-hand circular", "docs/handedness.json", "instrument_paper.transmit_circular_sense.value", "IV",
+     "'the instrument paper gives left-hand circular as the default transmit': the artifact's value begins with it"),
 ]
 
 #: QUANTIFIED CLAIMS -- "all", "every", "each", "identical", "in every one of".
@@ -1116,10 +1221,6 @@ QUANTIFIED = [
 
 
     # ---- v18a ---------------------------------------------------------------
-    ("q_v18_abs_every_sel", r"confines every\s+selected cell",
-     [("docs/stokes_from_slc.json", "results.invariant.t3f_coupling_band.fraction_outside", ("equals", 0.0)),
-      ("docs/stokes_from_slc.json", "results.invariant.t3f_coupling_band.band[1]", ("below", 1.299))],
-     "I", "abstract: as q_v14_concl_selected"),
     ("q_v18_f2_none_sig", r"none(?:\s|\\,)+significant",
      [("docs/f2_complex_product.json", "passes.20200808.craters.F2.selected_with_R_gt_crit_at_N_hat", ("equals", 0.0)),
       ("docs/f2_complex_product.json", "passes.20200808.craters.F2.selected_cells[*].R_gt_crit", ("all_are", False)),
@@ -1135,15 +1236,25 @@ QUANTIFIED = [
      [("docs/crater_level_real.json", "summary.outside.iut.p_ge_1", ("equals", 0.0)),
       ("docs/crater_level_real.json", "summary.inside.iut.p_ge_1", ("equals", 0.0)),
       ("docs/crater_level_real.json", "summary.mixed.iut.p_ge_1", ("equals", 0.0))], "VI", "all 1888 discs"),
-    ("q_v18_iut_no_cell", r"IUT selects no cell on either pass",
-     [("docs/decision_rule.json", "product.20200808.iut_selects", ("equals", 0.0)),
-      ("docs/decision_rule.json", "product.20200305.iut_selects", ("equals", 0.0))], "VI", None),
     ("q_v18_texture_zero", r"every interval procedure tested covers 0",
      [("docs/enl_interval_validation.json", "rows[?texture=order 8].coverage.block2d_percentile.95.coverage", ("equals", 0.0)),
       ("docs/enl_interval_validation.json", "rows[?texture=order 8].coverage.block2d_basic.95.coverage", ("equals", 0.0)),
       ("docs/enl_interval_validation.json", "rows[?texture=order 8].coverage.parametric_neyman.95.coverage", ("equals", 0.0)),
       ("docs/enl_interval_validation.json", "rows[?texture=order 8].coverage.parametric_basic.95.coverage", ("equals", 0.0))],
      "V", "as q_v11_texture_zero (now in S-V)"),
+
+    # ---- v20 (manuscript v19) ------------------------------------------------
+    ("q_v19_abs_every_vector", r"for every Stokes\s+vector",
+     [("docs/stokes_from_slc.json", "results.invariant.t3f_coupling_band.fraction_outside", ("equals", 0.0)),
+      ("docs/stokes_from_slc.json", "results.invariant.t3f_coupling_band.band[1]", ("below", 1.299))],
+     "I", "abstract: a cell that meets the criterion has CPR < 1.299 (the identity; no measured cell outside the band)"),
+    ("q_v19_iut_no_cell", r"selects no cell on either pass",
+     [("docs/decision_rule.json", "product.20200808.iut_selects", ("equals", 0.0)),
+      ("docs/decision_rule.json", "product.20200305.iut_selects", ("equals", 0.0))], "V", None),
+    ("q_v19_iut_none_discs", r"the IUT fires in\s+none",
+     [("docs/crater_level_real.json", "summary.outside.iut.p_ge_1", ("equals", 0.0)),
+      ("docs/crater_level_real.json", "summary.inside.iut.p_ge_1", ("equals", 0.0)),
+      ("docs/crater_level_real.json", "summary.mixed.iut.p_ge_1", ("equals", 0.0))], "VIII", "all 1888 discs"),
 ]
 
 #: Quantified rows retired by v11, with the reason.
@@ -1213,6 +1324,12 @@ QUANTIFIER_EXEMPT = [
     (r"each within 4\\,\\%", "DERIVED v18_within4: the largest relative excess of the IUT's 80 % point over the "
      "NP bound's at minimum DOP is 3.38 %"),
     (r"simulating each sunlit", "method: one simulation per disc (1331 discs, crater_level_real.simulation_per_disc_mixture)"),
+
+    # ---- v20 (manuscript v19) ------------------------------------------------
+    (r"1600 cells\s+of 28\.6 looks each", "method: 28.6 looks per cell is the per-cell look count of the correlated "
+     "simulation (v20_28p6); 584 / 675 are keyed"),
+    (r"simulating each disc at its own", "method: one simulation per disc at its own median population (1331 sunlit discs)"),
+    (r"none among the published rule's\s+selections", "keyed: decision_rule published_rule_cells n_ge_218 = 0 (q_v17_none_254)"),
 ]
 
 #: The Supplementary Material (v17a): S-I (Mini-RF moments) and S-II (the
@@ -1454,7 +1571,7 @@ SUPPLEMENT_AUDIT = [
     ('s2_e40_c07m_ge5', '45.6', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.p_at_least_5_cells.rate', 'S-III', 'Table S2, ice-free CPR 0.7 DOP min 0.1765, N39'),
     ('s2_e40_c07m_mean', '6.6', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.joint_rule.mean_cells_selected', 'S-III', 'Table S2, ice-free CPR 0.7 DOP min 0.1765, N39'),
     ('s2_e40_c07m_crit', '17.1', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.cpr_only.at_achieved_enl.p_at_least_1_pixel.rate', 'S-III', 'Table S2, ice-free CPR 0.7 DOP min 0.1765, N39'),
-    ('s2_e40_c07m_1895', '1.3', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.cpr_only.at_1p895.p_at_least_1_pixel.rate', 'S-III', 'Table S2, ice-free CPR 0.7 DOP min 0.1765, N39'),
+    ('s2_e40_c07m_1895', '1.25', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP min 0.1765}.cpr_only.at_1p895.p_at_least_1_pixel.rate', 'S-III', 'Table S2, ice-free CPR 0.7 DOP min 0.1765, N39'),
     ('s2_e40_c0720_ge1', '65.7', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.joint_rule.p_at_least_1_cell.rate', 'S-III', 'Table S2, ice-free CPR 0.7 DOP 0.20, N39'),
     ('s2_e40_c0720_ge5', '38.7', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.joint_rule.p_at_least_5_cells.rate', 'S-III', 'Table S2, ice-free CPR 0.7 DOP 0.20, N39'),
     ('s2_e40_c0720_mean', '5.3', 'docs/f2_maximum.json', 'complex_field_v3.results.delivered_LH.N39.{ice-free CPR 0.7 DOP 0.20}.joint_rule.mean_cells_selected', 'S-III', 'Table S2, ice-free CPR 0.7 DOP 0.20, N39'),
@@ -1479,6 +1596,22 @@ SUPPLEMENT_AUDIT = [
     ('s3_f2_tmax', '4.12', 'docs/f2_maximum.json', 'complex_field_v2.crater_level_threshold.threshold_for_5pct_fwe',
      'S-III', "'a 5 % crater-level test needs 4.12'"),
     ('s3_f2_L11', '40.5', 'docs/f2_maximum.json', 'complex_field_v3_summary.delivered_N39_achieved_enl', 'S-III', None),
+
+    # ---- v20: S-III sentences of the v19 supplement (seeds and counts read from the artifacts) ----
+    ('s3v20_seed_clr', '20261009', 'docs/crater_level_real.json', 'seed', 'S-III', 'crater_level_real'),
+    ('s3v20_seed_mix', '20261010', 'docs/crater_level_real.json', 'simulation_per_disc_mixture_all_classes.seed', 'S-III', 'all-class mixture rerun'),
+    ('s3v20_mix_sunlit', '7.18', 'docs/crater_level_real.json', 'simulation_per_disc_mixture_all_classes.by_pass_class.all_outside.predicted_p_ge_1', 'S-III', None),
+    ('s3v20_mix_shadow', '12.6', 'docs/crater_level_real.json', 'simulation_per_disc_mixture_all_classes.by_pass_class.all_inside.predicted_p_ge_1', 'S-III', None),
+    ('s3v20_mix_mixed', '10.6', 'docs/crater_level_real.json', 'simulation_per_disc_mixture_all_classes.by_pass_class.all_mixed.predicted_p_ge_1', 'S-III', None),
+    ('s3v20_blocks', '146', 'docs/crater_level_real.json', 'spatial.block_bootstrap.outside.blocks', 'S-III', '5 x 5 disc-lattice blocks'),
+    ('s3v20_B', '2000', 'docs/crater_level_real.json', 'spatial.block_bootstrap.outside.B', 'S-III', None),
+    ('s3v20_events', '133', 'docs/crater_level_real.json', 'logistic_fires.events', 'S-III', 'discs with >= 1 selection'),
+    ('s3v20_n', '1888', 'docs/crater_level_real.json', 'logistic_fires.n', 'S-III', None),
+    ('s3v20_seed_het', '20261013', 'docs/region_design_curve.json', 'heterogeneous.seed', 'S-III', None),
+    ('s3v20_seed_f2p', '20261014', 'docs/region_design_curve.json', 'f2_point.seed', 'S-III', None),
+    ('s3v20_f2p_n', '262.3', 'docs/region_design_curve.json', 'f2_point.N', 'S-III', None),
+    ('s3v20_seed_rm', '20261011', 'docs/region_mean_null.json', 'seed', 'S-III', None),
+    ('s3v20_seed_lr', '20261012', 'docs/tail_calibration_ci.json', 'logratio_model.seed', 'S-III', None),
 ]
 
 SUPPLEMENT_QUANTIFIED = [
@@ -1548,6 +1681,11 @@ SUPPLEMENT_QUANTIFIER_EXEMPT = [
     (r"zero for every\s+admissible input", "algebraic; G31 checks it on corrupted inputs"),
     (r"none of\s+three candidate causes", "judgement over enl_L_20200305_full.json::candidate_causes; "
      "no per-cause numeric field"),
+
+    # ---- v20 (manuscript v19) ------------------------------------------------
+    (r"each sunlit disc at its\s+own", "method: one simulation per disc at its own median population and N-hat (S-III)"),
+    (r"Per cell, the SNR of each channel", "method: how SNR is formed (snr_control docstring)"),
+    (r"each cell is\s+simulated from its own population", "method: the heterogeneous-pooling design (region_design_curve.heterogeneous)"),
 ]
 
 #: Rows retired by v17a, with the reason.
@@ -1723,4 +1861,18 @@ RETIRED_QUANTIFIED_V18A = {
     'q_v11_texture_zero': 'moved to S-V (SUPPLEMENT_QUANTIFIED)',
     'q_v17_proxy_all': 'moved to S-IV (SUPPLEMENT_QUANTIFIED)',
     'q_v17_lift': 'moved to S-III (SUPPLEMENT_QUANTIFIED)',
+}
+
+#: Rows retired or re-anchored by v20 (2026-09-30) for manuscript v19, with the reason.
+RETIRED_V20 = {
+    'v18_f2_pow': "the IUT power at F2's 262 looks: v19 prints 'about 0.6 %' (row v20_f2_pow); the v18a row carried '0.5', the text it contradicted, and its MISMATCH was the finding that v19 applied",
+    'v18_out_lo': 'the Wilson interval of the sunlit discs 4.6--7.1: v19 prints the block-bootstrap interval 3.6--8.1 (rows v20_bs_*)',
+    'v18_in_lo': "the Wilson lower bound 10.6 of the shadowed discs: v19 prints 7.6--22.5; the literal 10.6 is now the mixed discs' predicted rate (row v20_mix_pred_mixed), so the old PASS would have been a coincidence",
+    'v18_in_hi': 'the Wilson upper bound 18.8 of the shadowed discs: v19 prints 7.6--22.5; the literal survives only in the 18.8 of IV-D (row wc_nu8)',
+    'v18_mix_se': "the +-0.1 % of the v17a mixture run: v19 prints '7.0 and 7.2 % ... over two seeds' (rows v18_mix_pred, v20_mix_pred_sunlit)",
+}
+
+RETIRED_QUANTIFIED_V20 = {
+    'q_v18_abs_every_sel': "abstract reworded: v19 says 'for every Stokes vector, a cell that meets the criterion has CPR < 1.299' (q_v19_abs_every_vector)",
+    'q_v18_iut_no_cell': "re-anchored: v19 VI-B reads 'the IUT, with N-hat from all cells of the window (...), selects no cell on either pass' (q_v19_iut_no_cell)",
 }

@@ -4,6 +4,9 @@ tail_calibration_ci.py -- intervals on the held-out tail calibration, and whethe
 (council work order, Task 6)
 
     python backend/scripts/tail_calibration_ci.py
+    python backend/scripts/tail_calibration_ci.py --logratio-model-coherence   (v20 G-G: the
+        same held-out test beside a coherence-aware N_hat; adds the critical-value
+        inflation and look-count deflation that make the size nominal; merged)
     python backend/scripts/tail_calibration_ci.py --logratio-model   (v18a N5: the
         held-out test of F(2 N_hat, 2 N_hat) with the log-ratio N_hat; merged)
 
@@ -182,9 +185,147 @@ def logratio_model() -> dict:
 
 
 NOMINAL = (0.01, 0.05, 0.10)
+B_INFL = 1000
+
+
+def logratio_model_coherence() -> dict:
+    """v20 G-G: the held-out test of F(2 N_hat, 2 N_hat) again, now beside a
+    coherence-aware N-hat (coherence_nhat.py) and the correlated-ratio law it
+    implies. Same 109 blocks (and the 32 x 32 ones), same two row folds, same
+    statistic z = R / median x q_0.5; both estimators in one pass so the
+    comparison is paired. Reports the held-out size at 1 / 5 / 10 %, and, where
+    it is not nominal, the critical-value inflation c (reject above c x q_(1-a))
+    and the look-count deflation nu (N-hat / nu in the test) that make the
+    pooled held-out size equal the nominal level, c with a block-bootstrap
+    interval, nu as a point solve."""
+    import stokes_from_slc as SFS
+    from scipy.optimize import brentq
+    import enl_logratio as L
+    import coherence_nhat as CN
+    out, cache = {}, {}
+    for tag, rel in SOURCES.items():
+        pid, k = PASS_OF[tag]
+        per_src = json.loads((BASE_DIR / rel).read_text(encoding="utf-8"))["results"]["t3e"]["180_deg"][
+            "tail_calibration"].get("per_block", [])
+        if not per_src:
+            out[tag] = {"blocks": 0}
+            continue
+        if pid not in cache:
+            SFS.configure(pid)
+            hh, vv, hv, _ = SFS.build_coherency(0)
+            s0, s1, s2, s3 = hh + vv, hh - vv, 2.0 * hv.real, -2.0 * hv.imag
+            m = (hh > 0) & (vv > 0) & (s0 > 0)
+            cpr = SFS.cpr_from(s0, s3, m).astype(np.float64)
+            den = s0 ** 2 - s3 ** 2
+            g2 = np.where(m & (den > 0), (s1 ** 2 + s2 ** 2) / np.where(den > 0, den, 1.0), np.nan)
+            cache = {pid: (cpr, g2, m)}
+            del hh, vv, hv, s0, s1, s2, s3, den
+        cpr, g2, m = cache[pid]
+        est = {"standard": [], "coherence_aware": []}
+        per = {"standard": [], "coherence_aware": []}
+        kap_all = []
+        for b in per_src:
+            r0, c0 = b["row"], b["col"]
+            bc, bg, bm = cpr[r0:r0 + k, c0:c0 + k], g2[r0:r0 + k, c0:c0 + k], m[r0:r0 + k, c0:c0 + k]
+            rej = {e: {a: 0 for a in NOMINAL} for e in per}
+            n_test = {e: 0 for e in per}
+            folds = {e: [] for e in per}
+            for tr, te in ((slice(0, k // 2), slice(k // 2, k)), (slice(k // 2, k), slice(0, k // 2))):
+                sel_tr, sel_te = bm[tr], bm[te]
+                ctr, gtr = bc[tr][sel_tr], bg[tr][sel_tr]
+                good = np.isfinite(ctr) & (ctr > 0)
+                ctr, gtr = ctr[good], gtr[good]
+                cte = bc[te][sel_te]
+                cte = cte[np.isfinite(cte) & (cte > 0)]
+                if ctr.size < 30 or cte.size < 30:
+                    continue
+                v = float(np.var(np.log(ctr), ddof=1))
+                med = float(np.median(ctr))
+                zr = cte / med
+                nh_s = float(L.n_from_var(v))
+                nh_a, kap = CN.nhat_aware(v, float(np.nanmean(gtr)))
+                kap_all.append(kap)
+                for e, nh, kp in (("standard", nh_s, 0.0), ("coherence_aware", nh_a, kap)):
+                    q = CN.ratio_quantiles((0.5, 0.99, 0.95, 0.90), nh, kp)
+                    z = zr * q[0]
+                    for a, thr in zip(NOMINAL, (q[1], q[2], q[3])):
+                        rej[e][a] += int((z > thr).sum())
+                    n_test[e] += int(cte.size)
+                    folds[e].append((zr, nh, kp))
+                    est[e].append(nh)
+            for e in per:
+                if n_test[e]:
+                    per[e].append({"row": r0, "col": c0, "n_test": n_test[e], "corr_area_px": b["corr_area_px"],
+                                   "rejection": {f"{int(100 * a)}pct": rej[e][a] / n_test[e] for a in NOMINAL},
+                                   "_folds": folds[e]})
+        res = {}
+        for e in per:
+            rng = np.random.default_rng(SEED_LR + 1)
+            r = analyse([{kk: vv_ for kk, vv_ in b.items() if kk != "_folds"} for b in per[e]], rng)
+            r["N_hat_train_halves"] = {"median": float(np.median(est[e])),
+                                       "iqr": [float(np.percentile(est[e], 25)), float(np.percentile(est[e], 75))]}
+            infl = {}
+            for a in NOMINAL:
+                key = f"{int(100 * a)}pct"
+                ratios = []
+                for b in per[e]:
+                    rr = []
+                    for zr, nh, kp in b["_folds"]:
+                        q = CN.ratio_quantiles((0.5, 1 - a), nh, kp)
+                        rr.append(zr * q[0] / q[1])
+                    ratios.append(np.concatenate(rr))
+                allr = np.concatenate(ratios)
+                c_hat = float(np.quantile(allr, 1 - a))
+                brng = np.random.default_rng(SEED_LR + 2)
+                cs = []
+                for _ in range(B_INFL):
+                    pick = brng.integers(0, len(ratios), len(ratios))
+                    cs.append(np.quantile(np.concatenate([ratios[i] for i in pick]), 1 - a))
+
+                def rate_nu(nu, a=a, blocks=per[e]):
+                    hit = tot = 0
+                    for b in blocks:
+                        for zr, nh, kp in b["_folds"]:
+                            q = CN.ratio_quantiles((0.5, 1 - a), nh / nu, kp)
+                            hit += int((zr * q[0] > q[1]).sum())
+                            tot += zr.size
+                    return hit / tot - a
+                try:
+                    nu = float(brentq(rate_nu, 1.0, 4.0, xtol=1e-4))
+                except ValueError:
+                    nu = None
+                infl[key] = {"nominal": a, "pooled_size_now": r["levels"][key]["pooled"],
+                             "critical_value_inflation_c": c_hat,
+                             "c_ci95_block_bootstrap": [float(np.percentile(cs, 2.5)), float(np.percentile(cs, 97.5))],
+                             "c_bootstrap_B": B_INFL, "look_count_deflation_nu": nu}
+            r["calibration_adjustment"] = infl
+            res[e] = r
+        res["kappa_hat_train_halves"] = {"median": float(np.median(kap_all)),
+                                         "iqr": [float(np.percentile(kap_all, 25)), float(np.percentile(kap_all, 75))],
+                                         "fraction_folds_with_kappa_hat_above_0": float(np.mean(np.array(kap_all) > 0))}
+        out[tag] = {"source_blocks": rel, **res}
+        for e in ("standard", "coherence_aware"):
+            for key, v in res[e]["levels"].items():
+                print(f"  {tag} {e:<16} {key}: pooled {100 * v['pooled']:.2f} % "
+                      f"[{100 * v['pooled_ci95'][0]:.2f}, {100 * v['pooled_ci95'][1]:.2f}]; above nominal "
+                      f"{v['blocks_above_nominal']} vs {v['expected_above_if_exactly_calibrated']:.1f}; "
+                      f"c {res[e]['calibration_adjustment'][key]['critical_value_inflation_c']:.3f}", flush=True)
+    return {"estimators": {"standard": "N from 2 psi_1(N) = Var(ln R), F(2N, 2N) (the decision model)",
+                           "coherence_aware": "N from Var(ln R) and the measured squared coherence "
+                                              "(coherence_nhat.py), the correlated-ratio law"},
+            "split": "each block by rows, two folds (top -> bottom, bottom -> top), pooled",
+            "seed": SEED_LR, "bootstrap_B": B, "results": out}
 
 
 def main() -> int:
+    import sys as _sys
+    if "--logratio-model-coherence" in _sys.argv:
+        doc = json.loads(OUT.read_text(encoding="utf-8"))
+        doc["logratio_model_coherence_aware"] = logratio_model_coherence()
+        doc["run_info_logratio_model_coherence_aware"] = run_info()
+        OUT.write_text(json.dumps(doc, indent=2, default=float), encoding="utf-8")
+        print(f"  merged logratio_model_coherence_aware into {OUT.relative_to(BASE_DIR)}")
+        return 0
     import sys as _sys
     if "--logratio-model" in _sys.argv:
         doc = json.loads(OUT.read_text(encoding="utf-8"))

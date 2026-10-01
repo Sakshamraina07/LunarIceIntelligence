@@ -10,7 +10,10 @@ from pathlib import Path
 # drive letter. backend/scripts/ -> parents[2] is the root.
 BASE_DIR = Path(__file__).resolve().parents[2]
 RAW_DIR = BASE_DIR / "data" / "pradan" / "raw" / "data" / "calibrated" / "20200808"
-OUT_DIR = Path(r"C:\Users\hp\.gemini\antigravity-ide\brain\6f0784ac-46e7-45a2-a432-2a1cdee24e89")
+# Output directory: the LUNAR_ICE_OUT_DIR environment variable, else a gitignored scratch folder under data/ (was a hard-coded
+# path under a Windows user profile). Nothing else changed.
+OUT_DIR = Path(os.environ.get("LUNAR_ICE_OUT_DIR", str(BASE_DIR / "data" / "derived" / "scratch")))
+OUT_DIR.mkdir(parents=True, exist_ok=True)
 OUT_DFSAR_DIR = BASE_DIR / "data" / "pradan" / "dfsar"
 OUT_DEM_DIR = BASE_DIR / "data" / "pradan" / "dem"
 

@@ -37,7 +37,15 @@ SOURCE_EXT = {".py", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".json", ".md",
 DATA_EXT = {".tif", ".tiff", ".img", ".IMG", ".h5", ".nc", ".hdf"}
 #: Files that are DATA although they have a source-like extension: per-cell values from Chandrayaan-2 products
 #: (V23b). They must be gitignored and must NOT be tracked (C1), and are not "source" for C2.
-LOCAL_ONLY = ("docs/selected_cells_v21.json",)
+LOCAL_ONLY = ("docs/selected_cells_v21.json",
+              # V24: the 25 m/px lossless renderings of the DFSAR-derived CPR proxy and DOP (one-to-one per-pixel renderings of a
+              # third-party-copyrighted product). They stay on the author's disk, gitignored.
+              "frontend/public/layers/cpr_heatmap.webp", "frontend/public/layers/dop_heatmap.webp")
+#: ... and any other tracked image that is a DFSAR-derived layer at native resolution: a name that says CPR / DOP /
+#: backscatter / sigma / s0 and an image at least this wide (the delivered frame is 6618 px wide at 25 m; a 1582 px
+#: screenshot or a 640 px preview is not a native-resolution layer).
+NATIVE_NAME = r"(cpr|dop|backscatter|sigma|(^|[_/.-])s0([_.-]|$))"
+NATIVE_MIN_WIDTH = 3000
 
 
 def rec(cid, name, ok, detail, warn=False):
@@ -65,6 +73,23 @@ def main():
     # C1 — no data, no rasters, tracked
     bad = [p for p in tracked_set
            if p.startswith("data/") or Path(p).suffix in DATA_EXT or p in LOCAL_ONLY]
+    try:
+        from PIL import Image
+    except ImportError:
+        Image = None
+    native = []
+    for p_ in sorted(tracked_set):
+        if Path(p_).suffix.lower() in (".webp", ".png", ".jpg", ".jpeg") and re.search(NATIVE_NAME, Path(p_).name, re.I):
+            if Image is None:
+                native.append(p_ + " (width not readable: PIL absent)")
+                continue
+            try:
+                with Image.open(p_) as im:
+                    if im.size[0] >= NATIVE_MIN_WIDTH:
+                        native.append(f"{p_} ({im.size[0]} px wide)")
+            except Exception:
+                native.append(p_ + " (unreadable)")
+    bad += [f"native-resolution DFSAR layer: {n}" for n in native]
     rec("C1", "no ISRO/LOLA data or rasters tracked", not bad,
         f"{len(bad)} offending path(s): {bad[:5]}" if bad else "clean")
 

@@ -4,7 +4,7 @@ overridden by a constant N. (v21 work order, W1F, W1G)
 
     python backend/scripts/n_sensitivity_real.py
 
-Reads docs/selected_cells_v21.json (written by v21_extract.py: every cell the
+Reads docs/selected_cells_v21.json (LOCAL ONLY, gitignored, rebuilt on demand by local_cells.ensure(); written by v21_extract.py: every cell the
 published rule selects and F2's signal cells, for L pass 1, L pass 2 and S-band)
 and, for each N of the grid, reports
 
@@ -48,6 +48,7 @@ from scipy.stats import f as Fd
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from runinfo import run_info  # noqa: E402
+import local_cells as LC  # noqa: E402
 import region_design_curve as RDC  # noqa: E402
 
 BASE_DIR = Path(__file__).resolve().parents[2]
@@ -75,6 +76,8 @@ def n_for_crit(level):
 
 def main() -> int:
     t0 = time.time()
+    if not LC.ensure():
+        return 2
     sel = json.loads((BASE_DIR / "docs" / "selected_cells_v21.json").read_text(encoding="utf-8"))["passes"]
     rdc = json.loads((BASE_DIR / "docs" / "region_design_curve.json").read_text(encoding="utf-8"))
     indep = rdc["translation"]["crater_F2"]["complex_product"]["independent_samples"]

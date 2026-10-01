@@ -581,7 +581,7 @@ downloaded. The 2020-03-05 S-band SLI is read in place from `data/generality/202
 | W1 F | `n_sensitivity_f2point.json` | `python backend/scripts/n_sensitivity_f2point.py` | 20261051-54 | 10^7 per seed | 112 | 574 |
 | W1 E | `n_sensitivity_calcheck.json` | `python backend/scripts/n_sensitivity_calcheck.py` | 20261062-98 | 40 small-box repeats per L | 49 | 156 |
 | W1 H | `n_sensitivity.json`, `n_sensitivity_table.md/.tex`, `paper/fig_n_sensitivity.pdf` | `python backend/scripts/n_sensitivity_assemble.py && cd paper && python make_fig_n_sensitivity.py` | none | - | - | - |
-| W2 | `disc_table_v21.json`, `selected_cells_v21.json` | `python backend/scripts/v21_extract.py` | none (draws nothing) | - | 181 | 3212 |
+| W2 | `disc_table_v21.json`, `selected_cells_v21.json` (local only, gitignored; rebuilt by this command) | `python backend/scripts/v21_extract.py` | none (draws nothing) | - | 181 | 3212 |
 | W2 | `shadow_identification.json`, `paper/fig_spec_curve.pdf` | `python backend/scripts/shadow_identification.py --workers 3` (then `--rerun-f`, and `--part D,G,K --merge`, as recorded in `run_info_rerun_*`) | 20260930 | B = 2000 block bootstrap; B = 500 x 3072 specifications; 2000 permutations | 4751 | 130 |
 | W4 | `stokes_from_slc_20200305S*.json`, `second_pass_s_v21.json` | `python backend/scripts/stokes_from_slc.py --product 20200305S [--block 32]`; `python backend/scripts/v21_extract.py`; `python backend/scripts/second_pass_s_v21.py` | 7; 20260930 | B = 2000 | 24 + 2 | 902 |
 | W3.2 | `v21_carryover_checks.json` | `python backend/scripts/v21_carryover_checks.py` | none | - | 0.5 | 27 |

@@ -5220,7 +5220,7 @@ seed 20261041; draws only the q05 and pooled-power simulations);
 `python backend/scripts/v21_extract.py` → `docs/disc_table_v21.json` (per-disc rows incl. terrain from
 LDEM_80S_20M at 80 m slope baseline, the 100 m and 500 m plane-detrended RMS heights, the local-slope
 layover fraction; the local-slope radar-shadow fraction is 0 for every disc, by the local-slope criterion, not ray
-tracing), `docs/selected_cells_v21.json`; `python backend/scripts/shadow_identification.py` →
+tracing), `docs/selected_cells_v21.json` (LOCAL ONLY since V23b: per-cell values, gitignored, not published; §21.5); `python backend/scripts/shadow_identification.py` →
 `docs/shadow_identification.json` (seed 20260930, block bootstrap B = 2000 on 5 × 5 disc-lattice blocks,
 B = 500 per specification in the curve); `cd paper && python make_fig_spec_curve.py`.
 
@@ -5306,6 +5306,15 @@ this report's own V21 rounding of 14.855.
 19 → 53.3, 31 → 85.8, 43 → 122.7, 55 → 148.7. The audit table reads these labels (rows `v22_n373`, `v22_n53_rmnlf`, `s7_n373`, `s7_n533`), so Table II's counts
 pass against the corrected labels.
 
+### 21.5 The per-cell file is local only (V23b)
+
+`docs/selected_cells_v21.json` held about 52 000 per-cell values (grid index, sample CPR and DOP, local N-hat, minimum SNR, PSR flag) of the cells the
+published rule selects in four passes, plus F2's signal cells: per-pixel values at known positions of Chandrayaan-2 products. It is no longer tracked and was removed from
+every unpushed commit; it is gitignored and rebuilt on demand (`backend/scripts/local_cells.py`: `ensure()` runs `v21_extract.py` when the local SLCs are present, else prints
+`REQUIRES LOCAL DATA` and the reader exits 2 without computing). Its readers are `n_sensitivity_real.py` and `second_pass_s_v21.py`; their results,
+`docs/n_sensitivity_real.json` and `docs/second_pass_s_v21.json`, stay tracked and are what G33 and the manuscript audit read (no gate read the per-cell file; the
+G8 stamp no longer lists it). `docs/disc_table_v21.json` is per disc (663 cells aggregated), not per cell, and stays tracked.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -5323,7 +5332,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `60b2bab`.
+Stamped at commit `ff46bea`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -5390,7 +5399,6 @@ Stamped at commit `60b2bab`.
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/second_pass_s_v21.json` | `202fb711f006cb25…` | §20.3 |
-| `docs/selected_cells_v21.json` | `712db6f413c7d37f…` | §20.1 |
 | `docs/shadow_identification.json` | `e119d5f79a4e0e61…` | §20.2, §21.1 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_chain.json` | `c404ef43393174b6…` | §18.7 |

@@ -29,6 +29,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from runinfo import run_info  # noqa: E402
+import local_cells as LC  # noqa: E402
 import shadow_identification as SI  # noqa: E402
 import decision_rule as DR  # noqa: E402
 import snr_control as SC  # noqa: E402
@@ -38,6 +39,8 @@ OUT = BASE_DIR / "docs" / "second_pass_s_v21.json"
 
 
 def main() -> int:
+    if not LC.ensure():
+        return 2
     st = json.loads((BASE_DIR / "docs" / "stokes_from_slc_20200305S.json").read_text(encoding="utf-8"))
     tab = json.loads((BASE_DIR / "docs" / "disc_table_v21.json").read_text(encoding="utf-8"))["discs"]["S_20200305S"]
     sel = json.loads((BASE_DIR / "docs" / "selected_cells_v21.json").read_text(encoding="utf-8"))["passes"]["S_20200305S"]

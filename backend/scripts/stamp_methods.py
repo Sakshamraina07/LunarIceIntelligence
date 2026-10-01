@@ -71,7 +71,6 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/n_sensitivity_real.json": ["20.1"],
     "docs/n_sensitivity_f2point.json": ["20.1"],
     "docs/n_sensitivity_calcheck.json": ["20.1"],
-    "docs/selected_cells_v21.json": ["20.1"],
     "docs/shadow_identification.json": ["20.2", "21.1"],
     "docs/disc_table_v21.json": ["20.2"],
     "docs/second_pass_s_v21.json": ["20.3"],
@@ -456,6 +455,8 @@ def check_labelled_figures(text: str) -> list:
 SECTIONS_WITHOUT_ARTIFACTS: dict = {
     "20": "the pass's preamble; no measured figure of its own.",
     "21": "the pass's preamble; no measured figure of its own.",
+    "21.5": ("a statement about which file is tracked: its figures (about 52 000 cells, F2's 663) count the rows of the local, gitignored "
+             "docs/selected_cells_v21.json, which is not published; the tracked results are docs/n_sensitivity_real.json and docs/second_pass_s_v21.json."),
     "17": "the pass's preamble; no measured figure of its own.",
     "17.4": ("the data figure: its rendered height and legend text are properties of the "
              "PDF (G26 builds and inspects it), not of an artifact."),

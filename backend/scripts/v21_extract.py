@@ -4,7 +4,7 @@ the selected-cell table the v21 analyses (W1F, W2) read. (v21 work order)
 
     python backend/scripts/v21_extract.py
 
-Writes docs/disc_table_v21.json (one row per disc) and docs/selected_cells_v21.json
+Writes docs/disc_table_v21.json (one row per disc) and docs/selected_cells_v21.json (LOCAL ONLY: per-cell values, gitignored, not published)
 (every cell the published rule selects, plus F2's signal cells), for
   L-band 2020-08-08 (pass 1), L-band 2020-03-05 (pass 2), S-band 2020-08-08.
 Draws nothing. The chain is the published one (gap_v20_frame.read_pass,

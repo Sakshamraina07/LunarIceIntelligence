@@ -78,7 +78,7 @@ python backend/scripts/verify_all.py                                # gates
 `v21_extract.py` reads the pass list from its `PASSES` constant; add `("L", "<id>")`.
 Artifacts written: `docs/stokes_from_slc_<id>*.json`, `docs/phase_gain_perturbation_<id>.json`,
 `docs/enl_logratio.json::pass_<id>`, `docs/f2_complex_product.json::passes.<id>`,
-`docs/disc_table_v21.json::discs.L_<id>`, `docs/selected_cells_v21.json::passes.L_<id>`.
+`docs/disc_table_v21.json::discs.L_<id>`, `docs/selected_cells_v21.json::passes.L_<id>` (local only: gitignored, per-cell values are not published).
 
 ## 3. Numbers to compare with v21 (the replication checklist)
 

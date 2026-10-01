@@ -22,3 +22,6 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Per-cell values from Chandrayaan-2 products (V23b): local only, rebuilt by backend/scripts/v21_extract.py
+/docs/selected_cells_v21.json

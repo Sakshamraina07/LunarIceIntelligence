@@ -90,10 +90,13 @@ python -u backend/scripts/rebuild_all.py --skip-ingest    # regenerate everythin
 python -u backend/scripts/verify_all.py      # every gate, mapped to PRD section 6
 ```
 
-The ~9 GB of Chandrayaan-2 and LOLA rasters are gitignored. **Without them the
-app reports `NOT_INGESTED` and serves no numbers at all** — not zeros, which
-would be a measurement claim. There is no demo or synthetic fallback on any
-serving path.
+The ~9 GB of Chandrayaan-2 and LOLA rasters are not in this repository: they are
+gitignored, none was ever committed (`check_repo_complete.py` reads all of
+history), and the repository holds no layer, tile or screenshot that renders a
+DFSAR-derived quantity finer than 200 m per pixel, apart from the two exceptions
+`DATA.md` states. **Without the rasters the app reports `NOT_INGESTED` and serves no
+numbers at all** — not zeros, which would be a measurement claim. There is no demo
+or synthetic fallback on any serving path. See *Reproducing* below.
 
 ## The report
 
@@ -118,6 +121,39 @@ Five of them also run on every rebuild, and any non-zero exit stops the build.
 Each was verified by making it fail on purpose — including seven cases where the
 verification apparatus itself turned out to be wrong (`docs/METHODS.md` §0), one
 of them an injection that passed for a reason that was not its own claim.
+
+## Reproducing
+
+`python -u backend/scripts/verify_all.py` ends in three counts: **PASS**, **REQUIRES LOCAL DATA** and **FAIL**, and it
+exits non-zero only on FAIL. REQUIRES LOCAL DATA means a file the gate reads does not exist in this checkout. The gate
+was not run, verified nothing, and is not a pass. A file that exists but is wrong still FAILS the gate that reads it. The
+table at the end names, gate by gate, the file each one needs. On the author's machine every gate passes; in a fresh clone
+none fails and the rest list what they need.
+
+**Runs with nothing downloaded** (these read tracked files only): G6, G9, G10, G12, G13, G16, G17, G18, G19, G21, G22,
+G23, G25, G29, G30, G33.
+
+**Needs the Chandrayaan-2 scene from PRADAN:** G2, G3, G4, G20, G27, G31, and, through the rasters derived from it, G1, G5,
+G7, G8 and G24.
+
+| what | product identifier | where it goes |
+|---|---|---|
+| the DFSAR scene the paper analyses | `ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18` (archive identifier `urn:isro:isda:ch2_cho:sar_calibrated`), with its `gri` and `sli` siblings for G27 | `data/pradan/raw/data/calibrated/20200808/` |
+| the second scene G20 replicates on | `ch2_sar_ncxl_20200305t114902885_*` | `data/generality/20200305/data/calibrated/20200305/` |
+| NASA PDS LOLA (public domain) | `LDEM_80S_20M`, `LDEM_80S_80M`, `LPSR_75S_120M_201608`, `AVGVISIB_75S_120M_201608` | `data/pradan/lola/` (the last two in `illumination/`) |
+
+With those in place, `python -u backend/scripts/rebuild_all.py` writes the derived rasters and sidecars the other gates read
+(`data/pradan/native/`, `data/pradan/lola/*.provenance.json`, `horizon_240m.npz`, `data/pradan/dfsar/`).
+
+**Needs something local that is not data:** G15 needs `npm install` in `frontend/` and a Chrome or Edge executable
+(`VERIFY_BROWSER=<path>`); G26 needs `data/derived/fig_scene/fig_scene_cache.npz` (written by `f2_complex_product.py`); G32 needs the
+manuscript and supplement `.tex`, which are not tracked; G6b needs the author's two local 25 m layer files, and G28 (check C8b)
+needs `data/local_layers/`, the author's local copies of the removed renderings, which it compares with their recorded sha256.
+
+**Why the ISRO rasters are not here.** ISRO keeps the copyright in Chandrayaan-2 data. PRADAN gives it free of charge for
+non-profit scientific use and says users do not have the right to copy, lease or loan it (the terms are quoted in `DATA.md`).
+A public repository would be redistribution, so none of it is here, in any commit. You obtain the scene yourself, from
+PRADAN after registering, under those terms. Nothing in this repository fetches it for you.
 
 ## Documentation
 

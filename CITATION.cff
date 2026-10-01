@@ -23,13 +23,15 @@ abstract: >-
   Code, derived artifacts and verification gates for a study of the
   detection limits of a CPR-based lunar water-ice criterion applied
   to a single Chandrayaan-2 DFSAR L-band pass over the lunar south
-  pole. Contains no Chandrayaan-2 or LOLA source products and no
-  native-resolution rendering of a DFSAR-derived quantity: it holds
-  code, derived numerical results, figures, coarse aggregate layers
-  (about 200 m and coarser) and LOLA-only map layers. ISRO keeps the
-  copyright in the Chandrayaan-2 data. Every figure and number is
-  regenerated from products obtained separately from PRADAN and the
-  NASA PDS.
+  pole. Contains no Chandrayaan-2 or LOLA source products and no layer,
+  tile or screenshot rendering a DFSAR-derived quantity at a pixel size
+  finer than 200 m, with two stated exceptions (DATA.md): a 125 m per
+  pixel delta-DOP map on GitHub that is not in the release archive, and
+  one panel of a manuscript figure at 25 m bins. It holds code, derived
+  numerical results, figures, coarse aggregate layers (about 200 m and
+  coarser) and LOLA-only map layers. ISRO keeps the copyright in the
+  Chandrayaan-2 data. Every figure and number is regenerated from
+  products obtained separately from PRADAN and the NASA PDS.
 keywords:
   - synthetic aperture radar
   - compact polarimetry

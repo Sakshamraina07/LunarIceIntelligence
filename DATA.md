@@ -8,15 +8,26 @@ which are reproduced below.
 ## What this repository contains, and what it does not
 
 **It contains no Chandrayaan-2 or LOLA source product** (no raster, PDS4 label, single-look complex file, or per-cell or per-pixel
-value table), **and no native-resolution rendering of a DFSAR-derived quantity as a layer file.** It does contain: code; derived numerical
-results (`docs/*.json`, per-disc and per-block summaries, histograms); the manuscript's figures; coarse aggregate layers of about 200 m and
-coarser (`frontend/public/analysis/probe_grid.bin`, 200 m cells of 8 x 8 block means, and the `*.preview.webp` previews, about 258 m/px);
-and LOLA-only map layers (hillshade, elevation, hazard, illumination) rendered on a 25 m grid from the public NASA PDS LOLA product.
-**ISRO keeps the copyright in the Chandrayaan-2 data**; nothing here transfers any right in it.
+value table), **and no layer file, tile or screenshot that renders a DFSAR-derived quantity at a pixel size finer than 200 m.**
+It does contain: code; derived numerical results (`docs/*.json`, per-disc and per-block summaries, histograms); the manuscript's
+figures; coarse aggregate layers of about 200 m and coarser (`frontend/public/analysis/probe_grid.bin`, 200 m cells of 8 x 8 block
+means, and the `*.preview.webp` previews, about 258 m/px); LOLA-only map layers (hillshade, elevation, hazard, illumination)
+rendered on a 25 m grid from the public NASA PDS LOLA product; and interface screenshots in `docs/evidence/` that draw LOLA relief
+and single-cell probe read-outs, with no CPR or DOP layer on the map. **ISRO keeps the copyright in the Chandrayaan-2 data**; nothing
+here transfers any right in it.
 
-One thing is recorded openly rather than left implicit: application screenshots kept as verification evidence (`docs/gate6/`,
-`docs/map_*_cpr.png` and similar) can show the amplitude-derived CPR and DOP proxy layers at the application's map zoom, up to about 29 m/px.
-They are pictures of the interface, not data files, and they are listed in `docs/V24_REPORT.md` for the author's decision.
+**What was removed.** The two 25 m CPR and DOP layer files, the CPR and DOP map-tile pyramid (zoom 0 to 3, 27.6 to 80.8 m per
+pixel) and the application screenshots that showed the CPR or DOP proxy at map zoom (28.6 to 144 m per pixel) were removed from the
+tree and from every branch and tag, by two history rewrites (V24 and V25). `docs/removed_native_renderings.json` keeps what is needed
+to know they existed and to recognise a local copy: path, git blob id, sha256, size, pixel size and first commit, and no pixel
+value. The author holds the files locally; they are not published, and gate G28 (checks C1, C8 and C8b) fails if one is tracked,
+is anywhere in history by name or by blob id, or differs from its recorded sha256.
+
+**Two exceptions are stated here rather than left implicit, and they are NOT removed.**
+(1) `docs/propagation_ddop_map.png`, a delta-DOP perturbation map of about 125 m per pixel (a derived field of a calibration
+ablation), is on GitHub but is `export-ignore`d, so it is not in the release archive or the Zenodo record.
+(2) `paper/fig_scene.pdf`, a manuscript figure, has a panel (b) of the sample CPR at 25 m bins over a 12 x 3.8 km window; the
+figure is in the repository and in the release archive. Neither meets the 200 m rule, and the author has not yet decided them.
 
 `data/` is gitignored in its entirety, `docs/selected_cells_v21.json` (per-cell values) and the two native-resolution layer files
 (`frontend/public/layers/cpr_heatmap.webp`, `dop_heatmap.webp`) are gitignored and local only, and gates enforce it rather than trusting it:

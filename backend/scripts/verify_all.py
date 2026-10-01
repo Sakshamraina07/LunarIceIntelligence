@@ -14,6 +14,19 @@ a question you answered by remembering where to look.
 This runs them, collects the verdicts, and prints ONE table whose rows are the
 those statements. It writes docs/verification.json.
 
+THREE OUTCOMES, NEVER TWO (V25)
+-------------------------------
+    PASS                 the gate ran on its inputs and its check held.
+    REQUIRES LOCAL DATA  an input the gate reads does not exist on this machine (a PRADAN scene, a provenance file under
+                         data/, the untracked manuscript .tex, a local build or cache). The gate did NOT run and
+                         therefore verified nothing: it is counted separately and never printed as PASS.
+    FAIL                 the inputs exist and the check is wrong, or a gate that should have run did not.
+
+A gate is REQUIRES LOCAL DATA only when something it needs is ABSENT (the NEEDS table below, checked before the gate runs,
+or the gate itself exiting 77). A present input is never excused: if the files exist the gate runs, and a wrong one FAILS.
+The exit status is non-zero ONLY for FAIL. On the author's machine (everything present) every gate is PASS; in a fresh
+clone the answer is 0 FAIL plus the list of what each REQUIRES LOCAL DATA gate needs.
+
 IT ASSERTS NOTHING OF ITS OWN. Every verdict here is produced by the gate that
 owns it; this script's only job is to run them all and map each to the statement
 it backs. A verifier that computed its own opinion would be a seventh source of
@@ -32,6 +45,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 SCRIPTS = Path(__file__).resolve().parent
+REQUIRES_LOCAL_DATA_RC = 77   # a gate (or this table) says: an input does not exist here
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -345,6 +359,90 @@ assert not {g[0] for g in GATES} & set(_NEVER_ALLOCATED), (
     "either the note is wrong or the number is")
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# WHAT EACH GATE NEEDS THAT THE REPOSITORY DOES NOT CONTAIN (V25).
+#
+# Measured, not remembered: every gate was run on the author's machine with an audit hook logging each file the python
+# process opened, and the files that git does not track are listed here, per gate. A gate whose entry has an ABSENT file
+# prints REQUIRES LOCAL DATA and is not run; a gate whose entries are all present runs, and a wrong input FAILS it.
+# The ISRO products themselves are not in the repository (DATA.md: ISRO keeps the copyright; the PRADAN terms forbid
+# redistributing them), so the gates below that read them cannot run in a clone until the author's PRADAN scene is placed
+# under data/pradan/raw/ as README.md "Reproducing" describes.
+# ---------------------------------------------------------------------------------------------------------------------
+_SCENE = "data/pradan/raw/data/calibrated/20200808/ch2_sar_ncxl_20200808t201154198_d_"
+_SC_LH = (_SCENE + "sri_xx_cp_lh_d18.tif", "PRADAN scene ch2_sar_ncxl_20200808t201154198 (sri, LH channel)")
+_SC_LV = (_SCENE + "sri_xx_cp_lv_d18.tif", "PRADAN scene ch2_sar_ncxl_20200808t201154198 (sri, LV channel)")
+_SC_XML = (_SCENE + "sri_xx_cp_xx_d18.xml", "PRADAN scene ch2_sar_ncxl_20200808t201154198 (sri PDS4 label)")
+_LOLA_SIDE = ("data/pradan/lola/ldem_frame_25m.provenance.json", "LOLA frame-DEM provenance sidecar (ingest_lola_polar_dem.py)")
+_HOR_SIDE = ("data/pradan/lola/horizon_240m.provenance.json", "horizon provenance sidecar (compute_horizon.py)")
+_HOR_NPZ = ("data/pradan/lola/horizon_240m.npz", "LOLA horizon product (compute_horizon.py)")
+_DEM_NAT = ("data/pradan/native/dem_native.tif", "LOLA DEM on the DFSAR 25 m grid (ingest_lola_polar_dem.py)")
+_VALID = ("data/pradan/native/valid_native.tif", "DFSAR valid-amplitude mask (process_real_sar_pipeline.py)")
+_BROWSER = (lambda: _find_browser(), "a Chrome or Edge executable (or VERIFY_BROWSER=<path>)")
+
+NEEDS: dict[str, list] = {
+    "G1": [_LOLA_SIDE],
+    "G2": [_HOR_NPZ, _HOR_SIDE,
+           ("data/pradan/lola/illumination/LPSR_75S_120M_201608.IMG", "NASA PDS LOLA PSR product"),
+           ("data/pradan/lola/illumination/AVGVISIB_75S_120M_201608.IMG", "NASA PDS LOLA average-visibility product"),
+           _SC_LH, _SC_XML],
+    "G3": [_HOR_NPZ, _HOR_SIDE, _LOLA_SIDE, _DEM_NAT, _VALID, _SC_LH, _SC_XML],
+    "G4": [_HOR_NPZ, _HOR_SIDE, _DEM_NAT, _VALID, _SC_LH, _SC_XML],
+    "G5": [("data/pradan/native/cpr_native.tif", "amplitude-CPR raster (process_real_sar_pipeline.py)"),
+           ("data/pradan/native/dop_native.tif", "DOP raster (process_real_sar_pipeline.py)"), _VALID],
+    "G6b": [("frontend/public/layers/cpr_heatmap.webp", "the author's local 25 m CPR layer (render_layers.py; removed from git in V24)"),
+            ("frontend/public/layers/dop_heatmap.webp", "the author's local 25 m DOP layer (render_layers.py; removed from git in V24)")],
+    "G7": [("data/pradan/dem/faustini_lola_dem.tif", "sanity_check_sar.py output"),
+           ("data/pradan/dfsar/cpr_real.tif", "sanity_check_sar.py output"),
+           ("data/pradan/dfsar/dop_real.tif", "sanity_check_sar.py output"),
+           ("data/pradan/dfsar/metadata_real.json", "process_real_sar_pipeline.py output"),
+           _HOR_NPZ, _HOR_SIDE, _LOLA_SIDE, _DEM_NAT],
+    "G8": [_HOR_SIDE, _LOLA_SIDE],
+    "G15": [("frontend/node_modules", "installed front-end dependencies (npm install in frontend/)"), _BROWSER],
+    "G20": [("data/generality/20200305/data/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_lh_d18.tif",
+             "PRADAN scene ch2_sar_ncxl_20200305t114902885 (LH)"),
+            ("data/generality/20200305/data/calibrated/20200305/ch2_sar_ncxl_20200305t114902885_d_sri_xx_cp_lv_d18.tif",
+             "PRADAN scene ch2_sar_ncxl_20200305t114902885 (LV)"), _SC_LH, _SC_LV],
+    "G24": [_HOR_SIDE, _LOLA_SIDE],
+    "G26": [("data/derived/fig_scene/fig_scene_cache.npz", "binned scene cache for paper/make_fig_scene.py (f2_complex_product.py)")],
+    "G27": [(_SCENE + "gri_xx_cp_lh_d18.tif", "PRADAN scene, gri LH"), (_SCENE + "gri_xx_cp_lv_d18.tif", "PRADAN scene, gri LV"),
+            (_SCENE + "gri_in_cp_xx_d18.tif", "PRADAN scene, gri incidence"), (_SCENE + "gri_xx_cp_xx_d18.xml", "PRADAN scene, gri label"),
+            (_SCENE + "sli_xx_cp_lh_d18.tif", "PRADAN scene, sli LH"), (_SCENE + "sli_xx_cp_lv_d18.tif", "PRADAN scene, sli LV"),
+            (_SCENE + "sli_xx_cp_xx_d18.xml", "PRADAN scene, sli label"), (_SCENE + "sri_in_cp_xx_d18.tif", "PRADAN scene, sri incidence"),
+            (_SCENE + "sri_ma_cp_xx_d18.tif", "PRADAN scene, sri mask"), _SC_LH, _SC_LV, _SC_XML],
+    "G31": [_SC_LH, _SC_LV],
+    "G32": [("Claude outputs/grsl/dfsar_detection_limits_submission.tex", "the manuscript source (untracked; see README \"Reproducing\")"),
+            ("Claude outputs/grsl/dfsar_detection_limits_supplement.tex", "the supplement source (untracked)")],
+}
+# G28 (the repository check) decides for itself: its C8b exits 77 when data/local_layers/ is absent. G9, G10, G12, G13, G16-G19,
+# G21-G23, G25, G29, G30 and G33 read tracked files only and need nothing; G10 and G19 scan the working tree and read one
+# untracked per-cell file when it exists, which is not an input to their claim.
+
+
+def _find_browser() -> bool:
+    import os
+    cands = [os.environ.get("VERIFY_BROWSER"),
+             "C:/Program Files/Google/Chrome/Application/chrome.exe",
+             "C:/Program Files (x86)/Google/Chrome/Application/chrome.exe",
+             f"{os.environ.get('LOCALAPPDATA', '')}/Google/Chrome/Application/chrome.exe",
+             "C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe",
+             "C:/Program Files/Microsoft/Edge/Application/msedge.exe",
+             "/usr/bin/google-chrome", "/usr/bin/chromium"]
+    return any(c and Path(c).exists() for c in cands)
+
+
+def missing_inputs(gid: str) -> list[tuple[str, str]]:
+    """The inputs of a gate that are ABSENT on this machine. Presence only: a present file is never excused here."""
+    out = []
+    for need, what in NEEDS.get(gid, []):
+        if callable(need):
+            if not need():
+                out.append((what, "a tool, not a file"))
+        elif not (BASE_DIR / need).exists():
+            out.append((need, what))
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--skip-slow", action="store_true",
@@ -366,45 +464,73 @@ def main() -> int:
             rows.append({"id": gid, "statement": statement, "gate": owner,
                          "verdict": "SKIPPED", "seconds": 0.0})
             continue
+        absent = missing_inputs(gid)
+        if absent:
+            print(f"  {gid:>4}  REQUIRES LOCAL DATA   {owner}")
+            for path, what in absent:
+                print(f"          needs {path}  --  {what}")
+            rows.append({"id": gid, "statement": statement, "gate": owner, "verdict": REQUIRES_LOCAL_DATA,
+                         "seconds": 0.0, "needs": [{"path": a, "what": b} for a, b in absent]})
+            continue
         t0 = time.time()
         proc = subprocess.run(argv, cwd=str(BASE_DIR), capture_output=True, text=True,
                               encoding="utf-8", errors="replace")
         dt = time.time() - t0
-        ok = proc.returncode == 0
-        rows.append({"id": gid, "statement": statement, "gate": owner,
-                     "verdict": "PASS" if ok else "FAIL",
+        if proc.returncode == 0:
+            verdict = "PASS"
+        elif proc.returncode == REQUIRES_LOCAL_DATA_RC:
+            verdict = REQUIRES_LOCAL_DATA
+        else:
+            verdict = "FAIL"
+        rows.append({"id": gid, "statement": statement, "gate": owner, "verdict": verdict,
                      "returncode": proc.returncode, "seconds": round(dt, 1)})
-        print(f"  {gid:>4}  {'PASS' if ok else 'FAIL'}  {dt:>6.1f}s   {owner}")
-        if not ok:
+        print(f"  {gid:>4}  {verdict if verdict != REQUIRES_LOCAL_DATA else 'REQUIRES LOCAL DATA'}  {dt:>6.1f}s   {owner}")
+        if verdict == "FAIL":
             tail = (proc.stdout or "").strip().splitlines()[-6:]
             for line in tail:
                 print(f"          {line}")
+        elif verdict == REQUIRES_LOCAL_DATA:
+            said = [l for l in (proc.stdout or "").splitlines() if "REQUIRES LOCAL DATA" in l][-3:]
+            rows[-1]["needs"] = [{"path": None, "what": l.strip()} for l in said]
+            for line in said:
+                print(f"          {line.strip()}")
 
     print("\n" + "=" * 78)
     _n_prd = _prd_statement_count()
     print(f"PRD SECTION 6 — the {_n_prd} statements the project is done when true")
     print("=" * 78)
     for r in rows:
-        mark = {"PASS": "[x]", "FAIL": "[ ] FAILED", "SKIPPED": "[?] not run"}[r["verdict"]]
+        mark = {"PASS": "[x]", "FAIL": "[ ] FAILED", "SKIPPED": "[?] not run",
+                REQUIRES_LOCAL_DATA: "[~] no input"}[r["verdict"]]
         print(f"  {mark:>11}  {r['id']:>4}  {r['statement']}")
         print(f"               backed by: {r['gate']}")
 
     failed = [r for r in rows if r["verdict"] == "FAIL"]
     skipped = [r for r in rows if r["verdict"] == "SKIPPED"]
+    needs = [r for r in rows if r["verdict"] == REQUIRES_LOCAL_DATA]
+    passed = [r for r in rows if r["verdict"] == "PASS"]
     print()
+    print(f"  TOTALS  PASS {len(passed)}   REQUIRES LOCAL DATA {len(needs)}   FAIL {len(failed)}"
+          + (f"   SKIPPED {len(skipped)}" if skipped else "") + f"   (of {len(rows)} gates)")
     if failed:
         print(f"  NOT DONE — {len(failed)} gate(s) failing: "
               f"{', '.join(r['id'] for r in failed)}")
-    elif skipped:
-        print(f"  {len(rows) - len(skipped)}/{len(rows)} gates pass; "
-              f"{len(skipped)} skipped and therefore UNVERIFIED, not passed.")
-    else:
+    if needs:
+        print(f"  {len(needs)} gate(s) could NOT RUN here because an input is not in this checkout; they verified nothing "
+              "and are UNVERIFIED here, not passed:")
+        for r in needs:
+            for n in (r.get("needs") or [{"path": None, "what": "see the gate's own message"}]):
+                print(f"      {r['id']:>4}  {(n['path'] + '  --  ') if n.get('path') else ''}{n['what']}")
+    if skipped:
+        print(f"  {len(skipped)} skipped (--skip-slow) and therefore UNVERIFIED, not passed.")
+    if not (failed or needs or skipped):
         print(f"  ALL {len(rows)} GATES PASS. Every statement in PRD section 6 is")
         print("  backed by a number produced in this run.")
 
     doc = {"generated_utc": datetime.now(timezone.utc).isoformat(),
            "generator": "backend/scripts/verify_all.py", "gates": rows,
-           "all_pass": not failed and not skipped}
+           "totals": {"pass": len(passed), "requires_local_data": len(needs), "fail": len(failed), "skipped": len(skipped)},
+           "all_pass": not failed and not skipped and not needs}
     (BASE_DIR / args.out).write_text(json.dumps(doc, indent=2), encoding="utf-8")
     print(f"\n  wrote {args.out}")
     return 1 if failed else 0

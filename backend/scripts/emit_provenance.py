@@ -108,6 +108,12 @@ def _dem_basis() -> str:
     describes.
     """
     side = BASE_DIR / "data/pradan/lola/ldem_frame_25m.provenance.json"
+    if not side.exists():
+        # V25: ABSENT is not "unreadable". Writing PROVENANCE.md with "SOURCE NOT VERIFIED" in every terrain row and
+        # then printing PASS is a pass on a missing input; refuse before anything is written (exit 77 = REQUIRES LOCAL DATA).
+        print(f"REQUIRES LOCAL DATA: {side.relative_to(BASE_DIR)} (the LOLA frame-DEM provenance sidecar written by "
+              "ingest_lola.py; data/ is not distributed) -- docs/PROVENANCE.md was NOT rewritten")
+        raise SystemExit(77)
     try:
         prov = json.loads(side.read_text(encoding="utf-8"))["provenance"]
     except (OSError, ValueError, KeyError):

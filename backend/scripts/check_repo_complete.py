@@ -60,9 +60,13 @@ REMOVED_RENDERINGS = (
 NATIVE_MIN_WIDTH = 3000
 
 
-def rec(cid, name, ok, detail, warn=False):
+REQUIRES_LOCAL_DATA_RC = 77
+
+
+def rec(cid, name, ok, detail, warn=False, needs=False):
+    """`needs`: the input this check reads does not exist on this machine. That is neither a pass nor a failure."""
     R.append({"id": cid, "check": name,
-              "status": "PASS" if ok else ("WARN" if warn else "FAIL"),
+              "status": "PASS" if ok else ("REQUIRES LOCAL DATA" if needs else ("WARN" if warn else "FAIL")),
               "detail": detail})
 
 
@@ -225,10 +229,12 @@ def main():
     man = Path("docs/removed_native_renderings.json")
     if man.is_file():
         rc = subprocess.run([sys.executable, "backend/scripts/purge_manifest_v25.py", "--verify"], capture_output=True, text=True).returncode
-        rec("C8b", "local copies of the removed renderings match their recorded sha256", rc in (0, 77),
+        rec("C8b", "local copies of the removed renderings match their recorded sha256", rc == 0,
             "all present local copies match" if rc == 0 else
-            ("REQUIRES LOCAL DATA: the author's local copies are not on this machine (the record is tracked, the files are not); not a failure"
-             if rc == 77 else "a local copy differs from its recorded sha256"))
+            ("REQUIRES LOCAL DATA: data/local_layers/ (the author's local copies of the removed renderings, "
+             "recorded by sha256 in docs/removed_native_renderings.json) is not on this machine"
+             if rc == REQUIRES_LOCAL_DATA_RC else "a local copy differs from its recorded sha256"),
+            needs=(rc == REQUIRES_LOCAL_DATA_RC))
     else:
         rec("C8b", "the record of the removed renderings is tracked", False, "docs/removed_native_renderings.json is absent")
 
@@ -236,8 +242,14 @@ def main():
         print(f"{r['status']:4}  {r['id']:4} {r['check']:48s}  {r['detail']}")
     f = sum(x["status"] == "FAIL" for x in R)
     w = sum(x["status"] == "WARN" for x in R)
-    print(f"\n{f} FAIL, {w} WARN, {sum(x['status']=='PASS' for x in R)} PASS")
-    sys.exit(1 if f else 0)
+    n = [x for x in R if x["status"] == "REQUIRES LOCAL DATA"]
+    print(f"\n{f} FAIL, {len(n)} REQUIRES LOCAL DATA, {w} WARN, {sum(x['status']=='PASS' for x in R)} PASS")
+    if f:
+        sys.exit(1)
+    if n:
+        print("REQUIRES LOCAL DATA: " + "; ".join(f"{x['id']}: {x['detail']}" for x in n))
+        sys.exit(REQUIRES_LOCAL_DATA_RC)
+    sys.exit(0)
 
 
 if __name__ == "__main__":

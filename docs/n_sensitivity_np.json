@@ -1,0 +1,1260 @@
+{
+  "schema": "lunar-ice/n-sensitivity-np/1",
+  "generated_utc": "2026-09-30T21:39:47.701994+00:00",
+  "generator": "backend/scripts/n_sensitivity_np.py",
+  "seed": null,
+  "seed_note": "the bound is exact quadrature; the MC check of each maximizer uses seed 20261005",
+  "alternatives": 838,
+  "N": [
+    5.0,
+    7.0,
+    10.0,
+    13.72,
+    14.0,
+    14.5,
+    17.4,
+    21.0,
+    28.0,
+    30.0,
+    34.0,
+    38.0,
+    39.4,
+    45.0,
+    55.0,
+    70.0,
+    75.9,
+    79.6166,
+    80.0,
+    100.0,
+    150.0,
+    218.0,
+    300.0,
+    500.0
+  ],
+  "by_N": {
+    "5": {
+      "N": 5.0,
+      "bound_percent": 7.633806980314757,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 150.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 5.874387974438737
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 6.801030175397502
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 6.566802043466743
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 5.722870232664628
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 6.801030175397502,
+      "mc_check": {
+        "power_percent": 7.7584,
+        "mc_se_percent": 0.037403861951527,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 6.939904900749028e-11,
+      "published_artifact_percent": 7.633806980314757,
+      "work_order_value_percent": null
+    },
+    "7": {
+      "N": 7.0,
+      "bound_percent": 8.16184590632981,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 150.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 6.037141785013027
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 7.160408748001995
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 6.8606699634546855
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 5.850064924993386
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 7.160408748001995,
+      "mc_check": {
+        "power_percent": 8.0617,
+        "mc_se_percent": 0.03715345056504026,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.906947484594752e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "10": {
+      "N": 10.0,
+      "bound_percent": 8.86905048341467,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 150.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 6.248752816702085
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 7.637520602027667
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 7.246832619051783
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.0140752897680985
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 7.637520602027667,
+      "mc_check": {
+        "power_percent": 8.921199999999999,
+        "mc_se_percent": 0.04256910721272975,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.87582932099329e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "13.72": {
+      "N": 13.72,
+      "bound_percent": 9.661622893231165,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 6.4781153472922695
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 8.16662361779679
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 7.670874676416722
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.190448417745861
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 8.16662361779679,
+      "mc_check": {
+        "power_percent": 9.6131,
+        "mc_se_percent": 0.04159125175108617,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.836606529312064e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "14": {
+      "N": 14.0,
+      "bound_percent": 9.718595146075733,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 6.494311717551088
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 8.204440235229113
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 7.701036089085486
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.202854917612866
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 8.204440235229113,
+      "mc_check": {
+        "power_percent": 9.714900000000002,
+        "mc_se_percent": 0.021969903656290014,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.56742463031901e-11,
+      "published_artifact_percent": 9.718595146075733,
+      "work_order_value_percent": 9.72
+    },
+    "14.5": {
+      "N": 14.5,
+      "bound_percent": 9.819555094971586,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 6.522922356854418
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 8.271386096084555
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 7.754385801769689
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.224756307205039
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 8.271386096084555,
+      "mc_check": {
+        "power_percent": 9.8195,
+        "mc_se_percent": 0.03080304818971293,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.625935465384927e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "17.4": {
+      "N": 17.4,
+      "bound_percent": 10.38781683021739,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 6.681880201789587
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 8.646615443186926
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 8.052412076897832
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.3461145022497885
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 8.646615443186926,
+      "mc_check": {
+        "power_percent": 10.429200000000002,
+        "mc_se_percent": 0.0699014862343984,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.98439109167748e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "21": {
+      "N": 21.0,
+      "bound_percent": 11.060116990398525,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 6.865704047003446
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 9.087296802662351
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 8.400439244931485
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.485816750702156
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 9.087296802662351,
+      "mc_check": {
+        "power_percent": 11.131099999999998,
+        "mc_se_percent": 0.055588458034619696,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.807429868224915e-11,
+      "published_artifact_percent": 11.060116990398525,
+      "work_order_value_percent": 11.06
+    },
+    "28": {
+      "N": 28.0,
+      "bound_percent": 12.293217298076387,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 7.192415164096405
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 9.887538316011767
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 9.027655527556222
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.732576681092454
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 9.887538316011767,
+      "mc_check": {
+        "power_percent": 12.3497,
+        "mc_se_percent": 0.05159867569360041,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.90330178973764e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "30": {
+      "N": 30.0,
+      "bound_percent": 12.631959677752263,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 7.280061856690273
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 10.105761492480553
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 9.19774213898173
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.7984653221244615
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 10.105761492480553,
+      "mc_check": {
+        "power_percent": 12.6857,
+        "mc_se_percent": 0.060220160891330705,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.749452634100209e-11,
+      "published_artifact_percent": 12.631959677752263,
+      "work_order_value_percent": 12.63
+    },
+    "34": {
+      "N": 34.0,
+      "bound_percent": 13.295323007210152,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 7.4493598687376705
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 10.531339739645489
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 9.528386089997554
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 6.9253878811829015
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 10.531339739645489,
+      "mc_check": {
+        "power_percent": 13.226799999999999,
+        "mc_se_percent": 0.04920609718317441,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.949301105205421e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "38": {
+      "N": 38.0,
+      "bound_percent": 13.942651720865996,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 270.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 7.611810117515344
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 10.944573546150064
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 9.848192569440165
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 7.046763370105127
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 10.944573546150064,
+      "mc_check": {
+        "power_percent": 13.9764,
+        "mc_se_percent": 0.054516908692013415,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.957338426014317e-11,
+      "published_artifact_percent": 13.942651720865996,
+      "work_order_value_percent": 13.94
+    },
+    "39.4": {
+      "N": 39.4,
+      "bound_percent": 14.165925393982759,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 7.667255922184323
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 11.086673263206524
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 9.957899250502301
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 7.088100630692004
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 11.086673263206524,
+      "mc_check": {
+        "power_percent": 14.078399999999997,
+        "mc_se_percent": 0.048185797815446796,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.989045701708221e-11,
+      "published_artifact_percent": 14.165925393982759,
+      "work_order_value_percent": 14.17
+    },
+    "45": {
+      "N": 45.0,
+      "bound_percent": 15.044263243867405,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 150.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 7.882690554303568
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 11.64374522049311
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 10.3867587318938
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 7.248301161541463
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 11.64374522049311,
+      "mc_check": {
+        "power_percent": 15.0719,
+        "mc_se_percent": 0.06411785156170546,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.971418135634735e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "55": {
+      "N": 55.0,
+      "bound_percent": 16.56427075433816,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 8.246540585840288
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 12.601558344736091
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 11.120015803593347
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 7.517442209114497
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 12.601558344736091,
+      "mc_check": {
+        "power_percent": 16.575599999999998,
+        "mc_se_percent": 0.05900813503238344,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.986328430855451e-11,
+      "published_artifact_percent": 16.56427075433816,
+      "work_order_value_percent": 16.56
+    },
+    "70": {
+      "N": 70.0,
+      "bound_percent": 18.7569422511934,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 8.755086270649077
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 13.972904553443538
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 12.162251478621366
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 7.890861196702851
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 13.972904553443538,
+      "mc_check": {
+        "power_percent": 18.6806,
+        "mc_se_percent": 0.08066366385595607,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.988253280024395e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "75.9": {
+      "N": 75.9,
+      "bound_percent": 19.596834696834996,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 8.945718713951953
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 14.49589896127977
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 12.557749901848887
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 8.030075396380324
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 14.49589896127977,
+      "mc_check": {
+        "power_percent": 19.4512,
+        "mc_se_percent": 0.058911760757556386,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.846592985418567e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "79.6166": {
+      "N": 79.6166,
+      "bound_percent": 20.12032858913402,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 9.063544218458421
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 14.821410662873873
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 12.803426391717828
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 8.11592365510311
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 14.821410662873873,
+      "mc_check": {
+        "power_percent": 20.1513,
+        "mc_se_percent": 0.06980354177578982,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.977706161290456e-11,
+      "published_artifact_percent": null,
+      "work_order_value_percent": null
+    },
+    "80": {
+      "N": 80.0,
+      "bound_percent": 20.174099217985937,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 9.075606140049699
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 14.854828219489836
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 12.828628130830221
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 8.124703733553536
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 14.854828219489836,
+      "mc_check": {
+        "power_percent": 20.327299999999997,
+        "mc_se_percent": 0.06978236803726931,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.994471916741077e-11,
+      "published_artifact_percent": 20.174099217985937,
+      "work_order_value_percent": 20.2
+    },
+    "100": {
+      "N": 100.0,
+      "bound_percent": 22.925028723627467,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 9.684018604022144
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 16.561671836206955
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 14.111520737799713
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 8.565674072322336
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 16.561671836206955,
+      "mc_check": {
+        "power_percent": 22.936600000000002,
+        "mc_se_percent": 0.0641467414951411,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.986116794591382e-11,
+      "published_artifact_percent": 22.925028723627467,
+      "work_order_value_percent": 22.9
+    },
+    "150": {
+      "N": 150.0,
+      "bound_percent": 29.429300906219325,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 11.078823949992536
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 20.602592600212866
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 17.125541480471888
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 9.564211918323043
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 20.602592600212866,
+      "mc_check": {
+        "power_percent": 29.431300000000004,
+        "mc_se_percent": 0.05846519382409424,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.997409844419991e-11,
+      "published_artifact_percent": 29.429300906219325,
+      "work_order_value_percent": 29.4
+    },
+    "218": {
+      "N": 218.0,
+      "bound_percent": 37.5897884121065,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 12.806650715598394
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 25.762934149714166
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 20.957483262123173
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 10.782070576443054
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 25.762934149714166,
+      "mc_check": {
+        "power_percent": 37.655300000000004,
+        "mc_se_percent": 0.10007775310560613,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.988415650141746e-11,
+      "published_artifact_percent": 37.5897884121065,
+      "work_order_value_percent": 37.6
+    },
+    "300": {
+      "N": 300.0,
+      "bound_percent": 46.4870549366285,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 14.744389220884058
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 31.617800759980746
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 25.322167563369103
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 12.129256226887444
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 31.617800759980746,
+      "mc_check": {
+        "power_percent": 46.520799999999994,
+        "mc_se_percent": 0.07653173633641601,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.970124725811047e-11,
+      "published_artifact_percent": 46.4870549366285,
+      "work_order_value_percent": 46.5
+    },
+    "500": {
+      "N": 500.0,
+      "bound_percent": 64.12466466364836,
+      "maximizing_alternative": {
+        "cpr": 1.145,
+        "dop": 0.0675990675990676,
+        "phase_deg": 0.0
+      },
+      "least_favourable_null": {
+        "segment": "DOP = 0.13",
+        "cpr": 1.2988505747126435,
+        "dop": 0.13,
+        "phase_deg": 180.0
+      },
+      "bound_at_decision_rule_populations": {
+        "band CPR 1.05 DOP min 0.0244": {
+          "cpr": 1.05,
+          "dop": 0.02439024390243905,
+          "bound_percent": 19.11607830125672
+        },
+        "band CPR 1.1 DOP min 0.0476": {
+          "cpr": 1.1,
+          "dop": 0.04761904761904766,
+          "bound_percent": 44.48832375866982
+        },
+        "band CPR 1.2 DOP min 0.0909": {
+          "cpr": 1.2,
+          "dop": 0.09090909090909088,
+          "bound_percent": 35.14935688163828
+        },
+        "band CPR 1.25 DOP min 0.1111": {
+          "cpr": 1.25,
+          "dop": 0.1111111111111111,
+          "bound_percent": 15.123432274462548
+        }
+      },
+      "bound_at_published_operating_point_CPR1p1_DOPmin_percent": 44.48832375866982,
+      "mc_check": {
+        "power_percent": 63.9574,
+        "mc_se_percent": 0.14992117929098628,
+        "draws": 1000000,
+        "method": "10 batches of 100,000: null quantile and alternative rate from independent draws in each batch; SE from the batch spread (includes the quantile's error)"
+      },
+      "max_quantile_residual": 9.998002425959385e-11,
+      "published_artifact_percent": 64.12466466364836,
+      "work_order_value_percent": 64.1
+    }
+  },
+  "reproduction": [
+    {
+      "N": 14.0,
+      "work_order_percent": 9.72,
+      "computed_percent": 9.718595146075733,
+      "abs_diff": 0.0014048539242672575,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 21.0,
+      "work_order_percent": 11.06,
+      "computed_percent": 11.060116990398525,
+      "abs_diff": 0.00011699039852430815,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 30.0,
+      "work_order_percent": 12.63,
+      "computed_percent": 12.631959677752263,
+      "abs_diff": 0.0019596777522625786,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 38.0,
+      "work_order_percent": 13.94,
+      "computed_percent": 13.942651720865996,
+      "abs_diff": 0.0026517208659964098,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 39.4,
+      "work_order_percent": 14.17,
+      "computed_percent": 14.165925393982759,
+      "abs_diff": 0.004074606017240967,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 55.0,
+      "work_order_percent": 16.56,
+      "computed_percent": 16.56427075433816,
+      "abs_diff": 0.004270754338161709,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 80.0,
+      "work_order_percent": 20.2,
+      "computed_percent": 20.174099217985937,
+      "abs_diff": 0.02590078201406243,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 100.0,
+      "work_order_percent": 22.9,
+      "computed_percent": 22.925028723627467,
+      "abs_diff": 0.025028723627467997,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 150.0,
+      "work_order_percent": 29.4,
+      "computed_percent": 29.429300906219325,
+      "abs_diff": 0.02930090621932635,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 218.0,
+      "work_order_percent": 37.6,
+      "computed_percent": 37.5897884121065,
+      "abs_diff": 0.010211587893500962,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 300.0,
+      "work_order_percent": 46.5,
+      "computed_percent": 46.4870549366285,
+      "abs_diff": 0.012945063371496701,
+      "agrees_to_printed_precision": true
+    },
+    {
+      "N": 500.0,
+      "work_order_percent": 64.1,
+      "computed_percent": 64.12466466364836,
+      "abs_diff": 0.02466466364836606,
+      "agrees_to_printed_precision": true
+    }
+  ],
+  "reproduction_all_agree": true,
+  "run_info": {
+    "wall_s": 3067.5,
+    "peak_rss_mb": 73,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

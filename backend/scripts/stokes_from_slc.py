@@ -120,6 +120,13 @@ PRODUCTS = {
                  "out": "docs/stokes_from_slc_20200305.json",
                  "out_perturb": "docs/phase_gain_perturbation_20200305.json",
                  "density": None},
+    # v21 (W4): the S-band SLI of the second acquisition (ncxs, 2020-03-05), read in
+    # place from data/generality/ like its L-band twin; never ingested
+    "20200305S": {"raw": "data/generality/20200305/data/calibrated/20200305",
+                  "stem": "ch2_sar_ncxs_20200305t114902885",
+                  "out": "docs/stokes_from_slc_20200305S.json",
+                  "out_perturb": "docs/phase_gain_perturbation_20200305S.json",
+                  "density": None},
 }
 
 

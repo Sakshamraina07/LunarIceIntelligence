@@ -38,8 +38,15 @@ HERE = Path(__file__).resolve().parent
 #: byte-synced from Claude outputs/grsl/, the v12 copy with its data path
 #: resolved inside the repository).
 FIGURES = ["fig1_degeneracy.pdf", "fig_cpr_dop.pdf", "fig_joint_power.pdf", "fig_scene.pdf",
-           "fig_region_design.pdf"]
-SCRIPTS = ["make_figures.py", "make_figures_v12.py", "make_fig_scene.py", "make_fig_region.py"]
+           "fig_region_design.pdf", "fig_n_sensitivity.pdf", "fig_spec_curve.pdf"]
+SCRIPTS = ["make_figures.py", "make_figures_v12.py", "make_fig_scene.py", "make_fig_region.py",
+           "make_fig_n_sensitivity.py", "make_fig_spec_curve.py"]
+#: v21 (work order W1H/W2B): the two double-column figures are drawn at their printed width (7.16 in, the
+#: IEEEtran text width) and every text operator must be at least 7 pt. The older figures predate the rule
+#: (their mathtext sub/superscripts and legends are 4.3-6.5 pt, reported by figure_compare_v21.py) and are
+#: not held to it here; a figure is added to this set when it is rebuilt to the rule.
+MIN_TEXT_PT = {"fig_n_sensitivity.pdf": 7.0, "fig_spec_curve.pdf": 7.0}
+PRINTED_IN = {"fig_n_sensitivity.pdf": 7.16, "fig_spec_curve.pdf": 7.16}
 #: fig_region_design.pdf (v19 Fig. 4, v20 gap pass S1): the regional design
 #: curve, from make_fig_region.py, which reads docs/region_design_curve.json.
 #: fig_scene.pdf (v17a referee report, P4): the data figure, from
@@ -59,7 +66,7 @@ for _s in (sys.stdout, sys.stderr):
     except (AttributeError, OSError):
         pass
 
-INJECTIONS = ("type3", "unembedded", "missing")
+INJECTIONS = ("type3", "unembedded", "missing", "small")
 
 
 def inspect_bytes(pdf: Path) -> dict:
@@ -86,6 +93,34 @@ def inspect_bytes(pdf: Path) -> dict:
         "fonts": len(re.findall(rb"/Type\s*/Font", blob)),
         "fontfiles": len(re.findall(rb"/FontFile[23]?\b", blob)),
     }
+
+
+def min_text_pt(pdf: Path, printed_in: float):
+    """Smallest text size in points at the printed width: `size Tf` (times the text-matrix scale) over every
+    content stream, times printed width / placed width."""
+    raw = pdf.read_bytes()
+    m = re.search(rb"/MediaBox\s*\[\s*([\d.\-]+)\s+([\d.\-]+)\s+([\d.\-]+)\s+([\d.\-]+)\s*\]", raw)
+    if not m:
+        return None
+    width_in = (float(m.group(3)) - float(m.group(1))) / 72.0
+    sizes = []
+    for mm in re.finditer(rb"stream\r?\n", raw):
+        e = raw.find(b"endstream", mm.end())
+        try:
+            t = zlib.decompress(raw[mm.end():e])
+        except zlib.error:
+            continue
+        if b"Tf" not in t or b"xmpmeta" in t:
+            continue
+        scale = 1.0
+        for ln in t.decode("latin-1", errors="ignore").splitlines():
+            q = re.match(r"\s*(-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) (-?[\d.]+) Tm", ln)
+            if q:
+                scale = abs(float(q.group(4))) or 1.0
+            q = re.search(r"/F[\w-]+ ([\d.]+) Tf", ln)
+            if q:
+                sizes.append(float(q.group(1)) * scale)
+    return min(sizes) * printed_in / width_in if sizes else None
 
 
 def main() -> int:
@@ -154,6 +189,15 @@ def main() -> int:
                        f"rejects them. make_figures.py must set pdf.fonttype=42.")
         if nf and not ff:
             bad.append(f"{name} declares {nf} font(s) and embeds none")
+        if name in MIN_TEXT_PT:
+            mt = min_text_pt(pdf, PRINTED_IN[name])
+            if args.inject == "small" and name == FIGURES[-1]:
+                print(f"  --inject small: {name} reported with 5.5 pt text")
+                mt = 5.5
+            if mt is None or mt < MIN_TEXT_PT[name] - 0.05:
+                bad.append(f"{name} has text of {mt} pt at its printed width; the rule is at least {MIN_TEXT_PT[name]} pt")
+            else:
+                print(f"  {'':<24}smallest text {mt:.2f} pt at {PRINTED_IN[name]} in (rule: >= {MIN_TEXT_PT[name]} pt)")
 
     print()
     if args.inject:

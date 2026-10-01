@@ -1,0 +1,61 @@
+{
+  "schema": "lunar-ice/n-sensitivity-f2point/1",
+  "generated_utc": "2026-09-30T21:06:11.589590+00:00",
+  "generator": "backend/scripts/n_sensitivity_f2point.py",
+  "seed": [
+    20261051,
+    20261052,
+    20261053,
+    20261054
+  ],
+  "N_eff": 262.2710843373494,
+  "crit95": 1.154615651757967,
+  "alternative": "CPR 1.1, DOP = |q| = 0.0476 (minimum)",
+  "runs": [
+    {
+      "seed": 20261051,
+      "q05": 0.07812559479676899,
+      "power_percent": 0.57151,
+      "mc_se_percent": 0.0023837864065368772,
+      "trials": 10000000,
+      "q05_draws": 20000000
+    },
+    {
+      "seed": 20261052,
+      "q05": 0.07811123858294411,
+      "power_percent": 0.5611299999999999,
+      "mc_se_percent": 0.002362162846272458,
+      "trials": 10000000,
+      "q05_draws": 20000000
+    },
+    {
+      "seed": 20261053,
+      "q05": 0.07815055945857154,
+      "power_percent": 0.57257,
+      "mc_se_percent": 0.0023859833108196716,
+      "trials": 10000000,
+      "q05_draws": 20000000
+    },
+    {
+      "seed": 20261054,
+      "q05": 0.0781076351753812,
+      "power_percent": 0.56787,
+      "mc_se_percent": 0.0023762264972662013,
+      "trials": 10000000,
+      "q05_draws": 20000000
+    }
+  ],
+  "mean_power_percent": 0.5682699999999999,
+  "sd_between_seeds_percent": 0.00516808152670477,
+  "reference_region_design_curve_percent": 0.5775,
+  "reference_n_sensitivity_real_percent": 0.5245,
+  "run_info": {
+    "wall_s": 111.9,
+    "peak_rss_mb": 574,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

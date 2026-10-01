@@ -563,3 +563,33 @@ takes `{name}` for a key whose name contains dots.
 The G-A ladder on the S-band discs: `python backend/scripts/band_s_ladder_v20.py` →
 `docs/band_s.json::ladder_v20` (seed 20260930, B = 2000 block bootstrap; needs
 `gap_v20_frame.py` first, for the L-band geometry it compares against).
+
+## 23 · V21 work order (2026-10-01)
+
+The analyses of METHODS §20. Every artifact records its seed (or that it draws none),
+schema, generator and `run_info`; every simulated rate carries its binomial Monte Carlo
+standard error and its trial count. Nothing under `data/` is committed; nothing was
+downloaded. The 2020-03-05 S-band SLI is read in place from `data/generality/20200305/`
+(`stokes_from_slc.py` entry `20200305S`).
+
+| item | artifact | command | seed | trials | wall (s) | peak (MB) |
+|---|---|---|---|---|---|---|
+| W1 A, C, D | `n_sensitivity_core.json` | `python backend/scripts/n_sensitivity.py` | 20261021 | 2 x 10^6 per population and N; q05 from 1.6 x 10^7 at the IUT onset | 471 | 1967 |
+| W1 B | `n_sensitivity_np.json` | `python backend/scripts/n_sensitivity_np.py --workers 4` | none (quadrature); MC check 20261005 | 838 alternatives, 24 look counts | 3068 | 73 |
+| W1 E | `n_sensitivity_region.json` | `python backend/scripts/n_sensitivity_region.py --workers 3` | 20261031 | 2 x 10^4 / 4 x 10^3 independent, 2000 / 1000 correlated regions per configuration | 2464 | 118 |
+| W1 F, G | `n_sensitivity_real.json` | `python backend/scripts/n_sensitivity_real.py` (after `v21_extract.py`) | 20261041 | q05 2 x 10^6; pooled power 2 x 10^5 | 169 | 355 |
+| W1 F | `n_sensitivity_f2point.json` | `python backend/scripts/n_sensitivity_f2point.py` | 20261051-54 | 10^7 per seed | 112 | 574 |
+| W1 E | `n_sensitivity_calcheck.json` | `python backend/scripts/n_sensitivity_calcheck.py` | 20261062-98 | 40 small-box repeats per L | 49 | 156 |
+| W1 H | `n_sensitivity.json`, `n_sensitivity_table.md/.tex`, `paper/fig_n_sensitivity.pdf` | `python backend/scripts/n_sensitivity_assemble.py && cd paper && python make_fig_n_sensitivity.py` | none | - | - | - |
+| W2 | `disc_table_v21.json`, `selected_cells_v21.json` | `python backend/scripts/v21_extract.py` | none (draws nothing) | - | 181 | 3212 |
+| W2 | `shadow_identification.json`, `paper/fig_spec_curve.pdf` | `python backend/scripts/shadow_identification.py --workers 3` (then `--rerun-f`, and `--part D,G,K --merge`, as recorded in `run_info_rerun_*`) | 20260930 | B = 2000 block bootstrap; B = 500 x 3072 specifications; 2000 permutations | 4751 | 130 |
+| W4 | `stokes_from_slc_20200305S*.json`, `second_pass_s_v21.json` | `python backend/scripts/stokes_from_slc.py --product 20200305S [--block 32]`; `python backend/scripts/v21_extract.py`; `python backend/scripts/second_pass_s_v21.py` | 7; 20260930 | B = 2000 | 24 + 2 | 902 |
+| W3.2 | `v21_carryover_checks.json` | `python backend/scripts/v21_carryover_checks.py` | none | - | 0.5 | 27 |
+| W5 | `figure_compare_v21.json` | `python backend/scripts/figure_compare_v21.py` | none | - | 0.9 | 29 |
+| W6 | `v21_literal_audit.json` | `python backend/scripts/v21_literal_audit.py` | none | - | 139 | 102 |
+
+Order: `v21_extract.py` (after `gap_v20_frame.py`'s artifacts exist) → `n_sensitivity_real.py`,
+`shadow_identification.py`, `second_pass_s_v21.py`; `n_sensitivity.py`, `n_sensitivity_np.py`,
+`n_sensitivity_region.py`, `n_sensitivity_f2point.py` are independent → `n_sensitivity_assemble.py` →
+`make_fig_n_sensitivity.py`; `shadow_identification.py` → `make_fig_spec_curve.py`.
+`docs/SECOND_SCENE_RUNBOOK.md` is the procedure for a scene that is not on disk.

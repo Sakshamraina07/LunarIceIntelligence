@@ -1,0 +1,66 @@
+{
+  "schema": "lunar-ice/second-pass-s-v21/1",
+  "generated_utc": "2026-09-30T22:10:14.192325+00:00",
+  "generator": "backend/scripts/second_pass_s_v21.py",
+  "seed": 20260930,
+  "product": "ch2_sar_ncxs_20200305t114902885 (S-band SLI, read in place from data/generality/20200305/; never ingested)",
+  "independent_replication": false,
+  "independence_note": "same acquisition as L pass 2 (20200305t114902885); shares date, orbit and geometry with it",
+  "stokes_from_slc_20200305S": {
+    "matched_cells": 896972,
+    "dop_below_0p13_fraction": 0.010291291143982199,
+    "joint_cells": 1620,
+    "joint_fraction": 0.0018060764438577793,
+    "coherence_median": 0.6585710858411872
+  },
+  "selected_cells": 1620,
+  "selected_max_R": 1.2687146490682673,
+  "iut_selected_among_selected": 0,
+  "f2_signal_cells": 0,
+  "f2_selected": 0,
+  "discs": {
+    "outside": {
+      "discs": 486,
+      "fire": 21,
+      "rate_percent": 4.320987654320987,
+      "wilson95_percent": [
+        2.843313490322833,
+        6.515114231575003
+      ]
+    },
+    "inside": {
+      "discs": 10,
+      "fire": 0,
+      "rate_percent": 0.0,
+      "wilson95_percent": [
+        0.0,
+        27.75328030260577
+      ]
+    },
+    "mixed": {
+      "discs": 88,
+      "fire": 1,
+      "rate_percent": 1.1363636363636365,
+      "wilson95_percent": [
+        0.20087852955039953,
+        6.1594939563070135
+      ]
+    }
+  },
+  "discs_total": 584,
+  "discs_firing": 22,
+  "ladder_no_pass_term": {
+    "estimable": false,
+    "reason": "0 of 10 shadowed discs fire: complete separation, the PSR coefficient runs to minus infinity"
+  },
+  "note": "the ladder has no pass term (single pass); rung (c) = class + ln N-hat + min SNR + coherence; (e0) = class + geometry",
+  "run_info": {
+    "wall_s": 1.8,
+    "peak_rss_mb": 113,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

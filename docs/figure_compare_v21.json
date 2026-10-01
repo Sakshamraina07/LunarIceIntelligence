@@ -1,0 +1,303 @@
+{
+  "schema": "lunar-ice/figure-compare-v21/1",
+  "generated_utc": "2026-09-30T21:37:00.752357+00:00",
+  "generator": "backend/scripts/figure_compare_v21.py",
+  "seed": null,
+  "seed_note": "draws nothing",
+  "figures": {
+    "fig_scene.pdf": {
+      "paper_sha256": "ddba2a8be2ac65f4e7a0ccc43e86c8b1b4e475a9f2e1b7f3e2f41e40c33b9cf0",
+      "bytes": 206945,
+      "media_box_pt": [
+        0.0,
+        0.0,
+        250.928875,
+        151.7807256531
+      ],
+      "placed_width_in": 3.485,
+      "fonts": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 2
+      },
+      "text_size_pt": {
+        "min": 7.0,
+        "max": 7.0,
+        "operators": 38,
+        "histogram_size_pt_count": {
+          "7.0": 38
+        },
+        "printed_scale": 1.0067144906743186,
+        "min_at_printed_size": 7.04700143472023,
+        "sizes_below_7pt_at_printed_size": {}
+      },
+      "grsl_sha256": "7eb7ad6929bcd7d8ea0dbee1b6f68d682674028c80f058c751c3fcb3f794cb69",
+      "byte_identical": false,
+      "identical_without_date_and_id": true,
+      "content_streams_identical": true,
+      "grsl_media_box_pt": [
+        0.0,
+        0.0,
+        250.928875,
+        151.7807256531
+      ],
+      "fonts_grsl": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 2
+      }
+    },
+    "fig_cpr_dop.pdf": {
+      "paper_sha256": "e88f487a4b2febaf60ea450e213b154a423dc586073e8a244abc7132a84d82f4",
+      "bytes": 48591,
+      "media_box_pt": [
+        0.0,
+        0.0,
+        254.226075,
+        160.5173521723
+      ],
+      "placed_width_in": 3.531,
+      "fonts": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular",
+          "FTXWZA+STIXGeneral-Italic"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 4
+      },
+      "text_size_pt": {
+        "min": 4.34,
+        "max": 8.0,
+        "operators": 46,
+        "histogram_size_pt_count": {
+          "4.34": 5,
+          "4.9": 5,
+          "5.8": 8,
+          "5.9": 6,
+          "6.2": 6,
+          "7.0": 12,
+          "8.0": 4
+        },
+        "printed_scale": 0.9935995468705748,
+        "min_at_printed_size": 4.312222033418295,
+        "sizes_below_7pt_at_printed_size": {
+          "4.34": 5,
+          "4.9": 5,
+          "5.8": 8,
+          "5.9": 6,
+          "6.2": 6,
+          "7.0": 12
+        }
+      },
+      "grsl_sha256": "ae2ac0578d5c8b8f791049c6e664d6c84c89dd830b15575598a5acb57699fa26",
+      "byte_identical": false,
+      "identical_without_date_and_id": true,
+      "content_streams_identical": true,
+      "grsl_media_box_pt": [
+        0.0,
+        0.0,
+        254.226075,
+        160.5173521723
+      ],
+      "fonts_grsl": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular",
+          "FTXWZA+STIXGeneral-Italic"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 4
+      }
+    },
+    "fig_joint_power.pdf": {
+      "paper_sha256": "2e9dd405e3445378d5e2f40becd7f3a49250dee1f8200b56641a101773d5cbe0",
+      "bytes": 14936,
+      "media_box_pt": [
+        0.0,
+        0.0,
+        230.555,
+        156.66143
+      ],
+      "placed_width_in": 3.202,
+      "fonts": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular",
+          "FTXWZA+STIXGeneral-Italic"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 4
+      },
+      "text_size_pt": {
+        "min": 4.9,
+        "max": 8.0,
+        "operators": 27,
+        "histogram_size_pt_count": {
+          "4.9": 6,
+          "5.8": 8,
+          "6.0": 3,
+          "6.2": 1,
+          "7.0": 6,
+          "8.0": 3
+        },
+        "printed_scale": 1.0956901936289818,
+        "min_at_printed_size": 5.368881948782011,
+        "sizes_below_7pt_at_printed_size": {
+          "4.9": 6,
+          "5.8": 8,
+          "6.0": 3,
+          "6.2": 1
+        }
+      },
+      "grsl_sha256": "8df326689607100ab77de74dd32854849bcbe63c42240af7a528d83ee4e25041",
+      "byte_identical": false,
+      "identical_without_date_and_id": true,
+      "content_streams_identical": true,
+      "grsl_media_box_pt": [
+        0.0,
+        0.0,
+        230.555,
+        156.66143
+      ],
+      "fonts_grsl": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular",
+          "FTXWZA+STIXGeneral-Italic"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 4
+      }
+    },
+    "fig_region_design.pdf": {
+      "paper_sha256": "f8550d49f6a579c3052b903866f275ea481ab822d6a2f0fdf3f7af90a3f966a4",
+      "bytes": 12910,
+      "media_box_pt": [
+        0.0,
+        0.0,
+        228.707,
+        175.12076
+      ],
+      "placed_width_in": 3.176,
+      "fonts": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular",
+          "FTXWZA+STIXGeneral-Italic"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 4
+      },
+      "text_size_pt": {
+        "min": 4.9,
+        "max": 8.0,
+        "operators": 22,
+        "histogram_size_pt_count": {
+          "4.9": 2,
+          "5.6": 1,
+          "7.0": 16,
+          "8.0": 3
+        },
+        "printed_scale": 1.104659949622166,
+        "min_at_printed_size": 5.412833753148614,
+        "sizes_below_7pt_at_printed_size": {
+          "4.9": 2,
+          "5.6": 1
+        }
+      },
+      "grsl_sha256": "100e2b25ac3bbed579e5d86e8b8472bc3cf7d03971ea798365186c24fc357480",
+      "byte_identical": false,
+      "identical_without_date_and_id": true,
+      "content_streams_identical": true,
+      "grsl_media_box_pt": [
+        0.0,
+        0.0,
+        228.707,
+        175.12076
+      ],
+      "fonts_grsl": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular",
+          "FTXWZA+STIXGeneral-Italic"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 4
+      }
+    },
+    "fig_n_sensitivity.pdf": {
+      "paper_sha256": "f778ac3ed3a66fc903671bdbdb78f34b0b2b6e6d92e85429f8e41a9704f5fbce",
+      "bytes": 14014,
+      "media_box_pt": [
+        0.0,
+        0.0,
+        500.2286089333,
+        194.379375
+      ],
+      "placed_width_in": 6.948,
+      "fonts": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 2
+      },
+      "text_size_pt": {
+        "min": 7.0,
+        "max": 7.5,
+        "operators": 41,
+        "histogram_size_pt_count": {
+          "7.0": 35,
+          "7.5": 6
+        },
+        "printed_scale": 1.0305123776626366,
+        "min_at_printed_size": 7.213586643638456,
+        "sizes_below_7pt_at_printed_size": {}
+      }
+    }
+  },
+  "run_info": {
+    "wall_s": 0.9,
+    "peak_rss_mb": 29,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

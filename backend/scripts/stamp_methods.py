@@ -60,6 +60,19 @@ END = "<!-- END GENERATED STAMP -->"
 #: artifact -> the METHODS sections whose figures were transcribed from it.
 #: When an artifact's digest changes, these are the sections to re-read.
 ARTIFACTS: dict[str, list[str]] = {
+    # v21 work order (2026-10-01, METHODS 20)
+    "docs/n_sensitivity.json": ["20.1"],
+    "docs/n_sensitivity_core.json": ["20.1"],
+    "docs/n_sensitivity_np.json": ["20.1"],
+    "docs/n_sensitivity_region.json": ["20.1"],
+    "docs/n_sensitivity_real.json": ["20.1"],
+    "docs/n_sensitivity_f2point.json": ["20.1"],
+    "docs/n_sensitivity_calcheck.json": ["20.1"],
+    "docs/selected_cells_v21.json": ["20.1"],
+    "docs/shadow_identification.json": ["20.2"],
+    "docs/disc_table_v21.json": ["20.2"],
+    "docs/second_pass_s_v21.json": ["20.3"],
+    "docs/v21_carryover_checks.json": ["20.3"],
     "docs/enl.json": ["7.1", "7.3", "7.5", "7.6", "17.5"],
     "docs/enl_estimator_spec.json": ["7.3.1"],
     "docs/bootstrap_enl.json": ["7.3.1"],
@@ -438,6 +451,7 @@ def check_labelled_figures(text: str) -> list:
 #: An entry here is a STATED DECISION that a section's numbers need no artifact.
 #: It is not a way to silence a section that does.
 SECTIONS_WITHOUT_ARTIFACTS: dict = {
+    "20": "the pass's preamble; no measured figure of its own.",
     "17": "the pass's preamble; no measured figure of its own.",
     "17.4": ("the data figure: its rendered height and legend text are properties of the "
              "PDF (G26 builds and inspects it), not of an artifact."),

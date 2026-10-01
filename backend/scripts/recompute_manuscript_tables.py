@@ -135,11 +135,36 @@ def main() -> int:
     total_bad = 0
 
     # ---------------- Table II ------------------------------------------
-    print("\n  TABLE II — sampling statistics")
+    # v21 moved the sampling-statistics table to the Supplementary Material (Table
+    # S6, S-VI) and put the dependence on N in the main text. When the manuscript
+    # holds no six-column sampling row, the supplement beside it is parsed
+    # instead, as for the Mini-RF table below, and which file was read is recorded.
+    def sampling_rows(lns):
+        out = []
+        for ln_ in lns:
+            c_ = cells(ln_)
+            if len(c_) == 6 and num(c_[0]) is not None and "rel" not in ln_ and "." in c_[0] \
+                    and 4.0 <= num(c_[0]) <= 40.0:
+                out.append(ln_)
+        return out
+    lines2, table2_source = lines, args.tex
+    if not sampling_rows(lines):
+        supp2 = (BASE_DIR / args.tex).with_name("dfsar_detection_limits_supplement.tex")
+        if supp2.is_file():
+            raw_s2 = [re.sub(r"(?<!\\)%.*", "", ln_) for ln_ in supp2.read_text(
+                encoding="utf-8", errors="replace").splitlines()]
+            lines2, buf2 = [], ""
+            for ln_ in raw_s2:
+                buf2 = (buf2 + " " + ln_).strip() if buf2 else ln_
+                if r"\\" in buf2 or "&" not in buf2:
+                    lines2.append(buf2)
+                    buf2 = ""
+            table2_source = supp2.relative_to(BASE_DIR).as_posix()
+    print(f"\n  TABLE II / S6 — sampling statistics, from {table2_source}")
     print(f"    {'N':>7} {'cell':<10} {'printed':>9} {'at printed N':>13} "
           f"{'at measured N':>14}  verdict")
     rows2, bad2 = [], 0
-    for ln in lines:
+    for ln in lines2:
         c = cells(ln)
         if len(c) != 6 or num(c[0]) is None or "rel" in ln:
             continue
@@ -176,7 +201,7 @@ def main() -> int:
           f" reproduce at the printed N, "
           f"{sum(1 for r in rows2 if 'measured N only' in r['verdict'])} only at the "
           f"unrounded one, {bad2} differ")
-    report["tables"]["II_sampling_statistics"] = {"cells": rows2, "differ": bad2}
+    report["tables"]["II_sampling_statistics"] = {"cells": rows2, "differ": bad2, "parsed_from": table2_source}
     total_bad += bad2
 
     # ---------------- the critical values in the text of V-A -----------------

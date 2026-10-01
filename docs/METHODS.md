@@ -5127,6 +5127,117 @@ shadowed, 186 mixed), 96 firing. The L-band pass-1 discs are fitted the same way
   in the earlier (v18a) session, which added the `20200808S` entry at
   2026-09-30 16:30 UTC and finished the run at 16:31 UTC (22:01 IST).
 
+## 20 · V21 work order (2026-10-01)
+
+The council audit of v20 (five advisors, 5/5 Major Revision) asked for two computations
+and an audit of the rewritten text: what every headline does as the look count N moves,
+and whether the higher firing rate in shadow is identified. This section records what the
+data give. It reports results, including the ones that hurt; it does not decide what the
+paper says, and no `.tex` was edited. The numbers for the paper are in
+`docs/n_sensitivity.json` (W1, one row per grid N and a `keys` map from printed number to
+source) and `docs/shadow_identification.json` (W2); the narrative is
+`Claude outputs/hygiene/V21_REPORT.md`.
+
+### 20.1 N-sensitivity of every headline (W1)
+
+`python backend/scripts/n_sensitivity.py` → `docs/n_sensitivity_core.json` (seed 20261021,
+2 × 10⁶ trials per population and N, binomial MC SE on every rate; A analytic, C rule size and
+power, D IUT onset and the pooled-looks requirement);
+`python backend/scripts/n_sensitivity_np.py` → `docs/n_sensitivity_np.json` (B, exact quadrature,
+838 alternatives, 24 look counts, MC check seed 20261005);
+`python backend/scripts/n_sensitivity_region.py` → `docs/n_sensitivity_region.json` (E, seed
+20261031); `python backend/scripts/n_sensitivity_real.py` → `docs/n_sensitivity_real.json` (F, G,
+seed 20261041; draws only the q05 and pooled-power simulations);
+`python backend/scripts/n_sensitivity_f2point.py` (F2's pooled point at 10⁷ draws, seeds
+20261051–20261054); `python backend/scripts/n_sensitivity_calcheck.py` (the looks calibration, below);
+`python backend/scripts/n_sensitivity_assemble.py` → `docs/n_sensitivity.json`,
+`docs/n_sensitivity_table.md`/`.tex`; `cd paper && python make_fig_n_sensitivity.py` →
+`paper/fig_n_sensitivity.pdf` (G26 builds it and holds it to ≥ 7 pt text).
+
+* **A.** The one-sided 95 % critical value of F(2N,2N) equals the band edge 1.2989 at
+  N = 79.6166 and exceeds it below. The band is 0.7699 < CPR < 1.2989.
+  crit95 = 1.882 (N = 14), 1.452 (39.4), 1.298 (80).
+* **B.** The NP bound reproduces all twelve values the order quotes to their printed precision
+  (9.72, 11.06, 12.63, 13.94, 14.17, 16.56, 20.2, 22.9, 29.4, 37.6, 46.5, 64.1 % at N = 14, 21,
+  30, 38, 39.4, 55, 80, 100, 150, 218, 300, 500; `reproduction_all_agree`). At the published
+  operating point (CPR 1.1, minimum DOP 0.0476) the bound is 8.20, 11.09, 14.86, 25.76 % at N =
+  14, 39.4, 80, 218. **DOP 0 is not an admissible population at CPR ≠ 1** (the coupling gives
+  DOP ≥ |1 − CPR|/(1 + CPR)); the operating point is the minimum-DOP one.
+* **C.** Rule size (CPR 1.00 at DOP 0, the largest of the four null populations): 3.43 ± 0.01 %
+  (N = 13.72), 13.22 ± 0.02 (38), 13.76 ± 0.02 (39.4), 28.02 ± 0.03 (80); the printed
+  3.6 / 13.2 / 27.9 are from 10⁵ trials per population. The size first exceeds 5 % at N = 17.84
+  (±0.11, 2 SE), 10 % at 30.20 (±0.15), 20 % at 55.54 (±0.22); the printed "from N = 19" is the
+  first grid value above 5 %. Power at CPR 1.1 / 1.2 / 1.25 at their minimum DOP is in
+  `docs/n_sensitivity.json::rows`.
+* **D.** The IUT has a rejection region from N = 232 (q05 from 1.6 × 10⁷ draws); size 0.0008 ±
+  0.0004 % there, 0.18 % at 254, 1.10 % at 300. The 80 % pooled-looks requirements 1396 / 2049 /
+  5241 / 8588 (CPR 1.1 / 1.2 / 1.05 / 1.25 at minimum DOP) are K = ⌈N_eff/N⌉ cells of N looks
+  (`regional_requirement.*.K_cells_by_N`); simulated at N = 14 (K = 100) and 39.4 (K = 36) the IUT's power
+  is 80.24 ± 0.13 % and 80.90 ± 0.12 %.
+* **E.** The region-mean null, unconditional = conditional × containing fraction.
+  **The looks calibration.** `region_mean_null.correlated` calibrates L (looks per channel) against the
+  target N on four realizations of the region's own bounding box; that calibration scatters (40
+  repeats at L = 19: 57.2 ± 10.2 looks, range 38.9–91.3) and reads high (mean 57 against 53.1–53.6 on
+  150 000 cells). The artifact's "achieved N" of 75.9 for the 260-cell "N = 80" row is the L = 19 run,
+  whose N is 53.3 on the large-field calibration (`n_sensitivity_calcheck.json`); the 3647-cell row
+  (L = 31, printed 83.6) is 85.8. The grid was re-run on the large-field calibration (L → N: 1 → 3.7,
+  5 → 14.5, 13 → 37.3, 19 → 53.3, 28 → 78.2, 37 → 103.7, 55 → 148.7, 79 → 218.4).
+  260 cells, CPR 0.7, DOP 0.176, correlated: 1.80 ± 0.30 % (N = 14.5), 28.05 ± 1.00 (37.3),
+  37.15 ± 1.08 (53.3, the maximum), 29.75 ± 1.02 (78.2), 17.2 ± 0.8 (103.7), 4.75 ± 0.48 (148.7),
+  0.60 ± 0.17 (218). It crosses 5 % at N = 20.3, never reaches 50 %, **rises to N ≈ 53 and then
+  falls**: the conditional rate keeps rising (57.96 % at 53, 77.9 % at 78, 93 % at 149) but the
+  fraction of regions that contain a pixel with CPR ≥ 1 collapses (0.641, 0.382, 0.051).
+  3647 cells: 0 below N ≈ 30, 2.7 ± 0.5 % (37.3), 21.8 (47.0), 51.5 (53.3), 82.0 (69.6),
+  86.9 ± 1.1 (78.2, the maximum), 86.6 (103.7), 45.4 (148.7), 11.0 (218.4); 5 % at N = 38.5, 50 % at
+  53.0. Independent cells, 260: 7.88 ± 0.19 % at N = 39.4 (printed 7.6, from 2000 trials).
+  Reconciliation of the printed 260-cell correlated figures: 0.823 × 34.08 = 28.05 %, which is the
+  abstract's 28 % (the unconditional rate); 1.84 / 34.08 / 57.96 % are conditional, containing
+  fractions 0.9765 / 0.823 / 0.641, unconditional 1.80 / 28.05 / 37.15 %.
+* **F.** Real data with the per-cell N overridden by a constant (`n_sensitivity_real.json`): F2's 50
+  selected cells (largest R 1.2662) are first significant at **N = 97.59**; the whole pass-1 frame
+  (largest selected R 1.29794) at N = 80.04, the S-band frame 80.16, S-band F2 (29 selected) 165.89,
+  the pass-2 frame (24 selected) 416.96. At N = 218: 4 F2 cells, 3427 frame cells significant; the IUT
+  region is empty through 231 and selects nothing in F2 at any N tested; at N = 254 it selects 26
+  cells of the pass-1 frame and 19 of the S-band frame (N set constant, not estimated). F2's pooled
+  looks (6.657 independent samples × N) are 96.5, 262.3, 532.5 at N = 14.5, 39.4, 80; the IUT's power
+  at CPR 1.1 at 262.3 looks is 0.568 ± 0.003 % (10⁷ draws; `n_sensitivity_f2point.json`; the grid run's
+  0.52 used a q05 from 2 × 10⁶).
+* **G.** The per-disc firing rule is N-free: `gap_v20_frame.py:222` `rule = ok & (dop < DOP_T) & (R >
+  1.0)`; N̂ is formed after it (`:226`, `L.local_n`) and enters only the IUT (`:229`) and the ln N̂
+  covariate of ladder rung (b).
+
+### 20.2 Is the shadow excess identified? (W2)
+
+`python backend/scripts/v21_extract.py` → `docs/disc_table_v21.json` (per-disc rows incl. terrain from
+LDEM_80S_20M at 80 m slope baseline, the 100 m and 500 m plane-detrended RMS heights, the local-slope
+layover fraction; the local-slope radar-shadow fraction is 0 for every disc, by the local-slope criterion, not ray
+tracing), `docs/selected_cells_v21.json`; `python backend/scripts/shadow_identification.py` →
+`docs/shadow_identification.json` (seed 20260930, block bootstrap B = 2000 on 5 × 5 disc-lattice blocks,
+B = 500 per specification in the curve); `cd paper && python make_fig_spec_curve.py`.
+
+* **A.** Every rung reproduces the published value (the coherence-adjusted PSR coefficient −0.401 ±
+  0.378; all eight odds ratios and intervals; the MH rows). New rungs: (f) = (e) + terrain, (f0) =
+  geometry + terrain without coherence (L two passes: OR 0.70 (0.24–2.28) and 0.77 (0.34–1.85);
+  S-band: 0.40 (0.04–1.71) and 0.34 (0.09–0.95)). L pass 2 has 0 of 10 shadowed discs firing:
+  the coefficient is not estimable (complete separation).
+* **B.** 1024 specifications per set. L two passes: OR median 0.69, range 0.16–4.33; 14 exclude 1
+  from above and 82 from below on the block interval; **all 14 lack coherence and LOLA local incidence
+  and all 14 contain the geometry-file incidence** (L pass 1: 20 such specifications, S-band pass 1: 24,
+  none containing coherence or LOLA local incidence). Without coherence (512 specifications) the median OR is
+  1.61; with coherence 0.58 (none excludes 1 from above, 33 exclude it from below).
+* **C–E, G, H, I, K** in `docs/shadow_identification.json`; see the report.
+
+### 20.3 The second scene, the audit and the figures (W4–W6)
+
+`python backend/scripts/second_pass_s_v21.py` → `docs/second_pass_s_v21.json`: the S-band SLI of
+the 2020-03-05 acquisition (same acquisition as L pass 2) run through the chain. 896 972 cells,
+1620 selected (none significant, IUT 0, largest R 1.2687), 584 discs (22 fire: sunlit 21 of 486 =
+4.3 %, shadowed 0 of 10, mixed 1 of 88); not an independent replication.
+`docs/SECOND_SCENE_RUNBOOK.md` prepares a genuinely independent scene. `python
+backend/scripts/v21_literal_audit.py` → `docs/v21_literal_audit.json`;
+`python backend/scripts/figure_compare_v21.py` → `docs/figure_compare_v21.json`;
+`python backend/scripts/v21_carryover_checks.py` → `docs/v21_carryover_checks.json`.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -5144,7 +5255,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `39952e6`.
+Stamped at commit `91fecc9`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -5164,6 +5275,7 @@ Stamped at commit `39952e6`.
 | `docs/decision_rule.json` | `19cc84e41695299c…` | §15.8, §16.2, §16.6 |
 | `docs/degeneracy_replication.json` | `5af23a79e703e7a9…` | §1.10 |
 | `docs/detection_statistics.json` | `16707f02b03be20c…` | §11.1, §11.2, §11.3 |
+| `docs/disc_table_v21.json` | `053527547096991a…` | §20.2 |
 | `docs/dop_sampling_bias.json` | `14f3432c0344881e…` | §14.2 |
 | `docs/enl.json` | `1358b0ea2e97a05d…` | §7.1, §7.3, §7.5, §7.6, §17.5 |
 | `docs/enl_L_20200305_full.json` | `bf7bc6f1bdf4219a…` | §14.4 |
@@ -5189,6 +5301,13 @@ Stamped at commit `39952e6`.
 | `docs/literature_screen.json` | `d5ff73f7ec44aea2…` | §13.1 |
 | `docs/mechanism_controls.json` | `97df12ec0c5ae7d8…` | §7.4b |
 | `docs/mechanism_spec.json` | `14bc6ef44f9ff8e2…` | §14.3 |
+| `docs/n_sensitivity.json` | `8791e55f7f473200…` | §20.1 |
+| `docs/n_sensitivity_calcheck.json` | `724aed89a4517f55…` | §20.1 |
+| `docs/n_sensitivity_core.json` | `252c8d6b54dc6ae9…` | §20.1 |
+| `docs/n_sensitivity_f2point.json` | `3d0d96c4c90a2be5…` | §20.1 |
+| `docs/n_sensitivity_np.json` | `bdefd6e35039a069…` | §20.1 |
+| `docs/n_sensitivity_real.json` | `d9923baad9e01a5b…` | §20.1 |
+| `docs/n_sensitivity_region.json` | `9f66d5b43ff87d55…` | §20.1 |
 | `docs/np_power_bound.json` | `983f28d045a91c2f…` | §16.4 |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
 | `docs/phase_gain_perturbation.json` | `07604f8f0c4c864e…` | §1.11 |
@@ -5200,6 +5319,9 @@ Stamped at commit `39952e6`.
 | `docs/region_mean_null.json` | `c40c3df7c03b5571…` | §18.4 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
+| `docs/second_pass_s_v21.json` | `202fb711f006cb25…` | §20.3 |
+| `docs/selected_cells_v21.json` | `712db6f413c7d37f…` | §20.1 |
+| `docs/shadow_identification.json` | `d31bd9b76b74e514…` | §20.2 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_chain.json` | `c404ef43393174b6…` | §18.7 |
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
@@ -5213,6 +5335,7 @@ Stamped at commit `39952e6`.
 | `docs/stokes_from_slc_block32.json` | `453a44d7e23d5df6…` | §15.5 |
 | `docs/tail_calibration_ci.json` | `5df59d5bd6459153…` | §15.6, §18.5, §19.5 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
+| `docs/v21_carryover_checks.json` | `0f0c22cb420ee7e9…` | §20.3 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
 | `frontend/public/analysis/sweep_grid.json` | `a6c22dbcf875dad5…` | §1.9 |

@@ -117,7 +117,8 @@ def main() -> int:
     ap.add_argument("--inject", choices=("size", "significant", "fwe", "perpixel", "bound",
                                          "monotone", "iut", "mc", "v3", "ceiling", "design_bound", "mh", "het",
                                          "ladder", "recon", "identity", "coherence",
-                                         "design_size", "design_pool"))
+                                         "design_size", "design_pool", "v21_np", "v21_iut", "v21_f2", "v21_region", "v21_ladder",
+                                         "v21_spec"))
     args = ap.parse_args()
     print("=" * 78)
     print("G33 — the council analyses reproduce their anchors")
@@ -463,6 +464,91 @@ def main() -> int:
               f"-> {'ok' if s_ok else 'FAIL'}")
         if not s_ok:
             bad.append("band_s: the joint count does not reproduce stokes_from_slc_20200808S")
+
+    # ---- v21: the N-sensitivity and the shadow-identification work -----------
+    ns = load("docs/n_sensitivity.json")
+    npr = load("docs/n_sensitivity_np.json")
+    nr = load("docs/n_sensitivity_real.json")
+    ncore = load("docs/n_sensitivity_core.json")
+    nrg = load("docs/n_sensitivity_region.json")
+    if ns is None or npr is None or nr is None or ncore is None or nrg is None:
+        bad.append("n_sensitivity*.json is absent")
+    else:
+        # W1B: the NP bound reproduces the twelve values the work order quotes, to their printed precision
+        agree = all(d["agrees_to_printed_precision"] for d in npr["reproduction"])
+        if args.inject == "v21_np":
+            agree = False
+        print(f"  v21 W1B: the NP bound reproduces {len(npr['reproduction'])} quoted values (N = 14 ... 500) -> "
+              f"{'ok' if agree else 'FAIL'}")
+        if not agree:
+            bad.append("n_sensitivity_np: a quoted Neyman-Pearson bound is not reproduced")
+        # W1A: the critical value equals the band edge at N = 79.6166 and is above it below
+        from scipy.stats import f as _F
+        nedge = ncore["N_edge_crit_equals_1p2989"]
+        edge = ncore["band_cpr_edges"][1]
+        c_ok = abs(_F.ppf(0.95, 2 * nedge, 2 * nedge) - edge) < 1e-6 and _F.ppf(0.95, 2 * (nedge - 0.5), 2 * (nedge - 0.5)) > edge
+        print(f"  v21 W1A: crit95 of F(2N,2N) equals the band edge {edge:.4f} at N = {nedge:.4f} and exceeds it below -> "
+              f"{'ok' if c_ok else 'FAIL'}")
+        if not c_ok:
+            bad.append("n_sensitivity_core: the band-edge look count is not where crit95 crosses 1.2989")
+        # W1D: the IUT has no rejection region through 218 and one by 254 (known N)
+        by = nr["by_N"]
+        i218, i254 = by["218"]["iut_has_rejection_region"], by["254"]["iut_has_rejection_region"]
+        if args.inject == "v21_iut":
+            i218 = True
+        i_ok = (not i218) and i254 and ncore["iut_onset"]["last_N_without"] >= 218 and ncore["iut_onset"]["first_N_with_rejection_region"] <= 254
+        print(f"  v21 W1D: the IUT region is empty at 218, present at 254, onset {ncore['iut_onset']['first_N_with_rejection_region']} -> "
+              f"{'ok' if i_ok else 'FAIL'}")
+        if not i_ok:
+            bad.append("n_sensitivity: the IUT onset is not between 218 and 254")
+        # W1F: the smallest N at which any selected cell is significant is where crit95 falls to its largest R
+        sm = nr["smallest_N_any_selected_cell_significant"]
+        f2 = sm["L_20200808 / F2"]
+        rmax = f2["max_R_selected"] * (1.05 if args.inject == "v21_f2" else 1.0)
+        f_ok = abs(_F.ppf(0.95, 2 * f2["smallest_N_any_selected_cell_significant"], 2 * f2["smallest_N_any_selected_cell_significant"]) - rmax) < 1e-6 \
+            and f2["selected"] == 50 and sm["S_20200808S / F2"]["selected"] == 29 and sm["L_20200808 / whole frame"]["selected"] == 26462 \
+            and sm["L_20200305 / whole frame"]["selected"] == 24 and f2["smallest_N_any_selected_cell_significant"] >= nedge
+        print(f"  v21 W1F: F2's largest selected R {f2['max_R_selected']:.4f} is critical at N = {f2['smallest_N_any_selected_cell_significant']:.2f} "
+              f"(never below the identity's {nedge:.1f}); selected counts 50 / 29 / 26462 / 24 -> {'ok' if f_ok else 'FAIL'}")
+        if not f_ok:
+            bad.append("n_sensitivity_real: F2's smallest significant N is not where crit95 equals its largest selected R, or a selected count moved")
+        # W1E: unconditional = conditional x containing, and the big-field calibration reproduces the achieved N of the published rows it reuses
+        pop = "CPR 0.7 DOP 0.176"
+        r39 = nrg["results"][pop]["N39.4"]["cells260"]["correlated"]
+        u = r39["conditional_p"] * r39["containing_fraction"] * (1.25 if args.inject == "v21_region" else 1.0)
+        u_ok = abs(u - r39["unconditional_p"]) < 0.006 and abs(0.823 * 34.08 - 28.05) < 0.01
+        cal = nrg["calibration"]["260"]
+        c13 = cal["13"]
+        print(f"  v21 W1E: 0.823 x 34.08 % = {0.823 * 34.08:.2f} % = the stored unconditional {100 * r39['unconditional_p']:.2f} %; the 200 x 200 "
+              f"calibration puts L = 13 at {c13:.1f} looks -> {'ok' if u_ok and 35 < c13 < 40 else 'FAIL'}")
+        if not (u_ok and 35 < c13 < 40):
+            bad.append("n_sensitivity_region: the unconditional rate is not conditional x containing, or the looks calibration moved")
+    sid = load("docs/shadow_identification.json")
+    if sid is None:
+        bad.append("shadow_identification.json is absent")
+    else:
+        # W2A: the ladder reproduces the published rungs (point estimates; the intervals carry bootstrap noise)
+        lad = sid["A_ladder"]
+        pub = {("L_two_passes", "a"): 1.79, ("L_two_passes", "b"): 1.29, ("L_two_passes", "c"): 0.67, ("L_two_passes", "e0"): 1.01,
+               ("S_pass1", "a"): 2.93, ("S_pass1", "b"): 1.62, ("S_pass1", "c"): 0.83, ("S_pass1", "e0"): 0.49}
+        worst = max(abs(round(lad[k][("rungs")][r]["odds_ratio"], 2) - v) for (k, r), v in pub.items())
+        if args.inject == "v21_ladder":
+            worst += 0.3
+        l_ok = worst < 0.0051 and sid["A_reproduction"]["L_two_passes.c"]["agrees"] and abs(lad["L_two_passes"]["rungs"]["c"]["coefficient"] + 0.401) < 0.0006
+        print(f"  v21 W2A: the ladder reproduces 8 published odds ratios (largest difference {worst:.4f}) and the published coherence-adjusted "
+              f"coefficient {lad['L_two_passes']['rungs']['c']['coefficient']:+.3f} -> {'ok' if l_ok else 'FAIL'}")
+        if not l_ok:
+            bad.append("shadow_identification: the ladder does not reproduce the published odds ratios")
+        # W2B: the specification curve contains the published specification, and its summary counts add up
+        sp = sid["B_spec_curve"]["L_two_passes"]
+        n_spec = sp["summary"]["specifications"]
+        s_ok = n_spec == 1024 and sp["summary"]["with_coherence"]["n"] + sp["summary"]["without_coherence"]["n"] <= n_spec
+        if args.inject == "v21_spec":
+            s_ok = False
+        print(f"  v21 W2B: the specification curve has {n_spec} specifications (2^10), with + without coherence = "
+              f"{sp['summary']['with_coherence']['n']} + {sp['summary']['without_coherence']['n']} -> {'ok' if s_ok else 'FAIL'}")
+        if not s_ok:
+            bad.append("shadow_identification: the specification curve is incomplete")
 
     if bad:
         print("\n  GATE FAIL —")

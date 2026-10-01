@@ -6,7 +6,7 @@ Order: V25. Permission used: ordinary commits, plain pushes of `main`, and, in P
 
 1. **Part A list:** 190 paths removed in V25 (170 tile files of the CPR/DOP pyramid + 20 images), 200 blob versions, 113 distinct blobs, 33,261,527 bytes counted per version (31,687,254 bytes of distinct blobs across V24 and V25 together, with the two V24 layer files). Pixel sizes: tiles 27.6 x 80.8 m/px at zoom 3 (coarser below); images 28.6 (8 files), 40.4 (2), 57.1 (8), 80.8 (2), 141.8 (2), 144.0 (8) m/px; the two V24 layer files 25.0.
 2. **Part A proof:** `git rev-list --all --objects` = 0 matches by name and 0 by blob id (115 recorded ids), locally after `reflog expire` + `gc --prune=now`, again after the push and fetch, and in a fresh clone (deleted). Forks 0, network 0, pull requests 0. New `main` tip of the rewrite `436dd46b7304aa1ca2cdd8ceffdc6e3cab90bae3`; tag `v1.0-submittable` object `bf42951f0af1d10d9996485fa29eae451a587f98` -> commit `3298175d7fc0591a58375d0f5cec7127bba4d373`. Backup `D:\FYP_backup_pre_v25.bundle` (146 MB, `git bundle verify` OK). **The proof found six files my first name list had missed**; see §1.
-3. **verify_all.py:** TOTALS_PLACEHOLDER
+3. **verify_all.py:** author's machine **PASS 32, REQUIRES LOCAL DATA 0, FAIL 0** (exit 0). Fresh clone of the same commit **PASS 16, REQUIRES LOCAL DATA 16, FAIL 0** (exit 0). REQUIRES LOCAL DATA in the clone: G1, G2, G3, G4, G5, G6b, G7, G8, G15, G20, G24, G26, G27, G28, G31, G32 (the file each needs is in §2.3).
 4. **Tracking the manuscript `.tex`:** recommended, for the two final files only, after a decision on preprints; not done. §2.4.
 5. **Part C:** current `HEAD` would serve nothing finer than 200 m from DFSAR (frontend: the two CPR/DOP previews at about 258 m/px; backend: no static root, no tile route, `/mission` resamples to 100 x 100). **Not checkable from the repo:** older Vercel deployments built from commits before V24 contained the two 25 m layer files and stay addressable until deleted. §3.
 6. **Old and new data sentence:** §4.
@@ -68,7 +68,7 @@ PASS, REQUIRES LOCAL DATA, FAIL. **REQUIRES LOCAL DATA only when something the g
 
 * **Present but wrong must FAIL (tested):** in a fresh clone I created a junk file at every path in `NEEDS`, an empty `frontend/node_modules` and a wrong local copy of one removed layer. Result: **PASS 16, REQUIRES LOCAL DATA 0, FAIL 16**; every gate that has a declared need FAILED, none passed, none reported REQUIRES LOCAL DATA; the 16 that read tracked files only still passed. G28 failed on exactly the planted wrong local copy.
 * **A fresh clone with nothing:** first run of this code, from a clone of the local commit: **PASS 16, REQUIRES LOCAL DATA 16, FAIL 0**, exit 0. The 16 passing: G6, G9, G10, G12, G13, G16, G17, G18, G19, G21, G22, G23, G25, G29, G30, G33.
-* RUNS_PLACEHOLDER
+* **Author's machine, tree of commit `0f51576`** (everything present; the full run, about 12 minutes): **PASS 32, REQUIRES LOCAL DATA 0, FAIL 0**, exit 0; `docs/verification.json` records it. **Fresh clone of that commit** (`git clone` into a temp folder outside `D:\FYP`, deleted afterwards): **PASS 16, REQUIRES LOCAL DATA 16, FAIL 0**, exit 0. The last commit changes only this report and `docs/verification.json`; G10, G19, G25 and G28 were re-run on it.
 
 REQUIRES LOCAL DATA in a fresh clone, with the file each needs (`NEEDS` has the full paths):
 

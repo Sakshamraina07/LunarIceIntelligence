@@ -6,10 +6,18 @@
   "creators": [
     {
       "name": "Raina, Saksham",
-      "orcid": "0000-0000-0000-0000"
+      "affiliation": "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
+    },
+    {
+      "name": "Raina, Ayushi",
+      "affiliation": "Cornell University, Ithaca, NY, USA"
+    },
+    {
+      "name": "Pandey, Piyush",
+      "affiliation": "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
     }
   ],
-  "description": "<p>Code, derived artifacts and verification gates for a study of the detection limits of a CPR-based lunar water-ice criterion applied to a single Chandrayaan-2 DFSAR L-band pass over the lunar south pole.</p><p><strong>This record contains no Chandrayaan-2 or LOLA data.</strong> The ISRO products remain the property of ISRO and are obtained from PRADAN under ISRO's terms; the LOLA products come from the NASA PDS. <code>docs/data_provenance.json</code> records which files the analysis read, with SHA-256, so the same products can be obtained and confirmed byte-for-byte without this record distributing them. See <code>DATA.md</code>.</p>",
+  "description": "<p>Code, derived artifacts and verification gates for a study of the detection limits of a CPR-based lunar water-ice criterion applied to a single Chandrayaan-2 DFSAR L-band pass over the lunar south pole.</p><p><strong>This record contains no Chandrayaan-2 or LOLA source products</strong> (no rasters, labels, single-look complex files or per-cell tables); it does contain derived results and rendered display layers of the Faustini frame made from them (<code>frontend/public/layers/</code>, <code>frontend/public/analysis/probe_grid.bin</code>). The ISRO products remain the property of ISRO and are obtained from PRADAN under ISRO's terms; the LOLA products come from the NASA PDS. <code>docs/data_provenance.json</code> records which files the analysis read, with SHA-256, so the same products can be obtained and confirmed byte-for-byte without this record distributing them. See <code>DATA.md</code>.</p>",
   "keywords": [
     "synthetic aperture radar",
     "compact polarimetry",
@@ -40,5 +48,5 @@
       "resource_type": "dataset"
     }
   ],
-  "notes": "The DOI is not minted here; the author mints it at release. The ORCID above is a placeholder for the author to replace."
+  "notes": "The DOI is not minted here; the author mints it at release. No ORCID is recorded: none has been supplied. Corresponding author: Saksham Raina (sakshamraina16@gmail.com)."
 }

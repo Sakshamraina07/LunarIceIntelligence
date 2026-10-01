@@ -4,21 +4,32 @@ title: >-
   compact-polarimetric data: analysis code and verification gates
 message: >-
   If you use this software, please cite both the software and the
-  accompanying paper. The satellite data is not part of this
-  software and carries separate terms; see DATA.md.
+  accompanying paper. The satellite source products are not part of this
+  software and carry separate terms; see DATA.md.
 type: software
 authors:
   - given-names: Saksham
     family-names: Raina
-    orcid: 'https://orcid.org/0000-0000-0000-0000'   # PLACEHOLDER - author to replace
+    affiliation: "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
+    email: sakshamraina16@gmail.com
+  - given-names: Ayushi
+    family-names: Raina
+    affiliation: "Cornell University, Ithaca, NY, USA"
+  - given-names: Piyush
+    family-names: Pandey
+    affiliation: "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
 repository-code: 'https://github.com/Sakshamraina07/LunarIceIntelligence'
 abstract: >-
   Code, derived artifacts and verification gates for a study of the
   detection limits of a CPR-based lunar water-ice criterion applied
   to a single Chandrayaan-2 DFSAR L-band pass over the lunar south
-  pole. Contains no Chandrayaan-2 or LOLA data; every figure and
-  number is regenerated from products obtained separately from
-  PRADAN and the NASA PDS.
+  pole. Contains no Chandrayaan-2 or LOLA source products (no
+  rasters, labels, single-look complex files or per-cell tables); it
+  does contain derived results and rendered display layers of the
+  Faustini frame made from them (frontend/public/layers/ and
+  frontend/public/analysis/probe_grid.bin). Every figure and number is
+  regenerated from products obtained separately from PRADAN and the
+  NASA PDS.
 keywords:
   - synthetic aperture radar
   - compact polarimetry

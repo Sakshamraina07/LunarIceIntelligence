@@ -1,0 +1,4 @@
+# V24: a GitHub release zip (and so the Zenodo archive) is code and results only.
+# The rendered map layers (LOLA-only and previews) and the 200 m probe grid stay in the repository but not in the archive.
+frontend/public/layers export-ignore
+frontend/public/analysis/probe_grid.bin export-ignore

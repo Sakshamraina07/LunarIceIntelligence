@@ -1,0 +1,2454 @@
+{
+ "schema": "lunar-ice/removed-native-renderings/1",
+ "generated_utc": "2026-10-01T21:18:48.589529+00:00",
+ "generator": "backend/scripts/purge_manifest_v25.py",
+ "seed": null,
+ "seed_note": "draws nothing",
+ "frame": {
+  "product": "ch2_sar_ncxl_20200808t201154198_d_sri_xx_cp_xx_d18",
+  "px": [
+   6618,
+   2258
+  ],
+  "metres_per_pixel": 25.0,
+  "extent_km": [
+   165.45,
+   56.45
+  ],
+  "metres_per_crs_unit": 646.289062
+ },
+ "rule": "no rendering of a DFSAR-derived quantity at a resolution finer than 200 m per pixel is published",
+ "tile_pyramid_pixel_size": "256 px tiles, zoom 0-3: the generator of the first commit resized the 6618 x 2258 frame to a 2**z * 256 px square, so zoom 3 is 2048 px per axis: 165 450 m / 2048 = 80.8 m/px along the swath and 56 450 m / 2048 = 27.6 m/px across it",
+ "paths_patterns": [
+  "^backend/tiles/faustini/(cpr_heatmap|dop_heatmap)/",
+  "^docs/gate6/(before|after)\\.(full|detail)\\.(cpr_heatmap|dop_heatmap)\\.png$",
+  "^docs/map_(before|after)_cpr\\.png$",
+  "^docs/v8_opening_view\\.png$",
+  "^docs/v8_(opening_view|after_reset|full_extent)\\.before\\.png$"
+ ],
+ "entries": [
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/0/0/0.png",
+   "git_blob": "d697bbbf22a66b06a93a91f9bf07564c866dd594",
+   "sha256": "e56315cfaa6428fcfe046b7c5418036fd5eb378ec910a96048a69121cbb0f390",
+   "bytes": 3006,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 0
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/1/0/0.png",
+   "git_blob": "e05a4f185b7bb4a97b97cc911c3e5b0ecdb32b99",
+   "sha256": "6dec3e031b83e7e481dd92752e7dec8c63d736b1bd33159cc8ba68a94e0c2cc8",
+   "bytes": 766,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/1/0/1.png",
+   "git_blob": "ee2928e3e06f5a4e89d898eb16f0d5aa905160e6",
+   "sha256": "a661e489b7efbbbba9aea10065a7e11b60b72342c638a83db3dd67a3374865ca",
+   "bytes": 9036,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/1/1/0.png",
+   "git_blob": "46dac12b18fd3455c10901baffc711ea3dee1c42",
+   "sha256": "f41e07bf5ea87da99c16411b37272ba87425d9d275fa9af2a0ceda0716f64d43",
+   "bytes": 3765,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/1/1/1.png",
+   "git_blob": "9e5687f2193b9cc0ed1ed21547edb75f906ad3bd",
+   "sha256": "58ae13c899003ba2a83d056ff4f8da1dd048d0d96215b2be31cd3f7dc3584096",
+   "bytes": 789,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/0/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/0/1.png",
+   "git_blob": "8bfd0431cdf05a86cb7f2017995ac498b11c52bf",
+   "sha256": "954e3e2dd0043db1a4d82044b1feefd0ccdd00d17a6368b39f2d2b126859913a",
+   "bytes": 839,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/0/2.png",
+   "git_blob": "606d4a0c0ea39dec710e6862e3305bea8e4a547e",
+   "sha256": "f28fb130a33171f76abee8c4c14082e1add19cde1bbecd6d56452cb685a0f576",
+   "bytes": 21593,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/0/3.png",
+   "git_blob": "3c8c037e463904226f6b6fa5ccdaebb08fcc3462",
+   "sha256": "a7e8d676328865cd3431ae4327a91d5d538e1fa4f552824729e142bd330308e9",
+   "bytes": 10645,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/1/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/1/1.png",
+   "git_blob": "610191c7ad7b88879e4355b3cdfd5767b59c834c",
+   "sha256": "4e6c149bebf7d79f52f31420c70d3509307a250e68567f4bb2d972f43f10f39a",
+   "bytes": 934,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/1/2.png",
+   "git_blob": "e0d88688934a1529504d4d5dec8d1ee175c99162",
+   "sha256": "15efe085e45d8b47cadc038683b23c8a24e0e80d82e66dbd88967374cea148dc",
+   "bytes": 6267,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/1/3.png",
+   "git_blob": "910aee670e7e258ee39e175291d7958a8148c617",
+   "sha256": "3f850b0abaaaccdaebf8e55f7fb3b599c5c9824bc337fb4ed6982201d384a5d7",
+   "bytes": 1142,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/2/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/2/1.png",
+   "git_blob": "b5f29305a022acafc1dfae726f3e027842840e4b",
+   "sha256": "e06bb4ad8e66bbd11d60b969d6bb8c7ff20273ef233dac219f33d2cd384212c7",
+   "bytes": 8627,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/2/2.png",
+   "git_blob": "14bf3bb658155f46f24668c09f37d889c08a8e50",
+   "sha256": "95dbec357bde94989eda581bc7e2feadbcfb2579679a1b625d99c0e6f7a884cd",
+   "bytes": 1464,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/2/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/3/0.png",
+   "git_blob": "500fa530e5124aa8190733f26e28c87bfc05a98c",
+   "sha256": "b9b4f74fc3d7080ec7f40c70fcf26c2c3b6b801bbf4118db2be64c98d8a3b64b",
+   "bytes": 7443,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/3/1.png",
+   "git_blob": "e85c10ebc5ccb424fe168bc2aae2092b4b46b300",
+   "sha256": "da3fc6f39db24ab9098bb92ee39848c221a8e89ade7fe7a5fe84adcfcd6f17c6",
+   "bytes": 3205,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/3/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/2/3/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/4.png",
+   "git_blob": "1accb57189c5b8279691f17d162866f096d97e92",
+   "sha256": "e376de1bb748de2f7c90b097f82f32e91b64e21ec0e3532fddcc8c1bc1773f73",
+   "bytes": 5950,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/5.png",
+   "git_blob": "5dafd4538f8f90f6fb27ca9e0e16a13c20e3d6e4",
+   "sha256": "234e1fb89e2db32391f8d466a8678624bb14f4528e909e0265978ec51ace2b2c",
+   "bytes": 27703,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/6.png",
+   "git_blob": "e7526cf1818901a4059d8e51c17cb2c51a8aac90",
+   "sha256": "6fbcaf03cafa5ae93bc7930202190bb6b576ecfe7bbe69f360d1c834f2084489",
+   "bytes": 22638,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/0/7.png",
+   "git_blob": "83cc686a04aeed374bafe3e2f8fb6e9e8da340c4",
+   "sha256": "ea98563133f5d25cf561a60175db997d762249cacc32efe878f791d4ab173119",
+   "bytes": 7704,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/3.png",
+   "git_blob": "bab747d9a1ca882ed0eb41818a6590f3a4f60358",
+   "sha256": "7fe6209829199eae9f05317bbf81f6508c8219f5d2def4a2f2a5ae91f06da5fe",
+   "bytes": 1191,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/4.png",
+   "git_blob": "de6e764f57eb928be837905d610a4ad9134e8448",
+   "sha256": "34885e7a2821e5cd68c214b1c843a7ca0af045d0f0d0d4d4548386ac22e2c75e",
+   "bytes": 35679,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/5.png",
+   "git_blob": "8200fc232d2ae0f13d4cfa06ab65593fbb678710",
+   "sha256": "c9d290bb26e57a19990f709d8e6c78aba1d8ebd2b1421a54a2e11e77fc783bfa",
+   "bytes": 14060,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/6.png",
+   "git_blob": "5a37c6638a2446a4979d6b3b75d0c5fc814d7316",
+   "sha256": "ff7e7742f57eac9ed205d6b8ddf8558f0a924f047ac69b185c1d98b1d58b0808",
+   "bytes": 11886,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/1/7.png",
+   "git_blob": "6fb1b53e905a98c0e1ddd0d53da7ec93d998909e",
+   "sha256": "73053a4acbee4735d253d84d799d9acfcb00b5b6ce6081464fab2e9046502a65",
+   "bytes": 684,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/4.png",
+   "git_blob": "32999a76ad9652481f6c5036df23380015bdad2e",
+   "sha256": "cbca2dac9c743257067a911fb6d30d13e7199d8a367da765427a729fc19be166",
+   "bytes": 5181,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/5.png",
+   "git_blob": "5182ed4dfb0af6e32ff0b410d791b4ad7b9a98be",
+   "sha256": "17daf53c892e5ba809ed4ed1d61b0120a844c4c890d65ff8c63604d9460a47e6",
+   "bytes": 4787,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/6.png",
+   "git_blob": "40e1b013c1dabe581d323a5e9c20255f139c2da5",
+   "sha256": "1250043aad2947038f010816a5821b37e81b2cf9f6361bc77b98819e942d2404",
+   "bytes": 3339,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/2/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/3.png",
+   "git_blob": "75aeccf7233d64b878ad99f3682fe2683a2f2962",
+   "sha256": "c27619225e5862b5820697284df071a4c998e02fff2ed562842248cd4da43c31",
+   "bytes": 1907,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/4.png",
+   "git_blob": "7ce3d40464a94f062017cf99319a6bed7f8afa97",
+   "sha256": "0e4d7978da52488e5147820be9ef4b69b171ede270e5e31c13a1e37bbb24e4fd",
+   "bytes": 11374,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/5.png",
+   "git_blob": "caf585b120128c84ca40d69021a2023d69355d04",
+   "sha256": "586ff659b3471a15353cb61b9e9f05c4c48a1bccc7cfa03873471a17abffda10",
+   "bytes": 8428,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/3/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/2.png",
+   "git_blob": "ffad0e102dedc5ef2e9bc0874d1768ecb9cc6d70",
+   "sha256": "e9efcef86f54cd251e71adcc235eb46f3c8f2f104c94806c5196b8924f47348a",
+   "bytes": 19913,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/3.png",
+   "git_blob": "d6913419ed68925ab4e05b29d7b51a2680d8ece9",
+   "sha256": "a000793b1353f2a22650d53f79afb043d27586e87ca32c0e1a55b9222197bb5b",
+   "bytes": 7701,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/4.png",
+   "git_blob": "bc9e7ab83a11efad942ec5f840705aa73796bd90",
+   "sha256": "bfd5b8d0a2ad2daf3f1e032373f6834daefa2cecd072e21b4ba6a2824ff77038",
+   "bytes": 2324,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/5.png",
+   "git_blob": "87ea6deca9d66c36c3abac140e5db70bd85275d7",
+   "sha256": "bf6deefae250a4bb3de38ead2666156ed125dca6af48d664ba5bb26b6edf4279",
+   "bytes": 691,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/4/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/2.png",
+   "git_blob": "ce383647634ce46ed409198715ad19f47bc1b86e",
+   "sha256": "75293314db0d0bbe791646cfeefb2ec758e808ea45a5912a587384a8e8260845",
+   "bytes": 5468,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/3.png",
+   "git_blob": "30b6c7f1f6a4010f9ffae1e57468258cece9ef09",
+   "sha256": "408571ccb71ee26e20805ac002deddbdae6f2450968e461afeec5da7f0d46d9a",
+   "bytes": 7130,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/4.png",
+   "git_blob": "01f5cefbc27dec8c45ea339ff9eccd61ce20b178",
+   "sha256": "0598846354178a7232080f0ca33a95459b11fed5997f2f9e8e5647fdb8650203",
+   "bytes": 3172,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/5.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/5/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/0.png",
+   "git_blob": "e7c25e1017fccf8c86a0998f73cb54d08922d476",
+   "sha256": "3ac9497a1d2bf6b0edcc555519e22d044ddde978909ae1e82215d8375d886af3",
+   "bytes": 2361,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/1.png",
+   "git_blob": "71282e85bb1e91da97d44b367b81389d5bea780d",
+   "sha256": "98fbd7dbff4907a47b81025115a2fe941604aba62711fcb43ab1e8fdebaa71b9",
+   "bytes": 11646,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/2.png",
+   "git_blob": "f8c6775dbaffdfe268bfd684e90b31bdbe50db33",
+   "sha256": "de869251cfcf6eaba11aee297ae747d5ad3de88d089f449ed6adf45cff8810ca",
+   "bytes": 7320,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/3.png",
+   "git_blob": "0186815ee51f340bb64ba0e4171ab9bb5c6a378a",
+   "sha256": "cd33e34dd389c96004d48c05f0b68d01525fde9316914e7a4b12bdbbf2085d28",
+   "bytes": 2480,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/4.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/5.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/6/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/0.png",
+   "git_blob": "85c79d98c283ed49fcd2db8679c2eaca6d607d3d",
+   "sha256": "216c8b1e8f3c977dbec489ea127ccd78f852cdd04280da9edc1f57ebf61f4796",
+   "bytes": 10903,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/1.png",
+   "git_blob": "cba290f049066f04306f08589fc0c41d8288887f",
+   "sha256": "4d088fe4ab3524bc2d8f031a2704a1a91b91bf6178b45aa0a87a5757ee921601",
+   "bytes": 9543,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/2.png",
+   "git_blob": "6e17f220a724bc064da3095b4fc8363989de6b92",
+   "sha256": "b89ad5a7bf836f72f933262623d0e95a1d9667b6b286555add45b4f76e6ca4e3",
+   "bytes": 3345,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/4.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/5.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/cpr_heatmap/3/7/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/0/0/0.png",
+   "git_blob": "27108ac81a3111071f927f34d45fdf243ebf790d",
+   "sha256": "455a7c3d103f98bca9cca4c2bdc5e27a32c8e25c32bdfce2d51ebf4103353ddb",
+   "bytes": 41292,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 0
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/1/0/0.png",
+   "git_blob": "688ba096c701511134d3e00ebd435f639af986d0",
+   "sha256": "911aa152e42073d8985b955822c34f124c4c4d82adf46b8cf31f38a0b852097d",
+   "bytes": 2163,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/1/0/1.png",
+   "git_blob": "0f581fd0c25159ba7c3497c2fd8098ff690f871a",
+   "sha256": "86682e7dc020e8e5a59e145f731b42fd8328bc80281d8738e62d8bdaa138dcba",
+   "bytes": 82039,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/1/1/0.png",
+   "git_blob": "45e02931bafc95b661e58f77198b40cd1b4eea70",
+   "sha256": "f13d24f36aaff04f186ad3ccc9f88723d75fce7bb874389e46ba55e417b4e363",
+   "bytes": 72258,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/1/1/1.png",
+   "git_blob": "164d0746af21885f15812e0c04d7fe96b42cfd6b",
+   "sha256": "4a243354f7e5610ca95638cd72acad394a2562c7e65c6d81c98b225ba41b1c91",
+   "bytes": 5433,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 1
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/0/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/0/1.png",
+   "git_blob": "e019df885402eebdac4b5111eda8f476c915269e",
+   "sha256": "0fec82848a3486ec91dabca8a5ac91f1043aecc4d380ea07810d54c69469d5b2",
+   "bytes": 889,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/0/2.png",
+   "git_blob": "a0a178bb8d60156163273baaa2df4f2db543790f",
+   "sha256": "157746cf5542d4fc9a6332d23489caaa25b421031d2d9ab9bcfab2e36ba44557",
+   "bytes": 88305,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/0/3.png",
+   "git_blob": "02909bce480327d1bfd002e2ff89ec1fca9e56d4",
+   "sha256": "4d43ed2413c630b303f7f5721ddb48d971de62f3b256f56ccc9c89c5df800551",
+   "bytes": 74389,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/1/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/1/1.png",
+   "git_blob": "609a562d2cf614fb20b153845bbfc53d4cbb26ca",
+   "sha256": "10be2205cbf39cdd907c845a7ea8995f58982a5c7d6ddb1ca1ef7c2d38505755",
+   "bytes": 5618,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/1/2.png",
+   "git_blob": "bc5c160e81ab6c8fb7af1ca112eca40b6c8a604e",
+   "sha256": "e3ede975b2f6fb05642067844e670f278fc0ec3bc9333aa5f9de7b492095f6d3",
+   "bytes": 133249,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/1/3.png",
+   "git_blob": "0b3a79869defaf978cff58f5e057cd965b4a8a95",
+   "sha256": "8836b914108fe0ddf373af29cdc7ccdfef736971f2cbdc30bbe888f483be028d",
+   "bytes": 15162,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/2/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/2/1.png",
+   "git_blob": "7feafa68fe36b002bf8309ae9f49648b6ce68953",
+   "sha256": "8adef2faf2fd6b600c32a5e94c0bee69a199f75b896c9f76a43d138fb62bbfbc",
+   "bytes": 120264,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/2/2.png",
+   "git_blob": "ff7275268bc25bf9b4d8a8760a595fdba715a571",
+   "sha256": "39ff9f5a881efdf0c0a1c0caf6e7b6fb0b47fe09f14721523db648575bc13af2",
+   "bytes": 16372,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/2/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/3/0.png",
+   "git_blob": "6bf5ee130c99457b285cf0746d37ba3d0aac5abb",
+   "sha256": "ec9fd3406364a2a9bcb120cf8cbc32dc66b2d42e903873ccbe053ed2e548c224",
+   "bytes": 85392,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/3/1.png",
+   "git_blob": "0d7138d8cee9c18623f31df7e396e4e99725ffe2",
+   "sha256": "4154ffdc5f8d4296e23b0dc184128d02bb92601c16f83bb9023beb3ce73fa184",
+   "bytes": 60743,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/3/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/2/3/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 2
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/4.png",
+   "git_blob": "431359984e9919672cff9349d17d703a0a802167",
+   "sha256": "7221d62b73b7578247c09df48e0deed3a3391da211998f6ff5e984f479e34b42",
+   "bytes": 8397,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/5.png",
+   "git_blob": "5e0a5c301984f6ce26281876092dae77d0851fd3",
+   "sha256": "6378aaddb6cabb2578f34860746ecc6b19d56b5b861775d13e7e04d2f47fd6a3",
+   "bytes": 100494,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/6.png",
+   "git_blob": "93148d5d2e40c5f80e072f81e3b1484db4226cf2",
+   "sha256": "9eff41985db0c2e78e51912ab0cde8fc9a8983d303ff5666656a9d5d30e9d8c6",
+   "bytes": 121402,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/0/7.png",
+   "git_blob": "45c16a1286c17a6dfde635b83e0c437a9975f5cb",
+   "sha256": "5f8b1651194341e624543dca7ab33b190a931219210d1c7cd4b36a1447e77444",
+   "bytes": 60582,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/3.png",
+   "git_blob": "8d304ab47374772840ed8bd1e62a4e3fa15e31f1",
+   "sha256": "896cd7ca86d6fd89eead794ecf4a27dfa80a9830bed763de4e4d7f5466bdf55c",
+   "bytes": 1298,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/4.png",
+   "git_blob": "82e7e518a3533ca04b1417ca66d00fa8dc35413e",
+   "sha256": "c57cde2b77f59aa36328840e52b1048a75fce40e9589feabeefb9a5e87df51ee",
+   "bytes": 86132,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/5.png",
+   "git_blob": "057885f757ffef5c1961291440be3fc14ac5faba",
+   "sha256": "f06d391fb1d32c7edc7f0caa103f2c5e1fe253019666f646dc998cc562bdcff3",
+   "bytes": 117142,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/6.png",
+   "git_blob": "0018057a00f8f770938a343674a80c16aa64cd13",
+   "sha256": "2ed5a42681348e5eb842835db254f23adbcdbdc9f2af7f8af5d9afa503e87202",
+   "bytes": 85276,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/1/7.png",
+   "git_blob": "4454cdb9089da779a69d821660ee5b1634dc9967",
+   "sha256": "fba3e3fdc1fc620f64db64f770cab2180f97c81ccafd7db0b2248e7490e3dcc5",
+   "bytes": 701,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/4.png",
+   "git_blob": "b14c43bfb4e09c914c570c6d978e935557d9fea3",
+   "sha256": "dab5b77551a25f38bdc8ee396c8936d49ae705999d7684cd9d830a7512a053e6",
+   "bytes": 69550,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/5.png",
+   "git_blob": "bdaf2f796ced5a19cabc69b2e7e3fc5b5f0b505c",
+   "sha256": "0c360ccc97cd65f8682e56a46e5414f13f7af2bfdbcb9562efe1da7d67425730",
+   "bytes": 164362,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/6.png",
+   "git_blob": "bed266f61f43971f8d91c005b10abd9ba0b1b300",
+   "sha256": "80caf6b04c0f5062b5d8b886e3947ca4e3bc09dc8c91c6b23f70e9eb25203638",
+   "bytes": 49966,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/2/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/2.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/3.png",
+   "git_blob": "55e6fabe23885afed0b2a664bd7c243f5f47840c",
+   "sha256": "0edeb09fcd80eacf15e9f62820d4378075452d54603f404d22269997799d9605",
+   "bytes": 17230,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/4.png",
+   "git_blob": "7cd5ccbc8973a6a4f49fbf599434224c418c2b05",
+   "sha256": "7648b4db78723fee49191b282de2924908d80c193ec8a2359f98eb6278fa5252",
+   "bytes": 142509,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/5.png",
+   "git_blob": "e5c48035eb5a35ffdfc6fd56d77d4465f0fd3cd0",
+   "sha256": "44ca5f750d16a8849b48baceded9a708e46b214054d713974932c5de2ddc8789",
+   "bytes": 112339,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/3/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/2.png",
+   "git_blob": "49ccb28af73dface0a47bb4441f45265e029e702",
+   "sha256": "63961e58d08245deda1e591764d850dab25c97de903945653dbe9046c93f2972",
+   "bytes": 62584,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/3.png",
+   "git_blob": "6270e1f5ff0258d51d94b0f9ba1906bd5659f8ed",
+   "sha256": "f9f413e0c614b853470c089d48d736bcf62bb08876f60a418269812663a2c75f",
+   "bytes": 162338,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/4.png",
+   "git_blob": "3f14d5ca8c6b8fec1788e09b3c96372ccee3f009",
+   "sha256": "175adf84a95cbc97468405e7ac25b71746cde12f7622846fc29b66b5416b6abe",
+   "bytes": 36375,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/5.png",
+   "git_blob": "f52675f58cd89c86a7acb3608f8e322475c50aa4",
+   "sha256": "bc7964534e5844ce1aba96ed0f717e3f106676479fd5912e936ca33907fb1c31",
+   "bytes": 761,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/4/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/0.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/1.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/2.png",
+   "git_blob": "eef018aec1465b8ade19281a7df15da8365cc6e0",
+   "sha256": "a86264b251eb001d34dcfe36cafe1116c56b5c73e60873248d4364c3534c9d5e",
+   "bytes": 66735,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/3.png",
+   "git_blob": "b7f015d59392d8430a781c72f452be151caf886e",
+   "sha256": "74632a9d605645c1709c1402184f06f83de852be357e3e65c6743cc7010d8af6",
+   "bytes": 162046,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/4.png",
+   "git_blob": "b054f74020620354c173e8a40fec3f7459d1732e",
+   "sha256": "def35bea83b77ac664f3c17200987473c5e238b77f96276e1bb448e1a04f69e1",
+   "bytes": 19647,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/5.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/5/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/0.png",
+   "git_blob": "abc8bd28d22ceeed6d79657fce6ceafe0cc3f55d",
+   "sha256": "c82b5a8c8d8c87c6ff36e85913aada57f2888664eea0a1f3d1563e33bb175acf",
+   "bytes": 4715,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/1.png",
+   "git_blob": "99796af86ed470c09c33154521c23177c4b82daf",
+   "sha256": "3ed96e012a9207aca9b3a6082f1db30cb53b9f6d15918fde250190846ecf9d3a",
+   "bytes": 106685,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/2.png",
+   "git_blob": "97337c9079bd8c6890cfb09b10e34b24253893b6",
+   "sha256": "c72011212c8dcb93d416e8062e8ec7674c8749c7614641e0e587de82e6d50fa0",
+   "bytes": 130059,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/3.png",
+   "git_blob": "baf62618c0712ca44d118df00126c8d5479d7888",
+   "sha256": "e1e2c3fc84f145ca943dd8542b6f63d7b5f33418f85dd6e203c5134a1d8958fd",
+   "bytes": 32025,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/4.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/5.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/6/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/0.png",
+   "git_blob": "aeae5722ddc4ed58da7e1f9997fbfc636cdce787",
+   "sha256": "9cc8498fe92fbaabbca0500573b6714dbed8da56254a7254005c56d3482d1680",
+   "bytes": 47159,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/1.png",
+   "git_blob": "d5d5f2829ebcc9260b36a245d72ff1377ef0b52b",
+   "sha256": "6484867a50581cdeb929478cc9cf2dbf88576edd64c1b406891c5ceea4b25b91",
+   "bytes": 150261,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/2.png",
+   "git_blob": "8865f4c37d0002758abeab5b3aca6947901f4892",
+   "sha256": "f0bae07b4eb7b066dbfb3a6b4d2eb06c285073ddab75f082e0adb0aaf4db9c25",
+   "bytes": 55432,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/3.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/4.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/5.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/6.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "backend/tiles/faustini/dop_heatmap/3/7/7.png",
+   "git_blob": "69bfa68234dfdd05aa5dd27fc878caa2a4727afa",
+   "sha256": "70a213096a8a3aa52d8b05ee5ff5f8d14305a01d51f9305d2555880a4a2b458c",
+   "bytes": 334,
+   "first_commit_before_purge": "93fab62 2026-08-30",
+   "image_px": [
+    256,
+    256
+   ],
+   "tile_zoom": 3
+  },
+  {
+   "path": "docs/gate6/after.detail.cpr_heatmap.png",
+   "git_blob": "1c66f3a3805380ce70b8af3ca435b635dcc56f1d",
+   "sha256": "0c1d7312d5cfeb78155828291f4496e051024c5e73b4fe7d011df22e1aabc6d9",
+   "bytes": 1244469,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/after.detail.cpr_heatmap.png",
+   "git_blob": "360d089fa23e714384e4bbf2b4d283914ea8a56f",
+   "sha256": "5431f570feb77eae9983c266546de536013d52d3201e39cc6e262115c2addb61",
+   "bytes": 1209820,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/after.detail.dop_heatmap.png",
+   "git_blob": "01ddee295d4c45be8d922540805c4b5bc500ba5d",
+   "sha256": "7e9ad3b95fc040de0419bdf377f0d77c2b29c37d6d1605a0e49ef59137c4b8db",
+   "bytes": 1121008,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/after.detail.dop_heatmap.png",
+   "git_blob": "03d6de7e334248ef1324ae061949704db14687c1",
+   "sha256": "cc6318056798932cb5bb9d801481b9ccbc8532fcaf04c1e495e33bb15d9d9eb9",
+   "bytes": 1158517,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/after.full.cpr_heatmap.png",
+   "git_blob": "0a76fdd1a01914130e15498a121bd8f0f6749259",
+   "sha256": "70491d97701352961e14078ad74705813446547a0f84768e925851b4c974fa94",
+   "bytes": 785642,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/after.full.cpr_heatmap.png",
+   "git_blob": "0f13d5f01d97a751658e38ab8c5f268eefcdaf10",
+   "sha256": "781b56e4975b943c3b38bbacafcda3fa169c88f59f362ceb32c7cb6573e0ca15",
+   "bytes": 763218,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/after.full.dop_heatmap.png",
+   "git_blob": "3f59b2cdb2e7ccaffba6834b72c251b7ff8f7482",
+   "sha256": "c84a0d5c7e2c65873c58ae5031e6b36de16b52bdae8fb473aae9f450977fa88a",
+   "bytes": 740900,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/after.full.dop_heatmap.png",
+   "git_blob": "86575a49dd599abb4f17b3c030ed1bfb89da8454",
+   "sha256": "dc0a575ae3f21066ec2fb6e363d3dee3d9e02c386246c8744231e4bff4ad351c",
+   "bytes": 770425,
+   "first_commit_before_purge": "88501f1 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.detail.cpr_heatmap.png",
+   "git_blob": "3db3be1c907c2038c7a451186ddd2a72944a51c7",
+   "sha256": "ae1657ea17b1c586dc448a9ef9e0a75b59cdd9ba94cc5aaadae973f1b7f95353",
+   "bytes": 1339720,
+   "first_commit_before_purge": null,
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.detail.dop_heatmap.png",
+   "git_blob": "e7ecd5e39a16e15e200d1e217495762027aa0e2f",
+   "sha256": "cfffb10c4e863863ea6486435a80bf59e873ae33cb9713a30fe5d279d2ce8be8",
+   "bytes": 1250240,
+   "first_commit_before_purge": null,
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.full.cpr_heatmap.png",
+   "git_blob": "d65d7ea92cfeb45f25f041ff963397d42e6f49c9",
+   "sha256": "9e59e59e5c59df24256004b6f8cccb4e2f0405e9417bcd78d042beb4b8f0e4cd",
+   "bytes": 799337,
+   "first_commit_before_purge": null,
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.full.dop_heatmap.png",
+   "git_blob": "b50e6e72128aa65564663634ae29115660a74670",
+   "sha256": "188819955bbe617418d40f79ac69d7c8b31a82a62cc728bf778c1773521cc6cc",
+   "bytes": 798112,
+   "first_commit_before_purge": null,
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/map_after_cpr.png",
+   "git_blob": "84a0a605c165b0e725357da058046d39048ee41a",
+   "sha256": "542c7c055914defb4f2954ee4216e2193e4599a36e34f0ebe8b2f7f2bb9aa774",
+   "bytes": 1004669,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 4.0,
+   "metres_per_pixel": 40.4,
+   "pixel_size_source": "docs/verify_map.json: view.zoom 4"
+  },
+  {
+   "path": "docs/map_before_cpr.png",
+   "git_blob": "d4369e9e9b794e75c3f022e4c0ba9fb236b6bb44",
+   "sha256": "d1b0c33b58cb8abb434b6cc917edf419d64e76116111065d4964a0ff9de68215",
+   "bytes": 951311,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 4.0,
+   "metres_per_pixel": 40.4,
+   "pixel_size_source": "docs/verify_map.json: view.zoom 4"
+  },
+  {
+   "path": "docs/v8_after_reset.before.png",
+   "git_blob": "7fea5ce0f2be7564799850f334fc7793d9e0c756",
+   "sha256": "53475857eb02bb0aaf361f5d6dfc01a9ab8068e23ff872894481930f24981069",
+   "bytes": 1181585,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.0,
+   "metres_per_pixel": 80.8,
+   "pixel_size_source": "docs/verify_v8_view.before.json: after-reset zoom 3, layers cpr_heatmap + hillshade"
+  },
+  {
+   "path": "docs/v8_full_extent.before.png",
+   "git_blob": "306d19d97b463b1c9f14f7e1689494a990f6b1f5",
+   "sha256": "f364277722090734ef2f9ff5ba5a7f1bcd9032d099a286fbd101b0741da863a5",
+   "bytes": 764063,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 2.1886,
+   "metres_per_pixel": 141.8,
+   "pixel_size_source": "docs/verify_v8_view.before.json: full-extent zoom 2.19, layers cpr_heatmap + hillshade"
+  },
+  {
+   "path": "docs/v8_opening_view.before.png",
+   "git_blob": "8abdff7bc907d47726c67cf5f2bce18916e4efc9",
+   "sha256": "88ba9af25afb052a4663b2052bdcb8e3249ca6f02b6cd517652719da9117615c",
+   "bytes": 1193856,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.before.json: opening zoom 3.5, layers cpr_heatmap + hillshade"
+  },
+  {
+   "path": "docs/v8_opening_view.png",
+   "git_blob": "145ea8cdebba03d2c85fc5ccba27d2bc2c3549b9",
+   "sha256": "f1226a72726644024a59ea4242aefd2b67334ed48033c505f83565dcd40973d3",
+   "bytes": 877760,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.json: opening.zoom 3.5; the on-screen readout of the CPR version reads 57.1 m/px"
+  },
+  {
+   "path": "docs/v8_opening_view.png",
+   "git_blob": "1a129e1bcf4bc5cd20044c285bed1a7249593076",
+   "sha256": "bc94feb10541a04081521e4be17459199320f7d9a16f7d120c20685182521fa5",
+   "bytes": 987562,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.json: opening.zoom 3.5; the on-screen readout of the CPR version reads 57.1 m/px"
+  },
+  {
+   "path": "docs/v8_opening_view.png",
+   "git_blob": "4c5e0e2a86dbe3270dc6965478c420e4b3859b09",
+   "sha256": "99192dce2ba787b0127e0c152bf803d6b47691e2bbb7b492bc6644f5bcb5f845",
+   "bytes": 974935,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.json: opening.zoom 3.5; the on-screen readout of the CPR version reads 57.1 m/px"
+  },
+  {
+   "path": "docs/v8_opening_view.png",
+   "git_blob": "54e868959ad2a80fad8a8357471035b1674a7506",
+   "sha256": "5aabe1b5fd1c76899f3ae11d0a68b53345a369ccb80877fcfbc2419e7122d34c",
+   "bytes": 1193046,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.json: opening.zoom 3.5; the on-screen readout of the CPR version reads 57.1 m/px"
+  },
+  {
+   "path": "docs/v8_opening_view.png",
+   "git_blob": "c592d621ed8555a93dadf53b067e5deef284c779",
+   "sha256": "85a01ac675c50177ae873565cf575a85371de96fbd3fed2fee2b13a043164df7",
+   "bytes": 894318,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.json: opening.zoom 3.5; the on-screen readout of the CPR version reads 57.1 m/px"
+  },
+  {
+   "path": "docs/v8_opening_view.png",
+   "git_blob": "ccafd54872a12cc12df9f8b494a795c75e243c47",
+   "sha256": "79ca2f6087b334dbff0ad6da57678d3fcac2a6dc8dbee1dfb8a0f20df95c02c8",
+   "bytes": 876454,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.json: opening.zoom 3.5; the on-screen readout of the CPR version reads 57.1 m/px"
+  },
+  {
+   "path": "docs/v8_opening_view.png",
+   "git_blob": "ceeddf958b4f3ba301a70c4234634b8d3b0cf2da",
+   "sha256": "76bbc0480bf2787bf96550f40eb1d7b0d0958b7dc2d4c35f0ed728a13dd8ae7f",
+   "bytes": 906316,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.5,
+   "metres_per_pixel": 57.1,
+   "pixel_size_source": "docs/verify_v8_view.json: opening.zoom 3.5; the on-screen readout of the CPR version reads 57.1 m/px"
+  },
+  {
+   "path": "frontend/public/layers/cpr_heatmap.webp",
+   "git_blob": "25e989d5014b25c9607e8f098f0787d4a3c13513",
+   "sha256": "cbfc671c36ca1363982f8470b1a491724e71f2428e0a141e6cf185430ef08729",
+   "bytes": 2323650,
+   "first_commit_before_purge": "4a683ea 2026-09-05",
+   "image_px": [
+    6618,
+    2258
+   ],
+   "metres_per_pixel": 25.0,
+   "pixel_size_source": "layers.json::native.metres_per_pixel (6618 x 2258 at 25 m): the delivered frame itself",
+   "removed_in": "V24"
+  },
+  {
+   "path": "frontend/public/layers/dop_heatmap.webp",
+   "git_blob": "fc65c9dca918f8e8cd6d79595645d4cfe523003b",
+   "sha256": "0a15c5d687d20fd63a7083fef1aea651bcac41596ec9e50e13006577abc12fcd",
+   "bytes": 2262188,
+   "first_commit_before_purge": "4a683ea 2026-09-05",
+   "image_px": [
+    6618,
+    2258
+   ],
+   "metres_per_pixel": 25.0,
+   "pixel_size_source": "layers.json::native.metres_per_pixel (6618 x 2258 at 25 m): the delivered frame itself",
+   "removed_in": "V24"
+  }
+ ],
+ "summary": {
+  "entries": 196,
+  "distinct_paths": 186,
+  "bytes": 31714308,
+  "tile_files": 170
+ },
+ "local_copies": {
+  "expected_under": "data/local_layers/<path> (or $LUNAR_ICE_LOCAL_LAYERS); a path with several versions is stored as <path>.<blob8>",
+  "verification": "purge_manifest_v25.py --verify; G28 C8 (REQUIRES LOCAL DATA when absent, FAIL on a mismatch)"
+ },
+ "run_info": {
+  "wall_s": 14.7,
+  "peak_rss_mb": 39,
+  "python": "3.13.1",
+  "numpy": "2.2.2",
+  "scipy": "1.17.1",
+  "platform": "Windows-11-10.0.22631-SP0",
+  "cpu_count": 8
+ }
+}

@@ -16,3 +16,4 @@ docs/v8_after_reset.png export-ignore
 docs/v8_after_reset.before.png export-ignore
 docs/v8_full_extent.png export-ignore
 docs/v8_full_extent.before.png export-ignore
+docs/propagation_ddop_map.png export-ignore

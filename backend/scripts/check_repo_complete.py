@@ -45,6 +45,17 @@ LOCAL_ONLY = ("docs/selected_cells_v21.json",
 #: backscatter / sigma / s0 and an image at least this wide (the delivered frame is 6618 px wide at 25 m; a 1582 px
 #: screenshot or a 640 px preview is not a native-resolution layer).
 NATIVE_NAME = r"(cpr|dop|backscatter|sigma|(^|[_/.-])s0([_.-]|$))"
+#: V25: paths that held native-resolution (finer than 200 m/px) renderings of a DFSAR-derived quantity and were purged from every
+#: ref. None may be tracked, and none may exist anywhere in history (the pyramid: any tiles/<layer>/ directory of a CPR or DOP layer).
+REMOVED_RENDERINGS = (
+    r"^frontend/public/layers/(cpr|dop)_heatmap\.webp$",
+    r"^backend/tiles/[^/]+/[^/]*(cpr|dop)[^/]*/",
+    r"(^|/)tiles/[^/]+/[^/]*(cpr|dop)[^/]*/\d+/\d+/\d+\.(png|webp)$",
+    r"^docs/gate6/(before|after)\.(full|detail)\.(cpr_heatmap|dop_heatmap)\.png$",
+    r"^docs/map_(before|after)_cpr\.png$",
+    r"^docs/v8_opening_view\.png$",
+    r"^docs/v8_(opening_view|after_reset|full_extent)\.before\.png$",
+)
 NATIVE_MIN_WIDTH = 3000
 
 
@@ -193,6 +204,26 @@ def main():
              " -- these become public the moment the repo does; rewrite history "
              "(git filter-repo) or start a clean repo before publishing")
             if hits else f"{len(set(paths))} distinct paths in history, none are data or secrets")
+
+    # C8 - V25: the purged native-resolution renderings are neither tracked nor anywhere in history, and the tracked record
+    # of them (sha256 + pixel size) agrees with the author's local copies when those exist (REQUIRES LOCAL DATA when they do not).
+    rx = [re.compile(x) for x in REMOVED_RENDERINGS]
+    trk = sorted(p_ for p_ in tracked_set if any(r_.search(p_) for r_ in rx))
+    hist_hits = []
+    if hist is not None:
+        hist_hits = sorted({l.split(" ", 1)[1] for l in hist if " " in l and any(r_.search(l.split(" ", 1)[1]) for r_ in rx)})
+    rec("C8", "no purged native-resolution rendering tracked or in history", not trk and not hist_hits,
+        f"TRACKED: {trk[:4]}; IN HISTORY: {hist_hits[:4]} ({len(hist_hits)} paths)" if (trk or hist_hits)
+        else "none tracked, none in history")
+    man = Path("docs/removed_native_renderings.json")
+    if man.is_file():
+        rc = subprocess.run([sys.executable, "backend/scripts/purge_manifest_v25.py", "--verify"], capture_output=True, text=True).returncode
+        rec("C8b", "local copies of the removed renderings match their recorded sha256", rc in (0, 77),
+            "all present local copies match" if rc == 0 else
+            ("REQUIRES LOCAL DATA: the author's local copies are not on this machine (the record is tracked, the files are not); not a failure"
+             if rc == 77 else "a local copy differs from its recorded sha256"))
+    else:
+        rec("C8b", "the record of the removed renderings is tracked", False, "docs/removed_native_renderings.json is absent")
 
     for r in R:
         print(f"{r['status']:4}  {r['id']:4} {r['check']:48s}  {r['detail']}")

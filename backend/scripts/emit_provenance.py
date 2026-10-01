@@ -116,9 +116,10 @@ def _dem_basis() -> str:
         raise SystemExit(77)
     try:
         prov = json.loads(side.read_text(encoding="utf-8"))["provenance"]
-    except (OSError, ValueError, KeyError):
-        return ("native/dem_native.tif — DEM provenance sidecar unreadable, "
-                "SOURCE NOT VERIFIED")
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        # V25: present but wrong is a FAIL, not a label. (Absent was handled above and is REQUIRES LOCAL DATA.)
+        raise SystemExit(f"GATE FAIL: {side.relative_to(BASE_DIR)} exists but cannot be read as a provenance sidecar ({exc!r}); "
+                         "PROVENANCE.md would otherwise be written with every terrain row marked SOURCE NOT VERIFIED")
     return f"native/dem_native.tif = {prov}"
 
 

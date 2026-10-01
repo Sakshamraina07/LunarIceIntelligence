@@ -449,6 +449,7 @@ def main() -> int:
     ap.add_argument("--skip-slow", action="store_true",
                     help="skip the gates that re-read multi-gigabyte rasters")
     ap.add_argument("--out", default="docs/verification.json")
+    ap.add_argument("--only", default="", help="comma-separated gate ids to run (e.g. G1,G24); the rest are not listed")
     args = ap.parse_args()
 
     print("=" * 78)
@@ -459,7 +460,10 @@ def main() -> int:
     print("  statement it backs.\n")
 
     rows = []
+    only = {g.strip() for g in args.only.split(",") if g.strip()}
     for gid, statement, owner, argv, slow in GATES:
+        if only and gid not in only:
+            continue
         if slow and args.skip_slow:
             print(f"  {gid:>4}  SKIPPED (--skip-slow)   {owner}")
             rows.append({"id": gid, "statement": statement, "gate": owner,
@@ -491,7 +495,7 @@ def main() -> int:
             for line in tail:
                 print(f"          {line}")
         elif verdict == REQUIRES_LOCAL_DATA:
-            said = [l for l in (proc.stdout or "").splitlines() if "REQUIRES LOCAL DATA" in l][-3:]
+            said = [l for l in (proc.stdout or "").splitlines() if l.strip().startswith("REQUIRES LOCAL DATA:")][-3:]
             rows[-1]["needs"] = [{"path": None, "what": l.strip()} for l in said]
             for line in said:
                 print(f"          {line.strip()}")

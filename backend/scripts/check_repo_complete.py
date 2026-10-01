@@ -247,7 +247,7 @@ def main():
     if f:
         sys.exit(1)
     if n:
-        print("REQUIRES LOCAL DATA: " + "; ".join(f"{x['id']}: {x['detail']}" for x in n))
+        print("REQUIRES LOCAL DATA: " + "; ".join(f"{x['id']}: " + x['detail'].replace("REQUIRES LOCAL DATA: ", "") for x in n))
         sys.exit(REQUIRES_LOCAL_DATA_RC)
     sys.exit(0)
 

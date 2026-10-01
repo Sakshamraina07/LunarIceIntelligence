@@ -42,7 +42,25 @@ If these should go too, the same purge can take them in one pass: `git filter-br
 
 ## 6. Part D — history purge of the two files
 
-`@@PARTD@@`
+`Done, exactly as authorized and nothing more.
+
+1. **Backup:** `D:\FYP_backup_pre_v24.bundle` (150 MB, `git bundle verify` OK, outside the repo, never committed or pushed; it holds the pre-purge history including the two blobs).
+2. **Before changing anything:** refs, paths, blob ids and fork count listed in §4: one path each, one blob each, added in `4a683ea`; fork count 0, pull requests 0.
+3. **Rewrite:** `git filter-repo` is not installed, so `git filter-branch --index-filter "git rm --cached --ignore-unmatch -q frontend/public/layers/cpr_heatmap.webp frontend/public/layers/dop_heatmap.webp" --tag-name-filter cat -- --branches --tags` (124 commits; only those two paths removed; remote-tracking refs left alone so the lease compared against the real remote values). `refs/original` deleted.
+4. **Local proof:** after `git reflog expire --expire=now --all` and `git gc --prune=now`: `git rev-list --branches --tags --objects` → **0** matches for the two names and for the blob ids; `git cat-file -t 25e989d5…` and `fc65c9dc…` → "could not get object info" (not in the object store). After the push and a `git fetch`, `git rev-list --all --objects` (which now includes the updated remote-tracking refs) → **0**; repeated after another `expire` + `gc` → **0**.
+5. **Force-push, one ref at a time, `--force-with-lease=<ref>:<old value>`** (every lease held):
+
+| ref | old | new |
+|---|---|---|
+| `refs/heads/main` | 36977a2 | **5117631e977953b9cc200afe76b138937d99ba8b** |
+| `refs/heads/parked/nextjs-scaffold` | 29bf48c | 2d8110c |
+| `refs/heads/parked/root-public-assets` | ebf75c7 | 9d80d83 |
+| `refs/heads/parked/tile-pyramid` | 4a683ea | d88e16f |
+| `refs/tags/v1.0-submittable` (annotated) | tag object 4817c00 → commit 56661dc | **tag object 68c013dcb4cb33c7614f3dd1c5d47134c733eb04 → commit fe39d7537a4710018d67b39e154553e478937ed7** (tag name, tagger and message "v1.0-submittable" preserved) |
+
+   First changed commit on every ref: the rewritten "Baseline: capture uncommitted Phase A/B work before PRD Phase 0 cleanup" commit **d88e16f2be3eb609faf123eb612f113d48b2d2dd** (old `4a683ea`); every later commit has a new id.
+6. **Fresh clone** of `https://github.com/Sakshamraina07/LunarIceIntelligence.git` into `C:\Users\hp\AppData\Local\Temp\fyp_fresh_clone` (outside `D:\FYP`, deleted afterwards): all four branches and the tag present, `main` = 5117631, tag commit = fe39d75; `git rev-list --all --objects` → **0** matches for the two names and both blob ids; both blobs "could not get object info"; `frontend/public/layers/` holds 11 tracked files (four LOLA layers, six previews, `layers.json`). **`verify_all.py` in the fresh clone does NOT pass: 14 gates fail (G2, G3, G4, G5, G6b, G7, G8, G15, G20, G24, G26, G27, G31, G32), 18 pass.** They fail because the clone has no `data/` rasters or provenance files, no `node_modules`/build, no gitignored caches and no untracked manuscript (`Claude outputs/grsl/*.tex`), not because of the purge; the evidence: they die on `FileNotFoundError` for `data/pradan/...`, `Claude outputs/grsl/dfsar_detection_limits_submission.tex`, `horizon_240m.provenance.json` (G8, an absent watched artifact), and G26 passes when run alone with `--skip-build` (7.97 pt rule holds); the repository-contents gate **G28 passes in the clone**, as do G30, G33 and the other artifact-only gates. **None of these gates prints `REQUIRES LOCAL DATA`: that phrase exists only in `local_cells.py`; the raster-dependent gates fail with a stack trace on a data-less clone, and this was already so before the purge.** I did not change that.
+7. **Not done / not checkable:** a GitHub Support request (draft in §7, not sent); whether GitHub still serves the old commits or blobs by SHA (cached views, the "pull request" refs, and the `network_count` view are only removable by Support, which is why the draft asks for garbage collection); whether the Vercel project deployed the two files earlier.`
 
 ## 7. Draft message for GitHub Support (NOT SENT)
 
@@ -51,5 +69,5 @@ If these should go too, the same purge can take them in one pass: `git filter-br
 > Repository: https://github.com/Sakshamraina07/LunarIceIntelligence (public, 0 forks, 0 pull requests).
 > I removed two files from all branches and the release tag by rewriting history and force-pushing: `frontend/public/layers/cpr_heatmap.webp` and `frontend/public/layers/dop_heatmap.webp`. They are full-resolution (6618×2258 px, 25 m/px) renderings of data derived from the Chandrayaan-2 Dual-Frequency SAR product distributed by ISRO through PRADAN, whose copyright remains with ISRO; they should not have been published.
 > Affected pull requests: none (0 pull requests exist). Forks: none.
-> First changed commit(s): `@@FIRST@@` (the rewritten parent of the commit that previously added the files, `4a683ea`, on every ref; old and new ids are listed below). Old blob ids: 25e989d5014b25c9607e8f098f0787d4a3c13513, fc65c9dca918f8e8cd6d79595645d4cfe523003b. Old commit that added them: 4a683ea. Old tips: main 5dfde50, parked/nextjs-scaffold 29bf48c, parked/root-public-assets ebf75c7, parked/tile-pyramid 4a683ea, tag v1.0-submittable 4817c00.
+> First changed commit(s): `d88e16f2be3eb609faf123eb612f113d48b2d2dd` (the rewritten parent of the commit that previously added the files, `4a683ea`, on every ref; old and new ids are listed below). Old blob ids: 25e989d5014b25c9607e8f098f0787d4a3c13513, fc65c9dca918f8e8cd6d79595645d4cfe523003b. Old commit that added them: 4a683ea. Old tips: main 5dfde50, parked/nextjs-scaffold 29bf48c, parked/root-public-assets ebf75c7, parked/tile-pyramid 4a683ea, tag v1.0-submittable 4817c00.
 > Please run garbage collection on the repository so that the old objects are not retrievable by URL or by SHA, and clear cached views of the two paths and of the old commits. Thank you.

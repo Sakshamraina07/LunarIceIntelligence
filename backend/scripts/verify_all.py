@@ -46,6 +46,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[2]
 SCRIPTS = Path(__file__).resolve().parent
 REQUIRES_LOCAL_DATA_RC = 77   # a gate (or this table) says: an input does not exist here
+REQUIRES_LOCAL_DATA = "REQUIRES LOCAL DATA"   # the verdict string
 
 for _stream in (sys.stdout, sys.stderr):
     try:
@@ -484,7 +485,7 @@ def main() -> int:
             verdict = "FAIL"
         rows.append({"id": gid, "statement": statement, "gate": owner, "verdict": verdict,
                      "returncode": proc.returncode, "seconds": round(dt, 1)})
-        print(f"  {gid:>4}  {verdict if verdict != REQUIRES_LOCAL_DATA else 'REQUIRES LOCAL DATA'}  {dt:>6.1f}s   {owner}")
+        print(f"  {gid:>4}  {verdict}  {dt:>6.1f}s   {owner}")
         if verdict == "FAIL":
             tail = (proc.stdout or "").strip().splitlines()[-6:]
             for line in tail:

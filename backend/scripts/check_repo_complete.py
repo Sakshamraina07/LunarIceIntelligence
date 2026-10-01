@@ -55,6 +55,7 @@ REMOVED_RENDERINGS = (
     r"^docs/map_(before|after)_cpr\.png$",
     r"^docs/v8_opening_view\.png$",
     r"^docs/v8_(opening_view|after_reset|full_extent)\.before\.png$",
+    r"^docs/gate6/(before|after)\.(full|detail)\.(radar-signals-cpr|degree-of-polarisation)\.png$",
 )
 NATIVE_MIN_WIDTH = 3000
 
@@ -212,9 +213,15 @@ def main():
     hist_hits = []
     if hist is not None:
         hist_hits = sorted({l.split(" ", 1)[1] for l in hist if " " in l and any(r_.search(l.split(" ", 1)[1]) for r_ in rx)})
-    rec("C8", "no purged native-resolution rendering tracked or in history", not trk and not hist_hits,
-        f"TRACKED: {trk[:4]}; IN HISTORY: {hist_hits[:4]} ({len(hist_hits)} paths)" if (trk or hist_hits)
-        else "none tracked, none in history")
+    # by blob id as well as by name: a purged image can survive under another name (V25: six did)
+    blob_hits = []
+    man_p = Path("docs/removed_native_renderings.json")
+    if hist is not None and man_p.is_file():
+        ids = {e_["git_blob"] for e_ in json.loads(man_p.read_text(encoding="utf-8"))["entries"]}
+        blob_hits = sorted({l.split(" ", 1)[1] if " " in l else l for l in hist if l.split(" ", 1)[0] in ids})
+    rec("C8", "no purged native-resolution rendering tracked or in history (by name and by blob id)", not trk and not hist_hits and not blob_hits,
+        f"TRACKED: {trk[:4]}; IN HISTORY BY NAME: {hist_hits[:4]} ({len(hist_hits)} paths); BY BLOB ID: {blob_hits[:4]} ({len(blob_hits)})"
+        if (trk or hist_hits or blob_hits) else "none tracked, none in history by name or by blob id")
     man = Path("docs/removed_native_renderings.json")
     if man.is_file():
         rc = subprocess.run([sys.executable, "backend/scripts/purge_manifest_v25.py", "--verify"], capture_output=True, text=True).returncode

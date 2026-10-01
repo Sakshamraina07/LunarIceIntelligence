@@ -1,6 +1,6 @@
 {
  "schema": "lunar-ice/removed-native-renderings/1",
- "generated_utc": "2026-10-01T21:18:48.589529+00:00",
+ "generated_utc": "2026-10-01T21:29:15.780687+00:00",
  "generator": "backend/scripts/purge_manifest_v25.py",
  "seed": null,
  "seed_note": "draws nothing",
@@ -24,7 +24,8 @@
   "^docs/gate6/(before|after)\\.(full|detail)\\.(cpr_heatmap|dop_heatmap)\\.png$",
   "^docs/map_(before|after)_cpr\\.png$",
   "^docs/v8_opening_view\\.png$",
-  "^docs/v8_(opening_view|after_reset|full_extent)\\.before\\.png$"
+  "^docs/v8_(opening_view|after_reset|full_extent)\\.before\\.png$",
+  "^docs/gate6/(before|after)\\.(full|detail)\\.(radar-signals-cpr|degree-of-polarisation)\\.png$"
  ],
  "entries": [
   {
@@ -2184,7 +2185,21 @@
    "git_blob": "3db3be1c907c2038c7a451186ddd2a72944a51c7",
    "sha256": "ae1657ea17b1c586dc448a9ef9e0a75b59cdd9ba94cc5aaadae973f1b7f95353",
    "bytes": 1339720,
-   "first_commit_before_purge": null,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.detail.degree-of-polarisation.png",
+   "git_blob": "e7ecd5e39a16e15e200d1e217495762027aa0e2f",
+   "sha256": "cfffb10c4e863863ea6486435a80bf59e873ae33cb9713a30fe5d279d2ce8be8",
+   "bytes": 1250240,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
    "image_px": [
     1582,
     804
@@ -2198,7 +2213,21 @@
    "git_blob": "e7ecd5e39a16e15e200d1e217495762027aa0e2f",
    "sha256": "cfffb10c4e863863ea6486435a80bf59e873ae33cb9713a30fe5d279d2ce8be8",
    "bytes": 1250240,
-   "first_commit_before_purge": null,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 4.5,
+   "metres_per_pixel": 28.6,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.detail.radar-signals-cpr.png",
+   "git_blob": "3db3be1c907c2038c7a451186ddd2a72944a51c7",
+   "sha256": "ae1657ea17b1c586dc448a9ef9e0a75b59cdd9ba94cc5aaadae973f1b7f95353",
+   "bytes": 1339720,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
    "image_px": [
     1582,
     804
@@ -2212,7 +2241,21 @@
    "git_blob": "d65d7ea92cfeb45f25f041ff963397d42e6f49c9",
    "sha256": "9e59e59e5c59df24256004b6f8cccb4e2f0405e9417bcd78d042beb4b8f0e4cd",
    "bytes": 799337,
-   "first_commit_before_purge": null,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.full.degree-of-polarisation.png",
+   "git_blob": "b50e6e72128aa65564663634ae29115660a74670",
+   "sha256": "188819955bbe617418d40f79ac69d7c8b31a82a62cc728bf778c1773521cc6cc",
+   "bytes": 798112,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
    "image_px": [
     1582,
     804
@@ -2226,7 +2269,21 @@
    "git_blob": "b50e6e72128aa65564663634ae29115660a74670",
    "sha256": "188819955bbe617418d40f79ac69d7c8b31a82a62cc728bf778c1773521cc6cc",
    "bytes": 798112,
-   "first_commit_before_purge": null,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
+   "image_px": [
+    1582,
+    804
+   ],
+   "map_zoom": 2.1662,
+   "metres_per_pixel": 144.0,
+   "pixel_size_source": "docs/gate6/capture.{before,after}.json: view `detail` zoom 4.5, `full` zoom 2.166 (state.zoom)"
+  },
+  {
+   "path": "docs/gate6/before.full.radar-signals-cpr.png",
+   "git_blob": "d65d7ea92cfeb45f25f041ff963397d42e6f49c9",
+   "sha256": "9e59e59e5c59df24256004b6f8cccb4e2f0405e9417bcd78d042beb4b8f0e4cd",
+   "bytes": 799337,
+   "first_commit_before_purge": "9c8ee67 2026-09-06",
    "image_px": [
     1582,
     804
@@ -2278,7 +2335,35 @@
    "pixel_size_source": "docs/verify_v8_view.before.json: after-reset zoom 3, layers cpr_heatmap + hillshade"
   },
   {
+   "path": "docs/v8_after_reset.png",
+   "git_blob": "7fea5ce0f2be7564799850f334fc7793d9e0c756",
+   "sha256": "53475857eb02bb0aaf361f5d6dfc01a9ab8068e23ff872894481930f24981069",
+   "bytes": 1181585,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 3.0,
+   "metres_per_pixel": 80.8,
+   "pixel_size_source": "docs/verify_v8_view.before.json: after-reset zoom 3, layers cpr_heatmap + hillshade"
+  },
+  {
    "path": "docs/v8_full_extent.before.png",
+   "git_blob": "306d19d97b463b1c9f14f7e1689494a990f6b1f5",
+   "sha256": "f364277722090734ef2f9ff5ba5a7f1bcd9032d099a286fbd101b0741da863a5",
+   "bytes": 764063,
+   "first_commit_before_purge": "d88e16f 2026-09-05",
+   "image_px": [
+    1600,
+    900
+   ],
+   "map_zoom": 2.1886,
+   "metres_per_pixel": 141.8,
+   "pixel_size_source": "docs/verify_v8_view.before.json: full-extent zoom 2.19, layers cpr_heatmap + hillshade"
+  },
+  {
+   "path": "docs/v8_full_extent.png",
    "git_blob": "306d19d97b463b1c9f14f7e1689494a990f6b1f5",
    "sha256": "f364277722090734ef2f9ff5ba5a7f1bcd9032d099a286fbd101b0741da863a5",
    "bytes": 764063,
@@ -2433,9 +2518,9 @@
   }
  ],
  "summary": {
-  "entries": 196,
-  "distinct_paths": 186,
-  "bytes": 31714308,
+  "entries": 202,
+  "distinct_paths": 192,
+  "bytes": 37847365,
   "tile_files": 170
  },
  "local_copies": {
@@ -2443,7 +2528,7 @@
   "verification": "purge_manifest_v25.py --verify; G28 C8 (REQUIRES LOCAL DATA when absent, FAIL on a mismatch)"
  },
  "run_info": {
-  "wall_s": 14.7,
+  "wall_s": 17.2,
   "peak_rss_mb": 39,
   "python": "3.13.1",
   "numpy": "2.2.2",

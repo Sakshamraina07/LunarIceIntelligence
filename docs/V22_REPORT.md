@@ -56,7 +56,7 @@ and "254, 400, 600", as before). Literals found by diffing v21 against v22 and n
 
 | L | large-field N | 260 cells: conditional / containing / **unconditional** | 3647 cells: conditional / containing / **unconditional** |
 |---|---|---|---|
-| 13 | 36.79 ± 0.42 | 33.74 % / 0.820 / **27.68 ± 0.71 %** | 2.95 % / 1.000 / **2.95 ± 0.38 %** |
+| 13 | 36.79 ± 0.42 | 33.7 % / 0.820 / **27.68 ± 0.71 %** | 2.95 % / 1.000 / **2.95 ± 0.38 %** |
 | 14 | 39.69 ± 0.32 | 38.53 % / 0.793 / **30.58 ± 0.73 %** | 7.15 % / 1.000 / **7.15 ± 0.58 %** |
 | interpolated to 39.4 (weight 0.90 on L = 14) | | **30.29 ± 0.66 %** | **6.73 ± 0.52 %** |
 

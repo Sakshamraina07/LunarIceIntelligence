@@ -35,6 +35,9 @@ R = []
 SOURCE_EXT = {".py", ".ts", ".tsx", ".js", ".jsx", ".mjs", ".json", ".md",
               ".yaml", ".yml", ".toml", ".cfg", ".txt", ".csv", ".sh"}
 DATA_EXT = {".tif", ".tiff", ".img", ".IMG", ".h5", ".nc", ".hdf"}
+#: Files that are DATA although they have a source-like extension: per-cell values from Chandrayaan-2 products
+#: (V23b). They must be gitignored and must NOT be tracked (C1), and are not "source" for C2.
+LOCAL_ONLY = ("docs/selected_cells_v21.json",)
 
 
 def rec(cid, name, ok, detail, warn=False):
@@ -61,7 +64,7 @@ def main():
 
     # C1 — no data, no rasters, tracked
     bad = [p for p in tracked_set
-           if p.startswith("data/") or Path(p).suffix in DATA_EXT]
+           if p.startswith("data/") or Path(p).suffix in DATA_EXT or p in LOCAL_ONLY]
     rec("C1", "no ISRO/LOLA data or rasters tracked", not bad,
         f"{len(bad)} offending path(s): {bad[:5]}" if bad else "clean")
 
@@ -79,6 +82,7 @@ def main():
     _NOT_SOURCE = ("data/", "frontend/dist/", ".claude/", "Claude outputs/")
     src = [p for p in on_disk if Path(p).suffix in SOURCE_EXT
            and not Path(p).as_posix().startswith(_NOT_SOURCE)
+           and Path(p).as_posix() not in LOCAL_ONLY
            and ".pytest_cache/" not in Path(p).as_posix()]
     ignored = set(git("check-ignore", "--no-index", *src) or []) if src else set()
     # .env files are meant to be ignored; exclude them from the complaint

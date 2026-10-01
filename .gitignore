@@ -25,3 +25,7 @@ __pycache__/
 
 # Per-cell values from Chandrayaan-2 products (V23b): local only, rebuilt by backend/scripts/v21_extract.py
 /docs/selected_cells_v21.json
+
+# V24: native-resolution (25 m/px) renderings of DFSAR-derived quantities are not published; local only
+/frontend/public/layers/cpr_heatmap.webp
+/frontend/public/layers/dop_heatmap.webp

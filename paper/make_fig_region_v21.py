@@ -19,8 +19,8 @@ import matplotlib.pyplot as plt
 mpl.rcParams.update({
     "pdf.fonttype": 42, "ps.fonttype": 42,
     "font.family": "serif", "font.serif": ["STIXGeneral"],
-    "mathtext.fontset": "stix", "font.size": 8.5, "axes.labelsize": 8.5,
-    "legend.fontsize": 7.3, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+    "mathtext.fontset": "stix", "font.size": 8, "axes.labelsize": 8,
+    "legend.fontsize": 7, "xtick.labelsize": 7, "ytick.labelsize": 7,
     "axes.linewidth": 0.6, "lines.linewidth": 1.1,
     "savefig.bbox": "tight", "savefig.pad_inches": 0.02,
 })
@@ -47,15 +47,13 @@ def main(js, out="fig_region_design.pdf"):
     ax.axhline(80, color="#1b1b1b", lw=0.5, ls=(0, (1, 1)))
     f2 = d["translation"]["crater_F2"]["complex_product"]["N_eff_at_39p4"]
     ax.axvline(f2, color="#1b1b1b", lw=0.6, ls="-.")
-    ax.text(f2 * 1.06, 55, "F2, this pass", fontsize=7.3, rotation=90, va="bottom")
+    ax.text(f2 * 1.06, 55, "F2, this pass", fontsize=7, rotation=90, va="bottom")
     ax.axvspan(900, 1400, color="#6b6b6b", alpha=0.18, lw=0)
-    ax.text(1120, 2, "F2, full", fontsize=7.3, rotation=90, va="bottom", ha="center")
+    ax.text(1120, 2, "F2, full", fontsize=7, rotation=90, va="bottom", ha="center")
     ax.set_xscale("log")
-    from matplotlib.ticker import FuncFormatter
-    ax.xaxis.set_major_formatter(FuncFormatter(lambda v, _: "%g" % v if v < 1e4 else "%d" % v))
     ax.set_xlim(200, 10000)
     ax.set_ylim(0, 100)
-    ax.set_xlabel("pooled look count")
+    ax.set_xlabel(r"pooled look count $N_{\mathrm{eff}}$")
     ax.set_ylabel("power at minimum DOP (%)")
     ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.24), frameon=False, ncol=3, handlelength=1.8, columnspacing=1.0)
     fig.savefig(out)

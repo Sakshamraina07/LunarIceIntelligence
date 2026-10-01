@@ -62,6 +62,9 @@ END = "<!-- END GENERATED STAMP -->"
 ARTIFACTS: dict[str, list[str]] = {
     # v21 work order (2026-10-01, METHODS 20)
     "docs/n_sensitivity.json": ["20.1"],
+    "docs/n_sensitivity_region_39.json": ["21.1"],
+    "docs/v22_literal_audit.json": ["21.3"],
+    "docs/figure_compare_v21.json": ["21.2"],
     "docs/n_sensitivity_core.json": ["20.1"],
     "docs/n_sensitivity_np.json": ["20.1"],
     "docs/n_sensitivity_region.json": ["20.1"],
@@ -69,7 +72,7 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/n_sensitivity_f2point.json": ["20.1"],
     "docs/n_sensitivity_calcheck.json": ["20.1"],
     "docs/selected_cells_v21.json": ["20.1"],
-    "docs/shadow_identification.json": ["20.2"],
+    "docs/shadow_identification.json": ["20.2", "21.1"],
     "docs/disc_table_v21.json": ["20.2"],
     "docs/second_pass_s_v21.json": ["20.3"],
     "docs/v21_carryover_checks.json": ["20.3"],
@@ -114,7 +117,7 @@ ARTIFACTS: dict[str, list[str]] = {
     "docs/handedness.json": ["17.6", "18.7"],
     # last analysis pass on v18a (METHODS 18)
     "docs/snr_control.json": ["18.1", "18.7", "19.2"],
-    "docs/region_mean_null.json": ["18.4"],
+    "docs/region_mean_null.json": ["18.4", "21.4"],
     "docs/slc_chain.json": ["18.7"],
     # gap pass on v19 (METHODS 19)
     "docs/kernel_sweep.json": ["19.4"],
@@ -452,6 +455,7 @@ def check_labelled_figures(text: str) -> list:
 #: It is not a way to silence a section that does.
 SECTIONS_WITHOUT_ARTIFACTS: dict = {
     "20": "the pass's preamble; no measured figure of its own.",
+    "21": "the pass's preamble; no measured figure of its own.",
     "17": "the pass's preamble; no measured figure of its own.",
     "17.4": ("the data figure: its rendered height and legend text are properties of the "
              "PDF (G26 builds and inspects it), not of an artifact."),

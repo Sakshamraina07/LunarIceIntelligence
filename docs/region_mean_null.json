@@ -102,7 +102,9 @@
             "regions_evaluated": 2000,
             "looks_per_channel": 1,
             "achieved_log_ratio_N": 3.4737871933507476,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 3.711843500294949,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.1 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -145,7 +147,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 1,
             "achieved_log_ratio_N": 3.6311083118914773,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 3.711843500294949,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.1 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -190,7 +194,9 @@
             "regions_evaluated": 2000,
             "looks_per_channel": 4,
             "achieved_log_ratio_N": 12.73478400047014,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 12.064629714779342,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.4 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -233,7 +239,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 5,
             "achieved_log_ratio_N": 14.59609183403541,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 14.507574269703891,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.5 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -278,7 +286,9 @@
             "regions_evaluated": 2000,
             "looks_per_channel": 16,
             "achieved_log_ratio_N": 37.380009449596635,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 47.04099961651892,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.16 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -321,7 +331,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 13,
             "achieved_log_ratio_N": 39.36086311206239,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 37.300141114767214,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.13 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -366,7 +378,9 @@
             "regions_evaluated": 1999,
             "looks_per_channel": 28,
             "achieved_log_ratio_N": 78.23777706402907,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 78.21760033027616,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.28 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -409,7 +423,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 28,
             "achieved_log_ratio_N": 80.28346725872032,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 78.21760033027616,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.28 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -454,7 +470,9 @@
             "regions_evaluated": 2000,
             "looks_per_channel": 46,
             "achieved_log_ratio_N": 170.12641244901357,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 124.75094396872406,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.46 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -497,7 +515,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 52,
             "achieved_log_ratio_N": 153.19457209578385,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 140.681655845047,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.52 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       }
@@ -544,7 +564,9 @@
             "regions_evaluated": 1998,
             "looks_per_channel": 1,
             "achieved_log_ratio_N": 4.423166345869923,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 3.711843500294949,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.1 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -587,7 +609,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 1,
             "achieved_log_ratio_N": 3.476458807420313,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 3.711843500294949,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.1 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -632,7 +656,9 @@
             "regions_evaluated": 1953,
             "looks_per_channel": 5,
             "achieved_log_ratio_N": 14.516309014524914,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 14.507574269703891,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.5 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -675,7 +701,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 5,
             "achieved_log_ratio_N": 13.761113434582265,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 14.507574269703891,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.5 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -720,7 +748,9 @@
             "regions_evaluated": 1646,
             "looks_per_channel": 13,
             "achieved_log_ratio_N": 37.99751515745223,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 37.300141114767214,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.13 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -763,7 +793,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 13,
             "achieved_log_ratio_N": 38.41632211698754,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 37.300141114767214,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.13 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -808,7 +840,9 @@
             "regions_evaluated": 1282,
             "looks_per_channel": 19,
             "achieved_log_ratio_N": 75.86695836166379,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 53.26449427804987,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.19 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -851,7 +885,9 @@
             "regions_evaluated": 987,
             "looks_per_channel": 31,
             "achieved_log_ratio_N": 83.58332946486621,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 85.75439338074594,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.31 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -896,7 +932,9 @@
             "regions_evaluated": 274,
             "looks_per_channel": 43,
             "achieved_log_ratio_N": 158.68158059471702,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 122.70387150967633,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.43 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -939,7 +977,9 @@
             "regions_evaluated": 475,
             "looks_per_channel": 55,
             "achieved_log_ratio_N": 145.95410139627307,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 148.698838515482,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.55 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       }
@@ -986,7 +1026,9 @@
             "regions_evaluated": 1994,
             "looks_per_channel": 1,
             "achieved_log_ratio_N": 3.9236252349987724,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 3.711843500294949,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.1 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1029,7 +1071,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 2,
             "achieved_log_ratio_N": 5.975021030016455,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 6.669766267213503,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.2 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1074,7 +1118,9 @@
             "regions_evaluated": 1960,
             "looks_per_channel": 4,
             "achieved_log_ratio_N": 14.040649208203348,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 12.064629714779342,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.4 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1117,7 +1163,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 5,
             "achieved_log_ratio_N": 14.770671746104153,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 14.507574269703891,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.5 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1162,7 +1210,9 @@
             "regions_evaluated": 1614,
             "looks_per_channel": 13,
             "achieved_log_ratio_N": 33.38030136116237,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 37.300141114767214,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.13 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1205,7 +1255,9 @@
             "regions_evaluated": 1000,
             "looks_per_channel": 13,
             "achieved_log_ratio_N": 36.26202454278209,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 37.300141114767214,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.13 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1250,7 +1302,9 @@
             "regions_evaluated": 722,
             "looks_per_channel": 28,
             "achieved_log_ratio_N": 85.80371526312892,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 78.21760033027616,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.28 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1293,7 +1347,9 @@
             "regions_evaluated": 996,
             "looks_per_channel": 28,
             "achieved_log_ratio_N": 76.87332958368846,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 78.21760033027616,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.28 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1338,7 +1394,9 @@
             "regions_evaluated": 210,
             "looks_per_channel": 46,
             "achieved_log_ratio_N": 154.9533648105329,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 124.75094396872406,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.46 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1381,7 +1439,9 @@
             "regions_evaluated": 572,
             "looks_per_channel": 52,
             "achieved_log_ratio_N": 154.75972636407036,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 140.681655845047,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.52 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       }
@@ -1428,7 +1488,9 @@
             "regions_evaluated": 718,
             "looks_per_channel": 1,
             "achieved_log_ratio_N": 3.6820348228565885,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 3.711843500294949,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.1 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1471,7 +1533,9 @@
             "regions_evaluated": 366,
             "looks_per_channel": 2,
             "achieved_log_ratio_N": 6.2019366734004775,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 6.669766267213503,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.2 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1501,7 +1565,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 4,
             "achieved_log_ratio_N": 13.561582612233458,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 12.064629714779342,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.4 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1529,7 +1595,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 5,
             "achieved_log_ratio_N": 13.932943084602508,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 14.507574269703891,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.5 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1544,7 +1612,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 9,
             "achieved_log_ratio_N": 34.40950827805774,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 25.591763573330415,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.9 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1557,7 +1627,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 13,
             "achieved_log_ratio_N": 33.770822349087304,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 37.300141114767214,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.13 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1572,7 +1644,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 31,
             "achieved_log_ratio_N": 84.16441568288403,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 85.75439338074594,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.31 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1585,7 +1659,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 28,
             "achieved_log_ratio_N": 86.98171976890258,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 78.21760033027616,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.28 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       },
@@ -1600,7 +1676,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 49,
             "achieved_log_ratio_N": 143.3376387632536,
-            "region_mask_cells": 260
+            "region_mask_cells": 260,
+            "achieved_log_ratio_N_large_field": 134.54299189801677,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.49 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         },
         "cells3647": {
@@ -1613,7 +1691,9 @@
             "fraction_regions_with_cpr_ge1_cell": 0.0,
             "looks_per_channel": 55,
             "achieved_log_ratio_N": 147.56781517095087,
-            "region_mask_cells": 3647
+            "region_mask_cells": 3647,
+            "achieved_log_ratio_N_large_field": 148.698838515482,
+            "achieved_log_ratio_N_large_field_source": "n_sensitivity_region.json::calibration.260.55 (4 x 200 x 200 realizations); check: n_sensitivity_calcheck.json"
           }
         }
       }
@@ -1779,5 +1859,11 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "achieved_N_labels": {
+    "note": "`achieved_log_ratio_N` is the reading of a calibration on four realizations of the region's own bounding box and is imprecise (about +-10-15 %, biased high by about 8 % at L = 19; n_sensitivity_calcheck.json). `achieved_log_ratio_N_large_field` is the N of the same looks-per-channel on four 200 x 200 realizations. The stored rates are unchanged; use the large-field label as the look count of a row.",
+    "relabelled_by": "backend/scripts/region_mean_null_relabel.py",
+    "relabelled_utc": "2026-10-01T13:43:58.065128+00:00",
+    "rows_relabelled": 40
   }
 }

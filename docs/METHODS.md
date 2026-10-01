@@ -4632,6 +4632,11 @@ CPR 1.1 (0.654 ± 0.018 % at 1.2), both at minimum DOP.
   4 × 10³ regions). Correlated draws are AR(1) complex fields at the product's
   SC/OC lags with a 5 × 5 boxcar, looks calibrated so the log-ratio N matches
   (2 × 10³ and 10³ regions).
+* **The `achieved_log_ratio_N` labels (V22, METHODS §21.4).** The looks L are chosen so that the log-ratio N, calibrated on four
+  realizations of the region's own bounding box, is nearest the target. That calibration scatters (40 repetitions at L = 19:
+  57.2 ± 10.2 looks, range 38.9–91.3) and reads high; on 150 000 cells L = 19 is 53.3 looks, not the stored 75.9, and
+  L = 31 is 85.8, not 83.6. The stored rates and labels are unchanged; every correlated row now also carries
+  `achieved_log_ratio_N_large_field` (`backend/scripts/region_mean_null_relabel.py`). Use that label as the look count of a row.
 * **Results at N = 39.4**, P(mean DOP < 0.13):
 
   | population | 260 cells, independent | 260 cells, correlated | 3647 cells, correlated |
@@ -5123,6 +5128,10 @@ shadowed, 186 mixed), 96 firing. The L-band pass-1 discs are fitted the same way
   fire in both (14 S-only, 14 L-only; Jaccard 0.48; 5.9 expected if independent).
   The 271 shadowed discs are the same lattice cells but for one (270 in common).
   Sunlit: 47 S-band against 74 L-band, 34 in both; mixed 9 against 17, 7 in both.
+* **0.23–0.78 against 0.23–0.79 (V22).** The L-band pass-1 Mantel–Haenszel odds ratio 0.4432 has block-bootstrap interval
+  0.2273–0.7844 (0.23–0.78, printed above) when only the pass-1 blocks are resampled, and 0.2282–0.7853 (0.23–0.79, the
+  interval of Table III and of `docs/shadow_identification.json::A_ladder.L_two_passes.mantel_haenszel_coherence_strata.pass1`)
+  when the blocks of both passes are resampled and the pass-1 discs of each replicate then taken; the same 1303 discs, two resamplings.
 * The S-band stokes pass was written by `stokes_from_slc.py --product 20200808S`
   in the earlier (v18a) session, which added the `20200808S` entry at
   2026-09-30 16:30 UTC and finished the run at 16:31 UTC (22:01 IST).
@@ -5238,6 +5247,65 @@ backend/scripts/v21_literal_audit.py` → `docs/v21_literal_audit.json`;
 `python backend/scripts/figure_compare_v21.py` → `docs/figure_compare_v21.json`;
 `python backend/scripts/v21_carryover_checks.py` → `docs/v21_carryover_checks.json`.
 
+## 21 · V22 work order (2026-10-01)
+
+The v22 manuscript (Claude outputs/grsl) applied the V21 findings and changed two figure scripts. This pass adopts the
+scripts, audits v22's literals and closes five open questions; it edits no `.tex`. Narrative and counts:
+`Claude outputs/hygiene/V22_REPORT.md` (copy `docs/V22_REPORT.md`).
+
+### 21.1 Five questions (C1–C4 here, C5 in §19.9)
+
+* **C1. The region null at the product's count.** `python backend/scripts/n_sensitivity_region_39.py` →
+  `docs/n_sensitivity_region_39.json` (seed 20261071; 4000 regions at 260 cells, 2000 at 3647). The log-ratio N of L = 12 … 16 on
+  16 realizations of 256 × 256 cells (about 10⁶ cells): 34.55 ± 0.20, 36.79 ± 0.42, **39.69 ± 0.32**, 41.97 ± 0.36, 45.14 ± 0.52. The
+  setting nearest 38 is L = 13 (36.8); the setting nearest 39.4 **and** 40 is L = 14 (39.7). Unconditional rate at which a region of ice-free
+  terrain (CPR 0.7, DOP 0.176, correlated cells) has mean DOP < 0.13: **260 cells 27.68 ± 0.71 % at L = 13 (N = 36.8), 30.58 ± 0.73 % at
+  L = 14 (N = 39.7)**, linear interpolation to N = 39.4 **30.3 ± 0.7 %**; **3647 cells 2.95 ± 0.38 % at N = 36.8, 7.15 ± 0.58 % at N = 39.7,
+  6.7 ± 0.5 % interpolated to 39.4**. The 2.7 % of the 3647-cell regions is the value at N = 37 and is not the rate at 39.4: the rate rises
+  about 4 points between 36.8 and 39.7 looks. (CPR 0.7, DOP 0.20: `results`.)
+* **C2. The coherence strata of each Mantel–Haenszel number** (`docs/shadow_identification.json::N_mh_strata_definitions`,
+  `python backend/scripts/shadow_c2_c3_c4.py`). *Published* (Table III, `A_ladder.*.mantel_haenszel_coherence_strata`): **four strata of
+  fixed width on the disc's median coherence, cut at 0.4, 0.5 and 0.6, pooled over passes** (pass is not a stratifier); "pass 1" is the same cuts on the
+  pass-1 discs. *D_overlap* `coherence_deciles`: **ten strata of equal count, cut at the 10th … 90th percentiles of the pooled coherence distribution of the
+  set**, pooled, and `…_by_pass` crosses them with pass (20 strata); only strata holding both a shadowed and a sunlit disc enter, which leaves 4 of 10 (4 of 20).
+  The supplement's phrase "formed within each pass" is therefore imprecise: the deciles are those of the pooled distribution, crossed with pass; deciles
+  computed within each pass give 0.49. Odds ratios, L two passes: fixed-width pooled **0.59 (0.34–1.05)**; deciles pooled 0.64 (0.37–1.11); fixed-width × pass
+  0.44 (0.25–0.80); deciles pooled × pass **0.46 (0.26–0.82)**; deciles within pass × pass 0.49 (0.27–0.90). They differ because (i) the cut points differ (0.4/0.5/0.6
+  against the deciles of the distribution) and (ii) crossing with pass keeps the second pass's high-coherence sunlit discs out of the strata of pass 1 (pooled
+  strata mix the two passes). **The published 0.59 uses the fixed-width pooled strata.** S-band (single pass): fixed 0.99, deciles 0.55 (0.27–1.13).
+* **C3. The propensity percentages** (`O_propensity_populations`). The score is the logistic probability of being shadowed, fitted on the shadowed and sunlit
+  discs only (mixed excluded) on pass (pooled sets), ln N̂, SNR, coherence, position, slant range, incidence, LOLA local incidence, slope, slope SD, RMS heights
+  and layover fraction. "76 %": **215 of ALL 281 shadowed discs (76.5 %) have a score above the sunlit discs' 95th percentile**; the 49 shadowed discs
+  outside the sunlit range (17.4 %) are all among them (they lie above the sunlit maximum), so the 76 % is not a share of the 49. "66 %": **884 of ALL 1331 sunlit
+  discs (66.4 %) have a propensity score below the shadowed discs' 5th percentile**; the variable is the propensity score. L pass 1: 208/271 = 76.8 % and
+  515/844 = 61.0 %; S-band: 207/271 = 76.4 % and 517/843 = 61.3 %.
+* **C4. The specifications excluding 1 from above** (`M_spec_curve_above`, `docs/spec_curve_above.md`). L-band two passes: **14, all lacking coherence and
+  LOLA local incidence, all 14 containing the geometry-file incidence, none containing slope, roughness or PSR fraction**; 14 of the 256 specifications that lack both
+  coherence and local incidence. L pass 1 (20) and S-band (24) satisfy the same rule for coherence and local incidence (and for slope, roughness and PSR fraction),
+  **but not for incidence**: 14 of 20 and 14 of 24 contain it (the others are position, slant range, SNR and ln N̂ combinations). Covariate lists in the table.
+
+### 21.2 The figure scripts (A)
+
+`paper/make_figures_v12.py` and `paper/make_fig_region.py` are replaced by `Claude outputs/grsl/figscripts_v22/` (the v21 versions are
+`*_v21.py`): base fonts 8.5 pt, legends/ticks/labels 7.3–7.5 pt, plain-number log ticks, no sub/superscript in the region figure's label, the joint-power legend below
+the axes, fig_cpr_dop 3.28 in wide. Regenerated, all six main-text figures have identical decompressed content streams to `Claude outputs/grsl/`
+(`docs/figure_compare_v21.json`; the PDFs differ in compressed bytes and dates only), **no Type 3, fonts embedded**. Smallest text at the printed width (3.51 in for
+the 0.49-textwidth floats, 7.0 in for the double-column ones): fig_cpr_dop 7.19 pt, fig_joint_power 8.07, fig_region_design 7.86, fig_scene 7.05,
+fig_n_sensitivity 7.05, fig_spec_curve 7.97 (G26 now enforces ≥ 7.0 pt on all six; `--inject small` is caught).
+
+### 21.3 The v22 literal audit (B)
+
+`python backend/scripts/v22_literal_audit.py` → `docs/v22_literal_audit.json`; `audit_manuscript_numbers.py` gained 19 (main) and 17 (supplement)
+rows for the v22 literals. One printed number differs from its artifact: S-VII's operating-point bound at N = 80, 14.86 against 14.8548 (14.85); the 14.86 is
+this report's own V21 rounding of 14.855.
+
+### 21.4 The achieved-N labels (D)
+
+`python backend/scripts/region_mean_null_relabel.py` adds `achieved_log_ratio_N_large_field` to the 40 correlated rows of `docs/region_mean_null.json`
+(the stored numbers are unchanged; checked by comparing the file with its committed version after stripping the new keys): L = 1 → 3.7, 5 → 14.5, 13 → 37.3,
+19 → 53.3, 31 → 85.8, 43 → 122.7, 55 → 148.7. The audit table reads these labels (rows `v22_n373`, `v22_n53_rmnlf`, `s7_n373`, `s7_n533`), so Table II's counts
+pass against the corrected labels.
+
 <!-- BEGIN GENERATED STAMP -- do not edit by hand -->
 
 ## Provenance of the numbers in this document
@@ -5255,7 +5323,7 @@ this document would mean templating the prose that carries its reasoning.
 It catches the failure that has actually occurred here — an artifact
 changing underneath text that still quotes the old numbers.
 
-Stamped at commit `91fecc9`.
+Stamped at commit `60b2bab`.
 
 | artifact | sha256 | sections |
 |---|---|---|
@@ -5288,6 +5356,7 @@ Stamped at commit `91fecc9`.
 | `docs/f2_complex_product.json` | `55a6fd2483c2bd5e…` | §17.2 |
 | `docs/f2_footprint.json` | `281c9b86e0687432…` | §6.2 |
 | `docs/f2_maximum.json` | `4208438d42b4b442…` | §6.2a, §14.6, §15.4, §16.3 |
+| `docs/figure_compare_v21.json` | `5b0eddfa52fc175f…` | §21.2 |
 | `docs/handedness.json` | `13e1285342d142fa…` | §17.6, §18.7 |
 | `docs/incidence_audit.json` | `f52bab447a3666c5…` | §7.12, §12.1, §12.2, §12.3, §12.4, §12.5 |
 | `docs/incidence_mask.json` | `ffb5684f97010a7b…` | §7.11, §7.12 |
@@ -5308,6 +5377,7 @@ Stamped at commit `91fecc9`.
 | `docs/n_sensitivity_np.json` | `bdefd6e35039a069…` | §20.1 |
 | `docs/n_sensitivity_real.json` | `d9923baad9e01a5b…` | §20.1 |
 | `docs/n_sensitivity_region.json` | `9f66d5b43ff87d55…` | §20.1 |
+| `docs/n_sensitivity_region_39.json` | `ec213f152580d63b…` | §21.1 |
 | `docs/np_power_bound.json` | `983f28d045a91c2f…` | §16.4 |
 | `docs/patch_bias.json` | `db2b73ce9b8a1ecc…` | §7.3.3 |
 | `docs/phase_gain_perturbation.json` | `07604f8f0c4c864e…` | §1.11 |
@@ -5316,12 +5386,12 @@ Stamped at commit `91fecc9`.
 | `docs/psr_validation.json` | `b06134ce627dfb2d…` | §5.10 |
 | `docs/published_moments.json` | `5bfe5549f64bc236…` | §13.3 |
 | `docs/region_design_curve.json` | `e684c9bf1af7b40f…` | §17.1, §18.3 |
-| `docs/region_mean_null.json` | `c40c3df7c03b5571…` | §18.4 |
+| `docs/region_mean_null.json` | `5c3f05f05b13d8af…` | §18.4, §21.4 |
 | `docs/roughness_vs_latitude.json` | `ace9c0c9c9999d96…` | §9.1, §9.2 |
 | `docs/rover_coverage.json` | `45e2b31fed3a7cf8…` | §6.5 |
 | `docs/second_pass_s_v21.json` | `202fb711f006cb25…` | §20.3 |
 | `docs/selected_cells_v21.json` | `712db6f413c7d37f…` | §20.1 |
-| `docs/shadow_identification.json` | `d31bd9b76b74e514…` | §20.2 |
+| `docs/shadow_identification.json` | `e119d5f79a4e0e61…` | §20.2, §21.1 |
 | `docs/site_inspection.json` | `817b7a32b75980be…` | §9.3 |
 | `docs/slc_chain.json` | `c404ef43393174b6…` | §18.7 |
 | `docs/slc_multilook_control.json` | `0e4ba7a5f41a97ce…` | §7.4 |
@@ -5336,6 +5406,7 @@ Stamped at commit `91fecc9`.
 | `docs/tail_calibration_ci.json` | `5df59d5bd6459153…` | §15.6, §18.5, §19.5 |
 | `docs/traverse.json` | `6df4a099ee59aaab…` | §10.1, §10.2, §10.3, §10.4, §10.5 |
 | `docs/v21_carryover_checks.json` | `0f0c22cb420ee7e9…` | §20.3 |
+| `docs/v22_literal_audit.json` | `613927f93569ab5f…` | §21.3 |
 | `frontend/public/analysis/faustini.json` | `e8c813e3648ebc2e…` | §1.4, §8.2, §8.3 |
 | `frontend/public/analysis/probe_grid.json` | `848f0884f29b79ed…` | §11.5 |
 | `frontend/public/analysis/sweep_grid.json` | `a6c22dbcf875dad5…` | §1.9 |

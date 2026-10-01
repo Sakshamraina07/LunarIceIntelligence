@@ -141378,5 +141378,1666 @@
     "scipy": "1.17.1",
     "platform": "Windows-11-10.0.22631-SP0",
     "cpu_count": 8
+  },
+  "N_mh_strata_definitions": {
+    "published": "4 strata of fixed width on the disc's median coherence, cut at 0.4, 0.5, 0.6 (np.digitize(coh, [0.4, 0.5, 0.6])); pooled over passes (pass is not a stratifier); `pass1` = the same cuts on the pass-1 discs. Code: shadow_identification.py `DS.cbins`, `mh_coh`; crater_ladder_v20.py `coherence_strata`.",
+    "D_overlap_deciles": "10 strata of equal count: cut at the 10th ... 90th percentiles of the POOLED coherence distribution of the set (np.digitize(coh, percentile(coh, 10..90))), pooled; `_by_pass` crosses them with pass (decile x pass). Only strata with both a shadowed and a sunlit disc enter the odds ratio.",
+    "note_on_the_supplement_wording": "S-VII says the 0.46 uses coherence strata 'formed within each pass'. The deciles are those of the POOLED distribution, crossed with pass; deciles computed within each pass are the `deciles_within_pass_x_pass` row.",
+    "sets": {
+      "L_two_passes": {
+        "mh": {
+          "fixed_width_4_bins_pooled (published)": {
+            "mh_or": 0.593037998398194,
+            "ci95_rbg": [
+              0.336377635897346,
+              1.0455334422157143
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 4,
+            "tarone_p": 0.2778648574023561
+          },
+          "deciles_pooled": {
+            "mh_or": 0.641345679793752,
+            "ci95_rbg": [
+              0.36918239359781574,
+              1.1141492338830306
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 10,
+            "tarone_p": 0.9707311991816985
+          },
+          "fixed_width_4_bins_x_pass": {
+            "mh_or": 0.4432217412351567,
+            "ci95_rbg": [
+              0.24535122015724714,
+              0.8006706132442343
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 8,
+            "tarone_p": 0.29544171628195587
+          },
+          "deciles_pooled_x_pass (D_overlap)": {
+            "mh_or": 0.4611491262230527,
+            "ci95_rbg": [
+              0.25899102552653713,
+              0.8211038053690985
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 20,
+            "tarone_p": 0.9769591286572431
+          },
+          "deciles_within_pass_x_pass": {
+            "mh_or": 0.4907240276701646,
+            "ci95_rbg": [
+              0.2672700332598476,
+              0.9009991445569433
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 20,
+            "tarone_p": 0.3459085241772592
+          },
+          "fixed_width_4_bins_pass1_only (published 0.44)": {
+            "mh_or": 0.4432217412351567,
+            "ci95_rbg": [
+              0.24535122015724714,
+              0.8006706132442343
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 4,
+            "tarone_p": 0.29544171628195587
+          }
+        },
+        "stratum_counts": {
+          "fixed_width_bins": {
+            "0": {
+              "shadowed": 62,
+              "sunlit": 82
+            },
+            "1": {
+              "shadowed": 36,
+              "sunlit": 84
+            },
+            "2": {
+              "shadowed": 47,
+              "sunlit": 137
+            },
+            "3": {
+              "shadowed": 136,
+              "sunlit": 1028
+            }
+          },
+          "deciles": {
+            "0": {
+              "shadowed": 69,
+              "sunlit": 96
+            },
+            "1": {
+              "shadowed": 47,
+              "sunlit": 122
+            },
+            "2": {
+              "shadowed": 45,
+              "sunlit": 117
+            },
+            "3": {
+              "shadowed": 33,
+              "sunlit": 134
+            },
+            "4": {
+              "shadowed": 33,
+              "sunlit": 135
+            },
+            "5": {
+              "shadowed": 23,
+              "sunlit": 132
+            },
+            "6": {
+              "shadowed": 15,
+              "sunlit": 143
+            },
+            "7": {
+              "shadowed": 9,
+              "sunlit": 146
+            },
+            "8": {
+              "shadowed": 4,
+              "sunlit": 149
+            },
+            "9": {
+              "shadowed": 3,
+              "sunlit": 157
+            }
+          },
+          "decile_edges_coherence": [
+            0.41856870678201596,
+            0.5405225430977619,
+            0.6149793878523152,
+            0.6716664831207557,
+            0.7194313090636629,
+            0.759746934902342,
+            0.7973760229305737,
+            0.832034829547144,
+            0.8702417639448853
+          ]
+        }
+      },
+      "L_pass1": {
+        "mh": {
+          "fixed_width_4_bins_pooled (published)": {
+            "mh_or": 0.4432217412351567,
+            "ci95_rbg": [
+              0.24535122015724714,
+              0.8006706132442343
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 4,
+            "tarone_p": 0.29544171628195587
+          },
+          "deciles_pooled": {
+            "mh_or": 0.4907240276701646,
+            "ci95_rbg": [
+              0.2672700332598476,
+              0.9009991445569433
+            ],
+            "strata_with_both_classes": 4,
+            "strata_total": 10,
+            "tarone_p": 0.3459085241772592
+          }
+        },
+        "stratum_counts": {
+          "fixed_width_bins": {
+            "0": {
+              "shadowed": 62,
+              "sunlit": 75
+            },
+            "1": {
+              "shadowed": 36,
+              "sunlit": 59
+            },
+            "2": {
+              "shadowed": 46,
+              "sunlit": 86
+            },
+            "3": {
+              "shadowed": 127,
+              "sunlit": 624
+            }
+          },
+          "deciles": {
+            "0": {
+              "shadowed": 48,
+              "sunlit": 63
+            },
+            "1": {
+              "shadowed": 46,
+              "sunlit": 71
+            },
+            "2": {
+              "shadowed": 40,
+              "sunlit": 70
+            },
+            "3": {
+              "shadowed": 44,
+              "sunlit": 73
+            },
+            "4": {
+              "shadowed": 27,
+              "sunlit": 91
+            },
+            "5": {
+              "shadowed": 28,
+              "sunlit": 87
+            },
+            "6": {
+              "shadowed": 23,
+              "sunlit": 90
+            },
+            "7": {
+              "shadowed": 8,
+              "sunlit": 90
+            },
+            "8": {
+              "shadowed": 4,
+              "sunlit": 102
+            },
+            "9": {
+              "shadowed": 3,
+              "sunlit": 107
+            }
+          },
+          "decile_edges_coherence": [
+            0.3678658773334586,
+            0.4940325986270041,
+            0.5828000407476707,
+            0.6405006851932826,
+            0.6918609000978668,
+            0.7358724909145039,
+            0.7822621271407133,
+            0.8230944528186608,
+            0.8688508057280283
+          ]
+        }
+      },
+      "S_pass1": {
+        "mh": {
+          "fixed_width_4_bins_pooled (published)": {
+            "mh_or": 0.992006609683836,
+            "ci95_rbg": [
+              0.5570621670476464,
+              1.766548101573462
+            ],
+            "strata_with_both_classes": 3,
+            "strata_total": 4,
+            "tarone_p": 0.18421345190131766
+          },
+          "deciles_pooled": {
+            "mh_or": 0.554974644873849,
+            "ci95_rbg": [
+              0.27144364348526373,
+              1.1346622543753744
+            ],
+            "strata_with_both_classes": 3,
+            "strata_total": 10,
+            "tarone_p": 0.08582160590015189
+          }
+        },
+        "stratum_counts": {
+          "fixed_width_bins": {
+            "0": {
+              "shadowed": 81,
+              "sunlit": 92
+            },
+            "1": {
+              "shadowed": 37,
+              "sunlit": 86
+            },
+            "2": {
+              "shadowed": 74,
+              "sunlit": 151
+            },
+            "3": {
+              "shadowed": 79,
+              "sunlit": 514
+            }
+          },
+          "deciles": {
+            "0": {
+              "shadowed": 65,
+              "sunlit": 57
+            },
+            "1": {
+              "shadowed": 32,
+              "sunlit": 83
+            },
+            "2": {
+              "shadowed": 37,
+              "sunlit": 78
+            },
+            "3": {
+              "shadowed": 40,
+              "sunlit": 78
+            },
+            "4": {
+              "shadowed": 38,
+              "sunlit": 79
+            },
+            "5": {
+              "shadowed": 34,
+              "sunlit": 80
+            },
+            "6": {
+              "shadowed": 13,
+              "sunlit": 93
+            },
+            "7": {
+              "shadowed": 8,
+              "sunlit": 98
+            },
+            "8": {
+              "shadowed": 2,
+              "sunlit": 93
+            },
+            "9": {
+              "shadowed": 2,
+              "sunlit": 104
+            }
+          },
+          "decile_edges_coherence": [
+            0.34914992734591094,
+            0.4624091219309052,
+            0.5327678009604941,
+            0.5788115258437814,
+            0.62789981688731,
+            0.6775849903047937,
+            0.7266629614856425,
+            0.7807759898907439,
+            0.830490721104741
+          ]
+        }
+      }
+    }
+  },
+  "O_propensity_populations": {
+    "definition": "propensity score = logistic regression of 'shadowed' on the covariates [pass (pooled set), ln N-hat, min SNR, coherence, position x, y, slant range, incidence, LOLA local incidence, slope, slope SD, RMS height 100 and 500 m, layover fraction], fitted on the shadowed and sunlit discs only (mixed discs excluded): D_overlap in shadow_identification.py",
+    "sets": {
+      "L_two_passes": {
+        "shadowed_discs": 281,
+        "sunlit_discs": 1331,
+        "converged": true,
+        "sunlit_propensity_range": [
+          6.093458051975288e-07,
+          0.9428137690660472
+        ],
+        "shadowed_outside_sunlit_range": {
+          "n": 49,
+          "fraction_of_all_shadowed": 0.17437722419928825,
+          "above_the_sunlit_maximum": 49,
+          "below_the_sunlit_minimum": 0
+        },
+        "shadowed_above_sunlit_95th_percentile": {
+          "n": 215,
+          "of": 281,
+          "fraction_of_ALL_shadowed_discs": 0.7651245551601423,
+          "sunlit_95th_percentile_of_propensity": 0.416771974661431,
+          "of_which_outside_the_support": 49,
+          "fraction_of_those_outside_support_that_are_above_p95": 1.0
+        },
+        "sunlit_below_shadowed_5th_percentile": {
+          "n": 884,
+          "of": 1331,
+          "fraction_of_ALL_sunlit_discs": 0.6641622839969947,
+          "shadowed_5th_percentile_of_propensity": 0.049712201319365434,
+          "variable": "the propensity score of being shadowed"
+        }
+      },
+      "L_pass1": {
+        "shadowed_discs": 271,
+        "sunlit_discs": 844,
+        "converged": true,
+        "sunlit_propensity_range": [
+          1.3808455069298635e-06,
+          0.9472171795235509
+        ],
+        "shadowed_outside_sunlit_range": {
+          "n": 49,
+          "fraction_of_all_shadowed": 0.18081180811808117,
+          "above_the_sunlit_maximum": 49,
+          "below_the_sunlit_minimum": 0
+        },
+        "shadowed_above_sunlit_95th_percentile": {
+          "n": 208,
+          "of": 271,
+          "fraction_of_ALL_shadowed_discs": 0.7675276752767528,
+          "sunlit_95th_percentile_of_propensity": 0.5023088959392532,
+          "of_which_outside_the_support": 49,
+          "fraction_of_those_outside_support_that_are_above_p95": 1.0
+        },
+        "sunlit_below_shadowed_5th_percentile": {
+          "n": 515,
+          "of": 844,
+          "fraction_of_ALL_sunlit_discs": 0.6101895734597157,
+          "shadowed_5th_percentile_of_propensity": 0.05568516859686179,
+          "variable": "the propensity score of being shadowed"
+        }
+      },
+      "S_pass1": {
+        "shadowed_discs": 271,
+        "sunlit_discs": 843,
+        "converged": true,
+        "sunlit_propensity_range": [
+          2.342348684439737e-06,
+          0.9189739061940713
+        ],
+        "shadowed_outside_sunlit_range": {
+          "n": 61,
+          "fraction_of_all_shadowed": 0.22509225092250923,
+          "above_the_sunlit_maximum": 61,
+          "below_the_sunlit_minimum": 0
+        },
+        "shadowed_above_sunlit_95th_percentile": {
+          "n": 207,
+          "of": 271,
+          "fraction_of_ALL_shadowed_discs": 0.7638376383763837,
+          "sunlit_95th_percentile_of_propensity": 0.5111586908171549,
+          "of_which_outside_the_support": 61,
+          "fraction_of_those_outside_support_that_are_above_p95": 1.0
+        },
+        "sunlit_below_shadowed_5th_percentile": {
+          "n": 517,
+          "of": 843,
+          "fraction_of_ALL_sunlit_discs": 0.6132858837485172,
+          "shadowed_5th_percentile_of_propensity": 0.05590927814841806,
+          "variable": "the propensity score of being shadowed"
+        }
+      }
+    }
+  },
+  "M_spec_curve_above": {
+    "rule_tested": "every specification whose block-bootstrap 95 % interval excludes 1 from above has neither coherence nor LOLA local incidence",
+    "sets": {
+      "L_two_passes": {
+        "n_above": 14,
+        "all_lack_coherence": true,
+        "all_lack_local_incidence": true,
+        "all_lack_coherence_and_local_incidence": true,
+        "all_contain_geometry_file_incidence": true,
+        "n_contain_geometry_file_incidence": 14,
+        "all_lack_slope_roughness_psrfraction": true,
+        "specifications_without_coherence_and_without_local_incidence": 256,
+        "of_those_excluding_1_from_above": 14,
+        "covariate_frequency_among_above": {
+          "lnN": 6,
+          "snr": 7,
+          "sp": 8,
+          "j": 8,
+          "inc": 14,
+          "loc": 0,
+          "coh": 0,
+          "slope": 0,
+          "rough": 0,
+          "psrfrac": 0
+        },
+        "specifications": [
+          {
+            "covariates": [
+              "inc"
+            ],
+            "odds_ratio": 2.2373347869605826,
+            "block_bootstrap_ci95": [
+              1.1115947761501974,
+              4.89659812415787
+            ],
+            "cluster_robust_ci95": [
+              1.1147989880586837,
+              4.490196889809569
+            ],
+            "model_ci95": [
+              1.4580911781350354,
+              3.433027388140727
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "inc"
+            ],
+            "odds_ratio": 2.338295630202439,
+            "block_bootstrap_ci95": [
+              1.155560431762269,
+              5.415422134656297
+            ],
+            "cluster_robust_ci95": [
+              1.1479076392954684,
+              4.763124024141517
+            ],
+            "model_ci95": [
+              1.5196489167954343,
+              3.5979537074613916
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 2.5312937517568086,
+            "block_bootstrap_ci95": [
+              1.324650787489397,
+              7.710848205239053
+            ],
+            "cluster_robust_ci95": [
+              1.3293904703136918,
+              4.819839017027943
+            ],
+            "model_ci95": [
+              1.606079320393626,
+              3.9894966433617287
+            ]
+          },
+          {
+            "covariates": [
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.03990767228045,
+            "block_bootstrap_ci95": [
+              1.796894654914616,
+              10.282134896991764
+            ],
+            "cluster_robust_ci95": [
+              1.7099970454132087,
+              9.544375555693797
+            ],
+            "model_ci95": [
+              2.460975804240902,
+              6.631862845796926
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 1.9056729020898653,
+            "block_bootstrap_ci95": [
+              1.0817599039966044,
+              5.684898368028371
+            ],
+            "cluster_robust_ci95": [
+              1.0106715493240876,
+              3.593243732039679
+            ],
+            "model_ci95": [
+              1.1703506651281,
+              3.1029923919102624
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 2.5927683858875255,
+            "block_bootstrap_ci95": [
+              1.3544799443397215,
+              7.570596945885951
+            ],
+            "cluster_robust_ci95": [
+              1.358738051443998,
+              4.947567263398216
+            ],
+            "model_ci95": [
+              1.6306680208470552,
+              4.122511643642714
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 2.972883152368289,
+            "block_bootstrap_ci95": [
+              1.5186371358725084,
+              7.017593284090274
+            ],
+            "cluster_robust_ci95": [
+              1.442101195916061,
+              6.128581172156273
+            ],
+            "model_ci95": [
+              1.7660551390578834,
+              5.00439314842114
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.149103111099863,
+            "block_bootstrap_ci95": [
+              1.8118055654033012,
+              10.806798940600894
+            ],
+            "cluster_robust_ci95": [
+              1.7928999409040647,
+              9.60179440792324
+            ],
+            "model_ci95": [
+              2.462633260017556,
+              6.990507643194844
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.3343323046821265,
+            "block_bootstrap_ci95": [
+              1.8754200648380275,
+              11.887173613918145
+            ],
+            "cluster_robust_ci95": [
+              1.7758993633105837,
+              10.578547926493934
+            ],
+            "model_ci95": [
+              2.6099902954650314,
+              7.197895164611646
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 1.9007902332367597,
+            "block_bootstrap_ci95": [
+              1.0597391488176973,
+              5.827343877930315
+            ],
+            "cluster_robust_ci95": [
+              1.0113725515176166,
+              3.572376475263005
+            ],
+            "model_ci95": [
+              1.1683982123293721,
+              3.0922706596454015
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 2.923464889539108,
+            "block_bootstrap_ci95": [
+              1.4653656093277347,
+              7.170753330393168
+            ],
+            "cluster_robust_ci95": [
+              1.3710386287383785,
+              6.233702523927049
+            ],
+            "model_ci95": [
+              1.7012607487685603,
+              5.023713717344219
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 3.1350655447054248,
+            "block_bootstrap_ci95": [
+              1.5920475015149107,
+              7.701429602659352
+            ],
+            "cluster_robust_ci95": [
+              1.490668174199359,
+              6.593443222116218
+            ],
+            "model_ci95": [
+              1.7980578057407233,
+              5.466251384254102
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.223720650795606,
+            "block_bootstrap_ci95": [
+              1.7855209970968244,
+              10.655985968367876
+            ],
+            "cluster_robust_ci95": [
+              1.8613580814713604,
+              9.584301007711153
+            ],
+            "model_ci95": [
+              2.4818128705130142,
+              7.188219687276261
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 3.128103238507325,
+            "block_bootstrap_ci95": [
+              1.5023615102234946,
+              8.243897145355625
+            ],
+            "cluster_robust_ci95": [
+              1.446412165353108,
+              6.7650356552215705
+            ],
+            "model_ci95": [
+              1.7849553008796641,
+              5.481946727706705
+            ]
+          }
+        ]
+      },
+      "L_pass1": {
+        "n_above": 20,
+        "all_lack_coherence": true,
+        "all_lack_local_incidence": true,
+        "all_lack_coherence_and_local_incidence": true,
+        "all_contain_geometry_file_incidence": false,
+        "n_contain_geometry_file_incidence": 14,
+        "all_lack_slope_roughness_psrfraction": true,
+        "specifications_without_coherence_and_without_local_incidence": 256,
+        "of_those_excluding_1_from_above": 20,
+        "covariate_frequency_among_above": {
+          "lnN": 8,
+          "snr": 10,
+          "sp": 14,
+          "j": 12,
+          "inc": 14,
+          "loc": 0,
+          "coh": 0,
+          "slope": 0,
+          "rough": 0,
+          "psrfrac": 0
+        },
+        "specifications": [
+          {
+            "covariates": [
+              "sp"
+            ],
+            "odds_ratio": 2.126698685326591,
+            "block_bootstrap_ci95": [
+              1.0986422120695185,
+              4.071267846908677
+            ],
+            "cluster_robust_ci95": [
+              1.145396915748776,
+              3.948716148945752
+            ],
+            "model_ci95": [
+              1.3770858066273157,
+              3.284361276837906
+            ]
+          },
+          {
+            "covariates": [
+              "inc"
+            ],
+            "odds_ratio": 2.208907709842706,
+            "block_bootstrap_ci95": [
+              1.075724528919479,
+              4.916175793244323
+            ],
+            "cluster_robust_ci95": [
+              1.0992367823249938,
+              4.438782752777254
+            ],
+            "model_ci95": [
+              1.4389580799797932,
+              3.39083767518166
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp"
+            ],
+            "odds_ratio": 2.172156523957285,
+            "block_bootstrap_ci95": [
+              1.1301909536890655,
+              4.410525615681583
+            ],
+            "cluster_robust_ci95": [
+              1.1745268690346262,
+              4.017161368516207
+            ],
+            "model_ci95": [
+              1.3956810072904187,
+              3.3806177342272883
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "inc"
+            ],
+            "odds_ratio": 2.308947569126125,
+            "block_bootstrap_ci95": [
+              1.1030991928429064,
+              5.176056131700419
+            ],
+            "cluster_robust_ci95": [
+              1.131786750618203,
+              4.7104623499625
+            ],
+            "model_ci95": [
+              1.4999982240262721,
+              3.554163459382914
+            ]
+          },
+          {
+            "covariates": [
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.008669426427749,
+            "block_bootstrap_ci95": [
+              1.648326131190158,
+              10.847062543382862
+            ],
+            "cluster_robust_ci95": [
+              1.666186087138121,
+              9.644439294279428
+            ],
+            "model_ci95": [
+              2.431302816046854,
+              6.6093908435907895
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 4.037802034926696,
+            "block_bootstrap_ci95": [
+              1.7697560491005904,
+              9.571593482902326
+            ],
+            "cluster_robust_ci95": [
+              1.7720957722071937,
+              9.200318362563037
+            ],
+            "model_ci95": [
+              2.4114095630232173,
+              6.761126572301477
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 4.154631068592509,
+            "block_bootstrap_ci95": [
+              1.756206348020361,
+              9.924340375871198
+            ],
+            "cluster_robust_ci95": [
+              1.784066153952933,
+              9.675066856612487
+            ],
+            "model_ci95": [
+              2.462083736774895,
+              7.0107117228776366
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 2.961750109103234,
+            "block_bootstrap_ci95": [
+              1.4565893526745164,
+              7.342121722900054
+            ],
+            "cluster_robust_ci95": [
+              1.421210245927472,
+              6.1721787708112785
+            ],
+            "model_ci95": [
+              1.7532938433011258,
+              5.0031338114192225
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 3.053014560880216,
+            "block_bootstrap_ci95": [
+              1.5664908788483554,
+              7.330492680606023
+            ],
+            "cluster_robust_ci95": [
+              1.450640557700583,
+              6.425366959077182
+            ],
+            "model_ci95": [
+              1.7618250881707582,
+              5.2904785903714115
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 3.1399064355280473,
+            "block_bootstrap_ci95": [
+              1.5386588595759056,
+              7.279496072019792
+            ],
+            "cluster_robust_ci95": [
+              1.490246038768884,
+              6.61569443393061
+            ],
+            "model_ci95": [
+              1.7980853821625755,
+              5.4830613282740295
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.0898194754413435,
+            "block_bootstrap_ci95": [
+              1.6739859739416276,
+              9.97070842973142
+            ],
+            "cluster_robust_ci95": [
+              1.739083006305234,
+              9.618070719485567
+            ],
+            "model_ci95": [
+              2.4209109311093937,
+              6.909227070999367
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 4.124678814409378,
+            "block_bootstrap_ci95": [
+              1.8021581284276424,
+              10.061823804911262
+            ],
+            "cluster_robust_ci95": [
+              1.8345791878098474,
+              9.273502847455678
+            ],
+            "model_ci95": [
+              2.436753901778966,
+              6.981819259473484
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 4.223585292234666,
+            "block_bootstrap_ci95": [
+              1.7409115372628268,
+              10.386536042944703
+            ],
+            "cluster_robust_ci95": [
+              1.8534698272073402,
+              9.624474301617774
+            ],
+            "model_ci95": [
+              2.478706919950549,
+              7.196765610811655
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.2925021138573785,
+            "block_bootstrap_ci95": [
+              1.7409381887098823,
+              12.032587070124709
+            ],
+            "cluster_robust_ci95": [
+              1.7237201880786612,
+              10.689423100629844
+            ],
+            "model_ci95": [
+              2.573210267167156,
+              7.160539747789346
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 2.9030069989537983,
+            "block_bootstrap_ci95": [
+              1.4199246482571093,
+              7.348333026126001
+            ],
+            "cluster_robust_ci95": [
+              1.343302781897887,
+              6.273678391455429
+            ],
+            "model_ci95": [
+              1.6827887483766681,
+              5.008025899926196
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 3.0577131398824027,
+            "block_bootstrap_ci95": [
+              1.5335439237431279,
+              7.640445686910439
+            ],
+            "cluster_robust_ci95": [
+              1.418252551462334,
+              6.592344668211096
+            ],
+            "model_ci95": [
+              1.7564302813914197,
+              5.323074729959034
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 3.095407260155229,
+            "block_bootstrap_ci95": [
+              1.4857794096602914,
+              7.224973866854331
+            ],
+            "cluster_robust_ci95": [
+              1.4630641340617243,
+              6.548958369734374
+            ],
+            "model_ci95": [
+              1.7712842863860594,
+              5.4093779185332656
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 3.1260926824494213,
+            "block_bootstrap_ci95": [
+              1.476966131628574,
+              7.650924032789301
+            ],
+            "cluster_robust_ci95": [
+              1.442486300922498,
+              6.77473016763774
+            ],
+            "model_ci95": [
+              1.7810877542862387,
+              5.486790550182675
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.1680622340976905,
+            "block_bootstrap_ci95": [
+              1.6384731074091334,
+              10.257072545296332
+            ],
+            "cluster_robust_ci95": [
+              1.8099768864538308,
+              9.598323004747707
+            ],
+            "model_ci95": [
+              2.4440193111007686,
+              7.1082673972354495
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 3.070286964366209,
+            "block_bootstrap_ci95": [
+              1.383307122332464,
+              7.6124526476739796
+            ],
+            "cluster_robust_ci95": [
+              1.406328661508073,
+              6.70302917203466
+            ],
+            "model_ci95": [
+              1.7473091654096553,
+              5.394959421131976
+            ]
+          }
+        ]
+      },
+      "S_pass1": {
+        "n_above": 24,
+        "all_lack_coherence": true,
+        "all_lack_local_incidence": true,
+        "all_lack_coherence_and_local_incidence": true,
+        "all_contain_geometry_file_incidence": false,
+        "n_contain_geometry_file_incidence": 14,
+        "all_lack_slope_roughness_psrfraction": true,
+        "specifications_without_coherence_and_without_local_incidence": 256,
+        "of_those_excluding_1_from_above": 24,
+        "covariate_frequency_among_above": {
+          "lnN": 8,
+          "snr": 12,
+          "sp": 14,
+          "j": 14,
+          "inc": 14,
+          "loc": 0,
+          "coh": 0,
+          "slope": 0,
+          "rough": 0,
+          "psrfrac": 0
+        },
+        "specifications": [
+          {
+            "covariates": [],
+            "odds_ratio": 2.9326701667127275,
+            "block_bootstrap_ci95": [
+              1.182462876819705,
+              6.244487257915234
+            ],
+            "cluster_robust_ci95": [
+              1.3634220892316988,
+              6.308064373207677
+            ],
+            "model_ci95": [
+              1.8767818567460604,
+              4.582607337028708
+            ]
+          },
+          {
+            "covariates": [
+              "snr"
+            ],
+            "odds_ratio": 2.904407417903606,
+            "block_bootstrap_ci95": [
+              1.1726268782794567,
+              6.24731930384072
+            ],
+            "cluster_robust_ci95": [
+              1.3595472909751718,
+              6.204699538713981
+            ],
+            "model_ci95": [
+              1.8573774008127326,
+              4.541663124296835
+            ]
+          },
+          {
+            "covariates": [
+              "j"
+            ],
+            "odds_ratio": 3.243545505564383,
+            "block_bootstrap_ci95": [
+              1.2887026186260013,
+              7.43373736888421
+            ],
+            "cluster_robust_ci95": [
+              1.4893887721960788,
+              7.06369461289444
+            ],
+            "model_ci95": [
+              2.042432727379942,
+              5.151008062900973
+            ]
+          },
+          {
+            "covariates": [
+              "inc"
+            ],
+            "odds_ratio": 3.519711059040166,
+            "block_bootstrap_ci95": [
+              1.3640528296992775,
+              8.07763589944133
+            ],
+            "cluster_robust_ci95": [
+              1.5644532901047954,
+              7.9186550454950355
+            ],
+            "model_ci95": [
+              2.2075504443049554,
+              5.611815562851208
+            ]
+          },
+          {
+            "covariates": [
+              "sp"
+            ],
+            "odds_ratio": 3.657647195081601,
+            "block_bootstrap_ci95": [
+              1.463411317428053,
+              7.898315438238396
+            ],
+            "cluster_robust_ci95": [
+              1.7903023237715021,
+              7.472694877312688
+            ],
+            "model_ci95": [
+              2.2614844740644657,
+              5.9157527531656795
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "j"
+            ],
+            "odds_ratio": 3.1425962870763757,
+            "block_bootstrap_ci95": [
+              1.158539044575016,
+              7.142501121928289
+            ],
+            "cluster_robust_ci95": [
+              1.4528712204718564,
+              6.797513285684586
+            ],
+            "model_ci95": [
+              1.9822191394383994,
+              4.982250058560255
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp"
+            ],
+            "odds_ratio": 3.2995509142512676,
+            "block_bootstrap_ci95": [
+              1.3869245453367367,
+              6.824719910465138
+            ],
+            "cluster_robust_ci95": [
+              1.719891226548436,
+              6.33007254626505
+            ],
+            "model_ci95": [
+              2.0213013144390475,
+              5.386152058560231
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "inc"
+            ],
+            "odds_ratio": 3.5617136305617176,
+            "block_bootstrap_ci95": [
+              1.356970916367868,
+              8.582953924130667
+            ],
+            "cluster_robust_ci95": [
+              1.5907835224809515,
+              7.974563356266494
+            ],
+            "model_ci95": [
+              2.2261934477158003,
+              5.698428408881304
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 7.583109367877594,
+            "block_bootstrap_ci95": [
+              2.438145898651941,
+              22.55883796806355
+            ],
+            "cluster_robust_ci95": [
+              2.822621057827304,
+              20.37239378120984
+            ],
+            "model_ci95": [
+              4.204095744434084,
+              13.677982420196642
+            ]
+          },
+          {
+            "covariates": [
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 7.643307677409849,
+            "block_bootstrap_ci95": [
+              2.3363272221061124,
+              24.99000787849224
+            ],
+            "cluster_robust_ci95": [
+              2.705534536196994,
+              21.592831830441174
+            ],
+            "model_ci95": [
+              4.304605052846944,
+              13.571547571574516
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 8.678256058288435,
+            "block_bootstrap_ci95": [
+              2.589229111782921,
+              26.328039454703436
+            ],
+            "cluster_robust_ci95": [
+              3.12352655717416,
+              24.111249523472736
+            ],
+            "model_ci95": [
+              4.728250284079879,
+              15.928117948154625
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 3.4794767137353797,
+            "block_bootstrap_ci95": [
+              1.4787417546204131,
+              9.602497713746608
+            ],
+            "cluster_robust_ci95": [
+              1.4803691351508022,
+              8.178202256421311
+            ],
+            "model_ci95": [
+              1.8461200251002416,
+              6.5579474989820215
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 4.0859907673407045,
+            "block_bootstrap_ci95": [
+              1.576890718609037,
+              11.367445552933214
+            ],
+            "cluster_robust_ci95": [
+              1.6759585643668893,
+              9.961654724501086
+            ],
+            "model_ci95": [
+              2.126689209147669,
+              7.850380995483871
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.217395508068423,
+            "block_bootstrap_ci95": [
+              1.5953110148338812,
+              12.746777104016413
+            ],
+            "cluster_robust_ci95": [
+              1.694073669520455,
+              10.499203896198061
+            ],
+            "model_ci95": [
+              2.3085573735809373,
+              7.704562630768043
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 6.587964973956841,
+            "block_bootstrap_ci95": [
+              2.411755846247407,
+              18.706264195994216
+            ],
+            "cluster_robust_ci95": [
+              2.7026379538854917,
+              16.058859247382948
+            ],
+            "model_ci95": [
+              3.668614302117801,
+              11.830429400285462
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 7.398101819292577,
+            "block_bootstrap_ci95": [
+              2.3161175407574115,
+              24.23299458491517
+            ],
+            "cluster_robust_ci95": [
+              2.6586379573667274,
+              20.586447423939536
+            ],
+            "model_ci95": [
+              4.183674056372624,
+              13.082259705497808
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 7.6270802532159445,
+            "block_bootstrap_ci95": [
+              2.5734902058483367,
+              20.94080029821598
+            ],
+            "cluster_robust_ci95": [
+              3.0079647275779093,
+              19.339439939456494
+            ],
+            "model_ci95": [
+              4.169557550186165,
+              13.951684918319277
+            ]
+          },
+          {
+            "covariates": [
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 8.880399099047025,
+            "block_bootstrap_ci95": [
+              2.616083003714375,
+              26.85216324128322
+            ],
+            "cluster_robust_ci95": [
+              3.218630926004715,
+              24.501562922669716
+            ],
+            "model_ci95": [
+              4.825515671022328,
+              16.34260326454348
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "inc"
+            ],
+            "odds_ratio": 3.553392868626011,
+            "block_bootstrap_ci95": [
+              1.4600437348588509,
+              9.582048464075909
+            ],
+            "cluster_robust_ci95": [
+              1.5014132499018056,
+              8.409810476647907
+            ],
+            "model_ci95": [
+              1.8866384338677205,
+              6.692644786694454
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.021171272163914,
+            "block_bootstrap_ci95": [
+              1.4858150052011827,
+              12.463216316351936
+            ],
+            "cluster_robust_ci95": [
+              1.6010490444455117,
+              10.099514725157228
+            ],
+            "model_ci95": [
+              2.1799165565591982,
+              7.417631813209838
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "j"
+            ],
+            "odds_ratio": 4.184477941936003,
+            "block_bootstrap_ci95": [
+              1.588801810037404,
+              11.557676172452474
+            ],
+            "cluster_robust_ci95": [
+              1.7021360460789345,
+              10.286989507615996
+            ],
+            "model_ci95": [
+              2.179073687144017,
+              8.035458254510933
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.243959334722949,
+            "block_bootstrap_ci95": [
+              1.587906925220131,
+              11.56988501767512
+            ],
+            "cluster_robust_ci95": [
+              1.751949321071564,
+              10.280657447194693
+            ],
+            "model_ci95": [
+              2.1997336527374602,
+              8.187896208419605
+            ]
+          },
+          {
+            "covariates": [
+              "snr",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 7.834211596951312,
+            "block_bootstrap_ci95": [
+              2.5201565230089127,
+              21.83755682176087
+            ],
+            "cluster_robust_ci95": [
+              3.1069455020972807,
+              19.754086869041174
+            ],
+            "model_ci95": [
+              4.264918069576329,
+              14.390633148060292
+            ]
+          },
+          {
+            "covariates": [
+              "lnN",
+              "snr",
+              "sp",
+              "j",
+              "inc"
+            ],
+            "odds_ratio": 4.342945478133134,
+            "block_bootstrap_ci95": [
+              1.6918734291214423,
+              11.798267275454451
+            ],
+            "cluster_robust_ci95": [
+              1.7756070060530806,
+              10.622381732972954
+            ],
+            "model_ci95": [
+              2.2511244353774784,
+              8.378557457608652
+            ]
+          }
+        ]
+      }
+    }
   }
 }

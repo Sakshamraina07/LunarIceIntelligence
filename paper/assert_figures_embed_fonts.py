@@ -41,24 +41,13 @@ FIGURES = ["fig1_degeneracy.pdf", "fig_cpr_dop.pdf", "fig_joint_power.pdf", "fig
            "fig_region_design.pdf", "fig_n_sensitivity.pdf", "fig_spec_curve.pdf"]
 SCRIPTS = ["make_figures.py", "make_figures_v12.py", "make_fig_scene.py", "make_fig_region.py",
            "make_fig_n_sensitivity.py", "make_fig_spec_curve.py"]
-#: v21 (work order W1H/W2B): the two double-column figures are drawn at their printed width (7.16 in, the
-#: IEEEtran text width) and every text operator must be at least 7 pt. The older figures predate the rule
-#: (their mathtext sub/superscripts and legends are 4.3-6.5 pt, reported by figure_compare_v21.py) and are
-#: not held to it here; a figure is added to this set when it is rebuilt to the rule.
-MIN_TEXT_PT = {"fig_n_sensitivity.pdf": 7.0, "fig_spec_curve.pdf": 7.0}
-PRINTED_IN = {"fig_n_sensitivity.pdf": 7.16, "fig_spec_curve.pdf": 7.16}
-#: fig_region_design.pdf (v19 Fig. 4, v20 gap pass S1): the regional design
-#: curve, from make_fig_region.py, which reads docs/region_design_curve.json.
-#: fig_scene.pdf (v17a referee report, P4): the data figure, from
-#: make_fig_scene.py, which reads the gitignored cache written by
-#: backend/scripts/f2_complex_product.py.
-#: Built by make_figures.py but no longer in the manuscript; retired from the
-#: gate 2026-09-23 (final pass). A retired figure is not inspected.
-RETIRED_FIGURES = {
-    "fig3_detection.pdf": "v14 replaced it with fig_joint_power.pdf (the order's A1c)",
-    "fig2_enl.pdf": "unused since the third review (C9)",
-    "fig4_external.pdf": "unused since the 10-page draft",
-}
+#: v22 (work order A2): EVERY main-text figure is held to at least 7.0 pt text at its printed width: the four
+#: half-width figures at 0.49 \textwidth = 3.51 in, the two double-column figures at 7.0 in. (v21 held only
+#: the two new ones; the others were rebuilt to the rule in v22 and are added here.)
+MIN_TEXT_PT = {"fig_scene.pdf": 7.0, "fig_cpr_dop.pdf": 7.0, "fig_joint_power.pdf": 7.0, "fig_region_design.pdf": 7.0,
+               "fig_n_sensitivity.pdf": 7.0, "fig_spec_curve.pdf": 7.0}
+PRINTED_IN = {"fig_scene.pdf": 3.51, "fig_cpr_dop.pdf": 3.51, "fig_joint_power.pdf": 3.51, "fig_region_design.pdf": 3.51,
+              "fig_n_sensitivity.pdf": 7.0, "fig_spec_curve.pdf": 7.0}
 
 for _s in (sys.stdout, sys.stderr):
     try:

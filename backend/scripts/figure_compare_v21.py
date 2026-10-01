@@ -40,11 +40,11 @@ for _s in (sys.stdout, sys.stderr):
 
 
 def streams(b: bytes):
+    """Every stream of the PDF, Flate-decompressed where it is Flate (a stream is the bytes between `stream` and
+    `endstream`; the pattern must not match the `stream` inside `endstream`)."""
     out = []
-    for m in re.finditer(rb"stream\r?\n", b):
-        s = m.end()
-        e = b.find(b"endstream", s)
-        raw = b[s:e]
+    for m in re.finditer(rb"[\r\n]stream\r?\n(.*?)\r?\nendstream", b, re.S):
+        raw = m.group(1)
         try:
             out.append(zlib.decompress(raw))
         except zlib.error:
@@ -114,7 +114,7 @@ def main() -> int:
         r["placed_width_in"] = round((mb[2] - mb[0]) / 72.0, 3) if mb else None
         r.update({"fonts": fonts(bp)})
         lo, hi, n, hist = text_sizes(bp, (mb[2] - mb[0]) if mb else 0)
-        sc = ((7.16 if f in DOUBLE_COLUMN else PRINTED_WIDTH_IN) / r["placed_width_in"]) if r["placed_width_in"] else None
+        sc = ((7.0 if f in DOUBLE_COLUMN else PRINTED_WIDTH_IN) / r["placed_width_in"]) if r["placed_width_in"] else None
         r["text_size_pt"] = {"min": lo, "max": hi, "operators": n, "histogram_size_pt_count": hist,
                              "printed_scale": sc, "min_at_printed_size": (lo * sc) if lo and sc else None,
                              "sizes_below_7pt_at_printed_size": {str(k): v for k, v in hist.items() if sc and k * sc < 7.0}}

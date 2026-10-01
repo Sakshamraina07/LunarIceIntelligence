@@ -1,9 +1,9 @@
 {
   "schema": "lunar-ice/number-crosscheck/1",
-  "generated_utc": "2026-09-30T18:30:36.887211+00:00",
+  "generated_utc": "2026-10-01T13:54:07.734450+00:00",
   "generator": "backend/scripts/number_crosscheck.py",
-  "manuscript": "Claude outputs/grsl/dfsar_detection_limits_supplement.tex",
-  "artifact_numbers_loaded": 191830,
+  "manuscript": "paper/dfsar_detection_limits_supplement.tex",
+  "artifact_numbers_loaded": 662284,
   "artifact_trees": [
     "docs",
     "frontend/public/analysis",
@@ -11,20 +11,20 @@
   ],
   "rule": "a literal matches if some artifact value rounds to it at the printed precision, or agrees to 0.5 % relative with >= 3 significant digits. Deliberately loose: this is a net for literals nobody mapped, not a check on any one figure",
   "not_a_gate": "a match here is weak evidence; audit_manuscript_numbers.py is the strong check, and this only catches what that table has not been told about",
-  "distinct_literals": 250,
-  "matched": 248,
+  "distinct_literals": 503,
+  "matched": 501,
   "unmatched": 2,
   "unmatched_rows": [
     {
       "literal": "80,100,150,200",
       "lines": [
-        150
+        154
       ]
     },
     {
       "literal": "254,400,600",
       "lines": [
-        262
+        266
       ]
     }
   ],
@@ -32,1812 +32,3703 @@
     {
       "literal": "0.97",
       "lines": [
-        59
+        63
       ],
       "example_key": "background_cpr_sweep.json.rows[1].fp_percent"
     },
     {
       "literal": "0.50",
       "lines": [
-        59,
-        60,
-        62
+        63,
+        64,
+        66,
+        452,
+        459
       ],
       "example_key": "antialias_sigma.json.sigmas[9]"
     },
     {
       "literal": "1.75",
       "lines": [
-        59
+        63
       ],
-      "example_key": "crater_level_real.json.per_disc[511].median_cpr"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.psr.or_ci95_model[1]"
     },
     {
       "literal": "6.12",
       "lines": [
-        59
+        63
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_simple[1]"
     },
     {
       "literal": "9.11",
       "lines": [
-        59
+        63
       ],
       "example_key": "crater_level_real.json.per_disc[51].median_N_hat"
     },
     {
       "literal": "9.65",
       "lines": [
-        59
+        63
       ],
       "example_key": "complex_grid_correlation.json.window_31x31.independent_samples_at_median_A"
     },
     {
       "literal": "9.94",
       "lines": [
-        59
+        63
       ],
       "example_key": "crater_level_real.json.per_disc[44].median_N_hat"
     },
     {
       "literal": "0.93",
       "lines": [
-        60
+        64,
+        639
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.200 m[2]"
     },
     {
       "literal": "1.83",
       "lines": [
-        60
+        64
       ],
-      "example_key": "coherence_nhat.json.formula_check.rows[3].series_var"
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.c.coefficients.intercept.se_model"
     },
     {
       "literal": "7.66",
       "lines": [
-        60
+        64
       ],
       "example_key": "crater_level_real.json.per_disc[541].median_N_hat"
     },
     {
       "literal": "8.51",
       "lines": [
-        60
+        64
       ],
       "example_key": "crater_level_real.json.per_disc[67].median_N_hat"
     },
     {
       "literal": "9.14",
       "lines": [
-        60
+        64
       ],
       "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
     },
     {
       "literal": "8.84",
       "lines": [
-        60
+        64
       ],
       "example_key": "crater_level_real.json.per_disc[269].median_N_hat"
     },
     {
       "literal": "0.92",
       "lines": [
-        61
+        65,
+        427
       ],
-      "example_key": "complex_grid_correlation.json.correlation_area.pooled_lag1.range"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.class_mixed.se_cluster_robust"
     },
     {
       "literal": "0.48",
       "lines": [
-        61
+        65,
+        430,
+        449
       ],
-      "example_key": "coherence_nhat.json.window_validation.rows[40].standard.relative_bias_median"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.coefficients.class_inside_psr.estimate"
     },
     {
       "literal": "1.82",
       "lines": [
-        61
+        65
       ],
-      "example_key": "coherence_nhat.json.formula_check.rows[9].q95_density"
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.c.coefficients.intercept.se_model"
     },
     {
       "literal": "7.06",
       "lines": [
-        61
+        65
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[36].standard.median"
     },
     {
       "literal": "8.94",
       "lines": [
-        61
+        65
       ],
       "example_key": "crater_level_real.json.simulation_per_disc_mixture.look_calibration_log_ratio.3"
     },
     {
       "literal": "9.20",
       "lines": [
-        61
+        65
       ],
       "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
     },
     {
       "literal": "9.21",
       "lines": [
-        61
+        65
       ],
       "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
     },
     {
       "literal": "0.99",
       "lines": [
-        62
+        66,
+        428
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[9]"
     },
     {
       "literal": "1.77",
       "lines": [
-        62
+        66,
+        429
       ],
-      "example_key": "cpr_significance.json.f2_peak_cpr.9.effective"
+      "example_key": "band_s.json.ladder_v20.S_band.mantel_haenszel_coherence_strata.ci95[1]"
     },
     {
       "literal": "6.51",
       "lines": [
-        62
+        66
       ],
-      "example_key": "crater_level_real.json.simulation_per_disc_mixture.look_calibration_log_ratio.2"
+      "example_key": "band_s.json.ladder_v20.S_band.unadjusted.block_bootstrap.or_ci95[1]"
     },
     {
       "literal": "9.42",
       "lines": [
-        62
+        66
       ],
       "example_key": "crater_level_real.json.per_disc[93].median_N_hat"
     },
     {
       "literal": "9.51",
       "lines": [
-        62
+        66
       ],
       "example_key": "crater_level_real.json.per_disc[217].median_N_hat"
     },
     {
       "literal": "9.61",
       "lines": [
-        62
+        66
       ],
       "example_key": "complex_grid_correlation.json.window_31x31.independent_samples_at_median_A"
     },
     {
       "literal": "0.83",
       "lines": [
-        63
+        67,
+        450
       ],
-      "example_key": "complex_cell_ceiling.json.summary.LH.acf_lag1_rg_abs.range[1]"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.psr.odds_ratio"
     },
     {
       "literal": "0.46",
       "lines": [
-        63
+        67
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[41].standard.relative_bias_median"
     },
     {
       "literal": "2.19",
       "lines": [
-        63
+        67
       ],
       "example_key": "band_s.json.run_info.numpy:str"
     },
     {
       "literal": "7.19",
       "lines": [
-        63
+        67
       ],
       "example_key": "complex_cell_ceiling.json.check_21x1_vs_mechanism_spec.mechanism_spec_range[1]"
     },
     {
       "literal": "8.11",
       "lines": [
-        63
+        67
       ],
       "example_key": "crater_level_real.json.per_disc[326].median_N_hat"
     },
     {
       "literal": "7.49",
       "lines": [
-        63,
-        88
+        67,
+        92
       ],
       "example_key": "crater_level_real.json.per_disc[281].median_N_hat"
     },
     {
       "literal": "9.12",
       "lines": [
-        63,
-        88
+        67,
+        92
       ],
       "example_key": "crater_level_real.json.per_disc[51].median_N_hat"
     },
     {
       "literal": "1.12",
       "lines": [
-        64
+        68,
+        639
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[6]"
     },
     {
       "literal": "0.59",
       "lines": [
-        64
+        68,
+        458
       ],
-      "example_key": "composite_contrast.json.layers.dem_elevation.retention[0]"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.psr.block_bootstrap.sd"
     },
     {
       "literal": "1.88",
       "lines": [
-        64
+        68,
+        451
       ],
-      "example_key": "coherence_nhat.json.formula_check.rows[8].q95_density"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.psr.or_ci95_model[0]"
     },
     {
       "literal": "7.33",
       "lines": [
-        64
+        68
       ],
-      "example_key": "crater_level_real.json.per_disc[9].median_N_hat"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.coefficients.intercept.estimate"
     },
     {
       "literal": "8.80",
       "lines": [
-        64
+        68
       ],
       "example_key": "crater_level_real.json.per_disc[514].median_N_hat"
     },
     {
       "literal": "8.85",
       "lines": [
-        64
+        68
       ],
       "example_key": "crater_level_real.json.per_disc[269].median_N_hat"
     },
     {
       "literal": "9.03",
       "lines": [
-        64
+        68
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
     },
     {
       "literal": "1.00",
       "lines": [
-        65,
-        151,
-        161,
-        224,
-        312,
-        367
+        69,
+        155,
+        165,
+        228,
+        352,
+        372,
+        407,
+        559,
+        639,
+        641,
+        714,
+        719
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[0]"
     },
     {
       "literal": "0.53",
       "lines": [
-        65
+        69
       ],
       "example_key": "composite_contrast.json.layers.dem_elevation.retention[2]"
     },
     {
       "literal": "1.85",
       "lines": [
-        65
+        69
       ],
-      "example_key": "crater_level_real.json.per_disc[559].median_N_hat"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.cx_over_100.estimate"
     },
     {
       "literal": "7.00",
       "lines": [
-        65
+        69
       ],
-      "example_key": "coherence_nhat.json.window_validation.rows[36].standard.median"
+      "example_key": "band_s.json.ladder_v20.fired_sets.mixed.fired_in_both"
     },
     {
       "literal": "8.71",
       "lines": [
-        65
+        69
       ],
-      "example_key": "coherence_nhat.json.formula_check.rows[3].q95_density"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b2.coefficients.intercept.estimate"
     },
     {
       "literal": "9.02",
       "lines": [
-        65
+        69
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
     },
     {
       "literal": "9.25",
       "lines": [
-        65
+        69
       ],
       "example_key": "crater_level_real.json.per_disc[244].median_N_hat"
     },
     {
       "literal": "1.04",
       "lines": [
-        66
+        70,
+        638
       ],
-      "example_key": "enl_interval_validation.json.rows[10].coverage.parametric_neyman.90.median_width"
+      "example_key": "disc_table_v21.json.discs.L_20200808[357].terrain.slope_sd_deg"
     },
     {
       "literal": "0.56",
       "lines": [
-        66
+        70,
+        429
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[2]"
     },
     {
       "literal": "1.93",
       "lines": [
-        66
+        70
       ],
       "example_key": "crater_level_real.json.v20_gap.ladder.c.coefficients.class_mixed.block_bootstrap.ci95[0]"
     },
     {
       "literal": "7.95",
       "lines": [
-        66
+        70
       ],
       "example_key": "crater_level_real.json.per_disc[589].median_N_hat"
     },
     {
       "literal": "8.49",
       "lines": [
-        66
+        70
       ],
       "example_key": "crater_level_real.json.per_disc[303].median_N_hat"
     },
     {
       "literal": "8.59",
       "lines": [
-        66
+        70
       ],
       "example_key": "crater_level_real.json.per_disc[67].median_N_hat"
     },
     {
       "literal": "8.67",
       "lines": [
-        66
+        70
       ],
       "example_key": "coherence_nhat.json.formula_check.rows[3].q95_density"
     },
     {
       "literal": "8.75",
       "lines": [
-        68,
-        74
+        72,
+        78,
+        732
       ],
-      "example_key": "coherence_nhat.json.formula_check.rows[3].q95_mc"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b2.coefficients.intercept.estimate"
     },
     {
       "literal": "9.08",
       "lines": [
-        68,
-        74
+        72,
+        78
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.none (control).p50"
     },
     {
       "literal": "9.17",
       "lines": [
-        68,
-        74
+        72,
+        78
       ],
       "example_key": "crater_level_real.json.per_disc[60].median_N_hat"
     },
     {
       "literal": "3.8",
       "lines": [
-        84
+        88
       ],
       "example_key": "crater_level_real.json.simulation_per_disc_mixture.look_calibration_log_ratio.1"
     },
     {
       "literal": "0.15",
       "lines": [
-        85
+        89,
+        512
       ],
       "example_key": "antialias_sigma.json.sigmas[3]"
     },
     {
       "literal": "6.7",
       "lines": [
-        101
+        105
       ],
       "example_key": "crater_level_real.json.per_disc[8].median_N_hat"
     },
     {
       "literal": "14.8",
       "lines": [
-        102
+        106,
+        501
       ],
       "example_key": "complex_cell_ceiling.json.summary.LV.21x5.median"
     },
     {
       "literal": "0.13",
       "lines": [
-        146,
-        151,
-        152,
-        162,
-        167,
-        187,
-        187,
-        265,
-        266,
-        361,
-        361,
-        370,
-        379,
-        394,
-        404,
-        433
+        150,
+        155,
+        156,
+        166,
+        171,
+        191,
+        191,
+        269,
+        270,
+        332,
+        347,
+        406,
+        407,
+        469,
+        553,
+        553,
+        562,
+        571,
+        586,
+        596,
+        625
       ],
-      "example_key": "coherence_nhat.json.formula_check.rows[9].series_var"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b2.coefficients.class_mixed.estimate"
     },
     {
       "literal": "20261001",
       "lines": [
-        148
+        152
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "0.05",
       "lines": [
-        151,
-        266
+        155,
+        270,
+        348,
+        511
       ],
       "example_key": "band_s.json.discs.by_class_pass_1.mixed.ge1.rate"
     },
     {
       "literal": "0.10",
       "lines": [
-        151
+        155
       ],
       "example_key": "band_s.json.f2.cpr_distribution.fraction_cpr_above_1"
     },
     {
       "literal": "1.05",
       "lines": [
-        151,
-        264
+        155,
+        268
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[6]"
     },
     {
       "literal": "1.1",
       "lines": [
-        151,
-        264,
-        264
+        155,
+        268,
+        268
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[0]"
     },
     {
       "literal": "1.2",
       "lines": [
-        151,
-        264,
-        264
+        155,
+        268,
+        268
       ],
       "example_key": "antialias_sigma.json.downsample_factor"
     },
     {
       "literal": "1.25",
       "lines": [
-        151,
-        227,
-        264
+        155,
+        231,
+        268
       ],
       "example_key": "antialias_sigma.json.downsample_factor"
     },
     {
       "literal": "1.299",
       "lines": [
-        152
+        156
       ],
-      "example_key": "cpr_significance.json.joint_criterion.maximising_point_requested.true_cpr"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.psr.block_bootstrap.or_ci95[1]"
     },
     {
       "literal": "0.5",
       "lines": [
-        152,
-        238,
-        297
+        156,
+        242,
+        312,
+        328,
+        399,
+        720,
+        721,
+        728
       ],
       "example_key": "antialias_sigma.json.sigmas[9]"
     },
     {
       "literal": "0.7",
       "lines": [
-        152,
-        226,
-        228,
-        312
+        156,
+        230,
+        232,
+        352,
+        372,
+        416,
+        720,
+        721,
+        728
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[7]"
     },
     {
       "literal": "0.9",
       "lines": [
-        152,
-        230,
-        232
+        156,
+        234,
+        236
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.200 m[2]"
     },
     {
       "literal": "0.20",
       "lines": [
-        153,
-        228,
+        157,
         232,
-        313
+        236,
+        353,
+        408,
+        416
       ],
       "example_key": "antialias_sigma.json.sigmas[4]"
     },
     {
       "literal": "0.30",
       "lines": [
-        153,
-        413
+        157,
+        453,
+        458,
+        512,
+        605
       ],
       "example_key": "antialias_sigma.json.sigmas[6]"
     },
     {
       "literal": "0.838",
       "lines": [
-        158,
-        196,
-        206
+        162,
+        200,
+        210
       ],
       "example_key": "coherence_nhat.json.window_validation.lags_intensity[0]"
     },
     {
       "literal": "0.565",
       "lines": [
-        158
+        162
       ],
       "example_key": "complex_cell_ceiling.json.compare.block_N_over_ceiling"
     },
     {
       "literal": "0.363",
       "lines": [
-        158
+        162
       ],
       "example_key": "complex_grid_correlation.json.lag_correlation_before_boxcar.delivered_LH_enl_json.azimuth_lines[2]"
     },
     {
       "literal": "20261002",
       "lines": [
-        164
+        168
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "20261007",
       "lines": [
-        164
+        168
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "0.95",
       "lines": [
-        165
+        169
       ],
       "example_key": "bootstrap_enl.json.propagation:str"
     },
     {
       "literal": "400",
       "lines": [
-        168,
-        302
+        172,
+        340,
+        346
       ],
       "example_key": "crater_level_real.json.per_disc[824].full_window_cells"
     },
     {
       "literal": "960",
       "lines": [
-        172
+        176
       ],
       "example_key": "complex_grid_correlation.json.window_31x31.cells"
     },
     {
       "literal": "61.42",
       "lines": [
-        173
+        177
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[42].standard.iqr[1]"
     },
     {
       "literal": "99.6",
       "lines": [
-        173
+        177,
+        412
       ],
       "example_key": "complex_cell_ceiling.json.windows.range_crop:str"
     },
     {
       "literal": "20261005",
       "lines": [
-        178
+        182
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "256",
       "lines": [
-        183,
-        195
+        187,
+        199
       ],
       "example_key": "coherence_nhat.json.window_validation.scene_shape[0]"
     },
     {
       "literal": "1024",
       "lines": [
-        183
+        187
       ],
       "example_key": "crater_level_real.json.coherence_strata.all[3].outside.n"
     },
     {
       "literal": "838",
       "lines": [
-        185
+        189
       ],
       "example_key": "crater_level_real.json.per_disc_v18[834].id"
     },
     {
       "literal": "1.005",
       "lines": [
-        185
+        189
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[0]"
     },
     {
       "literal": "1.295",
       "lines": [
-        185
+        189
       ],
       "example_key": "cpr_significance.json.joint_criterion.maximising_point_requested.true_cpr"
     },
     {
       "literal": "0.01",
       "lines": [
-        185
+        189,
+        453,
+        458
       ],
       "example_key": "band_s.json.noise_scan.scan[1].fraction"
     },
     {
       "literal": "0.1299",
       "lines": [
-        186
+        190
       ],
-      "example_key": "composite_contrast.json.layers.cpr_heatmap.correlation[2]"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.coefficients.class_mixed.estimate"
     },
     {
       "literal": "0.005",
       "lines": [
-        186
+        190
       ],
       "example_key": "band_s.json.noise_scan.scan[2].fraction"
     },
     {
       "literal": "1.2989",
       "lines": [
-        188
+        192
       ],
-      "example_key": "cpr_significance.json.joint_criterion.maximising_point_requested.true_cpr"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.psr.block_bootstrap.or_ci95[1]"
     },
     {
       "literal": "360",
       "lines": [
-        188
+        192
       ],
       "example_key": "crater_level_real.json.per_disc[604].full_window_cells"
     },
     {
       "literal": "3.1\\times10^{-4}",
       "lines": [
-        189
+        193
       ],
       "example_key": "coherence_nhat.json.formula_check.rows[9].mc_var_se"
     },
     {
       "literal": "20260930",
       "lines": [
-        192
+        196,
+        296
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "20260931",
       "lines": [
-        192
+        196
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "0.576",
       "lines": [
-        196,
-        206
+        200,
+        210
       ],
-      "example_key": "coherence_nhat.json.window_validation.lags_intensity[1]"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.coefficients.class_inside_psr.se_cluster_robust"
     },
     {
       "literal": "80,120",
       "lines": [
-        197
+        201
       ],
       "example_key": "kernel_sweep.json.kernel_sweep.20200305.7x7.n_hat_ge_79p6_anywhere"
     },
     {
       "literal": "200",
       "lines": [
-        199
+        203
       ],
       "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[80]"
     },
     {
       "literal": "20261003",
       "lines": [
-        201
+        205
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "20261006",
       "lines": [
-        201
+        205
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "260",
       "lines": [
-        202,
-        314
+        206,
+        354
       ],
       "example_key": "crater_level_real.json.per_disc_v18[259].id"
     },
     {
       "literal": "0.579",
       "lines": [
-        207
+        211
       ],
-      "example_key": "coherence_nhat.json.window_validation.lags_intensity[1]"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.coefficients.class_inside_psr.se_cluster_robust"
     },
     {
       "literal": "0.625",
       "lines": [
-        207
+        211
       ],
       "example_key": "antialias_sigma.json.sigmas[2]"
     },
     {
       "literal": "0.738",
       "lines": [
-        207
+        211
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[7]"
     },
     {
       "literal": "0.769",
       "lines": [
-        207
+        211
       ],
-      "example_key": "complex_grid_correlation.json.lag_correlation_before_boxcar.OC.range_samples[0]"
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.b2.psr.or_ci95_model[0]"
     },
     {
       "literal": "14.5",
       "lines": [
-        208,
-        239
+        212,
+        243,
+        360
       ],
       "example_key": "calibration_example.json.inputs.theta_raster_median_over_amplitude_deg"
     },
     {
       "literal": "16.0",
       "lines": [
-        208,
-        224,
-        226,
+        212,
         228,
         230,
         232,
-        238
+        234,
+        236,
+        242
       ],
       "example_key": "bootstrap_enl.json.patch"
     },
     {
       "literal": "40.5",
       "lines": [
-        208,
-        225,
-        227,
+        212,
         229,
         231,
         233,
-        238
+        235,
+        237,
+        242
       ],
       "example_key": "crater_level_real.json.per_disc[220].median_N_hat"
     },
     {
       "literal": "5.9",
       "lines": [
-        210
+        214,
+        410,
+        430
       ],
-      "example_key": "coherence_nhat.json.window_validation.rows[12].standard.iqr[1]"
+      "example_key": "band_s.json.ladder_v20.fired_sets.inside.expected_overlap_if_independent"
     },
     {
       "literal": "1.895",
       "lines": [
-        216,
-        222,
-        240
+        220,
+        226,
+        244,
+        733
       ],
       "example_key": "bootstrap_enl.json.LH.floor_point"
     },
     {
       "literal": "87.9",
       "lines": [
-        224
+        228
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[21].standard.median"
     },
     {
       "literal": "48.9",
       "lines": [
-        224
+        228
       ],
       "example_key": "calibration_example.json.sin_theta_in_code.uses[7].line"
     },
     {
       "literal": "5.5",
       "lines": [
-        224
+        228
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[0].coherence_aware.iqr[1]"
     },
     {
       "literal": "89.9",
       "lines": [
-        224
+        228
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[33].standard.iqr[0]"
     },
     {
       "literal": "86.0",
       "lines": [
-        224
+        228
       ],
       "example_key": "complex_cell_ceiling.json.ceiling_105x5.LH.range[1]"
     },
     {
       "literal": "99.1",
       "lines": [
-        225
+        229
       ],
       "example_key": "complex_grid_correlation.json.correlation_area.median_px"
     },
     {
       "literal": "94.2",
       "lines": [
-        225
+        229
       ],
       "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[14]"
     },
     {
       "literal": "22.3",
       "lines": [
-        225
+        229
       ],
       "example_key": "band_s.json.f2.selected_local_N_hat.min"
     },
     {
       "literal": "88.1",
       "lines": [
-        225
+        229
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[21].standard.median"
     },
     {
       "literal": "31.1",
       "lines": [
-        225
+        229
       ],
       "example_key": "coherence_nhat.json.window_validation.window"
     },
     {
       "literal": "0.176",
       "lines": [
-        226,
-        313
+        230,
+        353,
+        416
       ],
       "example_key": "cpr_significance.json.joint_criterion.headline_at_cpr_0p7.true_m"
     },
     {
       "literal": "72.8",
       "lines": [
-        226
+        230
       ],
       "example_key": "complex_cell_ceiling.json.per_window[5].LH.105x5"
     },
     {
       "literal": "30.2",
       "lines": [
-        226
+        230
       ],
       "example_key": "crater_level_real.json.per_disc[162].median_N_hat"
     },
     {
       "literal": "3.5",
       "lines": [
-        226
+        230
       ],
-      "example_key": "cpr_significance.json.joint_criterion.scan[4].joint_percent"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.coefficients.median_coherence.se_cluster_robust"
     },
     {
       "literal": "46.6",
       "lines": [
-        226
+        230
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[30].standard.median"
     },
     {
       "literal": "39.5",
       "lines": [
-        226
+        230
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[6].coherence_aware.median"
     },
     {
       "literal": "71.7",
       "lines": [
-        227
+        231
       ],
       "example_key": "complex_cell_ceiling.json.per_window[4].SC.105x5"
     },
     {
       "literal": "45.6",
       "lines": [
-        227
+        231
       ],
       "example_key": "crater_level_real.json.per_disc[167].median_N_hat"
     },
     {
       "literal": "6.6",
       "lines": [
-        227
+        231
       ],
       "example_key": "crater_level_real.json.simulation_sunlit.look_calibration_log_ratio.2"
     },
     {
       "literal": "17.1",
       "lines": [
-        227
+        231
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[27].standard.median"
     },
     {
       "literal": "68.6",
       "lines": [
-        228
+        232
       ],
       "example_key": "complex_cell_ceiling.json.per_window[1].OC.105x5"
     },
     {
       "literal": "27.3",
       "lines": [
-        228
+        232
       ],
       "example_key": "crater_level_real.json.per_disc[176].median_N_hat"
     },
     {
       "literal": "3.2",
       "lines": [
-        228
+        232
       ],
-      "example_key": "composite_contrast.json.layers.cpr_heatmap.retention[4]"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b2.psr.or_ci95_cluster_robust[1]"
     },
     {
       "literal": "45.4",
       "lines": [
-        228
+        232
       ],
       "example_key": "crater_level_real.json.per_disc[167].median_N_hat"
     },
     {
       "literal": "39.0",
       "lines": [
-        228
+        232
       ],
       "example_key": "crater_level_real.json.per_disc[144].rule"
     },
     {
       "literal": "65.7",
       "lines": [
-        229
+        233
       ],
       "example_key": "crater_level_real.json.per_disc[118].median_N_hat"
     },
     {
       "literal": "38.7",
       "lines": [
-        229
+        233
       ],
       "example_key": "crater_level_real.json.per_disc[181].median_N_hat"
     },
     {
       "literal": "5.3",
       "lines": [
-        229
+        233
       ],
       "example_key": "crater_level_real.json.per_disc[55].median_N_hat"
     },
     {
       "literal": "16.9",
       "lines": [
-        229
+        233
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[26].standard.median"
     },
     {
       "literal": "1.0",
       "lines": [
-        229
+        233
       ],
       "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.400 m[0]"
     },
     {
       "literal": "0.053",
       "lines": [
-        230
+        234
       ],
       "example_key": "crater_level_real.json.per_disc[104].psr_fraction"
     },
     {
       "literal": "85.8",
       "lines": [
-        230
+        234
       ],
       "example_key": "complex_cell_ceiling.json.ceiling_105x5.LH.range[1]"
     },
     {
       "literal": "45.7",
       "lines": [
-        230
+        234
       ],
       "example_key": "crater_level_real.json.per_disc[167].median_N_hat"
     },
     {
       "literal": "5.1",
       "lines": [
-        230
+        234
       ],
       "example_key": "bootstrap_enl.json.LV.enl_raw"
     },
     {
       "literal": "80.3",
       "lines": [
-        230
+        234
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[8].true_N"
     },
     {
       "literal": "75.0",
       "lines": [
-        230
+        234
       ],
       "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[41]"
     },
     {
       "literal": "97.2",
       "lines": [
-        231
+        235
       ],
       "example_key": "bootstrap_enl.json.interval_method:str"
     },
     {
       "literal": "87.8",
       "lines": [
-        231
+        235
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[21].standard.median"
     },
     {
       "literal": "18.5",
       "lines": [
-        231
+        235
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[27].standard.iqr[1]"
     },
     {
       "literal": "68.7",
       "lines": [
-        231
+        235
       ],
       "example_key": "complex_cell_ceiling.json.ceiling_105x5.SC.range[0]"
     },
     {
       "literal": "15.1",
       "lines": [
-        231
+        235
       ],
       "example_key": "complex_cell_ceiling.json.per_window[4].SC.21x5"
     },
     {
       "literal": "74.2",
       "lines": [
-        232
+        236
       ],
-      "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[27]"
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.classes.outside.fires"
     },
     {
       "literal": "31.3",
       "lines": [
-        232
+        236
       ],
       "example_key": "complex_cell_ceiling.json.generated_utc:str"
     },
     {
       "literal": "3.7",
       "lines": [
-        232
+        236
       ],
       "example_key": "background_cpr_sweep.json.rows[2].fp_percent"
     },
     {
       "literal": "79.0",
       "lines": [
-        232
+        236
       ],
       "example_key": "crater_level_real.json.simulation_per_disc_mixture.discs_with_predicted_p_ge_1_above_0p5"
     },
     {
       "literal": "73.0",
       "lines": [
-        232
+        236
       ],
       "example_key": "complex_cell_ceiling.json.per_window[5].LH.105x5"
     },
     {
       "literal": "79.9",
       "lines": [
-        233
+        237
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[8].true_N"
     },
     {
       "literal": "54.4",
       "lines": [
-        233
+        237
       ],
       "example_key": "crater_level_real.json.per_disc[136].median_N_hat"
     },
     {
       "literal": "8.0",
       "lines": [
-        233
+        237,
+        408
       ],
       "example_key": "antialias_sigma.json.chosen_index"
     },
     {
       "literal": "67.7",
       "lines": [
-        233
+        237
       ],
       "example_key": "complex_cell_ceiling.json.ceiling_105x5.LV.range[0]"
     },
     {
       "literal": "13.6",
       "lines": [
-        233
+        237
       ],
       "example_key": "crater_level_real.json.per_disc[497].median_N_hat"
     },
     {
       "literal": "1.805",
       "lines": [
-        238
+        242
       ],
-      "example_key": "crater_level_real.json.v20_gap.unadjusted.pass_20200808.or"
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.a.psr.odds_ratio"
     },
     {
       "literal": "1.444",
       "lines": [
-        238
+        242
       ],
       "example_key": "coherence_nhat.json.formula_check.rows[12].q95_density"
     },
     {
       "literal": "88.2",
       "lines": [
-        239
+        243
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[32].standard.iqr[0]"
     },
     {
       "literal": "7.6",
       "lines": [
-        240
+        244
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[36].standard.iqr[1]"
     },
     {
       "literal": "7.8",
       "lines": [
-        240
+        244
       ],
       "example_key": "crater_level_real.json.per_disc[417].median_N_hat"
     },
     {
       "literal": "6.9",
       "lines": [
-        240
+        244
       ],
       "example_key": "coherence_nhat.json.generated_utc:str"
     },
     {
       "literal": "2.087",
       "lines": [
-        241
+        245
       ],
-      "example_key": "composite_contrast.json.layers.dop_heatmap.retention[5]"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.psr.or_ci95_cluster_robust[1]"
     },
     {
       "literal": "4.12",
       "lines": [
-        243
+        247
       ],
-      "example_key": "crater_level_real.json.per_disc[12].median_N_hat"
+      "example_key": "band_s.json.ladder_v20.fired_sets.outside.expected_overlap_if_independent"
     },
     {
       "literal": "20261004",
       "lines": [
-        246
+        250
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "20261008",
       "lines": [
-        256
+        260
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "1000",
       "lines": [
-        262
+        266
       ],
       "example_key": "crater_level_real.json.per_disc_v18[996].id"
     },
     {
       "literal": "1500",
       "lines": [
-        263
+        267
       ],
       "example_key": "crater_level_real.json.per_disc_v18[1493].id"
     },
     {
       "literal": "2500",
       "lines": [
-        263
+        267
       ],
       "example_key": "band_s.json.overlap_with_L_band.selected_in_both"
     },
     {
       "literal": "4000",
       "lines": [
-        263
+        267
       ],
-      "example_key": "region_design_curve.json.N_eff_grid[6]"
+      "example_key": "n_sensitivity.json.rows[0].region_null_3647_cells_independent.trials"
     },
     {
       "literal": "6000",
       "lines": [
-        263
+        267
       ],
       "example_key": "region_design_curve.json.N_eff_grid[7]"
     },
     {
       "literal": "10\\,000",
       "lines": [
-        263
+        267
       ],
       "example_key": "crater_level_real.json.simulation_sunlit.trials"
     },
     {
       "literal": "39.4",
       "lines": [
-        268,
-        313
+        272,
+        353,
+        484,
+        519
       ],
       "example_key": "background_cpr_sweep.json.rows[6].fp_percent"
     },
     {
       "literal": "1600",
       "lines": [
-        271
+        275
       ],
       "example_key": "crater_level_real.json.per_disc_v18[1593].id"
     },
     {
       "literal": "20261009",
       "lines": [
-        273
+        277
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "1100",
       "lines": [
-        274
+        278
       ],
       "example_key": "crater_level_real.json.discs.lattice_pitch_m"
     },
     {
       "literal": "663",
       "lines": [
-        275
+        279,
+        465,
+        499
       ],
       "example_key": "band_s.json.f2.cells_matched"
     },
     {
       "literal": "20261010",
       "lines": [
-        282
+        286
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "7.18",
       "lines": [
-        282
+        286
       ],
       "example_key": "complex_cell_ceiling.json.check_21x1_vs_mechanism_spec.mechanism_spec_range[1]"
     },
     {
       "literal": "12.6",
       "lines": [
-        282
+        286
       ],
       "example_key": "crater_level_real.json.per_disc[64].median_N_hat"
     },
     {
       "literal": "10.6",
       "lines": [
-        282
+        286,
+        289
       ],
       "example_key": "bootstrap_enl.json.LV.fp_ci_simple[0]"
     },
     {
+      "literal": "7.0",
+      "lines": [
+        287
+      ],
+      "example_key": "band_s.json.ladder_v20.fired_sets.mixed.fired_in_both"
+    },
+    {
+      "literal": "7.2",
+      "lines": [
+        287,
+        406
+      ],
+      "example_key": "complex_cell_ceiling.json.check_21x1_vs_mechanism_spec.mechanism_spec_range[1]"
+    },
+    {
+      "literal": "7.1",
+      "lines": [
+        288,
+        367,
+        412
+      ],
+      "example_key": "background_cpr_sweep.json.all_values_are_upper_bounds:str"
+    },
+    {
+      "literal": "6.2",
+      "lines": [
+        289
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.cy_over_100.se_model"
+    },
+    {
+      "literal": "1.8",
+      "lines": [
+        290
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.mantel_haenszel_coherence_strata.ci95[1]"
+    },
+    {
+      "literal": "0.4",
+      "lines": [
+        290,
+        312,
+        402
+      ],
+      "example_key": "antialias_sigma.json.sigmas[8]"
+    },
+    {
+      "literal": "0.155",
+      "lines": [
+        291
+      ],
+      "example_key": "crater_level_real.json.summary.outside.median_cpr_over_discs"
+    },
+    {
+      "literal": "0.74",
+      "lines": [
+        291
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[7]"
+    },
+    {
       "literal": "146",
       "lines": [
-        285
+        293,
+        296
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[23].standard.iqr[1]"
     },
     {
       "literal": "1888",
       "lines": [
-        286
+        294
       ],
       "example_key": "crater_level_real.json.discs.count"
     },
     {
       "literal": "133",
       "lines": [
-        286
+        294
       ],
       "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[71]"
     },
     {
-      "literal": "0.4",
-      "lines": [
-        297
-      ],
-      "example_key": "antialias_sigma.json.sigmas[8]"
-    },
-    {
       "literal": "180",
       "lines": [
-        298
+        313
       ],
       "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[16]"
     },
     {
       "literal": "270",
       "lines": [
-        299
+        314,
+        486
       ],
       "example_key": "band_s.json.discs.by_class_pass_1.inside.discs"
     },
     {
+      "literal": "285\\,198",
+      "lines": [
+        320
+      ],
+      "example_key": "selected_cells_v21.json.passes.L_20200808.selected.index[758]"
+    },
+    {
+      "literal": "11\\,167",
+      "lines": [
+        321
+      ],
+      "example_key": "f2_complex_product.json.passes.20200808.tie_grid.no_records"
+    },
+    {
+      "literal": "274\\,031",
+      "lines": [
+        322
+      ],
+      "example_key": "selected_cells_v21.json.passes.L_20200808.selected.index[736]"
+    },
+    {
+      "literal": "32\\,188",
+      "lines": [
+        323
+      ],
+      "example_key": "selected_cells_v21.json.passes.L_20200808.selected.index[76]"
+    },
+    {
+      "literal": "5.39",
+      "lines": [
+        325
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.d.coefficients.cy_over_100.se_model"
+    },
+    {
+      "literal": "1.68",
+      "lines": [
+        326
+      ],
+      "example_key": "crater_level_real.json.v20_gap.unadjusted.pooled_crude_no_pass_term.block_bootstrap.ci95[1]"
+    },
+    {
+      "literal": "1.80",
+      "lines": [
+        327,
+        458,
+        503,
+        514
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.a.psr.odds_ratio"
+    },
+    {
+      "literal": "0.66",
+      "lines": [
+        327,
+        449
+      ],
+      "example_key": "crater_level_real.json.per_disc[11].psr_fraction"
+    },
+    {
+      "literal": "0.25",
+      "lines": [
+        328,
+        347
+      ],
+      "example_key": "antialias_sigma.json.sigmas[5]"
+    },
+    {
+      "literal": "0.1",
+      "lines": [
+        328
+      ],
+      "example_key": "antialias_sigma.json.sigmas[1]"
+    },
+    {
+      "literal": "1.23",
+      "lines": [
+        333
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[0]"
+    },
+    {
+      "literal": "1.42",
+      "lines": [
+        333
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[13].q95_density"
+    },
+    {
+      "literal": "1.50",
+      "lines": [
+        333,
+        606
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[11].q95_density"
+    },
+    {
+      "literal": "23\\,051",
+      "lines": [
+        334
+      ],
+      "example_key": "selected_cells_v21.json.passes.L_20200808.selected.index[63]"
+    },
+    {
+      "literal": "25\\,597",
+      "lines": [
+        334
+      ],
+      "example_key": "snr_control.json.v20_reconciliation.variants_frame.nc_R3.20200808.joint"
+    },
+    {
+      "literal": "26\\,462",
+      "lines": [
+        334,
+        484
+      ],
+      "example_key": "band_s.json.overlap_with_L_band.L_joint"
+    },
+    {
+      "literal": "5.6",
+      "lines": [
+        335,
+        406,
+        501
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[0].standard.iqr[1]"
+    },
+    {
+      "literal": "5.7",
+      "lines": [
+        335,
+        335,
+        512
+      ],
+      "example_key": "crater_level_real.json.per_disc[463].median_N_hat"
+    },
+    {
+      "literal": "13.2",
+      "lines": [
+        335
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[38].coherence_aware.iqr[0]"
+    },
+    {
+      "literal": "14.2",
+      "lines": [
+        335,
+        336
+      ],
+      "example_key": "complex_cell_ceiling.json.summary.LH.21x5.range[0]"
+    },
+    {
+      "literal": "26\\,456",
+      "lines": [
+        336
+      ],
+      "example_key": "band_s.json.overlap_with_L_band.L_joint"
+    },
+    {
+      "literal": "26\\,363",
+      "lines": [
+        336
+      ],
+      "example_key": "band_s.json.overlap_with_L_band.L_joint"
+    },
+    {
       "literal": "20261013",
       "lines": [
-        301
+        339
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "100",
       "lines": [
-        302,
-        451
+        340,
+        413,
+        662,
+        704
       ],
       "example_key": "complex_cell_ceiling.json.windows.range_crop:str"
     },
     {
       "literal": "20261014",
       "lines": [
-        308
+        345
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "262.3",
       "lines": [
-        308
+        345
       ],
       "example_key": "crater_level_real.json.per_disc_v18[261].id"
     },
     {
       "literal": "20261011",
       "lines": [
-        310
+        350
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "band_s.json.ladder_v20.seed"
     },
     {
       "literal": "13.72",
       "lines": [
-        313
+        353,
+        722,
+        733
       ],
       "example_key": "background_cpr_sweep.json.N"
     },
     {
       "literal": "80,150",
       "lines": [
-        313
+        353
       ],
       "example_key": "kernel_sweep.json.kernel_sweep.20200305.7x7.n_hat_ge_79p6_anywhere"
     },
     {
       "literal": "3647",
       "lines": [
-        314
+        354
       ],
       "example_key": "band_s.json.f2.cells_in_disc"
     },
     {
-      "literal": "20261012",
+      "literal": "150\\,000",
       "lines": [
-        318
+        359
       ],
-      "example_key": "coherence_nhat.json.seed"
+      "example_key": "cpr_dispersion.json.external_check.constraint.h=150000.altitude_m"
+    },
+    {
+      "literal": "37.3",
+      "lines": [
+        360,
+        496
+      ],
+      "example_key": "crater_level_real.json.per_disc[31].median_N_hat"
+    },
+    {
+      "literal": "53.3",
+      "lines": [
+        360,
+        496
+      ],
+      "example_key": "antialias_sigma.json.slope_percentiles.f/2 = 0.625.max"
+    },
+    {
+      "literal": "78.2",
+      "lines": [
+        360
+      ],
+      "example_key": "complex_cell_ceiling.json.per_window[3].OC.105x5"
     },
     {
       "literal": "109",
       "lines": [
-        321
+        364,
+        378,
+        379,
+        384,
+        433,
+        496,
+        513
       ],
       "example_key": "band_s.json.overlap_with_L_band.expected_overlap_if_independent"
     },
     {
+      "literal": "12.4",
+      "lines": [
+        367
+      ],
+      "example_key": "crater_level_real.json.per_disc[121].median_N_hat"
+    },
+    {
+      "literal": "501",
+      "lines": [
+        368,
+        370
+      ],
+      "example_key": "crater_level_real.json.per_disc[115].full_window_cells"
+    },
+    {
+      "literal": "4.08",
+      "lines": [
+        369
+      ],
+      "example_key": "crater_level_real.json.per_disc[558].median_N_hat"
+    },
+    {
+      "literal": "144",
+      "lines": [
+        370
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[144].id"
+    },
+    {
+      "literal": "104",
+      "lines": [
+        370
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[104].id"
+    },
+    {
+      "literal": "18.8",
+      "lines": [
+        372
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[26].standard.iqr[1]"
+    },
+    {
+      "literal": "19.7",
+      "lines": [
+        372
+      ],
+      "example_key": "bootstrap_enl.json.LV.enl_box"
+    },
+    {
+      "literal": "17.5",
+      "lines": [
+        372,
+        472
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[1].q95_mc"
+    },
+    {
+      "literal": "11.2",
+      "lines": [
+        373
+      ],
+      "example_key": "crater_level_real.json.per_disc[331].median_N_hat"
+    },
+    {
+      "literal": "9.3",
+      "lines": [
+        373
+      ],
+      "example_key": "crater_level_real.json.per_disc[274].median_N_hat"
+    },
+    {
+      "literal": "20.3",
+      "lines": [
+        373
+      ],
+      "example_key": "calibration_example.json.scene_example.amplitude_reading_without_G_db"
+    },
+    {
+      "literal": "22.4",
+      "lines": [
+        374
+      ],
+      "example_key": "band_s.json.f2.selected_local_N_hat.min"
+    },
+    {
+      "literal": "20261012",
+      "lines": [
+        376,
+        506
+      ],
+      "example_key": "band_s.json.ladder_v20.seed"
+    },
+    {
+      "literal": "107",
+      "lines": [
+        378
+      ],
+      "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[43]"
+    },
+    {
+      "literal": "0.44",
+      "lines": [
+        379
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.c.coefficients.class_mixed.se_cluster_robust"
+    },
+    {
+      "literal": "2.31",
+      "lines": [
+        379
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.coefficients.intercept.se_model"
+    },
+    {
+      "literal": "5.47",
+      "lines": [
+        379
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[0].coherence_aware.iqr[1]"
+    },
+    {
+      "literal": "0.29",
+      "lines": [
+        380
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.psr.or_ci95_cluster_robust[0]"
+    },
+    {
+      "literal": "0.64",
+      "lines": [
+        380,
+        452
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[9]"
+    },
+    {
+      "literal": "1.92",
+      "lines": [
+        380
+      ],
+      "example_key": "correlated_ratio.json.rows[3].fp_percent"
+    },
+    {
+      "literal": "2.75",
+      "lines": [
+        380
+      ],
+      "example_key": "crater_level_real.json.per_disc[1775].median_N_hat"
+    },
+    {
+      "literal": "4.90",
+      "lines": [
+        381
+      ],
+      "example_key": "crater_level_real.json.per_disc[486].median_N_hat"
+    },
+    {
+      "literal": "6.08",
+      "lines": [
+        381
+      ],
+      "example_key": "crater_level_real.json.per_disc[665].median_N_hat"
+    },
+    {
+      "literal": "88.3",
+      "lines": [
+        395
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[32].standard.iqr[0]"
+    },
+    {
+      "literal": "0.946",
+      "lines": [
+        396
+      ],
+      "example_key": "bootstrap_enl.json.propagation:str"
+    },
+    {
+      "literal": "1.7",
+      "lines": [
+        397
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.psr.or_ci95_model[1]"
+    },
+    {
+      "literal": "0.002",
+      "lines": [
+        398
+      ],
+      "example_key": "band_s.json.f2.nes0_S[0]"
+    },
+    {
+      "literal": "1.03",
+      "lines": [
+        400
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[8]"
+    },
+    {
+      "literal": "1.74",
+      "lines": [
+        400
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.psr.or_ci95_model[1]"
+    },
+    {
+      "literal": "1.13",
+      "lines": [
+        402
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[0]"
+    },
+    {
+      "literal": "1.72",
+      "lines": [
+        402
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.ln_median_N_hat.estimate"
+    },
+    {
+      "literal": "0.33",
+      "lines": [
+        403,
+        451
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.psr.or_ci95_cluster_robust[0]"
+    },
+    {
+      "literal": "0.52",
+      "lines": [
+        403
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.psr.block_bootstrap.sd"
+    },
+    {
+      "literal": "4.2",
+      "lines": [
+        407,
+        501
+      ],
+      "example_key": "crater_level_real.json.per_disc[989].median_N_hat"
+    },
+    {
+      "literal": "7.9",
+      "lines": [
+        408
+      ],
+      "example_key": "crater_level_real.json.per_disc[589].median_N_hat"
+    },
+    {
+      "literal": "6.3",
+      "lines": [
+        410
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.psr.or_ci95_cluster_robust[1]"
+    },
+    {
+      "literal": "6.8",
+      "lines": [
+        412
+      ],
+      "example_key": "bootstrap_enl.json.LV.enl_raw_ci_simple[1]"
+    },
+    {
+      "literal": "0.07",
+      "lines": [
+        413
+      ],
+      "example_key": "band_s.json.discs.by_class_pass_1.outside.ge1.wilson95[1]"
+    },
+    {
+      "literal": "218",
+      "lines": [
+        414
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[125].partial_window_cells"
+    },
+    {
+      "literal": "573",
+      "lines": [
+        414
+      ],
+      "example_key": "crater_level_real.json.per_disc[196].full_window_cells"
+    },
+    {
+      "literal": "79.6",
+      "lines": [
+        415,
+        482,
+        498
+      ],
+      "example_key": "complex_cell_ceiling.json.compare.crit_crossing_N"
+    },
+    {
+      "literal": "208",
+      "lines": [
+        419
+      ],
+      "example_key": "complex_grid_correlation.json.correlation_area.iqr_px[1]"
+    },
+    {
+      "literal": "155.6",
+      "lines": [
+        419
+      ],
+      "example_key": "complex_grid_correlation.json.correlation_area.pooled_acf_px"
+    },
+    {
+      "literal": "1300",
+      "lines": [
+        424
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.discs"
+    },
+    {
+      "literal": "843",
+      "lines": [
+        425,
+        501
+      ],
+      "example_key": "band_s.json.discs.by_class_pass_1.outside.discs"
+    },
+    {
+      "literal": "271",
+      "lines": [
+        425,
+        501
+      ],
+      "example_key": "band_s.json.discs.by_class_pass_1.inside.discs"
+    },
+    {
+      "literal": "186",
+      "lines": [
+        425,
+        502
+      ],
+      "example_key": "band_s.json.discs.by_class_pass_1.mixed.discs"
+    },
+    {
+      "literal": "0.337",
+      "lines": [
+        427
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.e.psr.block_bootstrap.or_ci95[0]"
+    },
+    {
+      "literal": "3.46",
+      "lines": [
+        427
+      ],
+      "example_key": "crater_level_real.json.per_disc[427].median_N_hat"
+    },
+    {
+      "literal": "0.42",
+      "lines": [
+        429
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[2]"
+    },
+    {
+      "literal": "2.21",
+      "lines": [
+        429,
+        680
+      ],
+      "example_key": "band_s.json.run_info.numpy:str"
+    },
+    {
+      "literal": "2495",
+      "lines": [
+        433
+      ],
+      "example_key": "band_s.json.overlap_with_L_band.selected_in_both"
+    },
+    {
+      "literal": "9.4",
+      "lines": [
+        433
+      ],
+      "example_key": "background_cpr_sweep.json.rows[3].fp_percent"
+    },
+    {
+      "literal": "10.3",
+      "lines": [
+        433
+      ],
+      "example_key": "crater_level_real.json.per_disc[74].median_N_hat"
+    },
+    {
+      "literal": "0.58",
+      "lines": [
+        448
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.coefficients.class_inside_psr.se_cluster_robust"
+    },
+    {
+      "literal": "0.21",
+      "lines": [
+        448,
+        458
+      ],
+      "example_key": "antialias_sigma.json.scan.scan 0.30.alias_excess"
+    },
+    {
+      "literal": "1.79",
+      "lines": [
+        448
+      ],
+      "example_key": "crater_level_real.json.v20_gap.unadjusted.pooled_mantel_haenszel_over_passes.or"
+    },
+    {
+      "literal": "0.90",
+      "lines": [
+        448
+      ],
+      "example_key": "background_cpr_sweep.json.rows[6].true_cpr"
+    },
+    {
+      "literal": "3.50",
+      "lines": [
+        448
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.coefficients.median_coherence.se_cluster_robust"
+    },
+    {
+      "literal": "1.08",
+      "lines": [
+        448
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.coefficients.class_inside_psr.estimate"
+    },
+    {
+      "literal": "0.23",
+      "lines": [
+        448,
+        451
+      ],
+      "example_key": "antialias_sigma.json.reason:str"
+    },
+    {
+      "literal": "2.93",
+      "lines": [
+        448
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.psr.odds_ratio"
+    },
+    {
+      "literal": "1.22",
+      "lines": [
+        448
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[6]"
+    },
+    {
+      "literal": "6.47",
+      "lines": [
+        448
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "0.26",
+      "lines": [
+        449,
+        450
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.psr.block_bootstrap.or_ci95[0]"
+    },
+    {
+      "literal": "0.22",
+      "lines": [
+        449
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.coefficients.ln_median_N_hat.se_model"
+    },
+    {
+      "literal": "1.29",
+      "lines": [
+        449
+      ],
+      "example_key": "band_s.json.f2.cpr_distribution.max_cpr"
+    },
+    {
+      "literal": "2.50",
+      "lines": [
+        449
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.d.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "0.24",
+      "lines": [
+        449,
+        451
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.coefficients.class_inside_psr.se_model"
+    },
+    {
+      "literal": "1.62",
+      "lines": [
+        449
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.psr.odds_ratio"
+    },
+    {
+      "literal": "0.72",
+      "lines": [
+        449,
+        451
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.100 m[8]"
+    },
+    {
+      "literal": "3.36",
+      "lines": [
+        449
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "0.40",
+      "lines": [
+        450,
+        451
+      ],
+      "example_key": "antialias_sigma.json.sigmas[8]"
+    },
+    {
+      "literal": "0.38",
+      "lines": [
+        450
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.coefficients.class_mixed.se_model"
+    },
+    {
+      "literal": "0.67",
+      "lines": [
+        450
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.b2.coefficients.intercept.se_model"
+    },
+    {
+      "literal": "0.28",
+      "lines": [
+        450
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.a.coefficients.class_mixed.se_model"
+    },
+    {
+      "literal": "1.56",
+      "lines": [
+        450
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.c.psr.or_ci95_cluster_robust[1]"
+    },
+    {
+      "literal": "0.19",
+      "lines": [
+        450
+      ],
+      "example_key": "antialias_sigma.json.reason:str"
+    },
+    {
+      "literal": "0.45",
+      "lines": [
+        450
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.coefficients.class_inside_psr.se_model"
+    },
+    {
+      "literal": "2.03",
+      "lines": [
+        450
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "0.32",
+      "lines": [
+        451
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.coefficients.incidence_geometry_deg.estimate"
+    },
+    {
+      "literal": "0.54",
+      "lines": [
+        451
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.class_inside_psr.se_model"
+    },
+    {
+      "literal": "0.79",
+      "lines": [
+        451
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.80 m[9]"
+    },
+    {
+      "literal": "2.47",
+      "lines": [
+        451,
+        459
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "0.14",
+      "lines": [
+        452,
+        736
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.psr.or_ci95_model[0]"
+    },
+    {
+      "literal": "0.47",
+      "lines": [
+        452
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.coefficients.class_inside_psr.se_cluster_robust"
+    },
+    {
+      "literal": "0.87",
+      "lines": [
+        452
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.class_mixed.se_model"
+    },
+    {
+      "literal": "0.37",
+      "lines": [
+        452
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.coefficients.class_mixed.se_model"
+    },
+    {
+      "literal": "2.45",
+      "lines": [
+        452
+      ],
+      "example_key": "crater_level_real.json.per_disc[1773].median_N_hat"
+    },
+    {
+      "literal": "0.70",
+      "lines": [
+        452
+      ],
+      "example_key": "background_cpr_sweep.json.rows[4].true_cpr"
+    },
+    {
+      "literal": "0.08",
+      "lines": [
+        452
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.coefficients.class_mixed.estimate"
+    },
+    {
+      "literal": "1.61",
+      "lines": [
+        452
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.coefficients.ln_median_N_hat.estimate"
+    },
+    {
+      "literal": "1.01",
+      "lines": [
+        453,
+        459
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.80 m[6]"
+    },
+    {
+      "literal": "0.49",
+      "lines": [
+        453,
+        453
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.psr.odds_ratio"
+    },
+    {
+      "literal": "2.38",
+      "lines": [
+        453
+      ],
+      "example_key": "crater_level_real.json.v20_gap.ladder.e0.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "0.71",
+      "lines": [
+        453
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.psr.block_bootstrap.ci95[1]"
+    },
+    {
+      "literal": "0.43",
+      "lines": [
+        453,
+        640
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.psr.block_bootstrap.sd"
+    },
+    {
+      "literal": "0.18",
+      "lines": [
+        453
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.coefficients.slant_range_sample_over_100.se_cluster_robust"
+    },
+    {
+      "literal": "1.30",
+      "lines": [
+        453
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "0.88",
+      "lines": [
+        458
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.a.psr.block_bootstrap.or_ci95[0]"
+    },
+    {
+      "literal": "3.62",
+      "lines": [
+        458
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.a.psr.block_bootstrap.or_ci95[1]"
+    },
+    {
+      "literal": "1.406",
+      "lines": [
+        466
+      ],
+      "example_key": "crater_level_real.json.v20_gap.ladder.c.psr.or_ci95_model[1]"
+    },
+    {
+      "literal": "1.269",
+      "lines": [
+        466
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[15].q95_density"
+    },
+    {
+      "literal": "1.186",
+      "lines": [
+        466
+      ],
+      "example_key": "crater_level_real.json.v20_gap.unadjusted.pooled_mantel_haenszel_over_passes.ci95[0]"
+    },
+    {
+      "literal": "1.3",
+      "lines": [
+        467,
+        469,
+        500
+      ],
+      "example_key": "band_s.json.f2.cpr_distribution.max_cpr"
+    },
+    {
+      "literal": "22.2",
+      "lines": [
+        467
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[4].standard.median"
+    },
+    {
+      "literal": "17.2",
+      "lines": [
+        467
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[1].q95_density"
+    },
+    {
+      "literal": "14.9",
+      "lines": [
+        467
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.intercept.estimate"
+    },
+    {
+      "literal": "1.266",
+      "lines": [
+        468
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[15].q95_density"
+    },
+    {
+      "literal": "1.237",
+      "lines": [
+        468
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[0]"
+    },
+    {
+      "literal": "1.141",
+      "lines": [
+        468
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.psr.or_ci95_model[1]"
+    },
+    {
+      "literal": "41.8",
+      "lines": [
+        471,
+        484
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[18].standard.median"
+    },
+    {
+      "literal": "23.0",
+      "lines": [
+        471
+      ],
+      "example_key": "crater_level_real.json.per_disc[1].median_N_hat"
+    },
+    {
+      "literal": "55.0",
+      "lines": [
+        471
+      ],
+      "example_key": "cpr_dispersion.json.external_check.max_samples_per_output_pixel"
+    },
+    {
+      "literal": "709",
+      "lines": [
+        484
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[706].id"
+    },
+    {
+      "literal": "27\\,973",
+      "lines": [
+        485
+      ],
+      "example_key": "kernel_sweep.json.kernel_sweep.20200808.7x7.joint"
+    },
+    {
+      "literal": "59.9",
+      "lines": [
+        485
+      ],
+      "example_key": "antialias_sigma.json.slope_percentiles.scan 0.40.max"
+    },
+    {
+      "literal": "65.5",
+      "lines": [
+        485
+      ],
+      "example_key": "crater_level_real.json.per_disc[1376].median_N_hat"
+    },
+    {
+      "literal": "10\\,110",
+      "lines": [
+        485
+      ],
+      "example_key": "kernel_sweep.json.kernel_sweep.20200808.7x7.n_selected_with_local_N_ge_79p6"
+    },
+    {
+      "literal": "28\\,413",
+      "lines": [
+        486
+      ],
+      "example_key": "kernel_sweep.json.kernel_sweep.20200808.9x9.joint"
+    },
+    {
+      "literal": "78.9",
+      "lines": [
+        486
+      ],
+      "example_key": "crater_level_real.json.simulation_per_disc_mixture.discs_with_predicted_p_ge_1_above_0p5"
+    },
+    {
+      "literal": "88.6",
+      "lines": [
+        486
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[20].standard.median"
+    },
+    {
+      "literal": "15\\,880",
+      "lines": [
+        486
+      ],
+      "example_key": "kernel_sweep.json.kernel_sweep.20200808.9x9.n_selected_with_local_N_ge_79p6"
+    },
+    {
+      "literal": "24\\,288",
+      "lines": [
+        495
+      ],
+      "example_key": "band_s.json.frame.joint"
+    },
+    {
+      "literal": "0.413",
+      "lines": [
+        495
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[2]"
+    },
+    {
+      "literal": "46.5",
+      "lines": [
+        496
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[30].standard.median"
+    },
+    {
+      "literal": "47.0",
+      "lines": [
+        497
+      ],
+      "example_key": "band_s.json.frame.selected_local_N.selected_local_N.median"
+    },
+    {
+      "literal": "638",
+      "lines": [
+        497
+      ],
+      "example_key": "band_s.json.frame.selected_local_N.n_selected_with_local_N_ge_79p6"
+    },
+    {
+      "literal": "0.75",
+      "lines": [
+        499
+      ],
+      "example_key": "band_s.json.f2.median_over_signal.cpr"
+    },
+    {
+      "literal": "1.288",
+      "lines": [
+        500
+      ],
+      "example_key": "band_s.json.f2.cpr_distribution.max_cpr"
+    },
+    {
+      "literal": "9.5",
+      "lines": [
+        500
+      ],
+      "example_key": "crater_level_real.json.per_disc[217].median_N_hat"
+    },
+    {
+      "literal": "7.3",
+      "lines": [
+        501
+      ],
+      "example_key": "antialias_sigma.json.rms_vs_ideal_m.none (control)"
+    },
+    {
+      "literal": "11.0",
+      "lines": [
+        501
+      ],
+      "example_key": "calibration_example.json.scene_example.manuscript_prints.margin_above_floor_db"
+    },
+    {
+      "literal": "19.5",
+      "lines": [
+        501
+      ],
+      "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[68]"
+    },
+    {
+      "literal": "4.8",
+      "lines": [
+        502
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[0].standard.iqr[0]"
+    },
+    {
+      "literal": "0.022",
+      "lines": [
+        503
+      ],
+      "example_key": "crater_level_real.json.per_disc[42].median_cpr"
+    },
+    {
+      "literal": "20260937",
+      "lines": [
+        506
+      ],
+      "example_key": "band_s.json.ladder_v20.seed"
+    },
+    {
+      "literal": "20260938",
+      "lines": [
+        506
+      ],
+      "example_key": "band_s.json.ladder_v20.seed"
+    },
+    {
+      "literal": "2.55",
+      "lines": [
+        510
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[12].z"
+    },
+    {
+      "literal": "0.6",
+      "lines": [
+        512
+      ],
+      "example_key": "antialias_sigma.json.sigmas[2]"
+    },
+    {
+      "literal": "0.003",
+      "lines": [
+        513
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[2].kappa_hat_median"
+    },
+    {
+      "literal": "0.016",
+      "lines": [
+        513
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.e0.psr.block_bootstrap.ci95_mc_se_on_coefficient_scale[0]"
+    },
+    {
+      "literal": "39.2",
+      "lines": [
+        514
+      ],
+      "example_key": "background_cpr_sweep.json.rows[6].fp_percent"
+    },
+    {
+      "literal": "40.0",
+      "lines": [
+        514
+      ],
+      "example_key": "band_s.json.discs.by_class_pass_1.inside.ge1.k"
+    },
+    {
+      "literal": "6.38",
+      "lines": [
+        514
+      ],
+      "example_key": "crater_level_real.json.per_disc[100].median_N_hat"
+    },
+    {
+      "literal": "11.51",
+      "lines": [
+        515
+      ],
+      "example_key": "crater_level_real.json.per_disc[492].median_N_hat"
+    },
+    {
+      "literal": "1.032",
+      "lines": [
+        516
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[8]"
+    },
+    {
+      "literal": "1.022",
+      "lines": [
+        516
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.80 m[0]"
+    },
+    {
+      "literal": "1.044",
+      "lines": [
+        516
+      ],
+      "example_key": "crater_level_real.json.mantel_haenszel_inside_vs_outside.all.ci95[1]"
+    },
+    {
+      "literal": "1.066",
+      "lines": [
+        516
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[0]"
+    },
+    {
+      "literal": "1.042",
+      "lines": [
+        517
+      ],
+      "example_key": "crater_level_real.json.mantel_haenszel_inside_vs_outside.all.ci95[1]"
+    },
+    {
+      "literal": "1.096",
+      "lines": [
+        517
+      ],
+      "example_key": "cpr_significance.json.joint_criterion.scan[1].true_cpr"
+    },
+    {
+      "literal": "1.021",
+      "lines": [
+        517
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.80 m[0]"
+    },
+    {
+      "literal": "1.013",
+      "lines": [
+        517
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.80 m[6]"
+    },
+    {
+      "literal": "1.029",
+      "lines": [
+        517
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[8]"
+    },
+    {
+      "literal": "1.050",
+      "lines": [
+        518,
+        735
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[6]"
+    },
+    {
+      "literal": "1.095",
+      "lines": [
+        518
+      ],
+      "example_key": "cpr_significance.json.joint_criterion.scan[1].true_cpr"
+    },
+    {
+      "literal": "1.17",
+      "lines": [
+        519
+      ],
+      "example_key": "band_s.json.run_info.scipy:str"
+    },
+    {
+      "literal": "33.6",
+      "lines": [
+        519
+      ],
+      "example_key": "background_cpr_sweep.json.generated_utc:str"
+    },
+    {
       "literal": "0.2614797",
       "lines": [
-        361,
-        364
+        553,
+        556
       ],
       "example_key": "crater_level_real.json.summary.inside.median_cpr_over_discs"
     },
     {
       "literal": "4.2610829\\times10^{-3}",
       "lines": [
-        364
+        556
       ],
       "example_key": "degeneracy_replication.json.closed_form_ceiling"
     },
     {
       "literal": "235",
       "lines": [
-        367
+        559
       ],
       "example_key": "crater_level_real.json.per_disc_v18[234].id"
     },
     {
       "literal": "40.21",
       "lines": [
-        380
+        572
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[7].standard.median"
     },
     {
       "literal": "59.79",
       "lines": [
-        381
+        573
       ],
       "example_key": "antialias_sigma.json.slope_percentiles.scan 0.40.max"
     },
     {
       "literal": "2\\,337\\,086",
       "lines": [
-        383,
-        392,
-        402
+        575,
+        584,
+        594,
+        706
       ],
       "example_key": "calibration_example.json.inputs.amplitude_pixels"
     },
     {
       "literal": "4.261\\times10^{-3}",
       "lines": [
-        396
+        588
       ],
       "example_key": "crater_level_real.json.v20_gap.geometry_frame.selection_rate_by_slant_range_decile.20200808[7].wilson95[1]"
     },
     {
       "literal": "1.241\\times10^{-6}",
       "lines": [
-        402
+        594
       ],
       "example_key": "manuscript_number_audit_supplement.json.rows[71].printed:str"
     },
     {
       "literal": "4.2610574\\times10^{-3}",
       "lines": [
-        404
+        596
       ],
       "example_key": "manuscript_number_audit_supplement.json.rows[72].printed:str"
     },
     {
       "literal": "5.99\\times10^{-6}",
       "lines": [
-        405
+        597
       ],
       "example_key": "manuscript_number_audit_supplement.json.rows[73].printed:str"
     },
     {
       "literal": "120\\,000",
       "lines": [
-        413
+        605
       ],
       "example_key": "cpr_significance.json.monte_carlo_run.trials_per_row"
     },
     {
-      "literal": "1.50",
-      "lines": [
-        414
-      ],
-      "example_key": "coherence_nhat.json.formula_check.rows[11].q95_density"
-    },
-    {
       "literal": "0.00043",
       "lines": [
-        414
+        606
       ],
       "example_key": "cpr_significance.json.monte_carlo[0].amplitude_proxy.median"
     },
     {
       "literal": "0.00331",
       "lines": [
-        416
+        608
       ],
       "example_key": "cpr_significance.json.monte_carlo[4].amplitude_proxy.true"
     },
     {
       "literal": "0.02922",
       "lines": [
-        416
+        608
       ],
       "example_key": "cpr_significance.json.monte_carlo[5].amplitude_proxy.true"
     },
     {
       "literal": "0.053411",
       "lines": [
-        429
+        621
       ],
       "example_key": "composite_contrast.json.layers.cpr_heatmap.correlation[4]"
     },
     {
       "literal": "0.053852",
       "lines": [
-        429
+        621
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[19].coherence_aware.relative_bias_median"
     },
     {
       "literal": "1.310\\times10^{-2}",
       "lines": [
-        430
+        622
       ],
       "example_key": "calibration_example.json.incidence_applied_once.comparison.0_applications.cpr_native_abs_diff.max"
     },
     {
       "literal": "1.393\\times10^{-1}",
       "lines": [
-        430
+        622
       ],
       "example_key": "crater_level_real.json.per_disc[16].median_gamma_c"
     },
     {
       "literal": "2.3\\times10^{-5}",
       "lines": [
-        431
+        623
       ],
       "example_key": "calibration_example.json.incidence_applied_once.comparison.0_applications.cpr_native_abs_diff.median"
     },
     {
       "literal": "1.1\\times10^{-3}",
       "lines": [
-        431
+        623
       ],
       "example_key": "band_s.json.noise_scan.scan[4].fraction"
     },
     {
       "literal": "0.139",
       "lines": [
-        433
+        625
       ],
-      "example_key": "crater_level_real.json.per_disc[13].median_gamma_c"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.coefficients.slant_range_sample_over_100.se_model"
+    },
+    {
+      "literal": "1071.2",
+      "lines": [
+        636
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[1066].id"
+    },
+    {
+      "literal": "1071.6",
+      "lines": [
+        636
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[1067].id"
+    },
+    {
+      "literal": "1071.336",
+      "lines": [
+        637
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[1066].id"
+    },
+    {
+      "literal": "4.47",
+      "lines": [
+        640
+      ],
+      "example_key": "crater_level_real.json.per_disc[306].median_N_hat"
+    },
+    {
+      "literal": "0.57",
+      "lines": [
+        641
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.e.coefficients.class_mixed.se_model"
+    },
+    {
+      "literal": "5.30",
+      "lines": [
+        648
+      ],
+      "example_key": "crater_level_real.json.per_disc[312].median_N_hat"
+    },
+    {
+      "literal": "2.64",
+      "lines": [
+        648
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[2].series_var"
     },
     {
       "literal": "8\\,337",
       "lines": [
-        445
+        656
       ],
       "example_key": "bootstrap_enl.json.LH.n_patches"
     },
     {
       "literal": "4.03",
       "lines": [
-        446
+        657
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_simple[0]"
     },
     {
       "literal": "6.19",
       "lines": [
-        446
+        657
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw_ci_block[1]"
     },
     {
       "literal": "4.38",
       "lines": [
-        446
+        657
       ],
       "example_key": "bootstrap_enl.json.LV.enl_raw_ci_simple[0]"
     },
     {
       "literal": "7.29",
       "lines": [
-        446
+        657
       ],
       "example_key": "antialias_sigma.json.rms_vs_ideal_m.none (control)"
     },
     {
       "literal": "10.7",
       "lines": [
-        447
+        658
       ],
       "example_key": "bootstrap_enl.json.LH.enl_box_ci_simple[0]"
     },
     {
       "literal": "22.5",
       "lines": [
-        447
+        658
       ],
       "example_key": "bootstrap_enl.json.LH.enl_box_ci_block[1]"
     },
     {
       "literal": "12.1",
       "lines": [
-        447
+        658
       ],
       "example_key": "bootstrap_enl.json.LV.enl_box_ci_block[0]"
     },
     {
       "literal": "24.8",
       "lines": [
-        447
+        658
       ],
       "example_key": "bootstrap_enl.json.LV.enl_box_ci_simple[1]"
     },
     {
       "literal": "5.83",
       "lines": [
-        457
+        668
       ],
       "example_key": "bootstrap_enl.json.LH.enl_raw"
     },
     {
       "literal": "5.0",
       "lines": [
-        457
+        668
       ],
       "example_key": "coherence_nhat.json.formula_check.rows[4].N"
     },
     {
       "literal": "2.905",
       "lines": [
-        467
+        678
       ],
       "example_key": "crater_level_real.json.per_disc[477].median_N_hat"
     },
     {
       "literal": "13.42",
       "lines": [
-        467
+        678
       ],
       "example_key": "coherence_nhat.json.window_validation.rows[2].standard.iqr[0]"
     },
     {
       "literal": "14.04",
       "lines": [
-        469
+        680
       ],
-      "example_key": "coherence_nhat.json.formula_check.rows[8].N"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.coefficients.intercept.estimate"
     },
     {
       "literal": "2.28",
       "lines": [
-        469,
-        472
+        680,
+        683
       ],
-      "example_key": "decision_rule.json.rows.A[35].plugin_Wcomplex.dop_test.percent"
-    },
-    {
-      "literal": "2.21",
-      "lines": [
-        469
-      ],
-      "example_key": "band_s.json.run_info.numpy:str"
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.e.coefficients.median_coherence.se_model"
     },
     {
       "literal": "0.17",
       "lines": [
-        470
+        681
       ],
       "example_key": "band_s.json.f2.median_over_signal.coherence"
     },
     {
       "literal": "0.86",
       "lines": [
-        470
+        681
       ],
       "example_key": "complex_cell_ceiling.json.summary.SC.acf_lag1_az_abs.range[1]"
     },
     {
       "literal": "6.25",
       "lines": [
-        471
+        682
       ],
-      "example_key": "correlated_ratio.json.rows[2].fp_percent"
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.cy_over_100.se_model"
     },
     {
       "literal": "13.75",
       "lines": [
-        472
+        683
       ],
       "example_key": "background_cpr_sweep.json.N"
+    },
+    {
+      "literal": "937\\,296",
+      "lines": [
+        689
+      ],
+      "example_key": "dop_exclusion.json.excluded_pixels"
+    },
+    {
+      "literal": "0.2846",
+      "lines": [
+        690
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.coefficients.slant_range_sample_over_100.estimate"
+    },
+    {
+      "literal": "0.4550",
+      "lines": [
+        690
+      ],
+      "example_key": "crater_level_real.json.per_disc[0].median_cpr"
+    },
+    {
+      "literal": "84.36",
+      "lines": [
+        693
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[8].coherence_aware.median"
+    },
+    {
+      "literal": "64.37",
+      "lines": [
+        693
+      ],
+      "example_key": "crater_level_real.json.simulation_per_disc_mixture.look_calibration_log_ratio.22"
+    },
+    {
+      "literal": "19.99",
+      "lines": [
+        694
+      ],
+      "example_key": "antialias_sigma.json.slope_percentiles.none (control).p90"
+    },
+    {
+      "literal": "14\\,943\\,444",
+      "lines": [
+        704
+      ],
+      "example_key": "data_provenance.json.files.ch2_sar_ncxl_20200808t201154198_d_sri_ma_cp_xx_d18.tif.bytes"
+    },
+    {
+      "literal": "9339.65",
+      "lines": [
+        704
+      ],
+      "example_key": "f2_complex_product.json.passes.20200808.craters.F2.selected_cells[0].row"
+    },
+    {
+      "literal": "5\\,324\\,545",
+      "lines": [
+        705
+      ],
+      "example_key": "manuscript_number_audit.json.rows[14].artifact_value"
+    },
+    {
+      "literal": "3327.84",
+      "lines": [
+        705
+      ],
+      "example_key": "enl_L_20200305_full.json.labels.20200808.sri.prf_hz"
+    },
+    {
+      "literal": "35.63",
+      "lines": [
+        705
+      ],
+      "example_key": "band_s.json.f2.median_over_signal.N_hat"
+    },
+    {
+      "literal": "1460.68",
+      "lines": [
+        706
+      ],
+      "example_key": "crater_level_real.json.per_disc_v18[1454].id"
+    },
+    {
+      "literal": "15.64",
+      "lines": [
+        706
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[27].standard.iqr[0]"
+    },
+    {
+      "literal": "43.89",
+      "lines": [
+        708
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[7].standard.iqr[1]"
+    },
+    {
+      "literal": "5.00",
+      "lines": [
+        730
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[4].N"
+    },
+    {
+      "literal": "0.775",
+      "lines": [
+        730
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.b.coefficients.intercept.se_model"
+    },
+    {
+      "literal": "1.250",
+      "lines": [
+        730
+      ],
+      "example_key": "antialias_sigma.json.downsample_factor"
+    },
+    {
+      "literal": "2.978",
+      "lines": [
+        730
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e.coefficients.intercept.se_cluster_robust"
+    },
+    {
+      "literal": "29.16",
+      "lines": [
+        730
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.c.coefficients.median_coherence.estimate"
+    },
+    {
+      "literal": "14.48",
+      "lines": [
+        730
+      ],
+      "example_key": "calibration_example.json.inputs.theta_raster_median_over_amplitude_deg"
+    },
+    {
+      "literal": "6.77",
+      "lines": [
+        731
+      ],
+      "example_key": "bootstrap_enl.json.LV.enl_raw_ci_simple[1]"
+    },
+    {
+      "literal": "0.623",
+      "lines": [
+        731
+      ],
+      "example_key": "antialias_sigma.json.sigmas[2]"
+    },
+    {
+      "literal": "1.173",
+      "lines": [
+        731
+      ],
+      "example_key": "band_s.json.run_info.scipy:str"
+    },
+    {
+      "literal": "2.525",
+      "lines": [
+        731
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.d.coefficients.intercept.se_cluster_robust"
+    },
+    {
+      "literal": "26.03",
+      "lines": [
+        731
+      ],
+      "example_key": "antialias_sigma.json.slope_percentiles.f/2 = 0.625.p99"
+    },
+    {
+      "literal": "10.75",
+      "lines": [
+        731
+      ],
+      "example_key": "crater_level_real.json.per_disc[314].median_N_hat"
+    },
+    {
+      "literal": "0.529",
+      "lines": [
+        732
+      ],
+      "example_key": "composite_contrast.json.layers.dem_elevation.retention[2]"
+    },
+    {
+      "literal": "1.129",
+      "lines": [
+        732
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.55 m[0]"
+    },
+    {
+      "literal": "2.244",
+      "lines": [
+        732
+      ],
+      "example_key": "crater_level_real.json.v20_gap.ladder.e.coefficients.intercept.z_model"
+    },
+    {
+      "literal": "23.16",
+      "lines": [
+        732
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[17].standard.median"
+    },
+    {
+      "literal": "7.85",
+      "lines": [
+        732
+      ],
+      "example_key": "crater_level_real.json.per_disc[619].median_N_hat"
+    },
+    {
+      "literal": "0.405",
+      "lines": [
+        733
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.e0.psr.block_bootstrap.sd"
+    },
+    {
+      "literal": "1.079",
+      "lines": [
+        733
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.a.coefficients.class_inside_psr.estimate"
+    },
+    {
+      "literal": "17.79",
+      "lines": [
+        733
+      ],
+      "example_key": "background_cpr_sweep.json.rows[4].fp_percent"
+    },
+    {
+      "literal": "3.74",
+      "lines": [
+        733
+      ],
+      "example_key": "background_cpr_sweep.json.rows[2].fp_percent"
+    },
+    {
+      "literal": "19.77",
+      "lines": [
+        734
+      ],
+      "example_key": "bootstrap_enl.json.LV.enl_box"
+    },
+    {
+      "literal": "0.331",
+      "lines": [
+        734
+      ],
+      "example_key": "cpr_dispersion.json.theory.19.77"
+    },
+    {
+      "literal": "1.053",
+      "lines": [
+        734
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.65 m[6]"
+    },
+    {
+      "literal": "1.698",
+      "lines": [
+        734
+      ],
+      "example_key": "band_s.json.ladder_v20.S_band.ladder.e0.psr.block_bootstrap.ci95[0]"
+    },
+    {
+      "literal": "13.32",
+      "lines": [
+        734
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.c.coefficients.intercept.estimate"
+    },
+    {
+      "literal": "1.60",
+      "lines": [
+        734
+      ],
+      "example_key": "bootstrap_enl.json.LV.floor_ci_simple[0]"
+    },
+    {
+      "literal": "21.00",
+      "lines": [
+        735
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[4].true_N"
+    },
+    {
+      "literal": "0.321",
+      "lines": [
+        735
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.b.coefficients.class_inside_psr.se_cluster_robust"
+    },
+    {
+      "literal": "1.671",
+      "lines": [
+        735
+      ],
+      "example_key": "crater_level_real.json.summary.inside.rule.mean"
+    },
+    {
+      "literal": "12.59",
+      "lines": [
+        735
+      ],
+      "example_key": "crater_level_real.json.per_disc[64].median_N_hat"
+    },
+    {
+      "literal": "1.35",
+      "lines": [
+        735
+      ],
+      "example_key": "composite_contrast.json.layers.hazard_map.retention[5]"
+    },
+    {
+      "literal": "38.00",
+      "lines": [
+        736
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[6].true_N"
+    },
+    {
+      "literal": "0.234",
+      "lines": [
+        736
+      ],
+      "example_key": "antialias_sigma.json.reason:str"
+    },
+    {
+      "literal": "1.027",
+      "lines": [
+        736
+      ],
+      "example_key": "antialias_sigma.json.amplitude_ratio_vs_ideal.51 m[8]"
+    },
+    {
+      "literal": "1.462",
+      "lines": [
+        736
+      ],
+      "example_key": "band_s.json.ladder_v20.L_band_pass1_like_for_like.ladder.c.coefficients.ln_median_N_hat.estimate"
+    },
+    {
+      "literal": "6.11",
+      "lines": [
+        736
+      ],
+      "example_key": "crater_level_real.json.per_disc[665].median_N_hat"
+    },
+    {
+      "literal": "39.40",
+      "lines": [
+        737
+      ],
+      "example_key": "background_cpr_sweep.json.rows[6].fp_percent"
+    },
+    {
+      "literal": "0.230",
+      "lines": [
+        737
+      ],
+      "example_key": "coherence_nhat.json.window_validation.rows[32].standard.relative_bias_median"
+    },
+    {
+      "literal": "1.026",
+      "lines": [
+        737
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[7].z"
+    },
+    {
+      "literal": "1.452",
+      "lines": [
+        737
+      ],
+      "example_key": "coherence_nhat.json.formula_check.rows[12].q95_density"
+    },
+    {
+      "literal": "5.78",
+      "lines": [
+        738
+      ],
+      "example_key": "complex_grid_correlation.json.correlation_area.per_block_px[75]"
+    },
+    {
+      "literal": "0.12",
+      "lines": [
+        738
+      ],
+      "example_key": "antialias_sigma.json.sigmas[1]"
     }
   ]
 }

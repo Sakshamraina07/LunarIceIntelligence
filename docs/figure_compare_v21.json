@@ -1,12 +1,12 @@
 {
   "schema": "lunar-ice/figure-compare-v21/1",
-  "generated_utc": "2026-09-30T21:37:00.752357+00:00",
+  "generated_utc": "2026-10-01T13:41:35.744169+00:00",
   "generator": "backend/scripts/figure_compare_v21.py",
   "seed": null,
   "seed_note": "draws nothing",
   "figures": {
     "fig_scene.pdf": {
-      "paper_sha256": "ddba2a8be2ac65f4e7a0ccc43e86c8b1b4e475a9f2e1b7f3e2f41e40c33b9cf0",
+      "paper_sha256": "78152bba0285fcf34d71138c55128df7e428ca23e2685a403ccb9c650f73d9ec",
       "bytes": 206945,
       "media_box_pt": [
         0.0,
@@ -24,7 +24,7 @@
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 2
+        "font_file_streams": 1
       },
       "text_size_pt": {
         "min": 7.0,
@@ -56,19 +56,19 @@
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 2
+        "font_file_streams": 1
       }
     },
     "fig_cpr_dop.pdf": {
-      "paper_sha256": "e88f487a4b2febaf60ea450e213b154a423dc586073e8a244abc7132a84d82f4",
-      "bytes": 48591,
+      "paper_sha256": "7bf76a7d44196e0f101d9009ea4d74a8127961cf3c9f349b635d6c50496d28e7",
+      "bytes": 50046,
       "media_box_pt": [
         0.0,
         0.0,
-        254.226075,
-        160.5173521723
+        256.470125,
+        162.6498214552
       ],
-      "placed_width_in": 3.531,
+      "placed_width_in": 3.562,
       "fonts": {
         "base_fonts": [
           "CZRBLR+STIXGeneral-Regular",
@@ -79,41 +79,30 @@
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 4
+        "font_file_streams": 2
       },
       "text_size_pt": {
-        "min": 4.34,
-        "max": 8.0,
-        "operators": 46,
+        "min": 7.3,
+        "max": 8.5,
+        "operators": 36,
         "histogram_size_pt_count": {
-          "4.34": 5,
-          "4.9": 5,
-          "5.8": 8,
-          "5.9": 6,
-          "6.2": 6,
-          "7.0": 12,
-          "8.0": 4
+          "7.3": 20,
+          "7.5": 12,
+          "8.5": 4
         },
-        "printed_scale": 0.9935995468705748,
-        "min_at_printed_size": 4.312222033418295,
-        "sizes_below_7pt_at_printed_size": {
-          "4.34": 5,
-          "4.9": 5,
-          "5.8": 8,
-          "5.9": 6,
-          "6.2": 6,
-          "7.0": 12
-        }
+        "printed_scale": 0.9849522740033689,
+        "min_at_printed_size": 7.190151600224593,
+        "sizes_below_7pt_at_printed_size": {}
       },
-      "grsl_sha256": "ae2ac0578d5c8b8f791049c6e664d6c84c89dd830b15575598a5acb57699fa26",
+      "grsl_sha256": "06216cff2fcda2b1438d2881d85300a4db813d4694c37ed8ce3108a594d2c54d",
       "byte_identical": false,
-      "identical_without_date_and_id": true,
+      "identical_without_date_and_id": false,
       "content_streams_identical": true,
       "grsl_media_box_pt": [
         0.0,
         0.0,
-        254.226075,
-        160.5173521723
+        256.470125,
+        162.6498214552
       ],
       "fonts_grsl": {
         "base_fonts": [
@@ -125,19 +114,19 @@
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 4
+        "font_file_streams": 2
       }
     },
     "fig_joint_power.pdf": {
-      "paper_sha256": "2e9dd405e3445378d5e2f40becd7f3a49250dee1f8200b56641a101773d5cbe0",
-      "bytes": 14936,
+      "paper_sha256": "79112c92a286f00986bfac0bfb6915e68022852e120eb12cd00cd0fe6af77172",
+      "bytes": 13642,
       "media_box_pt": [
         0.0,
         0.0,
-        230.555,
-        156.66143
+        228.7425,
+        188.04375
       ],
-      "placed_width_in": 3.202,
+      "placed_width_in": 3.177,
       "fonts": {
         "base_fonts": [
           "CZRBLR+STIXGeneral-Regular",
@@ -148,38 +137,30 @@
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 4
+        "font_file_streams": 2
       },
       "text_size_pt": {
-        "min": 4.9,
-        "max": 8.0,
-        "operators": 27,
+        "min": 7.3,
+        "max": 8.5,
+        "operators": 18,
         "histogram_size_pt_count": {
-          "4.9": 6,
-          "5.8": 8,
-          "6.0": 3,
-          "6.2": 1,
-          "7.0": 6,
-          "8.0": 3
+          "7.3": 9,
+          "7.5": 6,
+          "8.5": 3
         },
-        "printed_scale": 1.0956901936289818,
-        "min_at_printed_size": 5.368881948782011,
-        "sizes_below_7pt_at_printed_size": {
-          "4.9": 6,
-          "5.8": 8,
-          "6.0": 3,
-          "6.2": 1
-        }
+        "printed_scale": 1.104312244255587,
+        "min_at_printed_size": 8.061479383065786,
+        "sizes_below_7pt_at_printed_size": {}
       },
-      "grsl_sha256": "8df326689607100ab77de74dd32854849bcbe63c42240af7a528d83ee4e25041",
+      "grsl_sha256": "04a07872dd85b229f51c1e40e0b9e5d1b87ab27bb23799c811013e0eb3d70998",
       "byte_identical": false,
-      "identical_without_date_and_id": true,
+      "identical_without_date_and_id": false,
       "content_streams_identical": true,
       "grsl_media_box_pt": [
         0.0,
         0.0,
-        230.555,
-        156.66143
+        228.7425,
+        188.04375
       ],
       "fonts_grsl": {
         "base_fonts": [
@@ -191,74 +172,68 @@
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 4
+        "font_file_streams": 2
       }
     },
     "fig_region_design.pdf": {
-      "paper_sha256": "f8550d49f6a579c3052b903866f275ea481ab822d6a2f0fdf3f7af90a3f966a4",
-      "bytes": 12910,
+      "paper_sha256": "03452c9e63f6bc5d16ea68e3d5a8c49654dbfc2201a3cf9e66fc5cb6d06b9bc6",
+      "bytes": 10479,
       "media_box_pt": [
         0.0,
         0.0,
-        228.707,
-        175.12076
+        234.7695,
+        176.38701
       ],
-      "placed_width_in": 3.176,
+      "placed_width_in": 3.261,
       "fonts": {
         "base_fonts": [
-          "CZRBLR+STIXGeneral-Regular",
-          "FTXWZA+STIXGeneral-Italic"
+          "CZRBLR+STIXGeneral-Regular"
         ],
         "subtypes": [
           "CIDFontType2",
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 4
+        "font_file_streams": 1
       },
       "text_size_pt": {
-        "min": 4.9,
-        "max": 8.0,
-        "operators": 22,
+        "min": 7.3,
+        "max": 8.5,
+        "operators": 18,
         "histogram_size_pt_count": {
-          "4.9": 2,
-          "5.6": 1,
-          "7.0": 16,
-          "8.0": 3
+          "7.3": 8,
+          "7.5": 8,
+          "8.5": 2
         },
-        "printed_scale": 1.104659949622166,
-        "min_at_printed_size": 5.412833753148614,
-        "sizes_below_7pt_at_printed_size": {
-          "4.9": 2,
-          "5.6": 1
-        }
+        "printed_scale": 1.075866298681386,
+        "min_at_printed_size": 7.853823980374118,
+        "sizes_below_7pt_at_printed_size": {}
       },
-      "grsl_sha256": "100e2b25ac3bbed579e5d86e8b8472bc3cf7d03971ea798365186c24fc357480",
+      "grsl_sha256": "bf2f787231dcb43109e9e482a653a681a7c23ecc2adbd09f91f5acbc98dda90a",
       "byte_identical": false,
-      "identical_without_date_and_id": true,
+      "identical_without_date_and_id": false,
       "content_streams_identical": true,
       "grsl_media_box_pt": [
         0.0,
         0.0,
-        228.707,
-        175.12076
+        234.7695,
+        176.38701
       ],
       "fonts_grsl": {
         "base_fonts": [
-          "CZRBLR+STIXGeneral-Regular",
-          "FTXWZA+STIXGeneral-Italic"
+          "CZRBLR+STIXGeneral-Regular"
         ],
         "subtypes": [
           "CIDFontType2",
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 4
+        "font_file_streams": 1
       }
     },
     "fig_n_sensitivity.pdf": {
-      "paper_sha256": "f778ac3ed3a66fc903671bdbdb78f34b0b2b6e6d92e85429f8e41a9704f5fbce",
-      "bytes": 14014,
+      "paper_sha256": "267d2f88758d47a8fc26b3c60d2d5e4102139a15c8c8e38c674ef6015808c724",
+      "bytes": 14524,
       "media_box_pt": [
         0.0,
         0.0,
@@ -275,7 +250,7 @@
           "Type0"
         ],
         "type3": false,
-        "font_file_streams": 2
+        "font_file_streams": 1
       },
       "text_size_pt": {
         "min": 7.0,
@@ -285,14 +260,90 @@
           "7.0": 35,
           "7.5": 6
         },
-        "printed_scale": 1.0305123776626366,
-        "min_at_printed_size": 7.213586643638456,
+        "printed_scale": 1.0074841681059297,
+        "min_at_printed_size": 7.0523891767415074,
         "sizes_below_7pt_at_printed_size": {}
+      },
+      "grsl_sha256": "de16a31d7b5eb990f6651f0489bb69bf1bf1fd7e17977ac68b2ee394d2b1c9c0",
+      "byte_identical": false,
+      "identical_without_date_and_id": true,
+      "content_streams_identical": true,
+      "grsl_media_box_pt": [
+        0.0,
+        0.0,
+        500.2286089333,
+        194.379375
+      ],
+      "fonts_grsl": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 1
+      }
+    },
+    "fig_spec_curve.pdf": {
+      "paper_sha256": "59060dfc72b2e2356a3d9e69c272e52af9ced8a7f5db7a7dd0fa8735ecdf7c1a",
+      "bytes": 66664,
+      "media_box_pt": [
+        0.0,
+        0.0,
+        442.69875,
+        252.8715
+      ],
+      "placed_width_in": 6.149,
+      "fonts": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 1
+      },
+      "text_size_pt": {
+        "min": 7.0,
+        "max": 7.5,
+        "operators": 42,
+        "histogram_size_pt_count": {
+          "7.0": 36,
+          "7.5": 6
+        },
+        "printed_scale": 1.1383964872336965,
+        "min_at_printed_size": 7.9687754106358755,
+        "sizes_below_7pt_at_printed_size": {}
+      },
+      "grsl_sha256": "06430d7d2ec93eca423407286a90242d3c65e040ea26eeb8dde49cc8627d0912",
+      "byte_identical": false,
+      "identical_without_date_and_id": true,
+      "content_streams_identical": true,
+      "grsl_media_box_pt": [
+        0.0,
+        0.0,
+        442.69875,
+        252.8715
+      ],
+      "fonts_grsl": {
+        "base_fonts": [
+          "CZRBLR+STIXGeneral-Regular"
+        ],
+        "subtypes": [
+          "CIDFontType2",
+          "Type0"
+        ],
+        "type3": false,
+        "font_file_streams": 1
       }
     }
   },
   "run_info": {
-    "wall_s": 0.9,
+    "wall_s": 0.4,
     "peak_rss_mb": 29,
     "python": "3.13.1",
     "numpy": "2.2.2",

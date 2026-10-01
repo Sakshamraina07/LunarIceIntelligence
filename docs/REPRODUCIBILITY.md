@@ -593,3 +593,16 @@ Order: `v21_extract.py` (after `gap_v20_frame.py`'s artifacts exist) → `n_sens
 `n_sensitivity_region.py`, `n_sensitivity_f2point.py` are independent → `n_sensitivity_assemble.py` →
 `make_fig_n_sensitivity.py`; `shadow_identification.py` → `make_fig_spec_curve.py`.
 `docs/SECOND_SCENE_RUNBOOK.md` is the procedure for a scene that is not on disk.
+
+## 24 · V22 work order (2026-10-01)
+
+METHODS §21. Nothing under `data/` is committed; nothing downloaded.
+
+| item | artifact | command | seed | trials | wall (s) | peak (MB) |
+|---|---|---|---|---|---|---|
+| C1 | `n_sensitivity_region_39.json` | `python backend/scripts/n_sensitivity_region_39.py --workers 5` | 20261071 (calibration 20261183-20261187) | 4000 regions (260 cells), 2000 (3647 cells) per L in {13, 14}; N(L) on 16 x 256 x 256 cells | 178 | 96 |
+| C2-C4 | `shadow_identification.json::{N_mh_strata_definitions, O_propensity_populations, M_spec_curve_above}`, `spec_curve_above.md` | `python backend/scripts/shadow_c2_c3_c4.py` | none (reads the stored cells and specifications) | - | < 5 | - |
+| D | `region_mean_null.json` (keys `achieved_log_ratio_N_large_field`) | `python backend/scripts/region_mean_null_relabel.py` (after `n_sensitivity_region.py`) | none | - | < 1 | - |
+| A | `paper/fig_cpr_dop.pdf`, `fig_joint_power.pdf`, `fig_region_design.pdf` | `cd paper && python make_figures_v12.py && python make_fig_region.py` (scripts adopted from `Claude outputs/grsl/figscripts_v22/`; the v21 versions are `*_v21.py`) | - | - | - | - |
+| A | `figure_compare_v21.json` | `python backend/scripts/figure_compare_v21.py` | none | - | 1 | 29 |
+| B | `v22_literal_audit.json` | `python backend/scripts/v22_literal_audit.py` | none | - | 36 | 119 |

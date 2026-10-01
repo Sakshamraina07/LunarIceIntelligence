@@ -118,7 +118,7 @@ def main() -> int:
                                          "monotone", "iut", "mc", "v3", "ceiling", "design_bound", "mh", "het",
                                          "ladder", "recon", "identity", "coherence",
                                          "design_size", "design_pool", "v21_np", "v21_iut", "v21_f2", "v21_region", "v21_ladder",
-                                         "v21_spec"))
+                                         "v21_spec", "v22_label", "v22_rule"))
     args = ap.parse_args()
     print("=" * 78)
     print("G33 — the council analyses reproduce their anchors")
@@ -549,6 +549,34 @@ def main() -> int:
               f"{sp['summary']['with_coherence']['n']} + {sp['summary']['without_coherence']['n']} -> {'ok' if s_ok else 'FAIL'}")
         if not s_ok:
             bad.append("shadow_identification: the specification curve is incomplete")
+
+    # ---- v22: the achieved-N labels and the specification-curve rule ---------
+    rmn22 = load("docs/region_mean_null.json")
+    sid22 = load("docs/shadow_identification.json")
+    if rmn22 is None or nrg is None or sid22 is None or "M_spec_curve_above" not in (sid22 or {}):
+        bad.append("region_mean_null.json (relabelled) or shadow_identification.json::M_spec_curve_above is absent")
+    else:
+        cal22 = nrg["calibration"]["260"]
+        rows22 = [c for pop in rmn22["results"].values() for by in pop.values() for sz in by.values() for c in [sz["correlated"]]]
+        lab_ok = all("achieved_log_ratio_N_large_field" in c and abs(c["achieved_log_ratio_N_large_field"] - cal22[str(c["looks_per_channel"])]) < 1e-9
+                     for c in rows22)
+        c19 = rmn22["results"]["CPR 0.7 DOP 0.176"]["N80"]["cells260"]["correlated"]
+        lab_ok = lab_ok and abs(c19["achieved_log_ratio_N_large_field"] - 53.26) < 0.5 and abs(c19["achieved_log_ratio_N"] - 75.867) < 0.01
+        if args.inject == "v22_label":
+            lab_ok = False
+        print(f"  v22 D: every correlated row of region_mean_null carries the large-field N of its looks (L = 19: stored {c19['achieved_log_ratio_N']:.1f}, "
+              f"large field {c19['achieved_log_ratio_N_large_field']:.1f}), stored numbers kept -> {'ok' if lab_ok else 'FAIL'}")
+        if not lab_ok:
+            bad.append("region_mean_null: the large-field achieved-N labels are missing or wrong, or a stored label moved")
+        sp22 = sid22["M_spec_curve_above"]["sets"]
+        rule = all(v["all_lack_coherence_and_local_incidence"] for v in sp22.values()) and sp22["L_two_passes"]["n_above"] == 14 \
+            and sp22["L_two_passes"]["all_contain_geometry_file_incidence"] and sp22["L_pass1"]["n_above"] == 20 and sp22["S_pass1"]["n_above"] == 24
+        if args.inject == "v22_rule":
+            rule = False
+        print(f"  v22 C4: the 14 / 20 / 24 specifications excluding 1 from above all lack coherence and LOLA local incidence (all 14 L-band ones contain "
+              f"the geometry-file incidence) -> {'ok' if rule else 'FAIL'}")
+        if not rule:
+            bad.append("shadow_identification: the specifications excluding 1 from above do not satisfy the stated rule")
 
     if bad:
         print("\n  GATE FAIL —")

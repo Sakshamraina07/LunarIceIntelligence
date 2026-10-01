@@ -30,8 +30,8 @@ from scipy import stats
 mpl.rcParams.update({
     "pdf.fonttype": 42, "ps.fonttype": 42,
     "font.family": "serif", "font.serif": ["STIXGeneral"],
-    "mathtext.fontset": "stix", "font.size": 8.5, "axes.labelsize": 8.5,
-    "legend.fontsize": 7.3, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+    "mathtext.fontset": "stix", "font.size": 8, "axes.labelsize": 8,
+    "legend.fontsize": 6.5, "xtick.labelsize": 7, "ytick.labelsize": 7,
     "axes.linewidth": 0.6, "lines.linewidth": 1.1,
     "savefig.bbox": "tight", "savefig.pad_inches": 0.02,
 })
@@ -44,10 +44,6 @@ DOCS = HERE.parent / "docs"
 EDGE = 1.13 / 0.87
 
 
-from matplotlib.ticker import FuncFormatter, LogFormatterSciNotation
-PLAIN = FuncFormatter(lambda v, _: ("%g" % v) if v < 1e4 else "%d" % v)
-
-
 def crit(n):
     return stats.f.ppf(0.95, 2 * n, 2 * n)
 
@@ -55,7 +51,7 @@ def crit(n):
 def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     z = np.load(npz)
     H, xe, ye = z["H"], z["xe"], z["ye"]
-    fig, ax = plt.subplots(figsize=(3.28, 2.35))
+    fig, ax = plt.subplots(figsize=(COL1, 2.35))
     Hm = np.ma.masked_where(H.T <= 0, H.T)
     norm = LogNorm(vmin=1, vmax=H.max())
     pc = ax.pcolormesh(xe, 10 ** ye, Hm, cmap="Blues", norm=norm, shading="flat", rasterized=True)
@@ -67,13 +63,12 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     c2 = crit(n_ratio)
     ax.axhline(c2, color=ACC1, lw=0.8, ls="--", label=f"crit. {c2:.3f}, $N={n_ratio:.1f}$")
     ax.plot([], [], color=INK, lw=0.9, label="coupling curve")
-    ax.text(0.145, 2.2, "DOP = 0.13", color=ACC2, fontsize=7.3, rotation=90, va="bottom")
+    ax.text(0.145, 3.2, "DOP = 0.13", color=ACC2, fontsize=6.2, rotation=90, va="bottom")
     # v20 S4: short entries, left of the coupling curve's upper branch (DOP > 0.69,
     # CPR > 5), clear of the "DOP = 0.13" label
     ax.legend(loc="upper left", bbox_to_anchor=(0.19, 1.0), frameon=True, framealpha=1.0,
-              facecolor="white", edgecolor="none", fontsize=7.3)
+              facecolor="white", edgecolor="none", fontsize=5.9)
     ax.set_yscale("log")
-    ax.yaxis.set_major_formatter(PLAIN)
     ax.set_xlim(0, 1)
     ax.set_ylim(10 ** ye[0], 10 ** ye[-1])
     ax.set_xlabel(r"sample DOP $\hat m$")
@@ -93,14 +88,13 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     ia.set_ylim(0.7, 1.5)
     ia.set_xticks([0, 0.1, 0.2])
     ia.set_yticks([0.8, 1.0, 1.2, 1.4])
-    ia.tick_params(labelsize=7.3, length=2, pad=1)
+    ia.tick_params(labelsize=5.8, length=2, pad=1)
     for sp in ia.spines.values():
         sp.set_linewidth(0.5)
-    ia.text(0.004, 1.145, "band", fontsize=7.3, color=ACC2, va="bottom", ha="left", clip_on=False)
+    ia.text(0.004, 1.145, "band", fontsize=5.8, color=ACC2, va="bottom", ha="left", clip_on=False)
     cb = fig.colorbar(pc, ax=ax, pad=0.02, fraction=0.05)
-    cb.set_label("cells per bin", fontsize=7.5)
-    cb.ax.tick_params(labelsize=7.3)
-    cb.ax.yaxis.set_major_formatter(PLAIN)
+    cb.set_label("cells per bin", fontsize=7)
+    cb.ax.tick_params(labelsize=6.2)
     fig.savefig(out, dpi=600)
     plt.close(fig)
     return int(z["n"]), c2, c2
@@ -132,25 +126,27 @@ def fig_joint_power(js, out="fig_joint_power.pdf"):
         cv = sorted(json.loads(nb.read_text(encoding="utf-8"))["curve"], key=lambda c: c["N"])
         ax.plot([c["N"] for c in cv], [c["bound_percent"] for c in cv], color=INK, lw=0.5,
                 label="upper bound, any level-5 % test")
+    ax.plot([], [], color=INK, lw=1.1, label="size (CPR 1.00): solid")
+    ax.plot([], [], color=INK, lw=0.8, ls="--", label="in-band max: dashed")
+    ax.plot([], [], color=INK, lw=0.8, ls=":", marker="o", ms=2.8, mfc="white", mew=0.7,
+            label="in-band min: dotted, markers")
     # the 5 % reference: a dash-dot-dot line no curve uses
     ax.axhline(5.0, color=MUTED, lw=0.6, ls=(0, (5, 1.5, 1, 1.5, 1, 1.5)))
     for x, lab in ((39.4, "39.4"), (79.6166, "79.6")):
         ax.axvline(x, color=INK, lw=0.5, ls="-.")
-        ax.text(x, 1.01, lab, fontsize=7.3, color=INK, ha="center", va="bottom",
+        ax.text(x, 1.01, lab, fontsize=6.0, color=INK, ha="center", va="bottom",
                 transform=mpl.transforms.blended_transform_factory(ax.transData, ax.transAxes))
     ax.axvspan(218, 254, color=MUTED, alpha=0.25, lw=0)
-    ax.text(236, 1.01, "IUT", fontsize=7.3, color=INK, ha="center", va="bottom",
+    ax.text(236, 1.01, "IUT", fontsize=6.0, color=INK, ha="center", va="bottom",
             transform=mpl.transforms.blended_transform_factory(ax.transData, ax.transAxes))
-    ax.text(120, 4.6, "5 %", fontsize=7.3, color=INK, va="top")
+    ax.text(120, 4.6, "5 %", fontsize=6.2, color=INK, va="top")
     ax.set_xscale("log")
     ax.set_yscale("log")
-    ax.xaxis.set_major_formatter(PLAIN)
-    ax.yaxis.set_major_formatter(PLAIN)
     ax.set_xlim(1.4, 300)
     ax.set_ylim(0.04, 100)
     ax.set_xlabel(r"look count $N$")
     ax.set_ylabel("selection rate or power (%)")
-    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.24), frameon=False, ncol=2, handlelength=1.8, columnspacing=1.0, fontsize=7.3)
+    ax.legend(loc="lower right", bbox_to_anchor=(0.93, 0.0), frameon=True, framealpha=1.0, edgecolor="none", fontsize=5.8)
     fig.savefig(out)
     plt.close(fig)
 

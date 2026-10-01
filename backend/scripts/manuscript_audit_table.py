@@ -942,6 +942,47 @@ AUDIT = [
     ('v20_sinha_47', '47', None, None, 'IV',
      "LITERATURE: Sinha et al. 2026 (Nature), 'about 47% and 42% of their interiors' (F2, F3), fetched from nature.com "
      "and transcribed in the master log OPEN-35; no repository artifact holds it, so the audit reports NO SOURCE by design"),
+
+    # ---- V22 (2026-10-01): Table II's regional rows are labelled with the LARGE-FIELD log-ratio count of
+    # their looks, not the stored `achieved_log_ratio_N` of region_mean_null.json (a four-realization small-box
+    # calibration, +-10-15 %; n_sensitivity_calcheck.json). The corrected label of region_mean_null's own rows
+    # is `achieved_log_ratio_N_large_field` (region_mean_null_relabel.py); the grid rows are n_sensitivity_region.json's.
+    ('v22_n145', '14.5', 'docs/n_sensitivity_region.json',
+     'results.{CPR 0.7 DOP 0.176}.{N13.72}.cells260.correlated.achieved_log_ratio_N', 'IV',
+     'Table II: the large-field count of the setting aimed at N = 13.72 (L = 5)'),
+    ('v22_n373', '37.3', 'docs/region_mean_null.json',
+     'results.{CPR 0.7 DOP 0.176}.{N39.4}.cells260.correlated.achieved_log_ratio_N_large_field', 'IV',
+     'Table II: L = 13 on the large field (the stored label of that row is 38.0 / 38.4, a small-box reading)'),
+    ('v22_n782', '78.2', 'docs/n_sensitivity_region.json',
+     'results.{CPR 0.7 DOP 0.176}.{N80}.cells260.correlated.achieved_log_ratio_N', 'IV',
+     'Table II: L = 28 on the large field (n_sensitivity_region.json grid row N = 80)'),
+    ('v22_unc_260_30', '30', 'docs/n_sensitivity_region.json',
+     'results.{CPR 0.7 DOP 0.176}.{N80}.cells260.correlated.unconditional_p', 'IV',
+     'Table II: 29.75 % at the large-field N = 78.2 (the rate printed 37 in v21 is the L = 19 row, N = 53.3)'),
+    ('v22_unc_3647_87', '87', 'docs/n_sensitivity_region.json',
+     'results.{CPR 0.7 DOP 0.176}.{N80}.cells3647.correlated.unconditional_p', 'IV', 'Table II: 86.9 % at N = 78.2'),
+    ('v22_peak_260', '37', 'docs/n_sensitivity_region.json',
+     'summary.{CPR 0.7 DOP 0.176 / 260 cells / correlated}.max_unconditional_p', 'IV', 'Table II caption: the 260-cell peak, 37.15 % at N = 53.3'),
+    ('v22_peak_260_n', '53', 'docs/n_sensitivity_region.json',
+     'summary.{CPR 0.7 DOP 0.176 / 260 cells / correlated}.at_achieved_N', 'IV', 'Table II caption: N of the 260-cell peak, 53.26'),
+    ('v22_peak_3647_n', '78', 'docs/n_sensitivity_region.json',
+     'summary.{CPR 0.7 DOP 0.176 / 3647 cells / correlated}.at_achieved_N', 'IV', 'Table II caption: N of the 3647-cell peak, 78.22'),
+    ('v22_n53_rmnlf', '53', 'docs/region_mean_null.json',
+     'results.{CPR 0.7 DOP 0.176}.{N80}.cells260.correlated.achieved_log_ratio_N_large_field', 'IV',
+     'the L = 19 row of region_mean_null.json: stored label 75.9, large-field 53.3'),
+    ('v22_size178', '17.8', 'docs/n_sensitivity_core.json', 'size_first_exceeds.{5.0}.N_first_exceeds', 'V', 'Sec. VI-B: the rule\'s size passes 5 % (17.84)'),
+    ('v22_iut232', '232', 'docs/n_sensitivity_core.json', 'iut_onset.first_N_with_rejection_region', 'V', 'Sec. VI-B: the IUT rejection region first exists'),
+    ('v22_iut231', '231', 'docs/n_sensitivity_core.json', 'iut_onset.last_N_without', 'V', 'Table II caption, scope table: empty through 231'),
+    ('v22_f2_976', '97.6', 'docs/n_sensitivity_real.json',
+     'smallest_N_any_selected_cell_significant.{L_20200808 / F2}.smallest_N_any_selected_cell_significant', 'V', 'Sec. VI-C: F2 CPR-only significant from N = 97.59'),
+    ('v22_frame_800', '80.0', 'docs/n_sensitivity_real.json',
+     'smallest_N_any_selected_cell_significant.{L_20200808 / whole frame}.smallest_N_any_selected_cell_significant', 'V', 'Sec. VI-C: first-pass frame from N = 80.04'),
+    ('v22_outside_17', '17', 'docs/shadow_identification.json',
+     'D_overlap.L_two_passes.propensity.fraction_shadowed_outside_sunlit_support', 'V', 'Sec. VI-D: 17.4 % of shadowed discs outside the sunlit propensity range'),
+    ('v22_perm_p', '0.55', 'docs/shadow_identification.json', 'G_permutation.L_two_passes.rung_a.p_two_sided_abs', 'V', 'Sec. VI-D: permutation two-sided p'),
+    ('v22_g_or', '4.04', 'docs/shadow_identification.json', 'M_spec_curve_above.sets.L_two_passes.specifications[3].odds_ratio', 'V', 'Table III (g)'),
+    ('v22_inc_or_l', '2.19', 'docs/shadow_identification.json', 'K_geometry_mh_block_bootstrap.L_two_passes.incidence_deciles.mh_or', 'V', 'Table III: MH over incidence deciles, L-band'),
+    ('v22_inc_or_s', '3.18', 'docs/shadow_identification.json', 'K_geometry_mh_block_bootstrap.S_pass1.incidence_deciles.mh_or', 'V', 'Table III: MH over incidence deciles, S-band'),
 ]
 
 #: Arithmetic checked here, with the inputs audited on their own rows.
@@ -1612,6 +1653,24 @@ SUPPLEMENT_AUDIT = [
     ('s3v20_f2p_n', '262.3', 'docs/region_design_curve.json', 'f2_point.N', 'S-III', None),
     ('s3v20_seed_rm', '20261011', 'docs/region_mean_null.json', 'seed', 'S-III', None),
     ('s3v20_seed_lr', '20261012', 'docs/tail_calibration_ci.json', 'logratio_model.seed', 'S-III', None),
+
+    ('s7_n145', '14.5', 'docs/n_sensitivity_region.json', 'results.{CPR 0.7 DOP 0.176}.{N13.72}.cells260.correlated.achieved_log_ratio_N', 'S-VII', 'S-III: large-field counts'),
+    ('s7_n373', '37.3', 'docs/region_mean_null.json', 'results.{CPR 0.7 DOP 0.176}.{N39.4}.cells260.correlated.achieved_log_ratio_N_large_field', 'S-VII', 'S-III: L = 13 on the large field (region_mean_null relabelled)'),
+    ('s7_n533', '53.3', 'docs/region_mean_null.json', 'results.{CPR 0.7 DOP 0.176}.{N80}.cells260.correlated.achieved_log_ratio_N_large_field', 'S-VII', 'S-III: L = 19 on the large field (stored label 75.9)'),
+    ('s7_n782', '78.2', 'docs/n_sensitivity_region.json', 'results.{CPR 0.7 DOP 0.176}.{N80}.cells260.correlated.achieved_log_ratio_N', 'S-VII', 'S-III: L = 28'),
+    ('s7_edge', '79.62', 'docs/n_sensitivity_core.json', 'N_edge_crit_equals_1p2989', 'S-VII', 'crit95 = 1.2989 at N = 79.6166'),
+    ('s7_size5', '17.84', 'docs/n_sensitivity_core.json', 'size_first_exceeds.{5.0}.N_first_exceeds', 'S-VII', None),
+    ('s7_size10', '30.20', 'docs/n_sensitivity_core.json', 'size_first_exceeds.{10.0}.N_first_exceeds', 'S-VII', None),
+    ('s7_size20', '55.54', 'docs/n_sensitivity_core.json', 'size_first_exceeds.{20.0}.N_first_exceeds', 'S-VII', None),
+    ('s7_f2_976', '97.59', 'docs/n_sensitivity_real.json', 'smallest_N_any_selected_cell_significant.{L_20200808 / F2}.smallest_N_any_selected_cell_significant', 'S-VII', None),
+    ('s7_frame_8004', '80.04', 'docs/n_sensitivity_real.json', 'smallest_N_any_selected_cell_significant.{L_20200808 / whole frame}.smallest_N_any_selected_cell_significant', 'S-VII', None),
+    ('s7_f2_pow', '0.568', 'docs/n_sensitivity_f2point.json', 'mean_power_percent', 'S-VII', 'F2 pooled IUT power at CPR 1.1, 10^7 draws'),
+    ('s7_max260', '37.15', 'docs/n_sensitivity_region.json', 'summary.{CPR 0.7 DOP 0.176 / 260 cells / correlated}.max_unconditional_p', 'S-VII', None),
+    ('s7_max3647', '86.9', 'docs/n_sensitivity_region.json', 'summary.{CPR 0.7 DOP 0.176 / 3647 cells / correlated}.max_unconditional_p', 'S-VII', None),
+    ('s7_spec_or', '4.04', 'docs/shadow_identification.json', 'M_spec_curve_above.sets.L_two_passes.specifications[3].odds_ratio', 'S-VII', None),
+    ('s7_auc', '0.93', 'docs/shadow_identification.json', 'D_overlap.L_two_passes.propensity.auc_shadow_vs_sunlit', 'S-VII', None),
+    ('s7_mde_a', '2.57', 'docs/shadow_identification.json', 'E_minimum_detectable_effect.L_two_passes.a.mde_or_above_1_80pct', 'S-VII', None),
+    ('s7_perm', '0.55', 'docs/shadow_identification.json', 'G_permutation.L_two_passes.rung_a.p_two_sided_abs', 'S-VII', None),
 ]
 
 SUPPLEMENT_QUANTIFIED = [

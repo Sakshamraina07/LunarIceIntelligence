@@ -1,0 +1,321 @@
+{
+  "schema": "lunar-ice/n-sensitivity-region-39/1",
+  "generated_utc": "2026-10-01T13:47:44.583985+00:00",
+  "generator": "backend/scripts/n_sensitivity_region_39.py",
+  "seed": 20261071,
+  "statistic": "unconditional P(mean sample DOP < 0.13 over the pixels with sample CPR >= 1, and the region has such a pixel)",
+  "large_field_N": {
+    "12": {
+      "N": 34.55054778641352,
+      "se": 0.20269240976797878
+    },
+    "13": {
+      "N": 36.79380857399521,
+      "se": 0.4183700754787045
+    },
+    "14": {
+      "N": 39.687780929663944,
+      "se": 0.32473527076278125
+    },
+    "15": {
+      "N": 41.96835440914509,
+      "se": 0.3579351534293729
+    },
+    "16": {
+      "N": 45.13784202072635,
+      "se": 0.5188458491618918
+    }
+  },
+  "calibration": "4 x 4 realizations of 256 x 256 cells (about 10^6 cells) per L",
+  "targets": [
+    38.0,
+    39.4,
+    40.0
+  ],
+  "nearest_L": {
+    "38.0": 13,
+    "39.4": 14,
+    "40.0": 14
+  },
+  "bracketing_L_for_39p4": [
+    13,
+    14
+  ],
+  "trials": {
+    "260": 4000,
+    "3647": 2000
+  },
+  "results": {
+    "CPR 0.7 DOP 0.176": {
+      "cells260": {
+        "L13": {
+          "trials": 4000,
+          "fraction_regions_with_cpr_ge1_cell": 0.82025,
+          "mean_cpr_5_95": [
+            1.0138467508097122,
+            1.188010869518474
+          ],
+          "mean_dop_5_95": [
+            0.07754797606066598,
+            0.24203118839221877
+          ],
+          "mean_cpr_median": 1.073428825810067,
+          "mean_dop_median": 0.14909652220452313,
+          "p_mean_dop_lt_0p13": 0.33739713501981106,
+          "p_mean_dop_lt_0p13_se": 0.008254565817927526,
+          "p_mean_dop_lt_0p10": 0.12831453825053338,
+          "p_mean_dop_lt_0p10_se": 0.005838680609521972,
+          "regions_evaluated": 3281,
+          "looks_per_channel": 13,
+          "conditional_p": 0.33739713501981106,
+          "containing_fraction": 0.82025,
+          "unconditional_p": 0.27675,
+          "unconditional_se": 0.007073885733809954,
+          "large_field_N": 36.79380857399521,
+          "large_field_N_se": 0.4183700754787045
+        },
+        "L14": {
+          "trials": 4000,
+          "fraction_regions_with_cpr_ge1_cell": 0.7935,
+          "mean_cpr_5_95": [
+            1.0118958226901604,
+            1.177965161561252
+          ],
+          "mean_dop_5_95": [
+            0.0729391109400972,
+            0.23554456413778016
+          ],
+          "mean_cpr_median": 1.0679575110859094,
+          "mean_dop_median": 0.143731550368501,
+          "p_mean_dop_lt_0p13": 0.3853182104599874,
+          "p_mean_dop_lt_0p13_se": 0.008638363589444139,
+          "p_mean_dop_lt_0p10": 0.15595463137996218,
+          "p_mean_dop_lt_0p10_se": 0.006439891830115324,
+          "regions_evaluated": 3174,
+          "looks_per_channel": 14,
+          "conditional_p": 0.3853182104599874,
+          "containing_fraction": 0.7935,
+          "unconditional_p": 0.30575,
+          "unconditional_se": 0.007284691783116154,
+          "large_field_N": 39.687780929663944,
+          "large_field_N_se": 0.32473527076278125
+        }
+      },
+      "cells3647": {
+        "L13": {
+          "trials": 2000,
+          "fraction_regions_with_cpr_ge1_cell": 1.0,
+          "mean_cpr_5_95": [
+            1.0714681957441954,
+            1.1544111905742682
+          ],
+          "mean_dop_5_95": [
+            0.13331092506843392,
+            0.1868338518592206
+          ],
+          "mean_cpr_median": 1.1083797227047878,
+          "mean_dop_median": 0.15783620727954664,
+          "p_mean_dop_lt_0p13": 0.0295,
+          "p_mean_dop_lt_0p13_se": 0.003783500363420096,
+          "p_mean_dop_lt_0p10": 0.0005,
+          "p_mean_dop_lt_0p10_se": 0.0004998749843710925,
+          "regions_evaluated": 2000,
+          "looks_per_channel": 13,
+          "conditional_p": 0.0295,
+          "containing_fraction": 1.0,
+          "unconditional_p": 0.0295,
+          "unconditional_se": 0.003783500363420096,
+          "large_field_N": 36.79380857399521,
+          "large_field_N_se": 0.4183700754787045
+        },
+        "L14": {
+          "trials": 2000,
+          "fraction_regions_with_cpr_ge1_cell": 1.0,
+          "mean_cpr_5_95": [
+            1.0674483332883857,
+            1.1485069271798152
+          ],
+          "mean_dop_5_95": [
+            0.127471784714301,
+            0.1818271121942771
+          ],
+          "mean_cpr_median": 1.1017940357758809,
+          "mean_dop_median": 0.15209095796250566,
+          "p_mean_dop_lt_0p13": 0.0715,
+          "p_mean_dop_lt_0p13_se": 0.005761412587204634,
+          "p_mean_dop_lt_0p10": 0.0005,
+          "p_mean_dop_lt_0p10_se": 0.0004998749843710925,
+          "regions_evaluated": 2000,
+          "looks_per_channel": 14,
+          "conditional_p": 0.0715,
+          "containing_fraction": 1.0,
+          "unconditional_p": 0.0715,
+          "unconditional_se": 0.005761412587204634,
+          "large_field_N": 39.687780929663944,
+          "large_field_N_se": 0.32473527076278125
+        }
+      }
+    },
+    "CPR 0.7 DOP 0.20": {
+      "cells260": {
+        "L13": {
+          "trials": 4000,
+          "fraction_regions_with_cpr_ge1_cell": 0.804,
+          "mean_cpr_5_95": [
+            1.0138393629694478,
+            1.1821594022576303
+          ],
+          "mean_dop_5_95": [
+            0.09050382890532196,
+            0.2832092364230587
+          ],
+          "mean_cpr_median": 1.0725250982069188,
+          "mean_dop_median": 0.170732252604402,
+          "p_mean_dop_lt_0p13": 0.21672885572139303,
+          "p_mean_dop_lt_0p13_se": 0.0072653478570229146,
+          "p_mean_dop_lt_0p10": 0.07773631840796019,
+          "p_mean_dop_lt_0p10_se": 0.004721516563489806,
+          "regions_evaluated": 3216,
+          "looks_per_channel": 13,
+          "conditional_p": 0.21672885572139303,
+          "containing_fraction": 0.804,
+          "unconditional_p": 0.17425,
+          "unconditional_se": 0.005997644068715648,
+          "large_field_N": 36.79380857399521,
+          "large_field_N_se": 0.4183700754787045
+        },
+        "L14": {
+          "trials": 4000,
+          "fraction_regions_with_cpr_ge1_cell": 0.77525,
+          "mean_cpr_5_95": [
+            1.0116140009518506,
+            1.1790731865781743
+          ],
+          "mean_dop_5_95": [
+            0.08288651566111756,
+            0.2746412016823431
+          ],
+          "mean_cpr_median": 1.0674931967463321,
+          "mean_dop_median": 0.16517410481059078,
+          "p_mean_dop_lt_0p13": 0.25927120283779426,
+          "p_mean_dop_lt_0p13_se": 0.007869658243511409,
+          "p_mean_dop_lt_0p10": 0.0999677523379555,
+          "p_mean_dop_lt_0p10_se": 0.005386518004336911,
+          "regions_evaluated": 3101,
+          "looks_per_channel": 14,
+          "conditional_p": 0.25927120283779426,
+          "containing_fraction": 0.77525,
+          "unconditional_p": 0.201,
+          "unconditional_se": 0.006336383037664311,
+          "large_field_N": 39.687780929663944,
+          "large_field_N_se": 0.32473527076278125
+        }
+      },
+      "cells3647": {
+        "L13": {
+          "trials": 2000,
+          "fraction_regions_with_cpr_ge1_cell": 1.0,
+          "mean_cpr_5_95": [
+            1.0698221394965393,
+            1.1546160734723934
+          ],
+          "mean_dop_5_95": [
+            0.14595655126730803,
+            0.2125262663420412
+          ],
+          "mean_cpr_median": 1.1070113243614603,
+          "mean_dop_median": 0.17776401257433355,
+          "p_mean_dop_lt_0p13": 0.005,
+          "p_mean_dop_lt_0p13_se": 0.0015771810295587506,
+          "p_mean_dop_lt_0p10": 0.0005,
+          "p_mean_dop_lt_0p10_se": 0.0004998749843710925,
+          "regions_evaluated": 2000,
+          "looks_per_channel": 13,
+          "conditional_p": 0.005,
+          "containing_fraction": 1.0,
+          "unconditional_p": 0.005,
+          "unconditional_se": 0.0015771810295587506,
+          "large_field_N": 36.79380857399521,
+          "large_field_N_se": 0.4183700754787045
+        },
+        "L14": {
+          "trials": 2000,
+          "fraction_regions_with_cpr_ge1_cell": 1.0,
+          "mean_cpr_5_95": [
+            1.0641171577563402,
+            1.14822372795312
+          ],
+          "mean_dop_5_95": [
+            0.14183005898806578,
+            0.20824336960694256
+          ],
+          "mean_cpr_median": 1.1006836290844846,
+          "mean_dop_median": 0.17295231399657768,
+          "p_mean_dop_lt_0p13": 0.013,
+          "p_mean_dop_lt_0p13_se": 0.0025328837320335094,
+          "p_mean_dop_lt_0p10": 0.0,
+          "p_mean_dop_lt_0p10_se": 0.0,
+          "regions_evaluated": 2000,
+          "looks_per_channel": 14,
+          "conditional_p": 0.013,
+          "containing_fraction": 1.0,
+          "unconditional_p": 0.013,
+          "unconditional_se": 0.0025328837320335094,
+          "large_field_N": 39.687780929663944,
+          "large_field_N_se": 0.32473527076278125
+        }
+      }
+    }
+  },
+  "interpolated_to_39p4": {
+    "CPR 0.7 DOP 0.176": {
+      "cells260": {
+        "weight_on_upper_L": 0.9005585077202836,
+        "unconditional_percent": 30.28661967238882,
+        "unconditional_se_percent": 0.6597896997951918,
+        "bracketing_L": [
+          13,
+          14
+        ]
+      },
+      "cells3647": {
+        "weight_on_upper_L": 0.9005585077202836,
+        "unconditional_percent": 6.73234573242519,
+        "unconditional_se_percent": 0.5202112416088481,
+        "bracketing_L": [
+          13,
+          14
+        ]
+      }
+    },
+    "CPR 0.7 DOP 0.20": {
+      "cells260": {
+        "weight_on_upper_L": 0.9005585077202836,
+        "unconditional_percent": 19.83399400815176,
+        "unconditional_se_percent": 0.5737367304934856,
+        "bracketing_L": [
+          13,
+          14
+        ]
+      },
+      "cells3647": {
+        "weight_on_upper_L": 0.9005585077202836,
+        "unconditional_percent": 1.2204468061762268,
+        "unconditional_se_percent": 0.22863955280818735,
+        "bracketing_L": [
+          13,
+          14
+        ]
+      }
+    }
+  },
+  "run_info": {
+    "wall_s": 177.7,
+    "peak_rss_mb": 96,
+    "python": "3.13.1",
+    "numpy": "2.2.2",
+    "scipy": "1.17.1",
+    "platform": "Windows-11-10.0.22631-SP0",
+    "cpu_count": 8
+  }
+}

@@ -2,3 +2,17 @@
 # The rendered map layers (LOLA-only and previews) and the 200 m probe grid stay in the repository but not in the archive.
 frontend/public/layers export-ignore
 frontend/public/analysis/probe_grid.bin export-ignore
+# Application screenshots kept as verification evidence can show the CPR/DOP proxy layers at map zoom (up to ~29 m/px):
+# in the repository for now (author's decision pending, docs/V24_REPORT.md), never in the release archive.
+docs/gate6 export-ignore
+docs/evidence export-ignore
+docs/map_before_cpr.png export-ignore
+docs/map_after_cpr.png export-ignore
+docs/map_before_relief.png export-ignore
+docs/map_after_relief.png export-ignore
+docs/v8_opening_view.png export-ignore
+docs/v8_opening_view.before.png export-ignore
+docs/v8_after_reset.png export-ignore
+docs/v8_after_reset.before.png export-ignore
+docs/v8_full_extent.png export-ignore
+docs/v8_full_extent.before.png export-ignore

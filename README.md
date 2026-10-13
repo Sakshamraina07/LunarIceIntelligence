@@ -190,14 +190,14 @@ of them an injection that passed for a reason that was not its own claim.
 `python -u backend/scripts/verify_all.py` ends in three counts: **PASS**, **REQUIRES LOCAL DATA** and **FAIL**, and it
 exits non-zero only on FAIL. REQUIRES LOCAL DATA means a file the gate reads does not exist in this checkout. The gate
 was not run, verified nothing, and is not a pass. A file that exists but is wrong still FAILS the gate that reads it. The
-table at the end names, gate by gate, the file each one needs. On the author's machine every gate passes; in a fresh clone
-none fails and the rest list what they need.
+table at the end names, gate by gate, the file each one needs. On the author's machine every gate passes; in a fresh clone with
+`requirements-analysis.txt` and `requirements-gates.txt` installed, none fails and the rest list what they need.
 
 **Runs with nothing downloaded** (these read tracked files only): G6, G9, G10, G12, G13, G16, G17, G18, G19, G21, G22,
 G23, G25, G29, G30, G33. Four of them (G9, G16, G17, G18) import the service package `backend/app`, so besides
-`requirements-analysis.txt` they need `fastapi`, `pydantic`, `reportlab` and `httpx` (on the author's host: fastapi
-0.127.0, pydantic 2.12.5, reportlab 5.0.1, httpx 0.28.1); `pip install fastapi pydantic reportlab httpx` in the same
-environment is enough. In a fresh clone without them those four gates FAIL on the import, not on the content.
+`requirements-analysis.txt` they need `fastapi`, `pydantic`, `reportlab` and `httpx`, pinned at the author's host
+versions in `requirements-gates.txt`; `pip install -r requirements-gates.txt` in the same environment is enough. In a
+fresh clone without them those gates FAIL on the import, not on the content.
 
 **Needs the Chandrayaan-2 scene from PRADAN:** G2, G3, G4, G20, G27, G31, and, through the rasters derived from it, G1, G5,
 G7, G8 and G24.

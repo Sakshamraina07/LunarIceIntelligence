@@ -1,0 +1,6 @@
+# Needed only by verification gates G9, G16, G17 and G18, which import the service package backend/app.
+# No analysis or figure script under backend/scripts/ or paper/ imports these; the analysis environment is requirements-analysis.txt.
+fastapi==0.127.0
+pydantic==2.12.5
+reportlab==5.0.1
+httpx==0.28.1

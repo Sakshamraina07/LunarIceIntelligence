@@ -97,9 +97,9 @@ substitute.
 `backend/requirements.txt` pins the *service* runtime and is older; the two are
 kept separate deliberately. Four verification gates (G9, G16, G17, G18) import
 the service package `backend/app` and so need, in addition, `fastapi`,
-`pydantic`, `reportlab` and `httpx` (host: fastapi 0.127.0, pydantic 2.12.5,
-reportlab 5.0.1, httpx 0.28.1); nothing under `backend/scripts/` or `paper/`
-that produces an artifact or figure imports them. No GDAL, no rasterio: every raster is read with
+`pydantic`, `reportlab` and `httpx`, pinned at the host's versions in
+`requirements-gates.txt` (`pip install -r requirements-gates.txt`); nothing under
+`backend/scripts/` or `paper/` that produces an artifact or figure imports them. No GDAL, no rasterio: every raster is read with
 `tifffile` and every projection is computed in `backend/app/ingestion/sar_geometry.py`.
 
 **Runtime and memory of the major analyses (third review M16).** Measured on

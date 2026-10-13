@@ -120,7 +120,9 @@ def main():
     # were reported as ignored SOURCE -- a false FAIL on the one check whose
     # whole point is "data must be ignored; code must not".
     # Build output and tool caches are not source either, by that same intent.
-    _NOT_SOURCE = ("data/", "frontend/dist/", ".claude/", "Claude outputs/")
+    _NOT_SOURCE = ("data/", "frontend/dist/", ".claude/", "Claude outputs/",
+                   # AI-agent instruction files and the check_submission.py output are gitignored by design, not source.
+                   "CLAUDE.md", "AGENTS.md", "submission_check.json")
     src = [p for p in on_disk if Path(p).suffix in SOURCE_EXT
            and not Path(p).as_posix().startswith(_NOT_SOURCE)
            and Path(p).as_posix() not in LOCAL_ONLY

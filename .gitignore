@@ -29,3 +29,20 @@ __pycache__/
 # V24: native-resolution (25 m/px) renderings of DFSAR-derived quantities are not published; local only
 /frontend/public/layers/cpr_heatmap.webp
 /frontend/public/layers/dop_heatmap.webp
+
+# AI coding-agent configuration and local working files (not part of the research record).
+# Claude Code permission grants hold machine-specific paths; agent instructions are not repository documentation.
+.claude/
+CLAUDE.md
+AGENTS.md
+.cursor/
+.aider*
+
+# Manuscript working folder and submission-check output: the manuscript source is not tracked
+# (see README "Reproducing", G32); paper/check_submission.py writes submission_check.json to the cwd.
+/Claude outputs/
+/submission_check.json
+
+# Local Python environments
+.venv/
+venv/

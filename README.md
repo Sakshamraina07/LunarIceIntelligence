@@ -81,6 +81,24 @@ A Bragg-domain criterion therefore cannot be applied to this product, and ours i
 | **the probe** | click any point and read the **measured** CPR and DOP there against their thresholds and the one-sided 95 % critical value — a 200 m block mean, labelled as one, with `NO DATA` where the radar returned nothing |
 | **incidence** | Putrevu et al. 2023's 20° Bragg criterion is **withheld**: the product's incidence raster has **80.53 %** of its values below the label's own look angle, which is geometrically impossible, and the field cannot be re-derived from a label with no ephemeris (`docs/METHODS.md` §7.12) |
 
+## Repository layout
+
+```
+frontend/         Vite + React + Leaflet. The application. `npm run dev` from the root proxies here.
+backend/app/      FastAPI request path: /api/mission, the point probe, the PDF report.
+backend/scripts/  The offline producers and verification gates: ingest, build_analysis,
+                  render_layers, detection_statistics, verify_all, check_repo_complete.
+paper/            Figure scripts and the figures as submitted.
+docs/             Methods record, provenance, verification evidence, derived artifacts (JSON),
+                  superseded handoffs.
+data/             Raw and derived rasters (~9 GB Chandrayaan-2 DFSAR + LOLA). Gitignored; never committed.
+```
+
+`docs/PROVENANCE.md` is generated, not written: `python backend/scripts/emit_provenance.py`
+fails the build if any value reaches the UI unmarked. `requirements-analysis.txt` pins the
+exact environment the analysis scripts were run with for the manuscript;
+`backend/requirements.txt` pins the (older) service runtime (`docs/REPRODUCIBILITY.md` §4).
+
 ## Quick start
 
 ```bash

@@ -612,3 +612,18 @@ METHODS §21. Nothing under `data/` is committed; nothing downloaded.
 | A | `paper/fig_cpr_dop.pdf`, `fig_joint_power.pdf`, `fig_region_design.pdf` | `cd paper && python make_figures_v12.py && python make_fig_region.py` (scripts adopted from `Claude outputs/grsl/figscripts_v22/`; the v21 versions are `*_v21.py`) | - | - | - | - |
 | A | `figure_compare_v21.json` | `python backend/scripts/figure_compare_v21.py` | none | - | 1 | 29 |
 | B | `v22_literal_audit.json` | `python backend/scripts/v22_literal_audit.py` | none | - | 36 | 119 |
+
+## 25 · Independent-verification archive (2026-10-13)
+
+The independent-verification archive (`verification_archive_candidate_2026-10-13.zip` at the
+time of writing; kept with the submission package, outside git) holds the audit bundles
+`verification_audit/`, `gap_closure_audit/` and `final_gate/` (scripts, logs, reports) and a copy
+of `docs/gate_v28/` without `tmp/` (the on-site SLC recomputation and the self-reproduction of
+`stokes_from_slc.py`, `REPORT_V28.md`). It carries no manuscript or supplement source or PDF and
+no DFSAR rendering. Two values printed in the Supplementary Material are recorded there and not
+in this repository: the intersection–union onset N = 231.16 is
+`gap_closure_audit/logs/dop_exact.log` line 19 (`exact onset (real N): 231.15760629072787`,
+written by `gap_closure_audit/scripts/dop_exact.py`), and the band edge 0.076455 at N = 231 is
+line 12 of the same log (`N=231: q05=0.076420 edge=0.076455`). Four archive scripts read this
+repository through the environment variable `LUNAR_ICE_REPO` (default: the current directory);
+`docs/disc_table_v21.json` (§23) is the file three of them read.

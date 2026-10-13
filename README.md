@@ -43,9 +43,10 @@ number against it.
 **What you can reproduce without the ISRO data.** Every artifact above is tracked, so every table and
 every figure except Fig. 1(a) regenerates from this checkout alone: `cd paper && python make_figures.py
 && python make_figures_v12.py && python make_fig_region.py && python make_fig_n_sensitivity.py &&
-python make_fig_spec_curve.py` (environment: `requirements-analysis.txt`), and
-`python backend/scripts/recompute_manuscript_tables.py` recomputes the tables from the pipeline's own
-functions. The simulation artifacts (`detection_statistics`, `joint_power_curve`, `np_power_bound`,
+python make_fig_spec_curve.py` (environment: `requirements-analysis.txt`). Every table's artifact is
+tracked; `recompute_manuscript_tables.py`, `audit_manuscript_numbers.py` and `number_crosscheck.py` diff
+them against the manuscript source, which is not tracked until the submission is tagged, so in a fresh
+clone they stop with MANUSCRIPT NOT FOUND. The simulation artifacts (`detection_statistics`, `joint_power_curve`, `np_power_bound`,
 `region_design_curve`, `n_sensitivity*`) regenerate from fixed seeds with no data. Recomputing the
 measured artifacts — look counts, Stokes statistics, the shadow study, Fig. 1(a) — needs the
 Chandrayaan-2 scene from PRADAN and the LOLA products, as described under *Reproducing* below.
@@ -193,7 +194,10 @@ table at the end names, gate by gate, the file each one needs. On the author's m
 none fails and the rest list what they need.
 
 **Runs with nothing downloaded** (these read tracked files only): G6, G9, G10, G12, G13, G16, G17, G18, G19, G21, G22,
-G23, G25, G29, G30, G33.
+G23, G25, G29, G30, G33. Four of them (G9, G16, G17, G18) import the service package `backend/app`, so besides
+`requirements-analysis.txt` they need `fastapi`, `pydantic`, `reportlab` and `httpx` (on the author's host: fastapi
+0.127.0, pydantic 2.12.5, reportlab 5.0.1, httpx 0.28.1); `pip install fastapi pydantic reportlab httpx` in the same
+environment is enough. In a fresh clone without them those four gates FAIL on the import, not on the content.
 
 **Needs the Chandrayaan-2 scene from PRADAN:** G2, G3, G4, G20, G27, G31, and, through the rasters derived from it, G1, G5,
 G7, G8 and G24.

@@ -89,9 +89,17 @@ data are not redistributed by this repository. Citation metadata:
 
 `requirements-analysis.txt` pins what the analysis scripts were run with on the
 analysis host (Python 3.13.1, numpy 2.2.2, scipy 1.17.1, tifffile 2026.8.23,
-matplotlib 3.10.9, Pillow 12.0.0, opencv-python-headless 5.0.0).
+matplotlib 3.10.9, Pillow 12.0.0, opencv-python 5.0.0.93). The OpenCV pin was
+corrected on 2026-10-13 because `opencv-python-headless==5.0.0` matches no PyPI
+release; the analysis host runs opencv-python 5.0.0.93 (cv2 5.0.0), and
+opencv-python-headless 5.0.0.93 is the same cv2 build and an acceptable
+substitute.
 `backend/requirements.txt` pins the *service* runtime and is older; the two are
-kept separate deliberately. No GDAL, no rasterio: every raster is read with
+kept separate deliberately. Four verification gates (G9, G16, G17, G18) import
+the service package `backend/app` and so need, in addition, `fastapi`,
+`pydantic`, `reportlab` and `httpx` (host: fastapi 0.127.0, pydantic 2.12.5,
+reportlab 5.0.1, httpx 0.28.1); nothing under `backend/scripts/` or `paper/`
+that produces an artifact or figure imports them. No GDAL, no rasterio: every raster is read with
 `tifffile` and every projection is computed in `backend/app/ingestion/sar_geometry.py`.
 
 **Runtime and memory of the major analyses (third review M16).** Measured on
@@ -335,73 +343,83 @@ summarised in `docs/literature_screen.md`; the screen G29 asserts is
 
 ## 17 · Regeneration commands
 
-The third-review manuscript (2026-09-23) carries **four tables and two
-figures**. The provenance/sensitivity table was folded into one sentence of
-Sec. V-A, and the ENL-bars figure was removed (C9); `fig2_enl.pdf` and
-`fig4_external.pdf` are still built by the script and are not used by the
-paper. Order below is the order they appear.
+The submitted manuscript (the authors' build of 4 October 2026, submitted to
+TGRS on 16 October 2026) carries **two two-panel figures and four tables**; the
+Supplementary Material carries **three figures and nine tables**. `README.md`
+(*Relation to the TGRS manuscript*) and `paper/README.md` map each of them to
+the script and artifact behind it; this section records the regeneration
+commands, in the order the items appear. Earlier layouts (the third-review
+manuscript of 2026-09-23 had Fig. 1 = `fig1_degeneracy.pdf`, Figs. 2 and 3 =
+`fig_cpr_dop.pdf` and `fig_joint_power.pdf`, and the sampling-statistics and
+Mini-RF tables in the main text) are recorded in §§18–24; the items moved, the
+files did not.
 
-Figures — two scripts, both run from `paper/` (v14, 2026-09-23):
-
-* **Fig. 1** — `cd paper && python make_figures.py`, which reads
-  `paper/fig1_density.npz` and writes `fig1_degeneracy.pdf` (and three PDFs the
-  manuscript no longer uses). The script is byte-identical to
-  `Claude outputs/grsl/make_figures.py` (v14 changed only the Fig. 1 labels to
-  $\mathrm{DOP}_a<0.13$).
-* **Figs. 2 and 3** — `cd paper && python make_figures_v12.py`, which reads
-  `paper/fig_cpr_dop_density.npz` and `docs/joint_power_curve.json` (and, for
-  Fig. 3's thin curve, `docs/np_power_bound.json`) and writes `fig_cpr_dop.pdf`
-  and `fig_joint_power.pdf`. It is `Claude outputs/grsl/v12fig/make_figures_v12.py`
-  with the copy's hard-coded `/mnt/user-data/...` path replaced by the
-  repository's `docs/`, and the bound curve added. It supersedes
-  `make_figures_council.py` (removed).
-
-Rebuilt from the repository, `fig1_degeneracy.pdf` and `fig_cpr_dop.pdf` match
-the grsl copies' page boxes to 0.000 pt with the same text operators (the
-embedded font-subset streams differ by build); `fig_joint_power.pdf` has the
-same page box (231.18 x 156.66 pt, 2.37 in tall at \columnwidth) and one more
-legend entry, "upper bound, any level-5 % test". Font embedding and the absence
-of Type 3 fonts are checked by `python paper/assert_figures_embed_fonts.py`
-(G26), which builds both scripts and checks exactly these three PDFs.
+Figures — six generators, all run from `paper/` with the environment of
+`requirements-analysis.txt`: `make_figures.py`, `make_figures_v12.py`,
+`make_fig_scene.py`, `make_fig_region.py`, `make_fig_n_sensitivity.py`,
+`make_fig_spec_curve.py`. `make_figures_v12.py` is
+`Claude outputs/grsl/v12fig/make_figures_v12.py` with the copy's hard-coded
+`/mnt/user-data/...` path replaced by the repository's `docs/`; the three
+scripts `make_figures.py`, `make_figures_v12.py` and `make_fig_n_sensitivity.py`
+were synced to the 4 October 2026 build in commit `076638f`. Rebuilt from the
+repository, the seven tracked PDFs below are content-stream-identical to that
+build; a rebuild differs only in PDF metadata (creation date, producer). Font
+embedding, the absence of Type 3 fonts and the minimum text size at the printed
+width are checked by `python paper/assert_figures_embed_fonts.py` (G26), which
+runs all six generators and checks exactly these seven PDFs.
 
 | # | figure (file) | artifact behind it | command |
 |---|---|---|---|
-| 1 | every measured pixel on the analytic curve (`fig1_degeneracy.pdf`) | `paper/fig1_density.npz`, cross-checked by `docs/dop_exclusion.json` | `python backend/scripts/dop_exclusion.py`; `cd paper && python make_figures.py` |
-| 2 | every complex-product cell in sample DOP and CPR (`fig_cpr_dop.pdf`) | `paper/fig_cpr_dop_density.npz`, `docs/enl_logratio.json` (39.4) | `python backend/scripts/stokes_from_slc.py`; `cd paper && python make_figures_v12.py` |
-| 3 | the joint rule as a test across N, and the NP bound (`fig_joint_power.pdf`) | `docs/joint_power_curve.json`, `docs/np_power_bound.json` | `python backend/scripts/dop_sampling_bias.py --curve`; `python backend/scripts/np_power_bound.py`; `cd paper && python make_figures_v12.py` |
-| — | `fig3_detection.pdf` — **retired from the gates in v14** (replaced by Fig. 3 above), still built by `make_figures.py` | `docs/detection_statistics.json::sampling_statistics` | `python backend/scripts/detection_statistics.py` |
-| — | measured ENL for four products (`fig2_enl.pdf`) — **removed from the paper (C9), still built** | `docs/slc_multilook_control.json`, `docs/slepian_ceiling.json`, `docs/bootstrap_enl.json` | `python backend/scripts/slc_multilook_control.py --windows 9`; `python backend/scripts/slepian_ceiling.py` |
+| 1(a) | sample CPR over the frame at 100 m bins, with the 25 m window (`fig_scene.pdf`) | `data/derived/fig_scene/fig_scene_cache.npz` (local only; needs the scene) | `python backend/scripts/f2_complex_product.py`; `cd paper && python make_fig_scene.py` |
+| 1(b) | every complex-product cell in sample DOP and CPR (`fig_cpr_dop.pdf`) | `paper/fig_cpr_dop_density.npz`, `docs/enl_logratio.json` (39.4) | `python backend/scripts/stokes_from_slc.py`; `cd paper && python make_figures_v12.py` |
+| 2(a) | the joint rule as a test across N, and the NP bound (`fig_joint_power.pdf`) | `docs/joint_power_curve.json`, `docs/np_power_bound.json` | `python backend/scripts/dop_sampling_bias.py --curve`; `python backend/scripts/np_power_bound.py`; `cd paper && python make_figures_v12.py` |
+| 2(b) | regional design curve, pooled looks for 80 % power (`fig_region_design.pdf`) | `docs/region_design_curve.json` | `python backend/scripts/region_design_curve.py`; `cd paper && python make_fig_region.py` |
+| S1 | every measured pixel on the analytic curve (`fig1_degeneracy.pdf`) | `paper/fig1_density.npz`, cross-checked by `docs/dop_exclusion.json` | `python backend/scripts/dop_exclusion.py`; `cd paper && python make_figures.py` |
+| S2 | power bound, size and power against N; region-mean null (`fig_n_sensitivity.pdf`) | `docs/n_sensitivity.json` (assembled from `n_sensitivity_*.json`) | `python backend/scripts/n_sensitivity_assemble.py`; `cd paper && python make_fig_n_sensitivity.py` |
+| S3 | specification curve, 1024 specifications (`fig_spec_curve.pdf`) | `docs/shadow_identification.json::B_spec_curve` | `python backend/scripts/shadow_identification.py --workers 3`; `cd paper && python make_fig_spec_curve.py` |
+| — | `fig3_detection.pdf` — **retired from the gates in v14** (its content became the joint-rule figure), still built by `make_figures.py` | `docs/detection_statistics.json::sampling_statistics` | `python backend/scripts/detection_statistics.py` |
+| — | measured ENL for four products (`fig2_enl.pdf`) — **removed from the paper (C9, 2026-09-23), still built** | `docs/slc_multilook_control.json`, `docs/slepian_ceiling.json`, `docs/bootstrap_enl.json` | `python backend/scripts/slc_multilook_control.py --windows 9`; `python backend/scripts/slepian_ceiling.py` |
 | — | external check (`fig4_external.pdf`) — **not used by the manuscript** | `docs/cpr_dispersion.json` | `python backend/scripts/cpr_dispersion.py --window 15 --top 20` |
 
 **Which run each in-band maximum comes from.** Two values of the largest
 CPR_a among pixels with DOP_a < 0.13 are in the repository, and they are two
-different fields, not a disagreement. Sec. III-B's 4.2610574 × 10⁻³ (and the
-234.68× margin of Sec. VII) is read from `frontend/public/analysis/sweep_grid.json`,
+different fields, not a disagreement. The Supplement's amplitude-only screen
+section prints 4.2610574 × 10⁻³, read from `frontend/public/analysis/sweep_grid.json`,
 whose source is `data/pradan/native/cpr_native.tif` / `dop_native.tif` — the
 PRODUCTION field: DN² × sin θ / (K G²) with the label gains, 5 × 5 boxcar,
-then CPR_a and DOP_a, in float32. Fig. 1 and `docs/dop_exclusion.json` give
-4.2610415 × 10⁻³: the per-pixel values BEFORE the boxcar, with the label gains
-applied (l_X = (DN_X/G_X)²; sin θ and K cancel pixel by pixel), as the Fig. 1
-caption states ("formed before the boxcar"). The sweep-grid run does not omit
-the gains; the difference is the boxcar. (`fig1_density.npz` stores
+then CPR_a and DOP_a, in float32. Supplement Fig. S1 and `docs/dop_exclusion.json`
+give 4.2610415 × 10⁻³: the per-pixel values BEFORE the boxcar, with the label
+gains applied (l_X = (DN_X/G_X)²; sin θ and K cancel pixel by pixel), as the
+Fig. S1 caption states ("formed before the boxcar"). The sweep-grid run does
+not omit the gains; the difference is the boxcar. (`fig1_density.npz` stores
 4.2610415258 × 10⁻³ and `dop_exclusion.json` 4.2610414777 × 10⁻³, the same
-field in float32 and float64.)
+field in float32 and float64.) The 234.68× margin that an earlier revision
+printed is no longer in the paper.
 
 | # | table | artifact behind it | command |
 |---|---|---|---|
-| I | coverage budget for one DFSAR pass | `frontend/public/analysis/faustini.json::masks`, `data/pradan/dfsar/metadata_real.json` | `python backend/scripts/process_real_sar_pipeline.py` |
-| II | sampling statistics of a Stokes-derived CPR | `docs/detection_statistics.json::sampling_statistics.rows` | `python backend/scripts/detection_statistics.py` |
-| — | sensitivity to the raw ENL (was Table III; now one sentence of V-A) | `docs/table5_sensitivity.json`, `docs/detection_statistics.json::derived.sensitivity_crit_three_decimals`, `docs/bootstrap_enl.json` | `python backend/scripts/table5_sensitivity.py`; `python backend/scripts/detection_statistics.py` |
-| III | look count inferred from the published CPR moments (was IV) | `docs/published_moments.json` | `python backend/scripts/published_moments.py` |
-| IV | scope of inference (was V) | prose; no artifact | — |
+| I | look counts for the L-band pass (label, moment, log-ratio, coherence, multilook control, bootstrap) | `docs/enl*.json`, `docs/enl_logratio.json`, `docs/coherence_nhat.json`, `docs/slc_multilook_control.json`, `docs/bootstrap_enl.json`, `docs/stokes_from_slc*.json` | `python backend/scripts/measure_enl.py`; `enl_logratio.py`; `coherence_nhat.py`; `slc_multilook_control.py --windows 9`; `bootstrap_enl.py`; `stokes_from_slc.py` |
+| II | dependence of the results on N (critical value, IUT onset, size) | `docs/detection_statistics.json`, `docs/n_sensitivity.json`, `docs/n_sensitivity_table.tex` | `python backend/scripts/detection_statistics.py`; `n_sensitivity_*.py` (§23); `n_sensitivity_assemble.py` |
+| III | shadowed-versus-sunlit odds ratios with block-bootstrap intervals | `docs/disc_table_v21.json`, `docs/shadow_identification.json`, `docs/psr_domains.json` | `python backend/scripts/v21_extract.py`; `shadow_identification.py --workers 3`; `psr_domains.py` |
+| IV | scope of inference | prose; no artifact | — |
+| S1 | look count inferred from the published CPR moments | `docs/published_moments.json` | `python backend/scripts/published_moments.py` |
+| S4 | kernel sweep | `docs/kernel_sweep.json` | `python backend/scripts/gap_v20_frame.py` |
+| S5 | coverage budget for one DFSAR pass | `frontend/public/analysis/faustini.json::masks`, `data/pradan/dfsar/metadata_real.json` | `python backend/scripts/process_real_sar_pipeline.py` |
+| S6 | sampling statistics of a Stokes-derived CPR | `docs/detection_statistics.json::sampling_statistics.rows` | `python backend/scripts/detection_statistics.py` |
 
-Every cell of Tables II and III and every figure of the V-A sensitivity
-sentence is recomputed from the pipeline's own functions and diffed against
-the print by `python backend/scripts/recompute_manuscript_tables.py`
-(`docs/table_recompute.json`), which is wired as a gate.
+The remaining supplement tables (S2 crater F2, S3 shadow ladder, S7 look-count
+dependence, S8 specification curve, S9 delivered-product ENL) are covered by
+the number audit map, `backend/scripts/manuscript_audit_table.py`.
 
-Table II is computed at the *N* each row prints, and the caption says so. The
-artifact carries both conventions side by side: `rows[i]` holds the cells at the
+`python backend/scripts/recompute_manuscript_tables.py` (`docs/table_recompute.json`,
+gate G32) parses three blocks out of the `.tex` and recomputes every cell from
+the pipeline's own functions: the sampling statistics (now Supplement Table S6;
+when the manuscript holds no such table the script reads the supplement beside
+it), the critical values printed in the look-count text of Sec. V-A, and the
+Mini-RF inversions (now Supplement Table S1).
+
+The sampling-statistics table is computed at the *N* each row prints, and its
+caption says so. The artifact carries both conventions side by side: `rows[i]` holds the cells at the
 printed *N*, `rows[i].at_measured_N` the same cells at the unrounded measurement
 behind it (8.7544 rather than 8.75, 13.7166 rather than 13.72). They answer
 different questions and differ in the third digit — critical value 2.244 against

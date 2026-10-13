@@ -2,10 +2,15 @@
 # with for the manuscript (measured on the analysis host, 2026-09-16), pinned
 # exactly. backend/requirements.txt pins the SERVICE runtime, which is older
 # (numpy 2.1.3, scipy 1.14.1) and does not include tifffile or matplotlib.
+# The OpenCV pin was corrected on 2026-10-13 because opencv-python-headless==5.0.0
+# matches no PyPI release; the analysis host runs opencv-python 5.0.0.93 (cv2 5.0.0),
+# and opencv-python-headless 5.0.0.93 is the same cv2 build and an acceptable
+# substitute. Gates G9/G16/G17/G18 need the service packages listed in README
+# (Reproducing) and docs/REPRODUCIBILITY.md section 4.
 # python 3.13.1
 numpy==2.2.2
 scipy==1.17.1
 tifffile==2026.8.23
 matplotlib==3.10.9
 Pillow==12.0.0
-opencv-python-headless==5.0.0
+opencv-python==5.0.0.93

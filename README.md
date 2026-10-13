@@ -88,8 +88,8 @@ frontend/         Vite + React + Leaflet. The application. `npm run dev` from th
 backend/app/      FastAPI request path: /api/mission, the point probe, the PDF report.
 backend/scripts/  The offline producers and the verification-gate scripts: ingest, build_analysis,
                   render_layers, detection_statistics, verify_all, check_repo_complete.
-paper/            Figure scripts and the figures they regenerate (three differ from the 4 Oct 2026
-                  submission build pending a script sync; see docs/REPRODUCIBILITY.md section 17).
+paper/            Figure scripts and the figures they regenerate, content-stream-identical to the
+                  authors' 4 Oct 2026 manuscript build (docs/REPRODUCIBILITY.md section 17).
 docs/             Methods record, provenance, reproducibility manifest, derived artifacts (JSON);
                   docs/handoffs/ holds superseded handoffs, session reports and withdrawn documents.
 data/             Raw and derived rasters (~9 GB Chandrayaan-2 DFSAR + LOLA). Gitignored; never committed.

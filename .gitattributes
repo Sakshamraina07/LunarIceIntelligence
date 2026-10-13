@@ -3,5 +3,5 @@
 frontend/public/layers export-ignore
 frontend/public/analysis/probe_grid.bin export-ignore
 # docs/gate6/capture.*.json record the map zoom of screenshots since removed; they are text, not renderings, and stay in the archive.
-# A derived delta-DOP map at about 150 m/px, pending a separate policy decision (DATA.md): on GitHub, never in the release archive.
+# docs/propagation_ddop_map.png is the 200 m block-maximum diagnostic map of |dDOP_a| (propagation_percentiles.py): on GitHub, kept out of the release archive.
 docs/propagation_ddop_map.png export-ignore

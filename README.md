@@ -112,8 +112,8 @@ python -u backend/scripts/verify_all.py      # every gate, mapped to PRD section
 The ~9 GB of Chandrayaan-2 and LOLA rasters are not in this repository: they are
 gitignored, none was ever committed (`check_repo_complete.py` reads all of
 history), and the repository holds no layer, tile or screenshot that renders a
-DFSAR-derived quantity finer than 200 m per pixel, apart from the two exceptions
-`DATA.md` states. **Without the rasters the app reports `NOT_INGESTED` and serves no
+DFSAR-derived quantity finer than 200 m per pixel; `DATA.md` states the one manuscript
+figure that is finer. **Without the rasters the app reports `NOT_INGESTED` and serves no
 numbers at all** — not zeros, which would be a measurement claim. There is no demo
 or synthetic fallback on any serving path. See *Reproducing* below.
 

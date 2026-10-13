@@ -3674,7 +3674,7 @@ ingested, and §1 states exactly what having them would change.*
 without-sin θ pipelines. `backend/scripts/propagation_percentiles.py` re-runs
 `incidence_audit.screen()` verbatim and reports the distribution over the
 amplitude mask, and where the maximum sits (`docs/propagation_percentiles.json`;
-map `docs/propagation_ddop_map.png`, log₁₀ |ΔDOP_a| with the maximum marked):
+map `docs/propagation_ddop_map.png`: the **200 m block maximum** of |ΔDOP_a| — the largest value in each 8 × 8 block of 25 m pixels, log₁₀, with the per-pixel maximum marked; the percentiles in the table are per pixel, not per block):
 
 | | p50 | p90 | p99 | max | maximum at | on the mask edge? |
 |---|---|---|---|---|---|---|

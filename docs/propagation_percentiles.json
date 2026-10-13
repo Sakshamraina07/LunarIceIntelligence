@@ -1,6 +1,6 @@
 {
   "schema": "lunar-ice/propagation-percentiles/1",
-  "generated_utc": "2026-09-16T06:45:13.932099+00:00",
+  "generated_utc": "2026-10-13T15:38:46.839057+00:00",
   "generator": "backend/scripts/propagation_percentiles.py",
   "pipelines": "incidence_audit.screen(True) vs screen(False), verbatim: float32 DN, per-channel calibration, 5x5 uniform_filter mode='nearest', ratios on the boxcar output",
   "mask": {

@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import json
 import sys
+import warnings
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -37,6 +38,7 @@ NATIVE = BASE_DIR / "data" / "pradan" / "native"
 STEM = "ch2_sar_ncxl_20200808t201154198"
 OUT = BASE_DIR / "docs" / "propagation_percentiles.json"
 PNG = BASE_DIR / "docs" / "propagation_ddop_map.png"
+MAP_BLOCK = 8   # 8 x 25 m = 200 m: the published map is a block-max rendering, never finer than 200 m per pixel
 
 for _s in (sys.stdout, sys.stderr):
     try:
@@ -111,15 +113,30 @@ def main() -> int:
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt
+        # The published map is a 200 m rendering: the per-pixel field is reduced to the MAXIMUM of
+        # each 8 x 8 block (8 x 25 m) before drawing. Block-max is the statistic this section reports
+        # (the maximum and where it sits), so the marked point is the true argmax and the global
+        # maximum is exact. The percentiles in the JSON above are taken per pixel and are unchanged
+        # by this step: the map and the table show different statistics of the same field. The array
+        # is padded with NaN to a multiple of the block size, so no edge row or column is dropped;
+        # a block straddling the mask aggregates its valid pixels only, and a block with none is
+        # blank. The figure is sized so one rendered pixel covers >= 200 m.
         img = np.where(valid, d_dop, np.nan)
-        fig, ax = plt.subplots(figsize=(12, 4.6), dpi=110)
+        hb, wb = -(-img.shape[0] // MAP_BLOCK), -(-img.shape[1] // MAP_BLOCK)
+        padded = np.full((hb * MAP_BLOCK, wb * MAP_BLOCK), np.nan)
+        padded[:img.shape[0], :img.shape[1]] = img
+        with warnings.catch_warnings():
+            # only the all-NaN-block warning is expected here; anything else must still surface
+            warnings.filterwarnings("ignore", message="All-NaN slice encountered", category=RuntimeWarning)
+            img = np.nanmax(padded.reshape(hb, MAP_BLOCK, wb, MAP_BLOCK), axis=(1, 3))
+        fig, ax = plt.subplots(figsize=(8.0, 3.3), dpi=110)
         im = ax.imshow(np.log10(np.maximum(img, 1e-9)), cmap="viridis", aspect="auto",
-                       interpolation="nearest")
+                       interpolation="nearest", extent=(0, wb * MAP_BLOCK, hb * MAP_BLOCK, 0))
         ax.plot(res["dop"]["argmax"]["sample"], res["dop"]["argmax"]["line"], "r+", ms=14, mew=1.5)
-        ax.set_title("|ΔDOP_a| between the with-sin(θ) and without-sin(θ) pipelines "
-                     "(log10; red + = maximum)")
-        ax.set_xlabel("sample"); ax.set_ylabel("line")
-        fig.colorbar(im, ax=ax, label="log10 |ΔDOP_a|")
+        ax.set_title("|ΔDOP_a| between the with-sin θ and without-sin θ pipelines: block maximum over "
+                     f"{MAP_BLOCK} × {MAP_BLOCK} px ({MAP_BLOCK * 25} m), log10; red + = maximum", fontsize=8)
+        ax.set_xlabel("sample (25 m px)"); ax.set_ylabel("line (25 m px)")
+        fig.colorbar(im, ax=ax, label=f"log10 block max |ΔDOP_a| ({MAP_BLOCK * 25} m)")
         fig.tight_layout(); fig.savefig(PNG); plt.close(fig)
         png_status = str(PNG.relative_to(BASE_DIR))
     except Exception as exc:  # noqa: BLE001

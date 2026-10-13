@@ -23,11 +23,14 @@ to know they existed and to recognise a local copy: path, git blob id, sha256, s
 value. The author holds the files locally; they are not published, and gate G28 (checks C1, C8 and C8b) fails if one is tracked,
 is anywhere in history by name or by blob id, or differs from its recorded sha256.
 
-**Two exceptions are stated here rather than left implicit, and they are NOT removed.**
-(1) `docs/propagation_ddop_map.png`, a delta-DOP perturbation map of about 125 m per pixel (a derived field of a calibration
-ablation), is on GitHub but is `export-ignore`d, so it is not in the release archive or the Zenodo record.
-(2) `paper/fig_scene.pdf`, a manuscript figure, has a panel (b) of the sample CPR at 25 m bins over a 12 x 3.8 km window; the
-figure is in the repository and in the release archive. Neither meets the 200 m rule, and the author has not yet decided them.
+**One item is stated here rather than left implicit.** `paper/fig_scene.pdf`, a manuscript figure, has a panel (b) of the
+sample CPR at 25 m bins over a 12 x 3.8 km window; the figure is in the repository and in the release archive. It is finer than
+the 200 m stated above. Whether its use of the data in the published paper and in this repository requires ISRO's permission is
+being clarified with ISRO/ISSDC; no permission is claimed here.
+
+`docs/propagation_ddop_map.png` is the 200 m block maximum of |dDOP_a| (the largest value in each 8 x 8 block of 25 m pixels,
+written by `backend/scripts/propagation_percentiles.py`); it meets the rule above and is kept out of the release archive as a
+diagnostic figure (`.gitattributes`).
 
 `data/` is gitignored in its entirety, `docs/selected_cells_v21.json` (per-cell values) and the two native-resolution layer files
 (`frontend/public/layers/cpr_heatmap.webp`, `dop_heatmap.webp`) are gitignored and local only, and gates enforce it rather than trusting it:

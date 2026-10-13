@@ -101,7 +101,7 @@ def fig_degeneracy(path):
         ax.plot([], [], color=ACC1, lw=3, alpha=0.85,
                 label=f"{n:,} measured pixels (density)")
         ax.text(0.98, 2.2e-4, f"{100*nb/n:.0f}% of pixels lie inside " + r"$\mathrm{DOP}_a<0.13$",
-                fontsize=6.2, color=MUTED, ha="right", va="bottom")
+                fontsize=7, color=MUTED, ha="right", va="bottom")
     except FileNotFoundError:
         pass
 
@@ -122,7 +122,7 @@ def fig_degeneracy(path):
     ax.set_xlabel(r"$\mathrm{DOP}_a$")
     ax.set_ylabel(r"$\mathrm{CPR}_a$")
     ax.grid(True, which="major", ls="-", color=MUTED)
-    ax.legend(loc="lower right", frameon=False, fontsize=6.2, bbox_to_anchor=(1.0, 0.13))
+    ax.legend(loc="lower right", frameon=False, fontsize=7, bbox_to_anchor=(1.0, 0.13))
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     fig.savefig(path, dpi=600)

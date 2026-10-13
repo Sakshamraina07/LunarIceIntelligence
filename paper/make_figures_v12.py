@@ -52,6 +52,38 @@ def crit(n):
     return stats.f.ppf(0.95, 2 * n, 2 * n)
 
 
+def _assert_layout(fig, ax, ia, leg, lab, H, xe, ye):
+    """Fail if the text label leaves the axes frame, or if the legend or the label
+    covers an occupied density bin, the coupling curve, or the inset."""
+    fig.canvas.draw()
+    rend = fig.canvas.get_renderer()
+    axbb = ax.get_window_extent(rend)
+    inv = ax.transData.inverted()
+    xc = 0.5 * (xe[:-1] + xe[1:])
+    yc = 10 ** (0.5 * (ye[:-1] + ye[1:]))
+    X, Y = np.meshgrid(xc, yc, indexing="ij")
+    pts = ax.transData.transform(np.column_stack([X.ravel(), Y.ravel()]))
+    occ = (H.ravel() > 0)
+    cc = np.logspace(-3, 1.5, 4000)
+    cur = ax.transData.transform(np.column_stack([np.abs(1 - cc) / (1 + cc), cc]))
+    for name, art in (("DOP label", lab), ("legend", leg)):
+        bb = art.get_window_extent(rend)
+        assert axbb.x0 <= bb.x0 and bb.x1 <= axbb.x1 and axbb.y0 <= bb.y0 and bb.y1 <= axbb.y1, \
+            f"{name} leaves the axes frame: {bb} vs {axbb}"
+        inside = (pts[:, 0] >= bb.x0) & (pts[:, 0] <= bb.x1) & (pts[:, 1] >= bb.y0) & (pts[:, 1] <= bb.y1)
+        assert not np.any(inside & occ), f"{name} covers {int((inside & occ).sum())} occupied bins"
+        on_curve = (cur[:, 0] >= bb.x0) & (cur[:, 0] <= bb.x1) & (cur[:, 1] >= bb.y0) & (cur[:, 1] <= bb.y1)
+        assert not np.any(on_curve), f"{name} covers the coupling curve"
+        ibb = ia.get_window_extent(rend)
+        assert bb.x1 <= ibb.x0 or bb.x0 >= ibb.x1 or bb.y1 <= ibb.y0 or bb.y0 >= ibb.y1, \
+            f"{name} overlaps the inset"
+        # no horizontal reference line may pass under the legend or label
+        for yv in (1.0, EDGE, crit(39.436)):
+            yp = ax.transData.transform((0.5, yv))[1]
+            assert not (bb.y0 <= yp <= bb.y1 and bb.x0 < axbb.x1 and bb.x1 > axbb.x0), \
+                f"{name} hides a reference line at CPR = {yv:.4g}"
+
+
 def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     z = np.load(npz)
     H, xe, ye = z["H"], z["xe"], z["ye"]
@@ -67,11 +99,17 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     c2 = crit(n_ratio)
     ax.axhline(c2, color=ACC1, lw=0.8, ls="--", label=f"crit. {c2:.3f}, $N={n_ratio:.1f}$")
     ax.plot([], [], color=INK, lw=0.9, label="coupling curve")
-    ax.text(0.145, 2.2, "DOP = 0.13", color=ACC2, fontsize=7.3, rotation=90, va="bottom")
-    # v20 S4: short entries, left of the coupling curve's upper branch (DOP > 0.69,
-    # CPR > 5), clear of the "DOP = 0.13" label
-    ax.legend(loc="upper left", bbox_to_anchor=(0.19, 1.0), frameon=True, framealpha=1.0,
-              facecolor="white", edgecolor="none", fontsize=7.3)
+    # v23: the rotated label ran past the top of the frame, and the legend (upper
+    # left, v20) hid 2184 of the 2803 occupied bins above CPR = 1, the very tail the
+    # paper is about.  The label is now horizontal in the empty wedge left of the
+    # coupling curve's upper branch; the legend sits in the empty corner below the
+    # curve's lower branch, where no cell can fall.  _assert_layout() fails the
+    # build if either moves back onto data or out of the frame.
+    lab = ax.text(0.15, 7.0, "DOP = 0.13", color=ACC2, fontsize=7.3, ha="left", va="center")
+    leg = ax.legend(loc="lower right", bbox_to_anchor=(0.925, 0.012), frameon=True,
+                    framealpha=1.0, facecolor="white", edgecolor="none", fontsize=7.3,
+                    borderaxespad=0.0, handlelength=1.5, handletextpad=0.5,
+                    labelspacing=0.3, borderpad=0.3)
     ax.set_yscale("log")
     ax.yaxis.set_major_formatter(PLAIN)
     ax.set_xlim(0, 1)
@@ -79,7 +117,7 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     ax.set_xlabel(r"sample DOP $\hat m$")
     ax.set_ylabel(r"sample CPR $R$")
     # inset: the joint criterion's corner, DOP 0-0.2 and R 0.7-1.5, the band shaded
-    ia = ax.inset_axes([0.075, 0.075, 0.40, 0.42])
+    ia = ax.inset_axes([0.075, 0.075, 0.355, 0.42])
     ia.pcolormesh(xe, 10 ** ye, Hm, cmap="Blues", norm=norm, shading="flat", rasterized=True)
     # v20 S4: only the admissible wedge, DOP from |q| to 0.13 with 1 < CPR < 1.2989
     rr = np.linspace(1.0, EDGE, 60)
@@ -101,6 +139,7 @@ def fig_cpr_dop(npz, out="fig_cpr_dop.pdf", n_ratio=39.436):
     cb.set_label("cells per bin", fontsize=7.5)
     cb.ax.tick_params(labelsize=7.3)
     cb.ax.yaxis.set_major_formatter(PLAIN)
+    _assert_layout(fig, ax, ia, leg, lab, H, xe, ye)
     fig.savefig(out, dpi=600)
     plt.close(fig)
     return int(z["n"]), c2, c2

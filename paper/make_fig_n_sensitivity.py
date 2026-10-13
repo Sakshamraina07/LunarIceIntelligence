@@ -66,7 +66,7 @@ def main(out="fig_n_sensitivity.pdf"):
         a.text(x * 1.02, 98, t, rotation=90, va="top", ha="left", fontsize=7, color=MUTED)
     logticks(a); a.set_ylim(0, 100)
     a.set_xlabel("look count N"); a.set_ylabel("per cent")
-    a.legend(loc="center left", frameon=False, borderaxespad=0.2, bbox_to_anchor=(0.02, 0.62))
+    a.legend(loc="center left", frameon=True, framealpha=1.0, facecolor="white", edgecolor="none", borderaxespad=0.2, bbox_to_anchor=(0.02, 0.62)).set_zorder(5)  # v23: opaque, so the dotted markers do not run through the text
     a.set_title("(a) one cell", loc="left", fontsize=7.5)
     # ---- right
     cols = {260: ACC1, 3647: ACC3}
@@ -85,7 +85,7 @@ def main(out="fig_n_sensitivity.pdf"):
         b.axvline(x, color=MUTED, lw=0.5, ls=":")
     logticks(b); b.set_ylim(0, 100)
     b.set_xlabel("look count N (achieved, log-ratio)"); b.set_ylabel("regions with mean DOP < 0.13, per cent")
-    b.legend(loc="upper left", frameon=False, borderaxespad=0.2)
+    b.legend(loc="upper left", frameon=True, framealpha=1.0, facecolor="white", edgecolor="none", borderaxespad=0.2).set_zorder(5)
     b.set_title("(b) ice-free region, CPR 0.7, DOP 0.176", loc="left", fontsize=7.5)
     fig.tight_layout(pad=0.4, w_pad=1.0)
     fig.savefig(HERE / out)

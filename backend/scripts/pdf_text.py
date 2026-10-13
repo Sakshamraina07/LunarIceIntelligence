@@ -1,7 +1,7 @@
 """
 pdf_text.py -- pull the visible text out of a PDF, with no new dependencies.
 
-    python backend/scripts/pdf_text.py docs/evidence/pdf/report.before.pdf
+    python backend/scripts/pdf_text.py <report.pdf>
 
 WHY THIS EXISTS
 ---------------

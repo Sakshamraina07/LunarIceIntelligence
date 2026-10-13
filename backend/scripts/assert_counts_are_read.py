@@ -69,8 +69,8 @@ for _t, _w in _TENS.items():
         WORDS[_t + _u] = f"{_w}-{_UNITS[_u]}"
 WORD_TO_N = {w: n for n, w in WORDS.items()}
 
-DOCS = ["README.md", "docs/viva.md", "docs/METHODS.md", "docs/testing.md",
-        "docs/scientific-methodology.md", "PRD.md"]
+DOCS = ["README.md", "docs/handoffs/viva.md", "docs/METHODS.md", "docs/testing.md",
+        "docs/handoffs/README.md", "PRD.md"]
 
 INJECTIONS = ("gatecount", "apparatus")
 

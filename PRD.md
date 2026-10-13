@@ -1240,7 +1240,7 @@ every gate's evidence in one command and writes to `docs/`, and that each gate i
 asserts corresponds to a statement in §6.
 
 **7.4** Update `README.md` and the four stale `docs/*.md`
-(`ml-methodology.md` in particular describes the deleted Random Forest).
+(`ml-methodology.md` in particular described the deleted Random Forest; its text now lives under "Superseded documents" in `docs/handoffs/README.md`).
 
 **7.5** Rehearse the three questions this project will actually be asked:
 

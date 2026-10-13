@@ -86,11 +86,11 @@ A Bragg-domain criterion therefore cannot be applied to this product, and ours i
 ```
 frontend/         Vite + React + Leaflet. The application. `npm run dev` from the root proxies here.
 backend/app/      FastAPI request path: /api/mission, the point probe, the PDF report.
-backend/scripts/  The offline producers and verification gates: ingest, build_analysis,
+backend/scripts/  The offline producers and the verification-gate scripts: ingest, build_analysis,
                   render_layers, detection_statistics, verify_all, check_repo_complete.
 paper/            Figure scripts and the figures as submitted.
-docs/             Methods record, provenance, verification evidence, derived artifacts (JSON),
-                  superseded handoffs.
+docs/             Methods record, provenance, reproducibility manifest, derived artifacts (JSON);
+                  docs/handoffs/ holds superseded handoffs, session reports and withdrawn documents.
 data/             Raw and derived rasters (~9 GB Chandrayaan-2 DFSAR + LOLA). Gitignored; never committed.
 ```
 
@@ -102,7 +102,7 @@ exact environment the analysis scripts were run with for the manuscript;
 ## Quick start
 
 ```bash
-npm run dev                                  # frontend, http://localhost:3000
+npm run dev                                  # frontend, http://localhost:5173
 npm run backend                              # FastAPI, http://127.0.0.1:8000
 python -u backend/scripts/rebuild_all.py --skip-ingest    # regenerate everything
 python -u backend/scripts/verify_all.py      # every gate, mapped to PRD section 6
@@ -182,11 +182,11 @@ PRADAN after registering, under those terms. Nothing in this repository fetches 
 | [`docs/assumptions.md`](docs/assumptions.md) | the register of what is **not** measured |
 | [`docs/testing.md`](docs/testing.md) | the gates, and what each refuses to let ship |
 | [`docs/architecture.md`](docs/architecture.md) | what actually runs |
-| [`PRD.md`](PRD.md) | the specification. The only active one — `docs/handoffs/` holds nine superseded ones |
+| [`PRD.md`](PRD.md) | the specification. The only active one — `docs/handoffs/` holds the nine superseded handoffs, the V21–V25 session reports, and the text of four withdrawn documents |
 
-`docs/ml-methodology.md`, `docs/experiments.md` and `docs/rover-planning.md` are
-stubs. They described code that was deleted, and are kept only to say so.
-
+The documents that once described the deleted machine-learning component, the deleted
+experiment runner and the superseded rover planner are kept, verbatim, under
+"Superseded documents" in [`docs/handoffs/README.md`](docs/handoffs/README.md).
 ## What was removed, and why it matters
 
 A Random Forest reporting `P(ice) = 0.96` was deleted in Phase 0: it was trained

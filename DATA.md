@@ -1,9 +1,10 @@
 # Data
 
 **The code licence does not extend to the data.** `LICENSE` (MIT) covers the
-software in this repository and nothing else. The satellite products this code
-reads are owned by the agencies that produced them and carry their own terms,
-which are reproduced below.
+software in this repository and nothing else; `LICENSE-NOTE.md`, kept beside it, states
+that code-versus-data distinction so the licence file itself stays the unmodified MIT text.
+The satellite products this code reads are owned by the agencies that produced them and
+carry their own terms, which are reproduced below.
 
 ## What this repository contains, and what it does not
 
@@ -12,8 +13,7 @@ value table), **and no layer file, tile or screenshot that renders a DFSAR-deriv
 It does contain: code; derived numerical results (`docs/*.json`, per-disc and per-block summaries, histograms); the manuscript's
 figures; coarse aggregate layers of about 200 m and coarser (`frontend/public/analysis/probe_grid.bin`, 200 m cells of 8 x 8 block
 means, and the `*.preview.webp` previews, about 258 m/px); LOLA-only map layers (hillshade, elevation, hazard, illumination)
-rendered on a 25 m grid from the public NASA PDS LOLA product; and interface screenshots in `docs/evidence/` that draw LOLA relief
-and single-cell probe read-outs, with no CPR or DOP layer on the map. **ISRO keeps the copyright in the Chandrayaan-2 data**; nothing
+rendered on a 25 m grid from the public NASA PDS LOLA product. **ISRO keeps the copyright in the Chandrayaan-2 data**; nothing
 here transfers any right in it.
 
 **What was removed.** The two 25 m CPR and DOP layer files, the CPR and DOP map-tile pyramid (zoom 0 to 3, 27.6 to 80.8 m per

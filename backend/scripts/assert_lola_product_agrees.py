@@ -52,8 +52,8 @@ for _s in (sys.stdout, sys.stderr):
 #: naming a LOLA product together with a post spacing; that pair must match the
 #: frame provenance file. Sentences about the horizon product are excluded by
 #: name below rather than by hoping they do not match.
-DOCS = ["README.md", "docs/METHODS.md", "docs/viva.md",
-        "docs/scientific-methodology.md", "docs/assumptions.md"]
+DOCS = ["README.md", "docs/METHODS.md", "docs/handoffs/viva.md",
+        "docs/handoffs/README.md", "docs/assumptions.md"]
 
 #: Contexts where 80 m / LDEM_80S_80M is CORRECT because it is the horizon
 #: product. Matched on the line, so a line mentioning horizon, illumination,

@@ -1,7 +1,7 @@
 # System Architecture
 
 *What actually runs, as of PRD Phase 8. No machine-learning component exists in
-this project — see `ml-methodology.md`.*
+this project — see "Superseded documents" in `handoffs/README.md`.*
 
 ## The two paths, and why there are two
 

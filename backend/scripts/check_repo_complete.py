@@ -122,7 +122,11 @@ def main():
     # Build output and tool caches are not source either, by that same intent.
     _NOT_SOURCE = ("data/", "frontend/dist/", ".claude/", "Claude outputs/",
                    # AI-agent instruction files and the check_submission.py output are gitignored by design, not source.
-                   "CLAUDE.md", "AGENTS.md", "submission_check.json")
+                   "CLAUDE.md", "AGENTS.md", "submission_check.json",
+                   # Generated verification evidence ignored by design: gate-10 browser captures (screenshots + their
+                   # capture-metadata JSON, CPR/DOP at map zoom) and the whole V28 audit folder (its scripts, logs and report are
+                   # unpublished pending a decision; its tmp/ holds outputs regenerated from ISRO rasters).
+                   "docs/gate10/", "docs/gate_v28/")
     src = [p for p in on_disk if Path(p).suffix in SOURCE_EXT
            and not Path(p).as_posix().startswith(_NOT_SOURCE)
            and Path(p).as_posix() not in LOCAL_ONLY
@@ -161,7 +165,7 @@ def main():
 
     # C4 — paths named in the docs actually exist
     named, missing_doc = set(), []
-    for doc in ("README.md", "docs/METHODS.md", "docs/viva.md", "docs/testing.md"):
+    for doc in ("README.md", "docs/METHODS.md", "docs/handoffs/viva.md", "docs/testing.md"):
         if not Path(doc).exists():
             continue
         text = Path(doc).read_text(errors="replace")

@@ -46,3 +46,19 @@ AGENTS.md
 # Local Python environments
 .venv/
 venv/
+
+# Local verification evidence that must not be published: gate-10 screenshots show the CPR/DOP proxy at map zoom
+# (finer than 200 m/px), and gate_v28/tmp holds JSON/npz regenerated from the ISRO rasters.
+/docs/gate10/
+/docs/gate_v28/tmp/
+# The V28 audit folder itself (scripts, logs, report) is not published yet; decision pending.
+/docs/gate_v28/
+
+# Screenshot outputs of frontend/scripts/{verify_v8_view,capture_layers,capture_traverse}.mjs. On the author's machine
+# these capture every layer in layers.json, including the two local 25 m CPR/DOP files, so they must never be re-added.
+/docs/v8_*.png
+/docs/gate6/*.png
+/docs/evidence/
+
+# Coursework (an OOMD mini-project report naming other students); not part of the research record.
+/UML Diagrams/

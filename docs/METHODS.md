@@ -1484,7 +1484,7 @@ predictions about how each metric would move when the disc replaced the point
 Sun, committed before the sweep ran, with the point-Sun values as baselines. All
 eight moved as predicted, including its own numeric ratio prediction (`~1.16`,
 measured 1.174, tolerance ±0.06). The 1.2–1.6× band is the *earlier* prediction
-about how our PSR would compare to LPSR at all. `docs/viva.md` previously ran the
+about how our PSR would compare to LPSR at all. `docs/handoffs/viva.md` previously ran the
 two together in one sentence, so a reader took the 8-of-8 as the score for the
 band. **The 8 of 8 is true and stays; it just does not mean what that sentence
 implied.**
@@ -5251,7 +5251,7 @@ backend/scripts/v21_literal_audit.py` → `docs/v21_literal_audit.json`;
 
 The v22 manuscript (Claude outputs/grsl) applied the V21 findings and changed two figure scripts. This pass adopts the
 scripts, audits v22's literals and closes five open questions; it edits no `.tex`. Narrative and counts:
-`Claude outputs/hygiene/V22_REPORT.md` (copy `docs/V22_REPORT.md`).
+`Claude outputs/hygiene/V22_REPORT.md` (copy `docs/handoffs/V22_REPORT.md`).
 
 ### 21.1 Five questions (C1–C4 here, C5 in §19.9)
 

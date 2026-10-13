@@ -10,13 +10,16 @@ type: software
 authors:
   - given-names: Saksham
     family-names: Raina
+    orcid: 'https://orcid.org/0009-0002-4566-3249'
     affiliation: "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
     email: sakshamraina16@gmail.com
   - given-names: Ayushi
     family-names: Raina
+    orcid: 'https://orcid.org/0009-0008-6849-5587'
     affiliation: "Cornell University, Ithaca, NY, USA"
   - given-names: Piyush
     family-names: Pandey
+    orcid: 'https://orcid.org/0009-0000-0357-8500'
     affiliation: "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
 repository-code: 'https://github.com/Sakshamraina07/LunarIceIntelligence'
 abstract: >-

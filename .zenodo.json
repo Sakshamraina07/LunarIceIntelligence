@@ -6,15 +6,18 @@
   "creators": [
     {
       "name": "Raina, Saksham",
-      "affiliation": "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
+      "affiliation": "Marathwada Mitra Mandal's Institute of Technology, Pune, India",
+      "orcid": "0009-0002-4566-3249"
     },
     {
       "name": "Raina, Ayushi",
-      "affiliation": "Cornell University, Ithaca, NY, USA"
+      "affiliation": "Cornell University, Ithaca, NY, USA",
+      "orcid": "0009-0008-6849-5587"
     },
     {
       "name": "Pandey, Piyush",
-      "affiliation": "Marathwada Mitra Mandal's Institute of Technology, Pune, India"
+      "affiliation": "Marathwada Mitra Mandal's Institute of Technology, Pune, India",
+      "orcid": "0009-0000-0357-8500"
     }
   ],
   "description": "<p>Code, derived artifacts and verification gates for a study of the detection limits of a CPR-based lunar water-ice criterion applied to a single Chandrayaan-2 DFSAR L-band pass over the lunar south pole.</p><p><strong>This record contains no Chandrayaan-2 or LOLA source products and no layer, tile or screenshot rendering a DFSAR-derived quantity at a pixel size finer than 200 m, with one stated exception: panel (b) of the manuscript figure <code>paper/fig_scene.pdf</code>, the sample CPR at 25 m bins over a 12 x 3.8 km window.</strong> It holds code, derived numerical results, figures, coarse aggregate layers (about 200 m and coarser) and LOLA-only map layers; the release archive is code and results only. ISRO keeps the copyright in the Chandrayaan-2 data. The ISRO products remain the property of ISRO and are obtained from PRADAN under ISRO's terms; the LOLA products come from the NASA PDS. <code>docs/data_provenance.json</code> records which files the analysis read, with SHA-256, so the same products can be obtained and confirmed byte-for-byte without this record distributing them. See <code>DATA.md</code>.</p>",
@@ -48,5 +51,5 @@
       "resource_type": "dataset"
     }
   ],
-  "notes": "The DOI is not minted here; the author mints it at release. No ORCID is recorded: none has been supplied. Corresponding author: Saksham Raina (sakshamraina16@gmail.com)."
+  "notes": "The DOI is not minted here; the author mints it at release. The ORCID iD of each author is recorded on the creator entry. Corresponding author: Saksham Raina (sakshamraina16@gmail.com)."
 }

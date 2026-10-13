@@ -8,6 +8,49 @@
 
 ---
 
+## Relation to the TGRS manuscript
+
+This repository is the code and verification record behind *Identifiability and Significance of a
+Lunar Radar Ice Criterion on a Chandrayaan-2 Compact-Polarimetric SAR Product* (Raina, Raina and
+Pandey, submitted to *IEEE Transactions on Geoscience and Remote Sensing*, 2026). The manuscript is
+the statistical core of the system described below: it asks what the published criterion
+CPR > 1 together with DOP < 0.13 (Sinha et al., *npj Space Exploration*, 2026) can establish on
+this product, at its measured look count. The application (map, landing sites, traverse, report)
+is the capstone project the analysis grew out of; the two share one pipeline and one set of
+artifacts. The table maps each result in the paper to the script that produced it and the
+artifact it is printed from; `backend/scripts/manuscript_audit_table.py` is the machine-readable
+version of this map, and `python backend/scripts/audit_manuscript_numbers.py` checks every printed
+number against it.
+
+| In the paper | Script | Artifact / figure file |
+|---|---|---|
+| Amplitude interval [c, 1/c] and the coupling identity DOP ≥ \|1−CPR\|/(1+CPR) (Secs. III–IV) | `backend/scripts/dop_exclusion.py`, `joint_criterion.py` | `docs/dop_exclusion.json`, `docs/joint_criterion.json` |
+| Fig. 1(a) sample CPR over the frame | `backend/scripts/f2_complex_product.py`, `paper/make_fig_scene.py` | `paper/fig_scene.pdf` (needs the scene) |
+| Fig. 1(b) every complex-product cell in (DOP, CPR) | `backend/scripts/stokes_from_slc.py`, `paper/make_figures_v12.py` | `paper/fig_cpr_dop_density.npz` → `paper/fig_cpr_dop.pdf` |
+| Table I, look counts (label, moment, log-ratio, coherence, multilook control, bootstrap) | `measure_enl.py`, `enl_logratio.py`, `coherence_nhat.py`, `slc_multilook_control.py`, `bootstrap_enl.py`, `stokes_from_slc.py` | `docs/enl*.json`, `docs/enl_logratio.json`, `docs/coherence_nhat.json`, `docs/slc_multilook_control.json`, `docs/bootstrap_enl.json`, `docs/stokes_from_slc*.json` |
+| Fig. 2(a) the joint rule as a test; size, in-band selection, NP bound | `dop_sampling_bias.py --curve`, `np_power_bound.py`, `paper/make_figures_v12.py` | `docs/joint_power_curve.json`, `docs/np_power_bound.json` → `paper/fig_joint_power.pdf` |
+| Fig. 2(b) regional design curve (pooled looks for 80 % power) | `region_design_curve.py`, `paper/make_fig_region.py` | `docs/region_design_curve.json` → `paper/fig_region_design.pdf` |
+| Table II, dependence of every result on N (critical value, IUT onset, size) | `detection_statistics.py`, `n_sensitivity_*.py`, assembled by `n_sensitivity_assemble.py` | `docs/detection_statistics.json`, `docs/n_sensitivity.json`, `docs/n_sensitivity_table.tex` |
+| Crater F2 (Sec. VI-C) | `f2_maximum.py`, `f2_complex_product.py`, `check_f2_footprint.py` | `docs/f2_maximum.json`, `docs/f2_complex_product.json`, `docs/f2_footprint.json` |
+| Table III, shadowed-versus-sunlit odds ratios with block-bootstrap intervals (Sec. VI-D) | `v21_extract.py` (disc table), `shadow_identification.py`, `psr_domains.py` | `docs/disc_table_v21.json`, `docs/shadow_identification.json`, `docs/psr_domains.json` |
+| Measured tails against the F law (Sec. VI-E) | `tail_calibration_ci.py` | `docs/tail_calibration_ci.json` |
+| Supplement Fig. S1 (amplitude pixels on the analytic curve) | `dop_exclusion.py`, `paper/make_figures.py` | `paper/fig1_density.npz` → `paper/fig1_degeneracy.pdf` |
+| Supplement Fig. S2 (power bound, size and power against N; region-mean null) | `n_sensitivity_np.py`, `n_sensitivity_region.py`, `n_sensitivity_assemble.py`, `paper/make_fig_n_sensitivity.py` | `docs/n_sensitivity.json` → `paper/fig_n_sensitivity.pdf` |
+| Supplement Fig. S3 (specification curve, 1024 specifications) | `shadow_identification.py`, `paper/make_fig_spec_curve.py` | `docs/shadow_identification.json::B_spec_curve` → `paper/fig_spec_curve.pdf` |
+| Supplement Tables S1 (published moments), S4 (kernel sweep), S5 (coverage budget), S6 (sampling statistics) | `published_moments.py`, `gap_v20_frame.py`, `process_real_sar_pipeline.py`, `detection_statistics.py` | `docs/published_moments.json`, `docs/kernel_sweep.json`, `frontend/public/analysis/faustini.json::masks`, `docs/detection_statistics.json` |
+| Literature search (Supplement S-II) | `literature_screen.py`, `literature_search_gate.py` | `docs/literature_search_record.csv`, `docs/literature_screen.json` |
+
+**What you can reproduce without the ISRO data.** Every artifact above is tracked, so every table and
+every figure except Fig. 1(a) regenerates from this checkout alone: `cd paper && python make_figures.py
+&& python make_figures_v12.py && python make_fig_region.py && python make_fig_n_sensitivity.py &&
+python make_fig_spec_curve.py` (environment: `requirements-analysis.txt`), and
+`python backend/scripts/recompute_manuscript_tables.py` recomputes the tables from the pipeline's own
+functions. The simulation artifacts (`detection_statistics`, `joint_power_curve`, `np_power_bound`,
+`region_design_curve`, `n_sensitivity*`) regenerate from fixed seeds with no data. Recomputing the
+measured artifacts — look counts, Stokes statistics, the shadow study, Fig. 1(a) — needs the
+Chandrayaan-2 scene from PRADAN and the LOLA products, as described under *Reproducing* below.
+`paper/README.md` says which of the figure files are in the paper and which are superseded.
+
 ## What this is
 
 An end-to-end, fully provenance-marked go/no-go pipeline over one real
